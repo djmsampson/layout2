@@ -11,16 +11,20 @@ classdef Peer < handle
     events( NotifyAccess = private )
         ObjectChildAdded
         ObjectChildRemoved
+        ObjectDeleted
     end
     
     methods
         
         function obj = Peer( node )
             
-            if isappdata( node, 'uixPeer' ) % exists, retrieve
+            if ~isa( node, 'handle' ) || ~isvalid( node ) || ~isscalar( node ) % invalid node
+                
+                error( 'uix:InvalidArgument', 'Invalid node.' )
+                
+            elseif isappdata( node, 'uixPeer' ) % exists, retrieve
                 
                 obj = getappdata( node, 'uixPeer' );
-                % uix.Peer.message( 'Retrieved %s for %s\n', class( obj ), class( node ) )
                 
             else % does not exist, create
                 
@@ -38,18 +42,12 @@ classdef Peer < handle
                 % Store in node
                 setappdata( node, 'uixPeer', obj )
                 
-                % uix.Peer.message( 'Created %s for %s\n', class( obj ), class( node ) )
-                
             end
             
         end % constructor
         
         function delete( obj )
             
-            node = obj.Node;
-            if ishandle( node ) && strcmp( node.BeingDeleted, 'off' )
-                delete( node )
-            end
             uix.Peer.message( 'Deleted %s for %s\n', class( obj ), class( obj.Node ) )
             
         end % destructor
@@ -61,38 +59,36 @@ classdef Peer < handle
         function onObjectChildAdded( obj, ~, eventData )
             
             % Raise event
-            childNode = eventData.Child;
-            childPeer = uix.Peer( childNode );
-            uix.Peer.message( 'Added %s to %s\n', class( childNode ), class( obj.Node ) )
-            notify( obj, 'ObjectChildAdded', uix.ChildEvent( childPeer ) )
+            child = eventData.Child;
+            uix.Peer.message( 'Added %s to %s\n', class( child ), class( obj.Node ) )
+            notify( obj, 'ObjectChildAdded', uix.ChildEvent( child ) )
             
         end % onChildAdded
         
         function onObjectChildRemoved( obj, source, eventData )
             
-            childNode = eventData.Child;
-            childPeer = uix.Peer( childNode );
-            parentNode = hgGetTrueParent( childNode );
-            if isequal( parentNode, source ) % event correct
+            child = eventData.Child;
+            parent = hgGetTrueParent( child );
+            if isequal( parent, source ) % event correct
                 % Raise event
-                uix.Peer.message( 'Removed %s from %s\n', class( childNode ), class( obj.Node ) )
-                notify( obj, 'ObjectChildRemoved', uix.ChildEvent( childPeer ) )
+                uix.Peer.message( 'Removed %s from %s\n', class( child ), class( obj.Node ) )
+                notify( obj, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             else % event incorrect
                 % Warn
                 warning( 'uix:InvalidState', ...
                     'Incorrect source for event ''ObjectChildRemoved''.' )
                 % Raise event
-                parentPeer = uix.Peer( parentNode );
-                uix.Peer.message( 'Removed %s from %s\n', class( childNode ), class( parentNode ) )
-                notify( parentPeer, 'ObjectChildRemoved', uix.ChildEvent( childPeer ) )
+                parentPeer = uix.Peer( parent );
+                uix.Peer.message( 'Removed %s from %s\n', class( child ), class( parent ) )
+                notify( parentPeer, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             end
             
         end % onObjectChildRemoved
         
-        function onObjectBeingDestroyed( obj, ~, ~ )
+        function onObjectBeingDestroyed( obj, source, ~ )
             
-            % Call destructor, which raises ObjectBeingDestroyed event
-            obj.delete()
+            uix.Peer.message( 'Deleted %s\n', class( source ) )
+            notify( obj, 'ObjectDeleted' )
             
         end % onObjectBeingDestroyed
         
@@ -102,7 +98,7 @@ classdef Peer < handle
         
         function message( varargin )
             
-            fprintf( 1, varargin{:} );
+            % fprintf( 1, varargin{:} );
             
         end % message
         
