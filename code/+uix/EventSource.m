@@ -46,12 +46,6 @@ classdef EventSource < handle
             
         end % constructor
         
-        function delete( obj )
-            
-            uix.EventSource.message( 'Deleted %s for %s\n', class( obj ), class( obj.Object ) )
-            
-        end % destructor
-        
     end % structors
     
     methods( Access = private )
@@ -60,7 +54,6 @@ classdef EventSource < handle
             
             % Raise event
             child = eventData.Child;
-            uix.EventSource.message( 'Added %s to %s\n', class( child ), class( obj.Object ) )
             notify( obj, 'ObjectChildAdded', uix.ChildEvent( child ) )
             
         end % onChildAdded
@@ -71,7 +64,6 @@ classdef EventSource < handle
             parent = hgGetTrueParent( child );
             if isequal( parent, source ) % event correct
                 % Raise event
-                uix.EventSource.message( 'Removed %s from %s\n', class( child ), class( obj.Object ) )
                 notify( obj, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             else % event incorrect
                 % Warn
@@ -79,29 +71,17 @@ classdef EventSource < handle
                     'Incorrect source for event ''ObjectChildRemoved''.' )
                 % Raise event
                 parentEventSource = uix.EventSource( parent );
-                uix.EventSource.message( 'Removed %s from %s\n', class( child ), class( parent ) )
                 notify( parentEventSource, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             end
             
         end % onObjectChildRemoved
         
-        function onObjectBeingDestroyed( obj, source, ~ )
+        function onObjectBeingDestroyed( obj, ~, ~ )
             
-            uix.EventSource.message( 'Deleted %s\n', class( source ) )
             notify( obj, 'ObjectDeleted' )
             
         end % onObjectBeingDestroyed
         
     end % event handlers
-    
-    methods( Static )
-        
-        function message( varargin )
-            
-            fprintf( 1, varargin{:} );
-            
-        end % message
-        
-    end % static methods
     
 end % classdef
