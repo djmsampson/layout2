@@ -28,10 +28,7 @@ classdef Node < handle
             % Add existing children
             children = hgGetTrueChildren( object );
             for ii = 1:numel( children )
-                child = children(ii);
-                uix.Node.message( '  Created %s for existing child node %s\n', ...
-                    class( obj ), class( child ) )
-                obj.Children(end+1,:) = uix.Node( child );
+                obj.Children(end+1,:) = uix.Node( children(ii) );
             end
             
             % Add listeners
@@ -44,30 +41,22 @@ classdef Node < handle
             
         end % constructor
         
-        function delete( obj )
-            
-            uix.Node.message( 'Deleted %s for %s\n', class( obj ), class( obj.Object ) )
-            
-        end % destructor
-        
     end % structors
     
     methods
         
-        function onChildAdded( obj, source, eventData )
+        function onChildAdded( obj, ~, eventData )
             
             child = eventData.Child;
-            uix.Node.message( 'Added %s to %s\n', class( child ), class( source.Object ) )
             node = uix.Node( child );
             obj.Children(end+1,:) = node;
             notify( obj, 'ChildAdded', uix.ChildEvent( node ) )
             
         end % onChildAdded
         
-        function onChildRemoved( obj, source, eventData )
+        function onChildRemoved( obj, ~, eventData )
             
             child = eventData.Child;
-            uix.Node.message( 'Removed %s from %s\n', class( child ), class( source.Object ) )
             tf = vertcat( obj.Children.Object ) == child;
             node = obj.Children(tf,:);
             assert( numel( node ) == 1 )
@@ -76,23 +65,12 @@ classdef Node < handle
             
         end % onChildRemoved
         
-        function onDeleted( obj, source, ~ )
+        function onDeleted( obj, ~, ~ )
             
-            uix.Node.message( 'Deleted %s\n', class( source.Object ) )
             notify( obj, 'Deleted' )
             
         end % onDeleted
         
     end % event handlers
-    
-    methods( Static )
-        
-        function message( varargin )
-            
-            % fprintf( 1, varargin{:} );
-            
-        end % message
-        
-    end % static methods
     
 end % classdef
