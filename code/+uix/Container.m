@@ -6,6 +6,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
     
     properties( Access = protected )
         Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+        Listeners = cell( [0 1] )
+        ChildListeners = cell( [0 1] )
+    end
+    
+    events( NotifyAccess = private )
+        ChildAdded
+        ChildRemoved
     end
     
     methods
@@ -16,9 +23,16 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj@matlab.ui.container.internal.UIContainer( varargin{:} );
             
             % Set up listeners
-            addlistener( obj, 'ObjectChildAdded', @obj.iOnChildAdded );
-            addlistener( obj, 'ObjectChildRemoved', @obj.iOnChildRemoved );
-            addlistener( obj, 'SizeChange', @obj.onSizeChanged );
+            obj.Listeners{end+1,:} = event.listener( ...
+                obj, 'ObjectChildAdded', @obj.onObjectChildAdded );
+            obj.Listeners{end+1,:} = event.listener( ...
+                obj, 'ObjectChildRemoved', @obj.onObjectChildRemoved );
+            obj.Listeners{end+1,:} = event.listener( ...
+                obj, 'ChildAdded', @obj.onChildAdded );
+            obj.Listeners{end+1,:} = event.listener( ...
+                obj, 'ChildRemoved', @obj.onChildRemoved );
+            obj.Listeners{end+1,:} = event.listener( ...
+                obj, 'SizeChange', @obj.onSizeChanged );
             
         end % constructor
         
@@ -61,30 +75,39 @@ classdef Container < matlab.ui.container.internal.UIContainer
     
     methods( Access = private )
         
-        function iOnChildAdded( obj, source, eventData )
+        function onObjectChildAdded( obj, ~, eventData )
             
             child = eventData.Child;
             if ishghandle( child )
-                % Call event handler
-                obj.onChildAdded( source, eventData )
-            else
+                % Raise event
+                notify( obj, 'ChildAdded', uix.ChildEvent( child ) )
+            elseif isa( child, 'matlab.graphics.primitive.canvas.Canvas' )
                 % Add listeners
-                addlistener( child, 'ObjectChildAdded', @obj.iOnChildAdded );
-                addlistener( child, 'ObjectChildRemoved', @obj.iOnChildRemoved );
+                obj.ChildListeners{end+1,:} = event.listener( ...
+                    child, 'ObjectChildAdded', @obj.onObjectChildAdded );
+                obj.ChildListeners{end+1,:} = event.listener( ...
+                    child, 'ObjectChildRemoved', @obj.onObjectChildRemoved );
+            else
+                % Warn
+                warning( 'uix:InvalidOperation', ...
+                    'Unsupported addition of %s.', class( child ) )
             end
             
-        end % iOnChildAdded
+        end % onObjectChildAdded
         
-        function iOnChildRemoved( obj, source, eventData )
+        function onObjectChildRemoved( obj, ~, eventData )
             
-            if ishghandle( eventData.Child )
-                % Call event handler
-                obj.onChildRemoved( source, eventData )
+            if strcmp( obj.BeingDeleted, 'on' ), return, end
+            
+            child = eventData.Child;
+            if ishghandle( child )
+                % Raise event
+                notify( obj, 'ChildRemoved', uix.ChildEvent( child ) )
             end
             
-        end % iOnChildRemoved
+        end % onObjectChildRemoved
         
-    end % private services
+    end % private event handlers
     
     methods( Access = protected )
         
