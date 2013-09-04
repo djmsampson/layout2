@@ -1,4 +1,4 @@
-classdef AbstractNode < handle & matlab.mixin.Heterogeneous
+classdef( Abstract ) AbstractNode < handle & matlab.mixin.Heterogeneous
     
     properties( SetAccess = protected )
         Object
