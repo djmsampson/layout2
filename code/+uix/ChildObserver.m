@@ -1,6 +1,6 @@
 classdef ChildObserver < handle
     
-    properties
+    properties( SetAccess = private )
         Tree
     end
     
@@ -13,51 +13,85 @@ classdef ChildObserver < handle
         
         function obj = ChildObserver( o )
             
-            obj.Tree = obj.createNode( o );
+            % Create tree
+            tree = uix.Node( o, @(x)~isequal(x,o)&&ishghandle(x) );
             
-        end
+            % Add listeners
+            obj.addChildListeners( tree )
+            
+            % Store properties
+            obj.Tree = tree;
+            
+        end % constructor
         
-        function n = createNode( obj, o )
-            
-            if ~isequal( obj.Tree, [] ) && ishghandle( o )
-                n = uix.TerminalNode( o, obj );
-            else
-                n = uix.Node( o, obj );
-                addlistener( n, 'ChildAdded', @obj.onChildEvent );
-                addlistener( n, 'ChildRemoved', @obj.onChildEvent );
-            end
-            addlistener( n, 'VisibilityChanged', @obj.onVisibilityChanged );
-            
-        end
+    end % structors
+    
+    methods( Access = protected )
         
-        function onChildEvent( obj, ~, eventData )
+        function onChildAdded( obj, ~, eventData )
             
-            iOnChildEvent( eventData.Child )
-            function iOnChildEvent( n )
-                o = n.Object;
-                if ishghandle( o ) && strcmp( o.HandleVisibility, 'on' )
-                    notify( obj, eventData.EventName, uix.ChildEvent( o ) )
-                end
-                c = n.Children;
-                for ii = 1:numel( c )
-                    iOnChildEvent( c(ii) )
-                end
-            end
+            % Add listeners
+            obj.addChildListeners( eventData.Child )
             
-        end % onChildEvent
+            % Notify
+            obj.notifyChildEvent( eventData.Child, 'ChildAdded' )
+            
+        end % onChildAdded
+        
+        function onChildRemoved( obj, ~, eventData )
+            
+            % Raise event on children
+            obj.notifyChildEvent( eventData.Child, 'ChildRemoved' )
+            
+        end % onChildRemoved
         
         function onVisibilityChanged( obj, source, ~ )
             
-            o = source.Object;
-            switch o.HandleVisibility
+            object = source.Object;
+            switch object.HandleVisibility
                 case 'on'
-                    notify( obj, 'ChildAdded', uix.ChildEvent( o ) )
+                    notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
                 case {'off','callback'}
-                    notify( obj, 'ChildRemoved', uix.ChildEvent( o ) )
+                    notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
             end
             
         end % onVisibilityChanged
         
-    end % methods
+    end % event handlers
+    
+    methods( Access = private )
+        
+        function addChildListeners( obj, node )
+            
+            % Add listeners to node
+            addlistener( node, 'ChildAdded', @obj.onChildEvent );
+            addlistener( node, 'ChildRemoved', @obj.onChildEvent );
+            addlistener( node, 'VisibilityChanged', @obj.onVisibilityChanged );
+            
+            % Add listeners to children
+            children = node.Children;
+            for ii = 1:numel( children )
+                obj.addChildListeners( children(ii) )
+            end
+            
+        end % addChildListeners
+        
+        function notifyChildEvent( obj, node, eventName )
+            
+            % Raise event on node
+            object = node.Object;
+            if ishghandle( object ) && strcmp( object.HandleVisibility, 'on' )
+                notify( obj, eventName, uix.ChildEvent( object ) )
+            end
+            
+            % Raise event on children
+            children = node.Children;
+            for ii = 1:numel( children )
+                obj.notifyChildEvent( children(ii), eventName )
+            end
+            
+        end % notifyChildEvent
+        
+    end % helpers
     
 end % classdef

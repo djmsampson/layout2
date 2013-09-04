@@ -11,18 +11,17 @@ classdef EventSource < handle
     events( NotifyAccess = private )
         ObjectChildAdded
         ObjectChildRemoved
-        ObjectDeleted
     end
     
     methods
         
         function obj = EventSource( object )
             
-            if ~isa( object, 'handle' ) || ~isvalid( object ) || ~isscalar( object ) % invalid object
-                
-                error( 'uix:InvalidArgument', 'Invalid object.' )
-                
-            elseif isappdata( object, 'uixEventSource' ) % exists, retrieve
+            % Check input
+            assert( isa( object, 'handle' ) && isscalar( object ) && ...
+                isvalid( object ), 'uix:InvalidArgument', 'Invalid object.' )
+            
+            if isappdata( object, 'uixEventSource' ) % exists, retrieve
                 
                 obj = getappdata( object, 'uixEventSource' );
                 
@@ -36,8 +35,6 @@ classdef EventSource < handle
                     'ObjectChildAdded', @obj.onObjectChildAdded );
                 obj.Listeners(end+1,:) = event.listener( object, ...
                     'ObjectChildRemoved', @obj.onObjectChildRemoved );
-                obj.Listeners(end+1,:) = event.listener( object, ...
-                    'ObjectBeingDestroyed', @obj.onObjectBeingDestroyed );
                 
                 % Store in object
                 setappdata( object, 'uixEventSource', obj )
@@ -75,12 +72,6 @@ classdef EventSource < handle
             end
             
         end % onObjectChildRemoved
-        
-        function onObjectBeingDestroyed( obj, ~, ~ )
-            
-            notify( obj, 'ObjectDeleted' )
-            
-        end % onObjectBeingDestroyed
         
     end % event handlers
     
