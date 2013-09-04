@@ -12,6 +12,7 @@ classdef ChildObserver < handle
     methods
         
         function obj = ChildObserver( o )
+            %uix.ChildObserver
             
             % Create tree
             tree = uix.Node( o, @(x)~isequal(x,o)&&ishghandle(x) );
@@ -29,6 +30,7 @@ classdef ChildObserver < handle
     methods( Access = protected )
         
         function onChildAdded( obj, ~, eventData )
+            %onChildAdded  Event handler for event 'ChildAdded'
             
             % Add listeners
             obj.addChildListeners( eventData.Child )
@@ -39,34 +41,38 @@ classdef ChildObserver < handle
         end % onChildAdded
         
         function onChildRemoved( obj, ~, eventData )
+            %onChildRemoved  Event handler for event 'ChildRemoved'
             
             % Raise event on children
             obj.notifyChildEvent( eventData.Child, 'ChildRemoved' )
             
         end % onChildRemoved
         
-        function onVisibilityChanged( obj, source, ~ )
+        function onHandleVisibilityChanged( obj, source, ~ )
+            %onHandleVisibilityChanged  Event handler for event 'HandleVisibilityChanged'
             
             object = source.Object;
             switch object.HandleVisibility
-                case 'on'
+                case 'on' % to visible
                     notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
-                case {'off','callback'}
+                case {'off','callback'} % to invisible
                     notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
             end
             
-        end % onVisibilityChanged
+        end % onHandleVisibilityChanged
         
     end % event handlers
     
     methods( Access = private )
         
         function addChildListeners( obj, node )
+            %addChildListeners  Add listeners to node and its descendents
             
             % Add listeners to node
             addlistener( node, 'ChildAdded', @obj.onChildEvent );
             addlistener( node, 'ChildRemoved', @obj.onChildEvent );
-            addlistener( node, 'VisibilityChanged', @obj.onVisibilityChanged );
+            addlistener( node, 'HandleVisibilityChanged', ...
+                @obj.onHandleVisibilityChanged );
             
             % Add listeners to children
             children = node.Children;
@@ -77,6 +83,7 @@ classdef ChildObserver < handle
         end % addChildListeners
         
         function notifyChildEvent( obj, node, eventName )
+            %notifyChildEvent  Raise child event(s)
             
             % Raise event on node
             object = node.Object;

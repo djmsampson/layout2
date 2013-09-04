@@ -1,25 +1,26 @@
 classdef Node < handle
     
     properties( SetAccess = private )
-        Object
-        Children = uix.Node.empty( [0 1] )
+        Object % the object
+        Children = uix.Node.empty( [0 1] ) % nodes for children
     end
     
     properties( Access = private )
-        ChildTerminator
-        Listeners = event.listener.empty( [0 1] )
+        ChildTerminator % termination test function
+        Listeners = event.listener.empty( [0 1] ) % listeners
     end
     
     events( NotifyAccess = private )
         ChildAdded
         ChildRemoved
-        VisibilityChanged
-        Deleted
+        HandleVisibilityChanged
+        BeingDestroyed
     end
     
     methods
         
         function obj = Node( object, childTerminator )
+            %uix.Node  Node
             
             % Handle inputs
             if nargin < 2, childTerminator = @(~)false; end
@@ -35,12 +36,12 @@ classdef Node < handle
             if ishghandle( object )
                 obj.Listeners(end+1,:) = event.proplistener( object, ...
                     findprop( object, 'HandleVisibility' ), 'PostSet', ...
-                    @obj.onVisibilityChanged );
+                    @obj.onHandleVisibilityChanged );
             end
             obj.Listeners(end+1,:) = event.listener( object, ...
-                'ObjectBeingDestroyed', @obj.onDeleted );
+                'ObjectBeingDestroyed', @obj.onBeingDestroyed );
             
-            if ~childTerminator( object )
+            if ~childTerminator( object ) % non-terminal node
                 
                 % Add existing children
                 children = hgGetTrueChildren( object );
@@ -63,6 +64,7 @@ classdef Node < handle
     methods
         
         function onChildAdded( obj, ~, eventData )
+            %onChildAdded  Event handler for event 'ObjectChildAdded'
             
             child = eventData.Child;
             node = uix.Node( child, obj.ChildTerminator );
@@ -72,27 +74,30 @@ classdef Node < handle
         end % onChildAdded
         
         function onChildRemoved( obj, ~, eventData )
+            %onChildRemoved  Event handler for event 'ObjectChildRemoved'
             
             child = eventData.Child;
             tf = vertcat( obj.Children.Object ) == child;
             node = obj.Children(tf,:);
-            assert( numel( node ) == 1 )
+            assert( isscalar( node ), 'uix:UnhandledError', 'Node not found.' )
             obj.Children(tf,:) = [];
             notify( obj, 'ChildRemoved', uix.ChildEvent( node ) )
             
         end % onChildRemoved
         
-        function onDeleted( obj, ~, ~ )
+        function onBeingDestroyed( obj, ~, ~ )
+            %onBeingDestroyed  Event handler for event 'ObjectBeingDestroyed'
             
-            notify( obj, 'Deleted' )
+            notify( obj, 'BeingDestroyed' )
             
-        end % onDeleted
+        end % onBeingDestroyed
         
-        function onVisibilityChanged( obj, ~, ~ )
+        function onHandleVisibilityChanged( obj, ~, ~ )
+            %onHandleVisibilityChanged  Event handler for property 'HandleVisibility'
             
-            notify( obj, 'VisibilityChanged' )
+            notify( obj, 'HandleVisibilityChanged' )
             
-        end % onVisibilityChanged
+        end % onHandleVisibilityChanged
         
     end % event handlers
     
