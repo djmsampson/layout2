@@ -4,9 +4,14 @@ classdef ChildObserver < handle
         Tree
     end
     
+    properties( Access = private )
+        Listeners = event.listener.empty( [0 1] )
+    end
+    
     events( NotifyAccess = private )
         ChildAdded
         ChildRemoved
+        BeingDestroyed
     end
     
     methods
@@ -17,11 +22,15 @@ classdef ChildObserver < handle
             % Create tree
             tree = uix.Node( object, @(x)~isequal(x,object)&&ishghandle(x) );
             
-            % Add listeners
+            % Add node listeners
             obj.addChildListeners( tree )
             
             % Store properties
             obj.Tree = tree;
+            
+            % Add object listener
+            obj.Listeners(end+1,:) = event.listener( object, ...
+                'ObjectBeingDestroyed', @obj.onBeingDestroyed );
             
         end % constructor
         
@@ -60,6 +69,14 @@ classdef ChildObserver < handle
             end
             
         end % onHandleVisibilityChanged
+        
+        function onBeingDestroyed( obj, ~, ~ )
+            %onBeingDestroyed  Event handler for event 'ObjectBeingDestroyed'
+            
+            % Raise event
+            notify( obj, 'BeingDestroyed' )
+            
+        end % onBeingDestroyed
         
     end % event handlers
     
