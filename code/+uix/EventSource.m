@@ -1,9 +1,5 @@
 classdef EventSource < handle
     
-    properties( SetAccess = private )
-        Object
-    end
-    
     properties( Access = private )
         Listeners = event.listener.empty( [0 1] )
     end
@@ -16,6 +12,10 @@ classdef EventSource < handle
     methods
         
         function obj = EventSource( object )
+            %uix.EventSource  Event source
+            %
+            %  s = uix.EventSource(o) creates an event source s for the
+            %  object o, such that child events on o are observable on s.
             
             % Check input
             assert( isa( object, 'handle' ) && isscalar( object ) && ...
@@ -26,9 +26,6 @@ classdef EventSource < handle
                 obj = getappdata( object, 'uixEventSource' );
                 
             else % does not exist, create
-                
-                % Store properties
-                obj.Object = object;
                 
                 % Create listeners
                 obj.Listeners(end+1,:) = event.listener( object, ...
@@ -48,6 +45,7 @@ classdef EventSource < handle
     methods( Access = private )
         
         function onObjectChildAdded( obj, ~, eventData )
+            %onObjectChildAdded  Event handler for 'ObjectChildAdded'
             
             % Raise event
             child = eventData.Child;
@@ -56,6 +54,7 @@ classdef EventSource < handle
         end % onChildAdded
         
         function onObjectChildRemoved( obj, source, eventData )
+            %onObjectChildRemoved  Event handler for 'ObjectChildRemoved'
             
             child = eventData.Child;
             parent = hgGetTrueParent( child );
