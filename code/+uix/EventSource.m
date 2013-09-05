@@ -9,38 +9,47 @@ classdef EventSource < handle
         ObjectChildRemoved
     end
     
-    methods
+    methods( Access = private )
         
         function obj = EventSource( object )
             %uix.EventSource  Event source
             %
-            %  s = uix.EventSource(o) creates an event source s for the
-            %  object o, such that child events on o are observable on s.
+            %  See also: uix.EventSource/getInstance
             
             % Check input
             assert( isa( object, 'handle' ) && isscalar( object ) && ...
                 isvalid( object ), 'uix:InvalidArgument', 'Invalid object.' )
             
-            if isappdata( object, 'uixEventSource' ) % exists, retrieve
-                
-                obj = getappdata( object, 'uixEventSource' );
-                
-            else % does not exist, create
-                
-                % Create listeners
-                obj.Listeners(end+1,:) = event.listener( object, ...
-                    'ObjectChildAdded', @obj.onObjectChildAdded );
-                obj.Listeners(end+1,:) = event.listener( object, ...
-                    'ObjectChildRemoved', @obj.onObjectChildRemoved );
-                
-                % Store in object
-                setappdata( object, 'uixEventSource', obj )
-                
-            end
+            % Create listeners
+            obj.Listeners(end+1,:) = event.listener( object, ...
+                'ObjectChildAdded', @obj.onObjectChildAdded );
+            obj.Listeners(end+1,:) = event.listener( object, ...
+                'ObjectChildRemoved', @obj.onObjectChildRemoved );
+            
+            % Store in object
+            setappdata( object, 'uixEventSource', obj )
             
         end % constructor
         
     end % structors
+    
+    methods( Static )
+        
+        function obj = getInstance( object )
+            %getInstance  Get event source from object
+            %
+            %  s = uix.EventSource.getInstance(o) gets the event source for
+            %  the object o.
+            
+            if isappdata( object, 'uixEventSource' ) % exists, retrieve                
+                obj = getappdata( object, 'uixEventSource' );                
+            else % does not exist, create
+                obj = uix.EventSource( object );
+            end
+            
+        end % getInstance
+        
+    end % static methods
     
     methods( Access = private )
         

@@ -30,7 +30,7 @@ classdef Node < handle
             if nargin < 2, isTerminalChild = @(~)false; end
             
             % Create event source
-            eventSource = uix.EventSource( object ); % TODO
+            eventSource = uix.EventSource.getInstance( object ); % TODO
             
             % Store properties
             obj.Object = object;
