@@ -11,11 +11,11 @@ classdef ChildObserver < handle
     
     methods
         
-        function obj = ChildObserver( o )
+        function obj = ChildObserver( object )
             %uix.ChildObserver
             
             % Create tree
-            tree = uix.Node( o, @(x)~isequal(x,o)&&ishghandle(x) );
+            tree = uix.Node( object, @(x)~isequal(x,object)&&ishghandle(x) );
             
             % Add listeners
             obj.addChildListeners( tree )
@@ -69,8 +69,8 @@ classdef ChildObserver < handle
             %addChildListeners  Add listeners to node and its descendents
             
             % Add listeners to node
-            addlistener( node, 'ChildAdded', @obj.onChildEvent );
-            addlistener( node, 'ChildRemoved', @obj.onChildEvent );
+            addlistener( node, 'ChildAdded', @obj.onChildAdded );
+            addlistener( node, 'ChildRemoved', @obj.onChildRemoved );
             addlistener( node, 'HandleVisibilityChanged', ...
                 @obj.onHandleVisibilityChanged );
             
