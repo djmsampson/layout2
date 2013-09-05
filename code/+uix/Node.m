@@ -6,6 +6,7 @@ classdef Node < handle
     end
     
     properties( Access = private )
+        OldHandleVisibility % previous value of HandleVisibility
         ChildTerminator % termination test function
         Listeners = event.listener.empty( [0 1] ) % listeners
     end
@@ -19,41 +20,47 @@ classdef Node < handle
     
     methods
         
-        function obj = Node( object, childTerminator )
+        function obj = Node( object, isTerminalChild )
             %uix.Node  Node
+            %
+            %  n = uix.Node(o,f) creates a node from an object o and a
+            %  termination test function f.
             
             % Handle inputs
-            if nargin < 2, childTerminator = @(~)false; end
+            if nargin < 2, isTerminalChild = @(~)false; end
             
             % Create event source
-            eventSource = uix.EventSource( object );
+            eventSource = uix.EventSource( object ); % TODO
             
             % Store properties
             obj.Object = object;
-            obj.ChildTerminator = childTerminator;
+            obj.ChildTerminator = isTerminalChild;
             
             % Add standard listeners
             if ishghandle( object )
                 obj.Listeners(end+1,:) = event.proplistener( object, ...
+                    findprop( object, 'HandleVisibility' ), 'PreSet', ...
+                    @obj.onHandleVisibilityPreSet );
+                obj.Listeners(end+1,:) = event.proplistener( object, ...
                     findprop( object, 'HandleVisibility' ), 'PostSet', ...
-                    @obj.onHandleVisibilityChanged );
+                    @obj.onHandleVisibilityPostSet );
             end
             obj.Listeners(end+1,:) = event.listener( object, ...
                 'ObjectBeingDestroyed', @obj.onBeingDestroyed );
             
-            if ~childTerminator( object ) % non-terminal node
+            if ~isTerminalChild( object ) % non-terminal node
                 
                 % Add existing children
                 children = hgGetTrueChildren( object );
                 for ii = 1:numel( children )
-                    obj.Children(end+1,:) = uix.Node( children(ii), childTerminator );
+                    obj.Children(end+1,:) = uix.Node( children(ii), isTerminalChild );
                 end
                 
                 % Add child listeners
                 obj.Listeners(end+1,:) = event.listener( eventSource, ...
-                    'ObjectChildAdded', @obj.onChildAdded );
+                    'ObjectChildAdded', @obj.onChildAdded ); % TODO
                 obj.Listeners(end+1,:) = event.listener( eventSource, ...
-                    'ObjectChildRemoved', @obj.onChildRemoved );
+                    'ObjectChildRemoved', @obj.onChildRemoved ); % TODO
                 
             end
             
@@ -92,12 +99,27 @@ classdef Node < handle
             
         end % onBeingDestroyed
         
-        function onHandleVisibilityChanged( obj, ~, ~ )
-            %onHandleVisibilityChanged  Event handler for property 'HandleVisibility'
+        function onHandleVisibilityPreSet( obj, ~, eventData )
+            %onHandleVisibilityPreSet  Event handler for property 'HandleVisibility'
             
-            notify( obj, 'HandleVisibilityChanged' )
+            % Store previous value
+            obj.OldHandleVisibility = eventData.AffectedObject.HandleVisibility;
             
-        end % onHandleVisibilityChanged
+        end % onHandleVisibilityPreSet
+        
+        function onHandleVisibilityPostSet( obj, ~, eventData )
+            %onHandleVisibilityPostSet  Event handler for property 'HandleVisibility'
+            
+            % Raise event if HandleVisibility changed from 'on' to 'off' or
+            % 'callback', or vice versa
+            old = obj.OldHandleVisibility;
+            new = eventData.AffectedObject.HandleVisibility;
+            if xor( strcmp( old, 'on' ), strcmp( new, 'on' ) )
+                notify( obj, 'HandleVisibilityChanged' )
+            end
+            obj.OldHandleVisibility = []; % reset
+            
+        end % onHandleVisibilityPostSet
         
     end % event handlers
     
