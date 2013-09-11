@@ -66,8 +66,7 @@ classdef EventSource < handle
             %onObjectChildRemoved  Event handler for 'ObjectChildRemoved'
             
             child = eventData.Child;
-            parent = hgGetTrueParent( child );
-            if isequal( parent, source ) % event correct
+            if ismember( child, hgGetTrueChildren( source ) ) % event correct
                 % Raise event
                 notify( obj, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             else % event incorrect
@@ -75,6 +74,7 @@ classdef EventSource < handle
                 warning( 'uix:InvalidState', ...
                     'Incorrect source for event ''ObjectChildRemoved''.' )
                 % Raise event
+                parent = hgGetTrueParent( child );
                 parentEventSource = uix.EventSource( parent );
                 notify( parentEventSource, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             end
