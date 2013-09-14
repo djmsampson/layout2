@@ -1,4 +1,10 @@
 classdef Node < dynamicprops
+    %uix.Node  Node
+    %
+    %  n = uix.Node(o) creates a node for the handle o.
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( SetAccess = private )
         Object % object
@@ -15,7 +21,7 @@ classdef Node < dynamicprops
         function obj = Node( object )
             %uix.Node  Node
             %
-            %  n = uix.Node(o) creates a node for the object o.
+            %  n = uix.Node(o) creates a node for the handle o.
             
             % Check
             assert( isa( object, 'handle' ) && ...

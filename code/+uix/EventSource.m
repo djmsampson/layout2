@@ -1,4 +1,16 @@
 classdef EventSource < handle
+    %uix.EventSource  Event source
+    %
+    %  s = uix.EventSource.getInstance(o) gets the event source
+    %  corresponding to the handle o.
+    %
+    %  In R2013b, events ObjectChildAdded and ObjectChildRemoved should be
+    %  observed on the event source rather than on the object itself due to
+    %  a bug whereby, when reparenting, the event ObjectChildRemoved is
+    %  raised on the wrong object.
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Access = private )
         Listeners = event.listener.empty( [0 1] ) % listeners

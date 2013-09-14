@@ -1,4 +1,13 @@
 classdef ChildObserver < handle
+    %uix.ChildObserver  Child observer
+    %
+    %  co = uix.ChildObserver(o) creates a child observer for the graphics
+    %  object o.  A child observer raises events ChildAdded and
+    %  ChildRemoved when objects are respectively added to and removed from
+    %  the property Children of o.
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Hidden )
         Root % root node
