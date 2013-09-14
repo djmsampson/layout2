@@ -1,104 +1,172 @@
 classdef ChildObserver < handle
     
-    properties( SetAccess = private )
-        Tree
+    properties( Hidden )
+        Root % root node
     end
     
-    events( NotifyAccess = private )
-        ChildAdded
-        ChildRemoved
+    events( NotifyAccess = protected )
+        ChildAdded % child added
+        ChildRemoved % child removed
     end
     
     methods
         
-        function obj = ChildObserver( object )
-            %uix.ChildObserver
+        function obj = ChildObserver( oRoot )
+            %uix.ChildObserver  Child observer
+            %
+            %  co = uix.ChildObserver(o) creates a child observer for the
+            %  graphics object o.  A child observer raises events
+            %  ChildAdded and ChildRemoved when objects are respectively
+            %  added to and removed from the property Children of o.
             
-            % Create tree
-            tree = uix.Node( object, @(x)~isequal(x,object)&&ishghandle(x) );
+            % Check
+            assert( ishghandle( oRoot ) && ...
+                isequal( size( oRoot ), [1 1] ), 'uix.InvalidArgument', ...
+                'Object must be a graphics object.' )
             
-            % Add listeners
-            obj.addChildListeners( tree )
+            % Create root node
+            nRoot = uix.Node( oRoot );
+            nRoot.addListener( event.listener( ...
+                uix.EventSource.getInstance( oRoot ), ... % TODO
+                'ObjectChildAdded', ...
+                @(~,e)obj.addChild(nRoot,e.Child) ) )
+            nRoot.addListener( event.listener( ...
+                uix.EventSource.getInstance( oRoot ), ... % TODO
+                'ObjectChildRemoved', ...
+                @(~,e)obj.removeChild(nRoot,e.Child) ) )
+            
+            % Add children
+            oChildren = hgGetTrueChildren( oRoot );
+            for ii = 1:numel( oChildren )
+                obj.addChild( nRoot, oChildren(ii) )
+            end
             
             % Store properties
-            obj.Tree = tree;
+            obj.Root = nRoot;
             
         end % constructor
         
     end % structors
     
-    methods( Access = protected )
+    methods
         
-        function onChildAdded( obj, ~, eventData )
-            %onChildAdded  Event handler for event 'ChildAdded'
+        function addChild( obj, nParent, oChild )
+            %addChild  Add child object to parent node
+            %
+            %  co.addChild(np,oc) adds the child object oc to the parent
+            %  node np, either as part of construction of the child
+            %  observer co, or in response to an ObjectChildAdded event on
+            %  an object of interest to co.  This may lead to ChildAdded
+            %  events being raised on co.
             
-            % Add listeners
-            obj.addChildListeners( eventData.Child )
-            
-            % Notify
-            obj.notifyChildEvent( eventData.Child, 'ChildAdded' )
-            
-        end % onChildAdded
-        
-        function onChildRemoved( obj, ~, eventData )
-            %onChildRemoved  Event handler for event 'ChildRemoved'
-            
-            % Raise event on children
-            obj.notifyChildEvent( eventData.Child, 'ChildRemoved' )
-            
-        end % onChildRemoved
-        
-        function onHandleVisibilityChanged( obj, source, ~ )
-            %onHandleVisibilityChanged  Event handler for event 'HandleVisibilityChanged'
-            
-            object = source.Object;
-            switch object.HandleVisibility
-                case 'on' % to visible
-                    notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
-                case {'off','callback'} % to invisible
-                    notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
+            % Create child node
+            nChild = uix.Node( oChild );
+            nParent.addChild( nChild )
+            if ishghandle( oChild )
+                % Add property listeners
+                nChild.addListener( event.proplistener( oChild, ...
+                    findprop( oChild, 'HandleVisibility' ), 'PreSet', ...
+                    @(~,~)obj.preSetHandleVisibility(nChild) ) )
+                nChild.addListener( event.proplistener( oChild, ...
+                    findprop( oChild, 'HandleVisibility' ), 'PostSet', ...
+                    @(~,~)obj.postSetHandleVisibility(nChild) ) )
+            else
+                % Add child listeners
+                nChild.addListener( event.listener( ...
+                    uix.EventSource.getInstance( oChild ), ... % TODO
+                    'ObjectChildAdded', ...
+                    @(~,e)obj.addChild(nChild,e.Child) ) )
+                nChild.addListener( event.listener( ...
+                    uix.EventSource.getInstance( oChild ), ... % TODO
+                    'ObjectChildRemoved', ...
+                    @(~,e)obj.removeChild(nChild,e.Child) ) )
             end
             
-        end % onHandleVisibilityChanged
+            % Raise ChildAdded event
+            if ishghandle( oChild ) && strcmp( oChild.HandleVisibility, 'on' )
+                notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
+            end
+            
+            % Add grandchildren
+            if ~ishghandle( oChild )
+                oGrandchildren = hgGetTrueChildren( oChild );
+                for ii = 1:numel( oGrandchildren )
+                    obj.addChild( nChild, oGrandchildren(ii) )
+                end
+            end
+            
+        end % addChild
+        
+        function removeChild( obj, nParent, oChild )
+            %removeChild  Remove child object from parent node
+            %
+            %  co.removeChild(np,oc) removes the child object oc from the
+            %  parent node np, in response to an ObjectChildRemoved event
+            %  on an object of interest to co.  This may lead to
+            %  ChildRemoved events being raised on co.
+            
+            % Get child node
+            nChildren = nParent.Children;
+            tf = oChild == [nChildren.Object];
+            nChild = nChildren(tf);
+            
+            % Raise ChildRemoved event(s)
+            notifyChildRemoved( nChild )
+            
+            % Delete child node
+            delete( nChild )
+            
+            function notifyChildRemoved( nc )
+                
+                % Process child nodes
+                ngc = nc.Children;
+                for ii = 1:numel( ngc )
+                    notifyChildRemoved( ngc(ii) )
+                end
+                
+                % Process this node
+                oc = nc.Object;
+                if ishghandle( oc ) && strcmp( oc.HandleVisibility, 'on' )
+                    notify( obj, 'ChildRemoved', uix.ChildEvent( oc ) )
+                end
+                
+            end % notifyChildRemoved
+            
+        end % removeChild
+        
+        function preSetHandleVisibility( ~, n )
+            %preSetHandleVisibility  Perform property PreSet tasks
+            %
+            %  co.preSetHandleVisibility(n) stores the pre-set value of
+            %  HandleVisibility of the object referenced by a node n.
+            
+            n.addprop( 'OldHandleVisibility' );
+            n.OldHandleVisibility = n.Object.HandleVisibility;
+            
+        end % preSetHandleVisibility
+        
+        function postSetHandleVisibility( obj, n )
+            %postSetHandleVisibility  Perform property PostSet tasks
+            %
+            %  co.postSetHandleVisibility(n) compares the pre- and post-set
+            %  values of HandleVisibility of the object referenced by a
+            %  node n, raising a ChildAdded or ChildRemoved event on the
+            %  child observer co if appropriate.
+            
+            % Retrieve old and new HandleVisibility values
+            oldViz = n.OldHandleVisibility;
+            delete( findprop( n, 'OldHandleVisibility' ) )
+            newViz = n.Object.HandleVisibility;
+            
+            % Raise event if required
+            if strcmp( oldViz, 'on' ) && ~strcmp( newViz, 'on' )
+                notify( obj, 'ChildRemoved', uix.ChildEvent( n.Object ) )
+            elseif ~strcmp( oldViz, 'on' ) && strcmp( newViz, 'on' )
+                notify( obj, 'ChildAdded', uix.ChildEvent( n.Object ) )
+            end
+            
+        end % postSetHandleVisibility
         
     end % event handlers
-    
-    methods( Access = private )
-        
-        function addChildListeners( obj, node )
-            %addChildListeners  Add listeners to node and its descendents
-            
-            % Add listeners to node
-            addlistener( node, 'ChildAdded', @obj.onChildAdded );
-            addlistener( node, 'ChildRemoved', @obj.onChildRemoved );
-            addlistener( node, 'HandleVisibilityChanged', ...
-                @obj.onHandleVisibilityChanged );
-            
-            % Add listeners to children
-            children = node.Children;
-            for ii = 1:numel( children )
-                obj.addChildListeners( children(ii) )
-            end
-            
-        end % addChildListeners
-        
-        function notifyChildEvent( obj, node, eventName )
-            %notifyChildEvent  Raise child event(s)
-            
-            % Raise event on node
-            object = node.Object;
-            if ishghandle( object ) && strcmp( object.HandleVisibility, 'on' )
-                notify( obj, eventName, uix.ChildEvent( object ) )
-            end
-            
-            % Raise event on children
-            children = node.Children;
-            for ii = 1:numel( children )
-                obj.notifyChildEvent( children(ii), eventName )
-            end
-            
-        end % notifyChildEvent
-        
-    end % helpers
     
 end % classdef

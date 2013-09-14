@@ -1,12 +1,12 @@
 classdef EventSource < handle
     
     properties( Access = private )
-        Listeners = event.listener.empty( [0 1] )
+        Listeners = event.listener.empty( [0 1] ) % listeners
     end
     
     events( NotifyAccess = private )
-        ObjectChildAdded
-        ObjectChildRemoved
+        ObjectChildAdded % child added
+        ObjectChildRemoved % child removed
     end
     
     methods( Access = private )
@@ -17,8 +17,9 @@ classdef EventSource < handle
             %  See also: uix.EventSource/getInstance
             
             % Check input
-            assert( isa( object, 'handle' ) && isscalar( object ) && ...
-                isvalid( object ), 'uix:InvalidArgument', 'Invalid object.' )
+            assert( isa( object, 'handle' ) && ...
+                isequal( size( object ), [1 1] ) && isvalid( object ), ...
+                'uix:InvalidArgument', 'Invalid object.' )
             
             % Create listeners
             obj.Listeners(end+1,:) = event.listener( object, ...
@@ -41,8 +42,8 @@ classdef EventSource < handle
             %  s = uix.EventSource.getInstance(o) gets the event source for
             %  the object o.
             
-            if isappdata( object, 'uixEventSource' ) % exists, retrieve                
-                obj = getappdata( object, 'uixEventSource' );                
+            if isappdata( object, 'uixEventSource' ) % exists, retrieve
+                obj = getappdata( object, 'uixEventSource' );
             else % does not exist, create
                 obj = uix.EventSource( object );
             end
@@ -60,7 +61,7 @@ classdef EventSource < handle
             child = eventData.Child;
             notify( obj, 'ObjectChildAdded', uix.ChildEvent( child ) )
             
-        end % onChildAdded
+        end % onObjectChildAdded
         
         function onObjectChildRemoved( obj, source, eventData )
             %onObjectChildRemoved  Event handler for 'ObjectChildRemoved'
@@ -75,7 +76,7 @@ classdef EventSource < handle
                     'Incorrect source for event ''ObjectChildRemoved''.' )
                 % Raise event
                 parent = hgGetTrueParent( child );
-                parentEventSource = uix.EventSource( parent );
+                parentEventSource = uix.EventSource.getInstance( parent );
                 notify( parentEventSource, 'ObjectChildRemoved', uix.ChildEvent( child ) )
             end
             
