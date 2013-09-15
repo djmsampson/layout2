@@ -39,9 +39,6 @@ classdef EventSource < handle
             obj.Listeners(end+1,:) = event.listener( object, ...
                 'ObjectChildRemoved', @obj.onObjectChildRemoved );
             
-            % Store in object
-            setappdata( object, 'uixEventSource', obj )
-            
         end % constructor
         
     end % structors
@@ -54,10 +51,13 @@ classdef EventSource < handle
             %  s = uix.EventSource.getInstance(o) gets the event source for
             %  the object o.
             
-            if isappdata( object, 'uixEventSource' ) % exists, retrieve
-                obj = getappdata( object, 'uixEventSource' );
-            else % does not exist, create
+            if isprop( object, 'EventSource' ) % exists, retrieve
+                obj = object.EventSource;
+            else % does not exist, create and store
                 obj = uix.EventSource( object );
+                p = addprop( object, 'EventSource' );
+                p.Hidden = true;
+                object.EventSource = obj;
             end
             
         end % getInstance
