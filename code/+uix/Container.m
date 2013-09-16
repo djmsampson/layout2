@@ -42,15 +42,14 @@ classdef Container < matlab.ui.container.internal.UIContainer
         function set.Contents( obj, value )
             
             % Check
+            [tf, indices] = ismember( obj.Contents_, value );
             assert( isequal( size( obj.Contents_ ), size( value ) ) && ...
-                all( ismember( obj.Contents_, value ) ), ...
-                'uix:InvalidOperation', 'Invalid operation.' )
+                numel( value ) == numel( unique( value ) ) && all( tf ), ...
+                'uix:InvalidOperation', ...
+                'Property ''Contents'' may only be set to a permutation of itself.' )
             
-            % Set
-            obj.Contents_ = value;
-            
-            % Redraw
-            obj.redraw()
+            % Call reorder
+            obj.reorder( indices )
             
         end % set.Contents
         
@@ -95,5 +94,19 @@ classdef Container < matlab.ui.container.internal.UIContainer
         end % onSizeChanged
         
     end % event handlers
+    
+    methods( Access = protected )
+        
+        function reorder( obj, indices )
+            
+            % Reorder
+            obj.Contents_ = obj.Contents_(indices,:);
+            
+            % Redraw
+            obj.redraw()
+            
+        end % reorder
+        
+    end % operations
     
 end % classdef

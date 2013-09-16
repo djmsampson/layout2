@@ -18,6 +18,7 @@ classdef HBox < uix.Container
     properties( Access = private )
         Widths_ = zeros( [0 1] )
         MinimumWidths_ = zeros( [0 1] )
+        ActivePositionPropertyListeners = cell( [0 1] )
     end
     
     methods
@@ -226,6 +227,17 @@ classdef HBox < uix.Container
             % Call superclass method
             onChildAdded@uix.Container( obj, source, eventData )
             
+            % Add listeners
+            child = eventData.Child;
+            if isprop( child, 'ActivePositionProperty' )
+                obj.ActivePositionPropertyListeners{end+1,:} = ...
+                    event.proplistener( child, ...
+                    findprop( child, 'ActivePositionProperty' ), ...
+                    'PostSet', @obj.onActivePositionPropertyPostSet );
+            else
+                obj.ActivePositionPropertyListeners{end+1,:} = [];
+            end
+            
         end % onChildAdded
         
         function onChildRemoved( obj, source, eventData )
@@ -236,12 +248,40 @@ classdef HBox < uix.Container
             % Remove from sizes
             tf = obj.Contents_ == eventData.Child;
             obj.Widths_(tf,:) = [];
+            obj.MinimumWidths_(tf,:) = [];
             
             % Call superclass method
             onChildRemoved@uix.Container( obj, source, eventData )
             
+            % Remove listeners
+            obj.ActivePositionPropertyListeners(tf,:) = [];
+            
         end % onChildRemoved
         
+        function onActivePositionPropertyPostSet( obj, ~, ~ )
+            
+            % Redraw
+            obj.redraw()
+            
+        end % onActivePositionPropertyPostSet
+        
     end % event handlers
+    
+    methods( Access = protected )
+        
+        function reorder( obj, indices )
+            
+            % Reorder
+            obj.Widths_ = obj.Widths_(indices,:);
+            obj.MinimumWidths_ = obj.MinimumWidths_(indices,:);
+            obj.ActivePositionPropertyListeners = ...
+                obj.ActivePositionPropertyListeners(indices,:);
+            
+            % Call superclass method
+            reorder@uix.Container( obj, indices )
+            
+        end % reorder
+        
+    end % operations
     
 end % classdef
