@@ -117,8 +117,8 @@ classdef HBox < uix.Container
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''MinimumWidths'' must be of type double.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''MinimumWidths'' must be real and finite.' )
+                all( value >= 0 ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''MinimumWidths'' must be non-negative.' )
             assert( isequal( size( obj.Contents_ ), size( value ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Size of property ''MinimumWidths'' must match size of contents.' )
@@ -190,7 +190,6 @@ classdef HBox < uix.Container
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
-            sz = size( obj.Contents_ );
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
             padding = obj.Padding;
@@ -198,13 +197,13 @@ classdef HBox < uix.Container
             xPositions = uix.getPixelPositions( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             yPositions = [padding, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, sz );
+            yPositions = repmat( yPositions, size( widths ) );
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             
             % Set positions
-            for ii = 1:size( mWidths, 1 )
-                child = obj.Contents(ii);
+            for ii = 1:numel( widths )
+                child = obj.Contents_(ii);
                 child.Units = 'pixels';
                 if isprop( child, 'ActivePositionProperty' )
                     child.( child.ActivePositionProperty ) = positions(ii,:);
