@@ -86,7 +86,7 @@ classdef HBox < uix.Container
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''Widths'' must be of type double.' )
+                'Property ''Widths'' must be of type double.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
@@ -115,7 +115,7 @@ classdef HBox < uix.Container
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''MinimumWidths'' must be of type double.' )
+                'Property ''MinimumWidths'' must be of type double.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be real and finite.' )
@@ -188,27 +188,28 @@ classdef HBox < uix.Container
             if isempty( obj.Parent ), return, end
             
             % Compute positions
-            pTotal = hgconvertunits( ancestor( obj, 'figure' ), ...
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
-            mWidths = obj.Widths_;
-            sz = size( mWidths );
-            pMinimumWidths = obj.MinimumWidths_;
-            pPadding = obj.Padding;
-            pSpacing = obj.Spacing;
-            pXPositions = uix.getPixelPositions( pTotal(3), mWidths, ...
-                pMinimumWidths, pPadding, pSpacing );
-            pYPositions = repmat( [pPadding, max( pTotal(4) - 2 * pPadding, 1 )], sz );
-            pPositions = [pXPositions(:,1), pYPositions(:,1), ...
-                pXPositions(:,2), pYPositions(:,2)];
+            sz = size( obj.Contents_ );
+            widths = obj.Widths_;
+            minimumWidths = obj.MinimumWidths_;
+            padding = obj.Padding;
+            spacing = obj.Spacing;
+            xPositions = uix.getPixelPositions( bounds(3), widths, ...
+                minimumWidths, padding, spacing );
+            yPositions = [padding, max( bounds(4) - 2 * padding, 1 )];
+            yPositions = repmat( yPositions, sz );
+            positions = [xPositions(:,1), yPositions(:,1), ...
+                xPositions(:,2), yPositions(:,2)];
             
             % Set positions
             for ii = 1:size( mWidths, 1 )
                 child = obj.Contents(ii);
                 child.Units = 'pixels';
                 if isprop( child, 'ActivePositionProperty' )
-                    child.( child.ActivePositionProperty ) = pPositions(ii,:);
+                    child.( child.ActivePositionProperty ) = positions(ii,:);
                 else
-                    child.Position = pPositions(ii,:);
+                    child.Position = positions(ii,:);
                 end
             end
             
