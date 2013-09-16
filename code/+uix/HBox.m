@@ -10,6 +10,11 @@ classdef HBox < uix.Container
         MinimumWidths
     end
     
+    properties( Hidden, Access = public, Dependent )
+        Sizes
+        MinimumSizes
+    end
+    
     properties( Access = private )
         Widths_ = zeros( [0 1] )
         MinimumWidths_ = zeros( [0 1] )
@@ -127,6 +132,50 @@ classdef HBox < uix.Container
             obj.redraw()
             
         end % set.MinimumWidths
+        
+        function value = get.Sizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+            
+            % Get
+            value = obj.Widths;
+            
+        end % get.Sizes
+        
+        function set.Sizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+            
+            % Get
+            obj.Widths = value;
+            
+        end % set.Sizes
+        
+        function value = get.MinimumSizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+            
+            % Get
+            value = obj.MinimumWidths;
+            
+        end % get.MinimumSizes
+        
+        function set.MinimumSizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+            
+            % Get
+            obj.MinimumWidths = value;
+            
+        end % set.MinimumSizes
         
     end % accessors
     
