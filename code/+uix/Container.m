@@ -56,13 +56,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
         
     end % accessors
     
-    methods( Access = protected )
+    methods( Abstract, Access = protected )
         
-        function redraw( obj )
-            
-            disp redraw
-            
-        end % redraw
+        redraw( obj )
         
     end % protected methods
     
