@@ -6,11 +6,13 @@ classdef HBox < uix.Container
     end
     
     properties( Access = public, Dependent )
-        Sizes
+        Widths
+        MinimumWidths
     end
     
     properties( Access = private )
-        Sizes_ = zeros( [0 1] )
+        Widths_ = zeros( [0 1] )
+        MinimumWidths_ = zeros( [0 1] )
     end
     
     methods
@@ -68,33 +70,63 @@ classdef HBox < uix.Container
             
         end % set.Spacing
         
-        function value = get.Sizes( obj )
+        function value = get.Widths( obj )
             
-            value = obj.Sizes_;
+            value = obj.Widths_;
             
-        end % get.Sizes
+        end % get.Widths
         
-        function set.Sizes( obj, value )
+        function set.Widths( obj, value )
             
             % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value >= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Sizes'' must be a column vector.' )
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''Widths'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''Widths'' must be real and finite.' )
             assert( isequal( size( obj.Contents_ ), size( value ) ), ...
-                'uix:InvalidPropertyValue', 'Invalid operation.' )
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''Widths'' must match size of contents.' )
             
             % Abort set
-            if isequal( obj.Sizes_, value ), return, end
+            if isequal( obj.Widths_, value ), return, end
             
             % Set
-            obj.Sizes_ = value;
+            obj.Widths_ = value;
             
             % Redraw
             obj.redraw()
             
-        end % set.Sizes
+        end % set.Widths
+        
+        function value = get.MinimumWidths( obj )
+            
+            value = obj.MinimumWidths_;
+            
+        end % get.MinimumWidths
+        
+        function set.MinimumWidths( obj, value )
+            
+            % Check
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''MinimumWidths'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''MinimumWidths'' must be real and finite.' )
+            assert( isequal( size( obj.Contents_ ), size( value ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumWidths'' must match size of contents.' )
+            
+            % Abort set
+            if isequal( obj.MinimumWidths_, value ), return, end
+            
+            % Set
+            obj.MinimumWidths_ = value;
+            
+            % Redraw
+            obj.redraw()
+            
+        end % set.MinimumWidths
         
     end % accessors
     
@@ -105,29 +137,29 @@ classdef HBox < uix.Container
             % Abort for parentless containers
             if isempty( obj.Parent ), return, end
             
-            % Compute container bounds
-            pBounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+            % Compute positions
+            pTotal = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
-            
-            % Compute sizes
-            mSizes = obj.Sizes;
+            mWidths = obj.Widths_;
+            sz = size( mWidths );
+            pMinimumWidths = obj.MinimumWidths_;
             pPadding = obj.Padding;
             pSpacing = obj.Spacing;
-            pSizes = repmat( 100, size( mSizes ) ); % TODO
-            
-            % Compute positions
-            pPositions = zeros( [size( mSizes, 1 ) 4] );
-            pPositions(:,1) = cumsum( [0; pSizes(1:end-1,:)] ) + pPadding + ...
-                cumsum( repmat( pSpacing, size( mSizes ) ) ) - pSpacing;
-            pPositions(:,2) = pPadding;
-            pPositions(:,3) = pSizes;
-            pPositions(:,4) = max( pBounds(4) - 2 * pPadding, 1 );
+            pXPositions = uix.getPixelPositions( pTotal(3), mWidths, ...
+                pMinimumWidths, pPadding, pSpacing );
+            pYPositions = repmat( [pPadding, max( pTotal(4) - 2 * pPadding, 1 )], sz );
+            pPositions = [pXPositions(:,1), pYPositions(:,1), ...
+                pXPositions(:,2), pYPositions(:,2)];
             
             % Set positions
-            for ii = 1:size( mSizes, 1 )
+            for ii = 1:size( mWidths, 1 )
                 child = obj.Contents(ii);
                 child.Units = 'pixels';
-                child.Position = pPositions(ii,:);
+                if isprop( child, 'ActivePositionProperty' )
+                    child.( child.ActivePositionProperty ) = pPositions(ii,:);
+                else
+                    child.Position = pPositions(ii,:);
+                end
             end
             
         end % redraw
@@ -139,7 +171,8 @@ classdef HBox < uix.Container
         function onChildAdded( obj, source, eventData )
             
             % Add to sizes
-            obj.Sizes_(end+1,:) = -1;
+            obj.Widths_(end+1,:) = -1;
+            obj.MinimumWidths_(end+1,:) = 1;
             
             % Call superclass method
             onChildAdded@uix.Container( obj, source, eventData )
@@ -153,7 +186,7 @@ classdef HBox < uix.Container
             
             % Remove from sizes
             tf = obj.Contents_ == eventData.Child;
-            obj.Sizes_(tf,:) = [];
+            obj.Widths_(tf,:) = [];
             
             % Call superclass method
             onChildRemoved@uix.Container( obj, source, eventData )
