@@ -1,4 +1,4 @@
-classdef ChildEvent < event.EventData
+classdef( Hidden, Sealed ) ChildEvent < event.EventData
     %uix.ChildEvent  Event data for child event
     %
     %  e = uix.ChildEvent(c) creates event data including the child c.

@@ -1,4 +1,4 @@
-classdef EventSource < handle
+classdef( Hidden, Sealed ) EventSource < handle
     %uix.EventSource  Event source
     %
     %  s = uix.EventSource.getInstance(o) gets the event source

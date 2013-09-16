@@ -1,4 +1,4 @@
-classdef ChildObserver < handle
+classdef( Hidden ) ChildObserver < handle
     %uix.ChildObserver  Child observer
     %
     %  co = uix.ChildObserver(o) creates a child observer for the graphics

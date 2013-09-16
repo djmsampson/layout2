@@ -1,4 +1,4 @@
-classdef Node < dynamicprops
+classdef( Hidden ) Node < dynamicprops
     %uix.Node  Node
     %
     %  n = uix.Node(o) creates a node for the handle o.
