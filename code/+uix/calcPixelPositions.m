@@ -1,4 +1,4 @@
-function [pPositions, pSizes] = getPixelPositions( pTotal, mSizes, pMinimumSizes, pPadding, pSpacing )
+function [pPositions, pSizes] = calcPixelPositions( pTotal, mSizes, pMinimumSizes, pPadding, pSpacing )
 
 n = numel( mSizes ); % number of children
 
