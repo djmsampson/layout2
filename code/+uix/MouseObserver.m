@@ -1,13 +1,16 @@
-classdef MouseObserver < handle
+classdef( Sealed ) MouseObserver < handle
     
-    properties
+    properties( SetAccess = private )
         Object
+    end
+    
+    properties( Access = private )
         FigureObserver
         Over
         Listeners = event.listener.empty( [0 1] )
     end
     
-    events
+    events( NotifyAccess = private )
         MousePress
         MouseRelease
         MouseMotion
@@ -18,6 +21,11 @@ classdef MouseObserver < handle
     methods
         
         function obj = MouseObserver( object )
+            
+            % Check
+            assert( ishghandle( object ) && ...
+                isequal( size( object ), [1 1] ), 'uix.InvalidArgument', ...
+                'Object must be a graphics object.' )
             
             % Create figure observer
             figureObserver = uix.FigureObserver( object );
@@ -31,19 +39,9 @@ classdef MouseObserver < handle
             
         end
         
-        function createListeners( obj )
-            
-            object = obj.Object;
-            figure = ancestor( object, 'figure' );
-            listeners(1,:) = event.listener( figure, ...
-                'WindowMousePress', @obj.onMousePress );
-            listeners(2,:) = event.listener( figure, ...
-                'WindowMouseRelease', @obj.onMouseRelease );
-            listeners(3,:) = event.listener( figure, ...
-                'WindowMouseMotion', @obj.onMouseMotion );
-            obj.Listeners = listeners;
-            
-        end
+    end % structors
+    
+    methods( Access = private )
         
         function onMousePress( obj, ~, ~ )
             
@@ -93,6 +91,24 @@ classdef MouseObserver < handle
             
         end % onFigureChanged
         
+    end % event handlers
+    
+    methods( Access = private )
+        
+        function createListeners( obj )
+            
+            object = obj.Object;
+            figure = ancestor( object, 'figure' );
+            listeners(1,:) = event.listener( figure, ...
+                'WindowMousePress', @obj.onMousePress );
+            listeners(2,:) = event.listener( figure, ...
+                'WindowMouseRelease', @obj.onMouseRelease );
+            listeners(3,:) = event.listener( figure, ...
+                'WindowMouseMotion', @obj.onMouseMotion );
+            obj.Listeners = listeners;
+            
+        end
+        
         function tf = isOver( obj )
             
             % Get container
@@ -116,6 +132,6 @@ classdef MouseObserver < handle
             
         end % isOver
         
-    end
+    end % helpers
     
 end % classdef
