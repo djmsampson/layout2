@@ -115,22 +115,44 @@ classdef( Sealed ) MouseObserver < handle
             object = obj.Object;
             
             % Get current point
-            root = groot();
-            pointerLocation = root.PointerLocation;
-            figure = ancestor( object, 'figure' );
-            figurePosition = figure.Position;
-            currentPoint = pointerLocation - figurePosition(1:2) + [1 1];
+            currentPoint = obj.getCurrentPoint();
             
             % Get object position
             position = getpixelposition( object );
             
             % Is over?
             tf = currentPoint(1) >= position(1) && ...
-                currentPoint(1) <= position(1) + position(3) && ...
+                currentPoint(1) < position(1) + position(3) && ...
                 currentPoint(2) >= position(2) && ...
-                currentPoint(2) <= position(2) + position(4);
+                currentPoint(2) < position(2) + position(4);
             
         end % isOver
+        
+        function p = getCurrentPoint( obj )
+            
+            persistent root screenSize
+            if isequal( root, [] )
+                root = groot();
+                screenSize = root.ScreenSize;
+                warning( 'off', 'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame' )
+            end
+            
+            pointerLocation = root.PointerLocation;
+            object = obj.Object;
+            figure = ancestor( object, 'figure' );
+            if strcmp( figure.WindowStyle, 'docked' )
+                figureSize = figure.Position(3:4);
+                jFigureFrame = figure.JavaFrame;
+                jFigureContainer = jFigureFrame.getFigurePanelContainer();
+                jFigureLocation = jFigureContainer.getLocationOnScreen();
+                figureOrigin = [jFigureLocation.getX(), screenSize(4) - ...
+                    jFigureLocation.getY() - figureSize(2)];
+            else
+                figureOrigin = figure.Position(1:2) - [1 1];
+            end
+            p = pointerLocation - figureOrigin;
+            
+        end % getCurrentPoint
         
     end % helpers
     
