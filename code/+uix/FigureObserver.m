@@ -84,8 +84,10 @@ classdef( Hidden, Sealed ) FigureObserver < handle
         function onParentPostSet( obj, ~, ~ )
             
             % Raise event
-            if ~isequal( obj.OldFigure, ancestor( obj.Object, 'figure' ) )
-                notify( obj, 'FigureChanged' )
+            oldFigure = obj.OldFigure;
+            newFigure = ancestor( obj.Object, 'figure' );
+            if ~isequal( oldFigure, newFigure )
+                notify( obj, 'FigureChanged', uix.FigureEvent( newFigure ) )
             end
             
             % Reset
