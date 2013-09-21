@@ -2,9 +2,8 @@ classdef( Hidden, Sealed ) FigureObserver < handle
     
     properties( Access = private )
         Object
-        PreSetListeners = event.proplistener.empty( [0 1] )
-        PostSetListeners = event.proplistener.empty( [0 1] )
-        OldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] )
+        Figure
+        ParentListeners = event.proplistener.empty( [0 1] )
     end
     
     events( NotifyAccess = private )
@@ -30,8 +29,8 @@ classdef( Hidden, Sealed ) FigureObserver < handle
             % Store properties
             obj.Object = object;
             
-            % Set up
-            obj.setup()
+            % Force update
+            obj.update()
             
         end % constructor
         
@@ -39,14 +38,15 @@ classdef( Hidden, Sealed ) FigureObserver < handle
     
     methods( Access = private )
         
-        function setup( obj )
-            %setup  Set up figure observer
+        function update( obj )
+            %update  Update figure observer
             
             % Identify ancestors
             parents = obj.Object; % initialize
             while true
                 parent = parents(end,:).Parent;
                 if isempty( parent ) || isa( parent, 'matlab.ui.Figure' )
+                    figure = parent;
                     break
                 else
                     parents(end+1,:) = parent; %#ok<AGROW>
@@ -54,46 +54,35 @@ classdef( Hidden, Sealed ) FigureObserver < handle
             end
             
             % Create listeners
-            for ii = 1:numel( parents )
-                parent = parents(ii);
-                preSetListeners(ii,:) = event.proplistener( parent, ...
-                    findprop( parent, 'Parent' ), 'PreSet', ...
-                    @obj.onParentPreSet ); %#ok<AGROW>
-                postSetListeners(ii,:) = event.proplistener( parent, ...
-                    findprop( parent, 'Parent' ), 'PostSet', ...
-                    @obj.onParentPostSet ); %#ok<AGROW>
-            end
-            obj.PreSetListeners = preSetListeners;
-            obj.PostSetListeners = postSetListeners;
+            parentListeners = event.proplistener( parents, ...
+                findprop( parents(1), 'Parent' ), 'PostSet', ...
+                @obj.onParentChanged );
             
-            % Reset old figure
-            obj.OldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            % Store properties
+            obj.Figure = figure;
+            obj.ParentListeners = parentListeners;
             
-        end % setup
+        end % update
         
     end % operations
     
     methods( Access = private )
         
-        function onParentPreSet( obj, ~, ~ )
+        function onParentChanged( obj, ~, ~ )
             
-            obj.OldFigure = ancestor( obj.Object, 'figure' );
+            % Capture old figure
+            oldFigure = obj.Figure;
             
-        end % onParentPreSet
-        
-        function onParentPostSet( obj, ~, ~ )
+            % Update
+            obj.update()
             
             % Raise event
-            oldFigure = obj.OldFigure;
-            newFigure = ancestor( obj.Object, 'figure' );
+            newFigure = obj.Figure;
             if ~isequal( oldFigure, newFigure )
                 notify( obj, 'FigureChanged', uix.FigureEvent( newFigure ) )
             end
             
-            % Reset
-            obj.setup()
-            
-        end % onParentPostSet
+        end % onParentChanged
         
     end % event handlers
     
