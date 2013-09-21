@@ -33,8 +33,8 @@ classdef( Sealed ) MouseObserver < handle
             % Store properties
             obj.Object = object;
             
-            % Set up
-            obj.setup()
+            % Force update
+            obj.update()
             
         end
         
@@ -86,22 +86,22 @@ classdef( Sealed ) MouseObserver < handle
         
         function onFigureChanged( obj, ~, ~ )
             
-            % Set up
-            obj.setup()
+            % Update
+            obj.update()
             
         end % onFigureChanged
         
         function onVisibilityChanged( obj, ~, ~ )
             
-            % Set up
-            obj.setup()
+            % Update
+            obj.update()
             
         end % onVisibilityChanged
         
         function onWindowStyleChanged( obj, ~, ~ )
             
-            % Set up
-            obj.setup()
+            % Update
+            obj.update()
             
         end % onWindowStyleChanged
         
@@ -109,7 +109,7 @@ classdef( Sealed ) MouseObserver < handle
     
     methods( Access = private )
         
-        function setup( obj )
+        function update( obj )
             
             object = obj.Object;
             obj.Listeners = event.listener.empty( [0 1] );
