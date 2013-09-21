@@ -6,10 +6,10 @@ classdef( Sealed ) MouseObserver < handle
     
     properties( Access = private )
         FigureObserver
-        Figure_
-        WindowStyle_
-        FigurePanelContainer_
-        Over_
+        Figure
+        WindowStyle
+        FigurePanelContainer
+        Over
         Listeners = event.listener.empty( [0 1] )
     end
     
@@ -62,7 +62,7 @@ classdef( Sealed ) MouseObserver < handle
             
             % Identify whether pointer was and is over the object
             isOver = obj.isOver();
-            wasOver = obj.Over_;
+            wasOver = obj.Over;
             if isequal( wasOver, [] )
                 wasOver = false;
             end
@@ -80,7 +80,7 @@ classdef( Sealed ) MouseObserver < handle
             end
             
             % Store state
-            obj.Over_ = isOver;
+            obj.Over = isOver;
             
         end % onMouseMotion
         
@@ -112,12 +112,13 @@ classdef( Sealed ) MouseObserver < handle
         function setup( obj )
             
             object = obj.Object;
-            listeners(1,:) = event.proplistener( object, ...
+            obj.Listeners = event.listener.empty( [0 1] );
+            obj.addListener( event.proplistener( object, ...
                 findprop( object, 'Visible' ), 'PostSet', ...
-                @obj.onVisibilityChanged );
+                @obj.onVisibilityChanged ) )
             figureObserver = uix.FigureObserver( object );
-            listeners(2,:) = event.listener( figureObserver, ...
-                'FigureChanged', @obj.onFigureChanged );
+            obj.addListener( event.listener( figureObserver, ...
+                'FigureChanged', @obj.onFigureChanged ) )
             figure = ancestor( object, 'figure' );
             if strcmp( object.Visible, 'off' ) || isempty( figure )
                 windowStyle = 'none';
@@ -132,23 +133,23 @@ classdef( Sealed ) MouseObserver < handle
                     jFigurePanelContainer = ...
                         matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
                 end
-                listeners(3,:) = event.listener( figure, ...
-                    'WindowMousePress', @obj.onMousePress );
-                listeners(4,:) = event.listener( figure, ...
-                    'WindowMouseRelease', @obj.onMouseRelease );
-                listeners(5,:) = event.listener( figure, ...
-                    'WindowMouseMotion', @obj.onMouseMotion );
-                listeners(6,:) = event.proplistener( figure, ...
+                obj.addListener( event.listener( figure, ...
+                    'WindowMousePress', @obj.onMousePress ) )
+                obj.addListener( event.listener( figure, ...
+                    'WindowMouseRelease', @obj.onMouseRelease ) )
+                obj.addListener( event.listener( figure, ...
+                    'WindowMouseMotion', @obj.onMouseMotion ) )
+                obj.addListener( event.proplistener( figure, ...
                     findprop( figure, 'WindowStyle' ), 'PostSet', ...
-                    @obj.onWindowStyleChanged );
+                    @obj.onWindowStyleChanged ) )
             end
             
             % Store properties
             obj.FigureObserver = figureObserver;
-            obj.Figure_ = figure;
-            obj.WindowStyle_ = windowStyle;
-            obj.FigurePanelContainer_ = jFigurePanelContainer;
-            obj.Over_ = [];
+            obj.Figure = figure;
+            obj.WindowStyle = windowStyle;
+            obj.FigurePanelContainer = jFigurePanelContainer;
+            obj.Over = [];
             obj.Listeners = listeners;
             
         end
@@ -184,10 +185,10 @@ classdef( Sealed ) MouseObserver < handle
             
             % Get current point
             pointerLocation = root.PointerLocation;
-            figure = obj.Figure_;
-            if strcmp( obj.WindowStyle_, 'docked' )
+            figure = obj.Figure;
+            if strcmp( obj.WindowStyle, 'docked' )
                 figureSize = figure.Position(3:4);
-                jFigurePanelContainer = obj.FigurePanelContainer_;
+                jFigurePanelContainer = obj.FigurePanelContainer;
                 jFigureLocation = jFigurePanelContainer.getLocationOnScreen();
                 figureOrigin = [jFigureLocation.getX(), screenSize(4) - ...
                     jFigureLocation.getY() - figureSize(2)];
@@ -197,6 +198,12 @@ classdef( Sealed ) MouseObserver < handle
             p = pointerLocation - figureOrigin;
             
         end % getCurrentPoint
+        
+        function addListener( obj, listener )
+            
+            obj.Listeners(end+1,:) = listener;
+            
+        end % addListener
         
     end % helpers
     
