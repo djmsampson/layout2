@@ -1,21 +1,12 @@
-classdef( Sealed ) MouseObserver < handle
+classdef MouseObserver < handle
     
-    properties( SetAccess = private )
-        Object
-    end
-    
-    properties( Access = private )
+    properties
+        Subject
         FigureObserver
-        Figure
-        WindowStyle
-        FigurePanelContainer
-        Over
-        Listeners = event.listener.empty( [0 1] )
+        FigureListener
     end
     
-    events( NotifyAccess = private )
-        MousePress
-        MouseRelease
+    events
         MouseMotion
         MouseEnter
         MouseLeave
@@ -23,147 +14,72 @@ classdef( Sealed ) MouseObserver < handle
     
     methods
         
-        function obj = MouseObserver( object )
+        function obj = MouseObserver( subject )
             
-            % Check
-            assert( ishghandle( object ) && ...
-                isequal( size( object ), [1 1] ), 'uix.InvalidArgument', ...
-                'Object must be a graphics object.' )
+            % Create figure observer
+            figureObserver = uix.FigureObserver( subject );
+            
+            % Create figure listener
+            figureListener = event.listener( figureObserver, ...
+                'FigureChanged', @obj.onFigureChanged );
             
             % Store properties
-            obj.Object = object;
+            obj.Subject = subject;
+            obj.FigureObserver = figureObserver;
+            obj.FigureListener = figureListener;
             
-            % Force update
-            obj.update()
-            
-        end
+        end % constructor
         
     end % structors
     
-    methods( Access = private )
+    methods
         
-        function onMousePress( obj, ~, ~ )
+        function onFigureChanged( obj, source, ~ )
             
-            if obj.isOver()
-                notify( obj, 'MousePress' )
-            end
+            % Create figure listeners
+            figure = source.Figure;
+            mouseMotionListener = event.listener( figure, ...
+                'MouseMotion', @obj.onMouseMotion );
             
-        end % onMousePress
-        
-        function onMouseRelease( obj, ~, ~ )
-            
-            if obj.isOver()
-                notify( obj, 'MouseRelease' )
-            end
-            
-        end % onMouseRelease
-        
-        function onMouseMotion( obj, ~, ~ )
-            
-            % Identify whether pointer was and is over the object
-            isOver = obj.isOver();
-            wasOver = obj.Over;
-            if isequal( wasOver, [] )
-                wasOver = false;
-            end
-            
-            % Raise entered and left events
-            if ~wasOver && isOver
-                notify( obj, 'MouseEnter' )
-            elseif wasOver && ~isOver
-                notify( obj, 'MouseLeave' )
-            end
-            
-            % Raise motion event
-            if isOver
-                notify( obj, 'MouseMotion' )
-            end
-            
-            % Store state
-            obj.Over = isOver;
-            
-        end % onMouseMotion
-        
-        function onFigureChanged( obj, ~, ~ )
-            
-            % Update
-            obj.update()
+            % Store properties
+            obj.MouseMotionListener = mouseMotionListener;
             
         end % onFigureChanged
         
-        function onVisibilityChanged( obj, ~, ~ )
+        function onMouseMotion( obj, ~, ~ )
             
-            % Update
-            obj.update()
+            if obj.isMouseOver()
+                notify( obj, 'MouseMotion' )
+            end
             
-        end % onVisibilityChanged
-        
-        function onWindowStyleChanged( obj, ~, ~ )
-            
-            % Update
-            obj.update()
-            
-        end % onWindowStyleChanged
+        end % onMouseMotion
         
     end % event handlers
     
-    methods( Access = private )
+    methods
         
-        function update( obj )
-            
-            object = obj.Object;
-            obj.Listeners = event.listener.empty( [0 1] );
-            obj.addListener( event.proplistener( object, ...
-                findprop( object, 'Visible' ), 'PostSet', ...
-                @obj.onVisibilityChanged ) )
-            figureObserver = uix.FigureObserver( object );
-            obj.addListener( event.listener( figureObserver, ...
-                'FigureChanged', @obj.onFigureChanged ) )
-            figure = ancestor( object, 'figure' );
-            if strcmp( object.Visible, 'off' ) || isempty( figure )
-                windowStyle = 'none';
-                jFigurePanelContainer = ...
-                    matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-            else
-                windowStyle = figure.WindowStyle;
-                if strcmp( windowStyle, 'docked' )
-                    jFigurePanelContainer = ...
-                        figure.JavaFrame.getFigurePanelContainer();
-                else
-                    jFigurePanelContainer = ...
-                        matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-                end
-                obj.addListener( event.listener( figure, ...
-                    'WindowMousePress', @obj.onMousePress ) )
-                obj.addListener( event.listener( figure, ...
-                    'WindowMouseRelease', @obj.onMouseRelease ) )
-                obj.addListener( event.listener( figure, ...
-                    'WindowMouseMotion', @obj.onMouseMotion ) )
-                obj.addListener( event.proplistener( figure, ...
-                    findprop( figure, 'WindowStyle' ), 'PostSet', ...
-                    @obj.onWindowStyleChanged ) )
-            end
-            
-            % Store properties
-            obj.FigureObserver = figureObserver;
-            obj.Figure = figure;
-            obj.WindowStyle = windowStyle;
-            obj.FigurePanelContainer = jFigurePanelContainer;
-            obj.Over = [];
-            obj.Listeners = listeners;
-            
-        end
-        
-        function tf = isOver( obj )
+        function tf = isMouseOver( obj )
             
             % Get container
-            object = obj.Object;
+            subject = obj.Subject;
             
             % Get current point
-            currentPoint = obj.getCurrentPoint();
+            pointerLocation = root.PointerLocation;
+            figure = obj.FigureObserver.Figure;
+            if strcmp( figure.WindowStyle, 'docked' )
+                screenSize = root.ScreenSize;
+                figureSize = figure.Position(3:4);
+                jFigurePanelContainer = figure.FigurePanelContainer;
+                jFigureLocation = jFigurePanelContainer.getLocationOnScreen();
+                figureOrigin = [jFigureLocation.getX(), screenSize(4) - ...
+                    jFigureLocation.getY() - figureSize(2)];
+            else
+                figureOrigin = figure.Position(1:2) - [1 1];
+            end
+            currentPoint = pointerLocation - figureOrigin;
             
-            % Get object position
-            position = getpixelposition( object );
+            % Get subject position
+            position = getpixelposition( subject );
             
             % Is over?
             tf = currentPoint(1) >= position(1) && ...
@@ -171,39 +87,7 @@ classdef( Sealed ) MouseObserver < handle
                 currentPoint(2) >= position(2) && ...
                 currentPoint(2) < position(2) + position(4);
             
-        end % isOver
-        
-        function p = getCurrentPoint( obj )
-            
-            % Cache root and screen size
-            persistent root screenSize
-            if isequal( root, [] )
-                root = groot();
-                screenSize = root.ScreenSize;
-                warning( 'off', 'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame' )
-            end
-            
-            % Get current point
-            pointerLocation = root.PointerLocation;
-            figure = obj.Figure;
-            if strcmp( obj.WindowStyle, 'docked' )
-                figureSize = figure.Position(3:4);
-                jFigurePanelContainer = obj.FigurePanelContainer;
-                jFigureLocation = jFigurePanelContainer.getLocationOnScreen();
-                figureOrigin = [jFigureLocation.getX(), screenSize(4) - ...
-                    jFigureLocation.getY() - figureSize(2)];
-            else
-                figureOrigin = figure.Position(1:2) - [1 1];
-            end
-            p = pointerLocation - figureOrigin;
-            
-        end % getCurrentPoint
-        
-        function addListener( obj, listener )
-            
-            obj.Listeners(end+1,:) = listener;
-            
-        end % addListener
+        end % isMouseOver
         
     end % helpers
     
