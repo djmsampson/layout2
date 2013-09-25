@@ -6,6 +6,8 @@ classdef MouseObserver < handle
         FigureListener
         VisibilityObserver
         VisibilityListener
+        WindowStyleListeners
+        WindowStyle
         MouseMotionListener
         MouseOver
     end
@@ -55,12 +57,21 @@ classdef MouseObserver < handle
             figure = obj.FigureObserver.Figure;
             mouseMotionListener = event.listener( figure, ...
                 'WindowMouseMotion', @obj.onMouseMotion );
+            windowStyleListeners(1) = event.proplistener( figure, ...
+                findprop( figure, 'WindowStyle' ), 'PreSet', ...
+                @obj.onWindowStylePreSet );
+            windowStyleListeners(2) = event.proplistener( figure, ...
+                findprop( figure, 'WindowStyle' ), 'PostSet', ...
+                @obj.onWindowStylePostSet );
             
             % Store properties
             obj.MouseMotionListener = mouseMotionListener;
+            obj.WindowStyleListeners = windowStyleListeners;
             
-            % Set over state
+            % Set caches
+            obj.WindowStyle = figure.WindowStyle;
             obj.MouseOver = false;
+            
             
         end % onFigureChanged
         
@@ -70,9 +81,29 @@ classdef MouseObserver < handle
             
         end % onVisibilityChanged
         
-        function onDockedChanged( obj, ~, ~ )
+        function onWindowStylePreSet( obj, ~, ~ )
             
-        end % onDockedChanged
+            obj.WindowStyle = obj.FigureObserver.Figure.WindowStyle;
+            
+        end % onWindowStylePreSet
+        
+        function onWindowStylePostSet( obj, ~, ~ )
+            
+            oldWindowStyle = obj.WindowStyle;
+            newWindowStyle = obj.FigureObserver.Figure.WindowStyle;
+            wasDocked = strcmp( oldWindowStyle, 'docked' );
+            isDocked = strcmp( newWindowStyle, 'docked' );
+            
+            if ~wasDocked && isDocked
+                
+            elseif wasDocked && ~isDocked
+                
+            end
+            
+            % Set caches
+            obj.WindowStyle = newWindowStyle;
+            
+        end % onWindowStylePostSet
         
         function onMouseMotion( obj, ~, ~ )
             
@@ -87,7 +118,7 @@ classdef MouseObserver < handle
                 notify( obj, 'MouseLeave' )
             end
             
-            % Store over state
+            % Set caches
             obj.MouseOver = isOver;
             
             % Raise motion event
