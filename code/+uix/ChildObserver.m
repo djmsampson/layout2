@@ -72,13 +72,10 @@ classdef( Hidden ) ChildObserver < handle
             nChild = uix.Node( oChild );
             nParent.addChild( nChild )
             if ishghandle( oChild )
-                % Add property listeners
+                % Add property listener
                 nChild.addListener( event.proplistener( oChild, ...
-                    findprop( oChild, 'HandleVisibility' ), 'PreSet', ...
-                    @(~,~)obj.preSetHandleVisibility(nChild) ) )
-                nChild.addListener( event.proplistener( oChild, ...
-                    findprop( oChild, 'HandleVisibility' ), 'PostSet', ...
-                    @(~,~)obj.postSetHandleVisibility(nChild) ) )
+                    findprop( oChild, 'Internal' ), 'PostSet', ...
+                    @(~,~)obj.postSetInternal(nChild) ) )
             else
                 % Add child listeners
                 nChild.addListener( event.listener( ...
@@ -92,7 +89,7 @@ classdef( Hidden ) ChildObserver < handle
             end
             
             % Raise ChildAdded event
-            if ishghandle( oChild ) && strcmp( oChild.HandleVisibility, 'on' )
+            if ishghandle( oChild ) && oChild.Internal == false
                 notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
             end
             
@@ -135,7 +132,7 @@ classdef( Hidden ) ChildObserver < handle
                 
                 % Process this node
                 oc = nc.Object;
-                if ishghandle( oc ) && strcmp( oc.HandleVisibility, 'on' )
+                if ishghandle( oc ) && oc.Internal == false
                     notify( obj, 'ChildRemoved', uix.ChildEvent( oc ) )
                 end
                 
@@ -143,38 +140,27 @@ classdef( Hidden ) ChildObserver < handle
             
         end % removeChild
         
-        function preSetHandleVisibility( ~, n )
-            %preSetHandleVisibility  Perform property PreSet tasks
-            %
-            %  co.preSetHandleVisibility(n) stores the pre-set value of
-            %  HandleVisibility of the object referenced by a node n.
-            
-            n.addprop( 'OldHandleVisibility' );
-            n.OldHandleVisibility = n.Object.HandleVisibility;
-            
-        end % preSetHandleVisibility
+    end % public methods
+    
+    methods( Access = protected )
         
-        function postSetHandleVisibility( obj, n )
-            %postSetHandleVisibility  Perform property PostSet tasks
+        function postSetInternal( obj, n )
+            %postSetInternal  Perform property PostSet tasks
             %
-            %  co.postSetHandleVisibility(n) compares the pre- and post-set
-            %  values of HandleVisibility of the object referenced by a
-            %  node n, raising a ChildAdded or ChildRemoved event on the
-            %  child observer co if appropriate.
-            
-            % Retrieve old and new HandleVisibility values
-            oldViz = n.OldHandleVisibility;
-            delete( findprop( n, 'OldHandleVisibility' ) )
-            newViz = n.Object.HandleVisibility;
+            %  co.postSetInternal(n) raises a ChildAdded or ChildRemoved
+            %  event on the child observer co in response to a change of
+            %  the value of the property Internal of the object referenced
+            %  by the node n.
             
             % Raise event if required
-            if strcmp( oldViz, 'on' ) && ~strcmp( newViz, 'on' )
-                notify( obj, 'ChildRemoved', uix.ChildEvent( n.Object ) )
-            elseif ~strcmp( oldViz, 'on' ) && strcmp( newViz, 'on' )
-                notify( obj, 'ChildAdded', uix.ChildEvent( n.Object ) )
+            object = n.Object;
+            if object.Internal == false
+                notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
+            else
+                notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
             end
             
-        end % postSetHandleVisibility
+        end % postSetInternal
         
     end % event handlers
     
