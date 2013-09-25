@@ -4,6 +4,10 @@ classdef MouseObserver < handle
         Subject
         FigureObserver
         FigureListener
+        VisibilityObserver
+        VisibilityListener
+        MouseMotionListener
+        MouseOver
     end
     
     events
@@ -16,17 +20,28 @@ classdef MouseObserver < handle
         
         function obj = MouseObserver( subject )
             
-            % Create figure observer
+            % Create figure observer and listener
             figureObserver = uix.FigureObserver( subject );
-            
-            % Create figure listener
             figureListener = event.listener( figureObserver, ...
                 'FigureChanged', @obj.onFigureChanged );
+            
+            % Create visibility observer and listener
+            visibilityObserver = uix.VisibilityObserver( subject );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChanged', @obj.onVisibilityChanged );
             
             % Store properties
             obj.Subject = subject;
             obj.FigureObserver = figureObserver;
             obj.FigureListener = figureListener;
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
+            
+            % Force onFigureChanged
+            obj.onFigureChanged()
+            
+            % Force onVisibilityChanged
+            obj.onVisibilityChanged()
             
         end % constructor
         
@@ -34,21 +49,49 @@ classdef MouseObserver < handle
     
     methods
         
-        function onFigureChanged( obj, source, ~ )
+        function onFigureChanged( obj, ~, ~ )
             
             % Create figure listeners
-            figure = source.Figure;
+            figure = obj.FigureObserver.Figure;
             mouseMotionListener = event.listener( figure, ...
-                'MouseMotion', @obj.onMouseMotion );
+                'WindowMouseMotion', @obj.onMouseMotion );
             
             % Store properties
             obj.MouseMotionListener = mouseMotionListener;
             
+            % Set over state
+            obj.MouseOver = false;
+            
         end % onFigureChanged
+        
+        function onVisibilityChanged( obj, ~, ~ )
+            
+            obj.MouseMotionListener.Enabled = obj.VisibilityObserver.Visible;
+            
+        end % onVisibilityChanged
+        
+        function onDockedChanged( obj, ~, ~ )
+            
+        end % onDockedChanged
         
         function onMouseMotion( obj, ~, ~ )
             
-            if obj.isMouseOver()
+            % Identify whether pointer was and is over the subject
+            wasOver = obj.MouseOver;
+            isOver = obj.isMouseOver();
+            
+            % Raise enter or leave event
+            if ~wasOver && isOver
+                notify( obj, 'MouseEnter' )
+            elseif wasOver && ~isOver
+                notify( obj, 'MouseLeave' )
+            end
+            
+            % Store over state
+            obj.MouseOver = isOver;
+            
+            % Raise motion event
+            if isOver
                 notify( obj, 'MouseMotion' )
             end
             
@@ -60,16 +103,27 @@ classdef MouseObserver < handle
         
         function tf = isMouseOver( obj )
             
+            % Initialize method
+            persistent ROOT
+            if isequal( ROOT, [] )
+                % Disable JavaFrame warning
+                warning( 'off', ...
+                    'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame' )
+                % Cache root
+                ROOT = groot();
+            end
+            
             % Get container
             subject = obj.Subject;
             
             % Get current point
-            pointerLocation = root.PointerLocation;
+            pointerLocation = ROOT.PointerLocation;
             figure = obj.FigureObserver.Figure;
             if strcmp( figure.WindowStyle, 'docked' )
-                screenSize = root.ScreenSize;
+                screenSize = ROOT.ScreenSize;
                 figureSize = figure.Position(3:4);
-                jFigurePanelContainer = figure.FigurePanelContainer;
+                jFrame = figure.JavaFrame;
+                jFigurePanelContainer = jFrame.getFigurePanelContainer();
                 jFigureLocation = jFigurePanelContainer.getLocationOnScreen();
                 figureOrigin = [jFigureLocation.getX(), screenSize(4) - ...
                     jFigureLocation.getY() - figureSize(2)];
