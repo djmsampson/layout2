@@ -1,7 +1,7 @@
 classdef MouseObserver < handle
     
     properties( SetAccess = private )
-        Subject
+        Subject % subject
     end
     
     properties % ( Access = private )
@@ -12,7 +12,10 @@ classdef MouseObserver < handle
         VisibilityObserver % visibility observer
         VisibilityListener % visibility listener
         MouseMotionListener % mouse motion listener
-        MouseOver % cache of mouse over
+    end
+    
+    properties( Access = private, AbortSet = true )
+        MouseOver = false % cache of mouse over
     end
     
     events( NotifyAccess = private )
@@ -52,6 +55,24 @@ classdef MouseObserver < handle
     
     methods
         
+        function set.MouseOver( obj, value )
+            
+            % Set
+            obj.MouseOver = value;
+            
+            % Raise event
+            if value
+                notify( obj, 'MouseEnter' )
+            else
+                notify( obj, 'MouseLeave' )
+            end
+            
+        end % set.MouseOver
+        
+    end % accessors
+    
+    methods
+        
         function onFigureChanged( obj, ~, ~ )
             
             % Create figure listeners
@@ -59,8 +80,6 @@ classdef MouseObserver < handle
             if isempty( figure )
                 jFigurePanelContainer = ...
                     matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-                windowStyle = 'none';
-                windowStyleListener = event.proplistener.empty( [0 0] );
                 mouseMotionListener = event.listener.empty( [0 0] );
             else
                 jFrame = figure.JavaFrame;
@@ -70,39 +89,31 @@ classdef MouseObserver < handle
             end
             
             % Store properties
-            obj.MouseMotionListener = mouseMotionListener;
-            
-            % Set caches
             obj.Figure = figure;
             obj.FigurePanelContainer = jFigurePanelContainer;
+            obj.MouseMotionListener = mouseMotionListener;
             obj.MouseOver = false;
             
         end % onFigureChanged
         
         function onVisibilityChanged( obj, ~, ~ )
             
-            obj.MouseMotionListener.Enabled = obj.VisibilityObserver.Visible;
+            visible = obj.VisibilityObserver.Visible;
+            obj.MouseMotionListener.Enabled = visible;
+            if visible == false
+                obj.MouseOver = false;
+            end
             
         end % onVisibilityChanged
         
         function onMouseMotion( obj, ~, ~ )
             
-            % Identify whether pointer was and is over the subject
-            wasOver = obj.MouseOver;
-            isOver = obj.isMouseOver();
-            
-            % Raise enter or leave event
-            if ~wasOver && isOver
-                notify( obj, 'MouseEnter' )
-            elseif wasOver && ~isOver
-                notify( obj, 'MouseLeave' )
-            end
-            
-            % Set caches
-            obj.MouseOver = isOver;
+            % Update MouseOver
+            mouseOver = obj.isMouseOver();
+            obj.MouseOver = mouseOver;
             
             % Raise motion event
-            if isOver
+            if mouseOver
                 notify( obj, 'MouseMotion' )
             end
             
@@ -143,7 +154,7 @@ classdef MouseObserver < handle
             currentPoint = pointerLocation - figureOrigin;
             
             % Get subject position
-            position = uix.getPixelPosition( subject );
+            position = uix.getPixelPosition( subject, figure, true );
             
             % Is over?
             tf = currentPoint(1) >= position(1) && ...
