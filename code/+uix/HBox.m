@@ -205,7 +205,7 @@ classdef HBox < uix.Container
             for ii = 1:numel( widths )
                 child = obj.Contents_(ii);
                 child.Units = 'pixels';
-                if isprop( child, 'ActivePositionProperty' )
+                if isa( child, 'matlab.graphics.axis.Axes' )
                     child.( child.ActivePositionProperty ) = positions(ii,:);
                 else
                     child.Position = positions(ii,:);
@@ -229,7 +229,7 @@ classdef HBox < uix.Container
             
             % Add listeners
             child = eventData.Child;
-            if isprop( child, 'ActivePositionProperty' )
+            if isa( child, 'matlab.graphics.axis.Axes' )
                 obj.ActivePositionPropertyListeners{end+1,:} = ...
                     event.proplistener( child, ...
                     findprop( child, 'ActivePositionProperty' ), ...
