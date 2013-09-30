@@ -7,7 +7,7 @@ while ~isempty( p ) && ~isa( p, 'matlab.ui.Root' )
     p = p.Parent;
 end
 
-if nargin > 1
+if nargout > 1
     if isempty( p )
         f = p;
     else
