@@ -20,32 +20,42 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     
     methods
         
-        function obj = LocationObserver( varargin )
+        function obj = LocationObserver( in )
             %uix.LocationObserver  Location observer
             %
             %  o = uix.LocationObserver(s) creates a location observer for
             %  the subject s.
             %
-            %  o = uix.LocationObserver(a,f) creates a location observer
-            %  for the top-to-bottom ancestry a in the figure f.
+            %  o = uix.LocationObserver(a) creates a location observer
+            %  for the figure-to-subject ancestry a.
             %
             %  A location observer assumes a fixed ancestry.  Use an
             %  ancestry observer to monitor changes to ancestry, and create
             %  a new location observer when ancestry changes.
             
             % Handle inputs
-            switch nargin
-                case 1
-                    % Identify ancestors
-                    subject = varargin{1};
-                    [ancestors, figure] = uix.ancestors( subject );
-                case 2
-                    % Ancestors and figure specified
-                    ancestors = varargin{1};
-                    subject = ancestors(end);
-                    figure = varargin{2};
-                otherwise
-                    narginchk( 1, 2 )
+            if isscalar( in )
+                subject = in;
+                assert( ishghandle( subject ) && ...
+                    isequal( size( subject ), [1 1] ) && ...
+                    ~isa( subject, 'matlab.ui.Root' ), ...
+                    'uix.InvalidArgument', ...
+                    'Subject must be a graphics object.' )
+                [ancestors, figure] = uix.ancestors( subject );
+            else
+                ancestors = in;
+                assert( all( ishghandle( ancestors ) ) && ...
+                    iscolumn( ancestors ) && ndims( ancestors ) == 2, ...
+                    'uix.InvalidArgument', ...
+                    'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
+                subject = ancestors(end);
+                figure = ancestors(1);
+                cParents = get( ancestors, {'Parent'} );
+                parents = vertcat( cParents{:} );
+                assert( isequal( ancestors(1:end-1,:), parents(2:end,:) ), ...
+                    'uix:InvalidArgument', 'Inconsistent ancestry.' )
+                assert( isequal( cParents{1}, groot() ) || isempty( cParents{1} ), ...
+                    'uix:InvalidArgument', 'Incomplete ancestry.' )
             end
             
             % Store subject, ancestors and figure
@@ -60,12 +70,14 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             obj.update()
             
             % Create listeners
+            cbLocationChange = @obj.onLocationChange;
+            cbSizeChange = @obj.onSizeChange;
             for ii = 1:numel( ancestors )
                 ancestor = ancestors(ii);
                 locationListeners(ii,:) = event.listener( ancestor, ...
-                    'LocationChange', @obj.onLocationChange ); %#ok<AGROW>
+                    'LocationChange', cbLocationChange ); %#ok<AGROW>
                 sizeListeners(ii,:) = event.listener( ancestor, ...
-                    'SizeChange', @obj.onSizeChange ); %#ok<AGROW>
+                    'SizeChange', cbSizeChange ); %#ok<AGROW>
             end
             
             % Store listeners
@@ -95,8 +107,8 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             if nargin == 1 % recompute from scratch
                 
                 % Compute units, positions and offsets of all ancestors
-                units = get( ancestors, 'Units' );
-                cPositions = get( ancestors, 'Position' );
+                units = get( ancestors, {'Units'} );
+                cPositions = get( ancestors, {'Position'} );
                 positions = vertcat( cPositions{:} );
                 n = numel( ancestors );
                 offsets = zeros( [n 2] ); % initialize
