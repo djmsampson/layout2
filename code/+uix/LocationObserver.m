@@ -7,11 +7,13 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     
     properties( Access = private )
         Figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] )
+        Docked
         Ancestors = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
         Offsets = zeros( [0 2] )
         Extent = [NaN NaN]
         LocationListeners = event.listener.empty( [0 1] )
         SizeListeners = event.listener.empty( [0 1] )
+        WindowStyleListeners = event.proplistener.empty( [0 1] )
     end
     
     events( NotifyAccess = private )
@@ -57,11 +59,13 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 assert( isequal( cParents{1}, groot() ) || isempty( cParents{1} ), ...
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
             end
+            docked = strcmp( figure.WindowStyle, 'docked' );
             
             % Store subject, ancestors and figure
             obj.Subject = subject;
             obj.Ancestors = ancestors;
             obj.Figure = figure;
+            obj.Docked = docked;
             
             % Stop early for unrooted subjects
             if isempty( figure ), return, end
@@ -79,10 +83,17 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 sizeListeners(ii,:) = event.listener( ancestor, ...
                     'SizeChange', cbSizeChange ); %#ok<AGROW>
             end
+            windowStyleListeners(1,:) = event.proplistener( figure, ...
+                findprop( figure, 'WindowStyle' ), 'PostSet', ...
+                @obj.onWindowStylePreSet );
+            windowStyleListeners(2,:) = event.proplistener( figure, ...
+                findprop( figure, 'WindowStyle' ), 'PostSet', ...
+                @obj.onWindowStylePostSet );
             
             % Store listeners
             obj.LocationListeners = locationListeners;
             obj.SizeListeners = sizeListeners;
+            obj.WindowStyleListeners = windowStyleListeners;
             
         end % constructor
         
@@ -168,6 +179,25 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             obj.update( source )
             
         end % onSizeChange
+        
+        function onWindowStylePreSet( obj, ~, ~ )
+            
+            % Store current property value
+            obj.Docked = strcmp( obj.Figure.WindowStyle, 'docked' );
+            
+        end % onWindowStylePreSet
+        
+        function onWindowStylePostSet( obj, ~, eventData )
+            
+            % Update if docked to undocked or vice versa
+            wasDocked = obj.Docked;
+            isDocked = strcmp( obj.Figure.WindowStyle, 'docked' );
+            obj.Docked = isDocked;
+            if wasDocked ~= isDocked
+                obj.update( eventData.AffectedObject )
+            end
+            
+        end % onWindowStylePostSet
         
     end % event handlers
     
