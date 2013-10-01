@@ -7,14 +7,13 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     
     properties( Access = private )
         Figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] )
-        Docked
         FigurePanelContainer
         Ancestors = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
         Offsets = zeros( [0 2] )
         Extent = [NaN NaN]
         LocationListeners = event.listener.empty( [0 1] )
         SizeListeners = event.listener.empty( [0 1] )
-        WindowStyleListeners = event.proplistener.empty( [0 1] )
+        WindowStyleListener = event.proplistener.empty( [0 1] )
     end
     
     events( NotifyAccess = private )
@@ -63,7 +62,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
             end
             
-            % Store subject, ancestors, figure, etc.
+            % Store subject, ancestors, figure
             obj.Subject = subject;
             obj.Ancestors = ancestors;
             obj.Figure = figure;
@@ -72,11 +71,9 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             if isempty( figure ), return, end
             
             % Get figure properties
-            docked = strcmp( figure.WindowStyle, 'docked' );
             jFigurePanelContainer = figure.JavaFrame.getFigurePanelContainer();
             
             % Store figure properties
-            obj.Docked = docked;
             obj.FigurePanelContainer = jFigurePanelContainer;
             
             % Force update
@@ -92,17 +89,14 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 sizeListeners(ii,:) = event.listener( ancestor, ...
                     'SizeChange', cbSizeChange ); %#ok<AGROW>
             end
-            windowStyleListeners(1,:) = event.proplistener( figure, ...
+            windowStyleListener = event.proplistener( figure, ...
                 findprop( figure, 'WindowStyle' ), 'PostSet', ...
-                @obj.onWindowStylePreSet );
-            windowStyleListeners(2,:) = event.proplistener( figure, ...
-                findprop( figure, 'WindowStyle' ), 'PostSet', ...
-                @obj.onWindowStylePostSet );
+                @obj.onWindowStyleChange );
             
             % Store listeners
             obj.LocationListeners = locationListeners;
             obj.SizeListeners = sizeListeners;
-            obj.WindowStyleListeners = windowStyleListeners;
+            obj.WindowStyleListener = windowStyleListener;
             
         end % constructor
         
@@ -123,7 +117,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             ancestors = obj.Ancestors;
             parents = [groot(); ancestors(1:end-1,:)];
             figure = obj.Figure;
-            docked = obj.Docked;
+            docked = strcmp( figure.WindowStyle, 'docked' );
             
             if nargin == 1 % recompute from scratch
                 
@@ -200,24 +194,12 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             
         end % onSizeChange
         
-        function onWindowStylePreSet( obj, ~, ~ )
+        function onWindowStyleChange( obj, ~, eventData )
             
-            % Store current property value
-            obj.Docked = strcmp( obj.Figure.WindowStyle, 'docked' );
+            % Update
+            obj.update( eventData.AffectedObject )
             
-        end % onWindowStylePreSet
-        
-        function onWindowStylePostSet( obj, ~, eventData )
-            
-            % Update if docked to undocked or vice versa
-            wasDocked = obj.Docked;
-            isDocked = strcmp( obj.Figure.WindowStyle, 'docked' );
-            obj.Docked = isDocked;
-            if wasDocked ~= isDocked
-                obj.update( eventData.AffectedObject )
-            end
-            
-        end % onWindowStylePostSet
+        end % onWindowStyleChange
         
     end % event handlers
     
