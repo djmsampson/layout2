@@ -1,35 +1,71 @@
-classdef( Hidden, Sealed ) VisibilityObserver < handle
+classdef ( Hidden, Sealed ) VisibilityObserver < handle
     
     properties( SetAccess = private )
         Subject
-        Visible
+        Visible = false
     end
     
     properties( Access = private )
+        Ancestors
         VisibleListeners = event.listener.empty( [0 1] )
-        ParentListeners = event.listener.empty( [0 1] )
     end
     
     events( NotifyAccess = private )
-        VisibilityChanged
+        VisibilityChange
     end
     
     methods
         
-        function obj = VisibilityObserver( subject )
+        function obj = VisibilityObserver( in )
             
-            % Check
-            assert( ishghandle( subject ) && ...
-                isequal( size( subject ), [1 1] ) && ...
-                ~isa( subject, 'matlab.ui.Root' ) && ...
-                ~isequal( subject, groot() ), 'uix.InvalidArgument', ...
-                'Subject must be a graphics object.' )
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
             
-            % Store properties
+            % Handle inputs
+            if isscalar( in )
+                subject = in;
+                assert( ishghandle( subject ) && ...
+                    isequal( size( subject ), [1 1] ) && ...
+                    ~isequal( subject, ROOT ), ...
+                    'uix.InvalidArgument', ...
+                    'Subject must be a graphics object.' )
+                ancestors = uix.ancestors( subject );
+            else
+                ancestors = in;
+                assert( all( ishghandle( ancestors ) ) && ...
+                    ndims( ancestors ) == 2 && iscolumn( ancestors ) && ...
+                    ~isempty( ancestors ), 'uix.InvalidArgument', ...
+                    'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
+                subject = ancestors(end);
+                cParents = get( ancestors, {'Parent'} );
+                assert( isequal( ancestors(1:end-1,:), ...
+                    vertcat( cParents{2:end} ) ), ...
+                    'uix:InvalidArgument', 'Inconsistent ancestry.' )
+                assert( isequal( cParents{1}, ROOT ) || isempty( cParents{1} ), ...
+                    'uix:InvalidArgument', 'Incomplete ancestry.' )
+            end
+            
+            % Store subject, ancestors
             obj.Subject = subject;
+            obj.Ancestors = ancestors;
+            
+            % Stop early for unrooted subjects
+            if ~isequal( ancestors(1).Parent, ROOT ), return, end
             
             % Force update
             obj.update()
+            
+            % Create listeners
+            cbVisibleChange = @obj.onVisibleChange;
+            for ii = 1:numel( ancestors )
+                ancestor = ancestors(ii);
+                visibleListeners(ii,:) = event.proplistener( ancestor, ...
+                    findprop( ancestor, 'Visible' ), 'PostSet', ...
+                    cbVisibleChange ); %#ok<AGROW>
+            end
+            
+            % Store listeners
+            obj.VisibleListeners = visibleListeners;
             
         end % constructor
         
@@ -39,37 +75,20 @@ classdef( Hidden, Sealed ) VisibilityObserver < handle
         
         function update( obj )
             
-            % Identify ancestors
-            subject = obj.Subject;
-            parents = subject; % initialize
-            visibles = {subject.Visible}; % initialize
-            while true
-                parent = parents(end,:).Parent;
-                if isempty( parent ) || isa( parent, 'matlab.ui.Root' )
-                    break
-                else
-                    parents(end+1,:) = parent; %#ok<AGROW>
-                    visibles{end+1,:} = parent.Visible; %#ok<AGROW>
-                end
-            end
-            visible = ~isempty( parents(end).Parent ) && ...
-                all( strcmp( visibles, 'on' ) );
+            % Get old value
+            oldVisible = obj.Visible;
             
-            % Create listeners
-            for ii = 1:numel( parents )
-                parent = parents(ii);
-                parentListeners(ii,:) = event.proplistener( parent, ...
-                    findprop( parent, 'Parent' ), 'PostSet', ...
-                    @obj.onPropertyChanged ); %#ok<AGROW>
-                visibleListeners(ii,:) = event.proplistener( parent, ...
-                    findprop( parent, 'Visible' ), 'PostSet', ...
-                    @obj.onPropertyChanged ); %#ok<AGROW>
-            end
+            % Identify new value
+            visibles = get( obj.Ancestors, 'Visible' );
+            newVisible = all( strcmp( visibles, 'on' ) );
             
-            % Store properties
-            obj.Visible = visible;
-            obj.ParentListeners = parentListeners;
-            obj.VisibleListeners = visibleListeners;
+            % Store new value
+            obj.Visible = newVisible;
+            
+            % Raise event
+            if ~isequal( oldVisible, newVisible )
+                notify( obj, 'VisibilityChange' )
+            end
             
         end % update
         
@@ -77,21 +96,12 @@ classdef( Hidden, Sealed ) VisibilityObserver < handle
     
     methods( Access = private )
         
-        function onPropertyChanged( obj, ~, ~ )
-            
-            % Capture old visibility
-            oldVisible = obj.Visible;
+        function onVisibleChange( obj, ~, ~ )
             
             % Update
             obj.update()
             
-            % Raise event
-            newVisible = obj.Visible;
-            if ~isequal( oldVisible, newVisible )
-                notify( obj, 'VisibilityChanged' )
-            end
-            
-        end % onPropertyChanged
+        end % onVisibleChange
         
     end % event handlers
     
