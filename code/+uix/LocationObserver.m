@@ -6,9 +6,9 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     end
     
     properties( Access = private )
-        Figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] )
+        Figure
         FigurePanelContainer
-        Ancestors = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+        Ancestors
         Offsets = zeros( [0 2] )
         Extent = [NaN NaN]
         LocationListeners = event.listener.empty( [0 1] )
@@ -52,14 +52,14 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             else
                 ancestors = in;
                 assert( all( ishghandle( ancestors ) ) && ...
-                    iscolumn( ancestors ) && ndims( ancestors ) == 2, ...
-                    'uix.InvalidArgument', ...
+                    ndims( ancestors ) == 2 && iscolumn( ancestors ) && ...
+                    ~isempty( ancestors ), 'uix.InvalidArgument', ...
                     'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
                 subject = ancestors(end);
                 figure = ancestors(1);
                 cParents = get( ancestors, {'Parent'} );
-                parents = vertcat( cParents{:} );
-                assert( isequal( ancestors(1:end-1,:), parents(2:end,:) ), ...
+                assert( isequal( ancestors(1:end-1,:), ...
+                    vertcat( cParents{2:end} ) ), ...
                     'uix:InvalidArgument', 'Inconsistent ancestry.' )
                 assert( isequal( cParents{1}, ROOT ) || isempty( cParents{1} ), ...
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
