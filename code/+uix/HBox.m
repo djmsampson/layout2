@@ -202,15 +202,7 @@ classdef HBox < uix.Container
                 xPositions(:,2), yPositions(:,2)];
             
             % Set positions
-            for ii = 1:numel( widths )
-                child = obj.Contents_(ii);
-                child.Units = 'pixels';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    child.( child.ActivePositionProperty ) = positions(ii,:);
-                else
-                    child.Position = positions(ii,:);
-                end
-            end
+            obj.reposition( positions );
             
         end % redraw
         
@@ -282,6 +274,21 @@ classdef HBox < uix.Container
             
         end % reorder
         
-    end % operations
+        function reposition( obj, positions )
+            
+            children = obj.Contents_;
+            for ii = 1:numel( children )
+                child = children(ii);
+                child.Units = 'pixels';
+                if isa( child, 'matlab.graphics.axis.Axes' )
+                    child.( child.ActivePositionProperty ) = positions(ii,:);
+                else
+                    child.Position = positions(ii,:);
+                end
+            end
+            
+        end % reposition
+        
+    end % methods
     
 end % classdef
