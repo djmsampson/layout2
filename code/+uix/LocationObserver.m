@@ -8,6 +8,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     properties( Access = private )
         Figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] )
         Docked
+        FigurePanelContainer
         Ancestors = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
         Offsets = zeros( [0 2] )
         Extent = [NaN NaN]
@@ -35,6 +36,8 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             %  ancestry observer to monitor changes to ancestry, and create
             %  a new location observer when ancestry changes.
             
+            warning( 'off', 'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame' )
+            
             % Handle inputs
             if isscalar( in )
                 subject = in;
@@ -59,16 +62,22 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 assert( isequal( cParents{1}, groot() ) || isempty( cParents{1} ), ...
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
             end
-            docked = strcmp( figure.WindowStyle, 'docked' );
             
-            % Store subject, ancestors and figure
+            % Store subject, ancestors, figure, etc.
             obj.Subject = subject;
             obj.Ancestors = ancestors;
             obj.Figure = figure;
-            obj.Docked = docked;
             
             % Stop early for unrooted subjects
             if isempty( figure ), return, end
+            
+            % Get figure properties
+            docked = strcmp( figure.WindowStyle, 'docked' );
+            jFigurePanelContainer = figure.JavaFrame.getFigurePanelContainer();
+            
+            % Store figure properties
+            obj.Docked = docked;
+            obj.FigurePanelContainer = jFigurePanelContainer;
             
             % Force update
             obj.update()
@@ -114,6 +123,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             ancestors = obj.Ancestors;
             parents = [groot(); ancestors(1:end-1,:)];
             figure = obj.Figure;
+            docked = obj.Docked;
             
             if nargin == 1 % recompute from scratch
                 
@@ -124,11 +134,16 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 n = numel( ancestors );
                 offsets = zeros( [n 2] ); % initialize
                 for ii = 1:n
-                    pixel = hgconvertunits( figure, positions(ii,:), ...
-                        units{ii}, 'pixels', parents(ii) );
+                    if ii == 1 && docked
+                        pixel = getFigurePixelPosition( ...
+                            obj.FigurePanelContainer );
+                    else
+                        pixel = hgconvertunits( figure, positions(ii,:), ...
+                            units{ii}, 'pixels', parents(ii) );
+                    end
                     offsets(ii,:) = pixel(1:2) - 1;
                 end
-                extent = pixel(3:4);
+                extent = pixel(3:4); % ii == n
                 
             else % specified modified ancestor
                 
@@ -136,8 +151,13 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 tf = ancestors == source;
                 ancestor = ancestors(tf);
                 parent = parents(tf);
-                pixel = hgconvertunits( figure, ancestor.Position, ...
-                    ancestor.Units, 'pixels', parent );
+                if tf(1) && docked % docked figure
+                    pixel = getFigurePixelPosition( ...
+                        obj.FigurePanelContainer );
+                else % undocked figure or non-figure
+                    pixel = hgconvertunits( figure, ancestor.Position, ...
+                        ancestor.Units, 'pixels', parent );
+                end
                 offset = pixel(1:2) - 1;
                 offsets = obj.Offsets;
                 offsets(tf,:) = offset;
@@ -202,3 +222,20 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     end % event handlers
     
 end % classdef
+
+function p = getFigurePixelPosition( jFigurePanelContainer )
+%getFigurePixelPosition  Get figure position in pixels
+%
+%  p = getFigurePixelPosition(c) returns the position in
+%  pixels p of the figure panel container c.
+
+root = groot();
+screenSize = root.ScreenSize;
+jLocation = jFigurePanelContainer.getLocationOnScreen();
+x = jLocation.getX();
+y = jLocation.getY();
+w = jFigurePanelContainer.getWidth();
+h = jFigurePanelContainer.getHeight();
+p = [x+1, screenSize(4)-y-h+1, w, h];
+
+end % getFigurePixelPosition
