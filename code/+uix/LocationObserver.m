@@ -35,6 +35,9 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             %  ancestry observer to monitor changes to ancestry, and create
             %  a new location observer when ancestry changes.
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             warning( 'off', 'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame' )
             
             % Handle inputs
@@ -42,7 +45,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 subject = in;
                 assert( ishghandle( subject ) && ...
                     isequal( size( subject ), [1 1] ) && ...
-                    ~isa( subject, 'matlab.ui.Root' ), ...
+                    ~isequal( subject, ROOT ), ...
                     'uix.InvalidArgument', ...
                     'Subject must be a graphics object.' )
                 [ancestors, figure] = uix.ancestors( subject );
@@ -58,7 +61,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 parents = vertcat( cParents{:} );
                 assert( isequal( ancestors(1:end-1,:), parents(2:end,:) ), ...
                     'uix:InvalidArgument', 'Inconsistent ancestry.' )
-                assert( isequal( cParents{1}, groot() ) || isempty( cParents{1} ), ...
+                assert( isequal( cParents{1}, ROOT ) || isempty( cParents{1} ), ...
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
             end
             
@@ -113,9 +116,12 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             %  o.update(a) updates the state of the location observer in
             %  response to an event on the ancestor a.
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             % Retrieve ancestors, parents and figure
             ancestors = obj.Ancestors;
-            parents = [groot(); ancestors(1:end-1,:)];
+            parents = [ROOT; ancestors(1:end-1,:)];
             figure = obj.Figure;
             docked = strcmp( figure.WindowStyle, 'docked' );
             
@@ -174,6 +180,22 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             % Raise event
             notify( obj, 'LocationChange' )
             
+            function p = getFigurePixelPosition( jFigurePanelContainer )
+                %getFigurePixelPosition  Get figure position in pixels
+                %
+                %  p = getFigurePixelPosition(c) returns the position in
+                %  pixels p of the figure panel container c.
+                
+                screenSize = ROOT.ScreenSize;
+                jLocation = jFigurePanelContainer.getLocationOnScreen();
+                x = jLocation.getX();
+                y = jLocation.getY();
+                w = jFigurePanelContainer.getWidth();
+                h = jFigurePanelContainer.getHeight();
+                p = [x+1, screenSize(4)-y-h+1, w, h];
+                
+            end % getFigurePixelPosition
+            
         end % update
         
     end % operations
@@ -208,11 +230,13 @@ end % classdef
 function p = getFigurePixelPosition( jFigurePanelContainer )
 %getFigurePixelPosition  Get figure position in pixels
 %
-%  p = getFigurePixelPosition(c) returns the position in
-%  pixels p of the figure panel container c.
+%  p = getFigurePixelPosition(c) returns the position in pixels p of the
+%  figure panel container c.
 
-root = groot();
-screenSize = root.ScreenSize;
+persistent ROOT
+if isequal( ROOT, [] ), ROOT = groot(); end
+
+screenSize = ROOT.ScreenSize;
 jLocation = jFigurePanelContainer.getLocationOnScreen();
 x = jLocation.getX();
 y = jLocation.getY();
