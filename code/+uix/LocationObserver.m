@@ -226,22 +226,3 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     end % event handlers
     
 end % classdef
-
-function p = getFigurePixelPosition( jFigurePanelContainer )
-%getFigurePixelPosition  Get figure position in pixels
-%
-%  p = getFigurePixelPosition(c) returns the position in pixels p of the
-%  figure panel container c.
-
-persistent ROOT
-if isequal( ROOT, [] ), ROOT = groot(); end
-
-screenSize = ROOT.ScreenSize;
-jLocation = jFigurePanelContainer.getLocationOnScreen();
-x = jLocation.getX();
-y = jLocation.getY();
-w = jFigurePanelContainer.getWidth();
-h = jFigurePanelContainer.getHeight();
-p = [x+1, screenSize(4)-y-h+1, w, h];
-
-end % getFigurePixelPosition
