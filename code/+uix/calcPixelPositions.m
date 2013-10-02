@@ -47,6 +47,6 @@ else
     
     % Compute positions
     pPositions = [cumsum( [0; pSizes(1:end-1,:)] ) + pPadding + ...
-        pSpacing * transpose( 0:n-1 ), pSizes];
+        pSpacing * transpose( 0:n-1 ) + 1, pSizes];
     
 end % getPixelPositions

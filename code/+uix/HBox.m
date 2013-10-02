@@ -196,7 +196,7 @@ classdef HBox < uix.Container
             spacing = obj.Spacing;
             xPositions = uix.calcPixelPositions( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
-            yPositions = [padding, max( bounds(4) - 2 * padding, 1 )];
+            yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
             yPositions = repmat( yPositions, size( widths ) );
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
