@@ -25,7 +25,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
             % Create resize listener
             sizeChangeListener = event.listener( ...
-                obj, 'SizeChange', @obj.onSizeChanged );
+                obj, 'SizeChange', @obj.onSizeChange );
             
             % Store listeners
             obj.Listeners = [childAddedListener; childRemovedListener; ...
@@ -79,9 +79,6 @@ classdef Container < matlab.ui.container.internal.UIContainer
         
         function onChildRemoved( obj, ~, eventData )
             
-            % Do nothing if container is being deleted
-            if strcmp( obj.BeingDeleted, 'on' ), return, end
-            
             % Remove from contents
             obj.Contents_(obj.Contents_==eventData.Child,:) = [];
             
@@ -90,12 +87,12 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % onChildRemoved
         
-        function onSizeChanged( obj, ~, ~ )
+        function onSizeChange( obj, ~, ~ )
             
             % Call redraw
             obj.redraw()
             
-        end % onSizeChanged
+        end % onSizeChange
         
     end % event handlers
     
