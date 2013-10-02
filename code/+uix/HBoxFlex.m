@@ -6,6 +6,7 @@ classdef HBoxFlex < uix.HBox
         AncestryListener
         LocationObserver
         MouseMotionListener
+        Over = false
     end
     
     methods
@@ -49,7 +50,7 @@ classdef HBoxFlex < uix.HBox
             
             % Add divider if there will be more than one child
             if numel( obj.Contents_ ) > 0
-                divider = uicontrol( 'Parent', [], 'Internal', true, ...
+                divider = uicontrol( 'Parent', [], 'Internal', ~true, ...
                     'Style', 'frame', 'Units', 'pixels' );
                 divider.Parent = obj; % create then add
                 obj.Dividers(end+1,:) = divider;
@@ -107,12 +108,18 @@ classdef HBoxFlex < uix.HBox
             
             point = ROOT.PointerLocation;
             location = obj.LocationObserver.Location;
-            over = point(1) >= location(1) && ...
+            isOver = point(1) >= location(1) && ...
                 point(1) < location(1) + location(3) && ...
                 point(2) >= location(2) && ...
                 point(2) < location(2) + location(4);
-            if over
-                disp MouseMotion
+            wasOver = obj.Over;
+            if ~wasOver && isOver % enter
+                obj.AncestryObserver.Figure.Pointer = 'hand';
+            elseif wasOver && ~isOver % leave
+                obj.AncestryObserver.Figure.Pointer = 'arrow';
+            end
+            if wasOver ~= isOver
+                obj.Over = isOver;
             end
             
         end
