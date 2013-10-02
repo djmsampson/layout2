@@ -35,14 +35,18 @@ classdef( Hidden ) ChildObserver < handle
             
             % Create root node
             nRoot = uix.Node( oRoot );
-            nRoot.addListener( event.listener( ...
+            childAddedListener = event.listener( ...
                 uix.EventSource.getInstance( oRoot ), ... % TODO
                 'ObjectChildAdded', ...
-                @(~,e)obj.addChild(nRoot,e.Child) ) )
-            nRoot.addListener( event.listener( ...
+                @(~,e)obj.addChild(nRoot,e.Child) );
+            childAddedListener.Recursive = true;
+            nRoot.addListener( childAddedListener );
+            childRemovedListener = event.listener( ...
                 uix.EventSource.getInstance( oRoot ), ... % TODO
                 'ObjectChildRemoved', ...
-                @(~,e)obj.removeChild(nRoot,e.Child) ) )
+                @(~,e)obj.removeChild(nRoot,e.Child) );
+            childRemovedListener.Recursive = true;
+            nRoot.addListener( childRemovedListener );
             
             % Add children
             oChildren = hgGetTrueChildren( oRoot );

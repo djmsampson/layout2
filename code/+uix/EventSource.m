@@ -34,10 +34,15 @@ classdef( Hidden, Sealed ) EventSource < handle
                 'uix:InvalidArgument', 'Invalid object.' )
             
             % Create listeners
-            obj.Listeners(end+1,:) = event.listener( object, ...
+            childAddedListener = event.listener( object, ...
                 'ObjectChildAdded', @obj.onObjectChildAdded );
-            obj.Listeners(end+1,:) = event.listener( object, ...
+            childAddedListener.Recursive = true;
+            childRemovedListener = event.listener( object, ...
                 'ObjectChildRemoved', @obj.onObjectChildRemoved );
+            childRemovedListener.Recursive = true;
+            
+            % Store properties
+            obj.Listeners = [childAddedListener; childRemovedListener];
             
         end % constructor
         
