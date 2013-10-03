@@ -5,8 +5,12 @@ classdef HBoxFlex < uix.HBox
         AncestryObserver
         AncestryListener
         LocationObserver
+        MousePressListener
+        MouseReleaseListener
         MouseMotionListener
         Over = false
+        Dragging = false
+        ActiveDivider = uix.Divider.empty( [0 0] )
         OldPointer = 'unset'
     end
     
@@ -51,7 +55,8 @@ classdef HBoxFlex < uix.HBox
             
             % Add divider if there will be more than one child
             if numel( obj.Contents_ ) > 0
-                divider = uix.Divider( 'Parent', obj );
+                divider = uix.Divider( 'Parent', obj, ...
+                    'Orientation', 'vertical', 'Markings', 'on' );
                 obj.Dividers(end+1,:) = divider;
             end
             
@@ -89,40 +94,75 @@ classdef HBoxFlex < uix.HBox
             % Create listeners
             figure = ancestryObserver.Figure;
             if isempty( figure )
+                mousePressListener = event.listener.empty( [0 0] );
+                mouseReleaseListener = event.listener.empty( [0 0] );
                 mouseMotionListener = event.listener.empty( [0 0] );
             else
+                mousePressListener = event.listener( figure, ...
+                    'WindowMousePress', @obj.onMousePress );
+                mouseReleaseListener = event.listener( figure, ...
+                    'WindowMouseRelease', @obj.onMouseRelease );
                 mouseMotionListener = event.listener( figure, ...
                     'WindowMouseMotion', @obj.onMouseMotion );
             end
             
             % Store listeners
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
             obj.MouseMotionListener = mouseMotionListener;
             
         end % onAncestryChange
+        
+        function onMousePress( obj, ~, ~ )
+            
+            disp MousePress
+            
+        end % onMousePress
+        
+        function onMouseRelease( obj, ~, ~ )
+            
+            disp MouseRelease
+            
+        end % onMouseRelease
         
         function onMouseMotion( obj, ~, ~ )
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            point = ROOT.PointerLocation;
-            location = obj.LocationObserver.Location;
-            isOver = point(1) >= location(1) && ...
-                point(1) < location(1) + location(3) && ...
-                point(2) >= location(2) && ...
-                point(2) < location(2) + location(4);
-            wasOver = obj.Over;
-            if wasOver ~= isOver
-                figure = obj.AncestryObserver.Figure;
-                if isOver % enter
-                    obj.OldPointer = figure.Pointer;
-                    figure.Pointer = 'hand';
-                else % leave
-                    figure.Pointer = obj.OldPointer;
-                    obj.OldPointer = 'unset';
+            if obj.Dragging
+                
+                disp Dragging!
+                
+            else
+                
+                point = ROOT.PointerLocation - ...
+                    obj.LocationObserver.Location(1:2) + [1 1];
+                cPositions = get( obj.Dividers, {'Position'} );
+                positions = vertcat( cPositions{:} );
+                if isempty( positions )
+                    overs = true( size( positions ) );
+                else
+                    overs = point(1) >= positions(:,1) & ...
+                        point(1) < positions(:,1) + positions(:,3) & ...
+                        point(2) >= positions(:,2) & ...
+                        point(2) < positions(:,2) + positions(:,4);
                 end
-                obj.Over = isOver;
+                isOver = any( overs );
+                wasOver = obj.Over;
+                if wasOver ~= isOver
+                    figure = obj.AncestryObserver.Figure;
+                    if isOver % enter
+                        obj.OldPointer = figure.Pointer;
+                        figure.Pointer = 'hand';
+                    else % leave
+                        figure.Pointer = obj.OldPointer;
+                        obj.OldPointer = 'unset';
+                    end
+                    obj.Over = isOver;
+                end
             end
+            
         end
         
     end % event handlers
