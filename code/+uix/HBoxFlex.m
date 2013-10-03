@@ -1,12 +1,13 @@
 classdef HBoxFlex < uix.HBox
     
     properties
-        Dividers = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+        Dividers = uix.Divider.empty( [0 1] )
         AncestryObserver
         AncestryListener
         LocationObserver
         MouseMotionListener
         Over = false
+        OldPointer = 'unset'
     end
     
     methods
@@ -50,9 +51,7 @@ classdef HBoxFlex < uix.HBox
             
             % Add divider if there will be more than one child
             if numel( obj.Contents_ ) > 0
-                divider = uicontrol( 'Parent', [], 'Internal', ~true, ...
-                    'Style', 'frame', 'Units', 'pixels' );
-                divider.Parent = obj; % create then add
+                divider = uix.Divider( 'Parent', obj );
                 obj.Dividers(end+1,:) = divider;
             end
             
@@ -113,15 +112,17 @@ classdef HBoxFlex < uix.HBox
                 point(2) >= location(2) && ...
                 point(2) < location(2) + location(4);
             wasOver = obj.Over;
-            if ~wasOver && isOver % enter
-                obj.AncestryObserver.Figure.Pointer = 'hand';
-            elseif wasOver && ~isOver % leave
-                obj.AncestryObserver.Figure.Pointer = 'arrow';
-            end
             if wasOver ~= isOver
+                figure = obj.AncestryObserver.Figure;
+                if isOver % enter
+                    obj.OldPointer = figure.Pointer;
+                    figure.Pointer = 'hand';
+                else % leave
+                    figure.Pointer = obj.OldPointer;
+                    obj.OldPointer = 'unset';
+                end
                 obj.Over = isOver;
             end
-            
         end
         
     end % event handlers
