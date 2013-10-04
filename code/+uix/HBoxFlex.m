@@ -9,8 +9,9 @@ classdef HBoxFlex < uix.HBox
         MouseReleaseListener
         MouseMotionListener
         Over = false
-        Dragging = false
-        ActiveDivider = uix.Divider.empty( [0 0] )
+        ActiveDivider = 0
+        ButtonDownLocation = [NaN NaN]
+        OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
     end
     
@@ -62,6 +63,9 @@ classdef HBoxFlex < uix.HBox
             
             % Call superclass method
             onChildAdded@uix.HBox( obj, source, eventData );
+            
+            % Restack
+            obj.restack()
             
         end % onChildAdded
         
@@ -115,13 +119,33 @@ classdef HBoxFlex < uix.HBox
         
         function onMousePress( obj, ~, ~ )
             
-            disp MousePress
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
+            [tf, loc] = obj.isMouseOverDivider();
+            if tf
+                obj.ActiveDivider = loc;
+                obj.ButtonDownLocation = ROOT.PointerLocation;
+                obj.OldDividerPosition = obj.Dividers(loc).Position;
+            end
             
         end % onMousePress
         
         function onMouseRelease( obj, ~, ~ )
             
-            disp MouseRelease
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
+            loc = obj.ActiveDivider;
+            if loc == 0, return, end
+            startLocation = obj.ButtonDownLocation;
+            finishLocation = ROOT.PointerLocation;
+            delta = finishLocation(1) - startLocation(1);
+            obj.Dividers(obj.ActiveDivider).Position = ...
+                obj.OldDividerPosition + [delta 0 0 0];
+            obj.ActiveDivider = 0;
+            obj.ButtonDownLocation = [NaN NaN];
+            obj.OldDividerPosition = [NaN NaN NaN NaN];
             
         end % onMouseRelease
         
@@ -130,37 +154,30 @@ classdef HBoxFlex < uix.HBox
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            if obj.Dragging
+            if obj.ActiveDivider == 0
                 
-                disp Dragging!
-                
-            else
-                
-                point = ROOT.PointerLocation - ...
-                    obj.LocationObserver.Location(1:2) + [1 1];
-                cPositions = get( obj.Dividers, {'Position'} );
-                positions = vertcat( cPositions{:} );
-                if isempty( positions )
-                    overs = true( size( positions ) );
-                else
-                    overs = point(1) >= positions(:,1) & ...
-                        point(1) < positions(:,1) + positions(:,3) & ...
-                        point(2) >= positions(:,2) & ...
-                        point(2) < positions(:,2) + positions(:,4);
-                end
-                isOver = any( overs );
+                isOver = obj.isMouseOverDivider();
                 wasOver = obj.Over;
                 if wasOver ~= isOver
                     figure = obj.AncestryObserver.Figure;
                     if isOver % enter
                         obj.OldPointer = figure.Pointer;
-                        figure.Pointer = 'hand';
+                        figure.Pointer = 'left';
                     else % leave
                         figure.Pointer = obj.OldPointer;
                         obj.OldPointer = 'unset';
                     end
                     obj.Over = isOver;
                 end
+                
+            else
+                
+                startLocation = obj.ButtonDownLocation;
+                finishLocation = ROOT.PointerLocation;
+                delta = finishLocation(1) - startLocation(1);
+                obj.Dividers(obj.ActiveDivider).Position = ...
+                    obj.OldDividerPosition + [delta 0 0 0];
+                
             end
             
         end
@@ -187,6 +204,51 @@ classdef HBoxFlex < uix.HBox
             end
             
         end % reposition
+        
+        function [tf, loc] = isMouseOverDivider( obj )
+            
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
+            point = ROOT.PointerLocation - ...
+                obj.LocationObserver.Location(1:2) + [1 1];
+            cPositions = get( obj.Dividers, {'Position'} );
+            positions = vertcat( cPositions{:} );
+            if isempty( positions )
+                overs = true( size( positions ) );
+            else
+                overs = point(1) >= positions(:,1) & ...
+                    point(1) < positions(:,1) + positions(:,3) & ...
+                    point(2) >= positions(:,2) & ...
+                    point(2) < positions(:,2) + positions(:,4);
+            end
+            index = find( overs, 1, 'first' );
+            if isempty( index )
+                tf = false;
+                loc = 0;
+            else
+                tf = true;
+                loc = index;
+            end
+            
+        end % isMouseOverDivider
+        
+        function restack( obj )
+            
+            childAddedListener = obj.ChildAddedListener;
+            childRemovedListener = obj.ChildRemovedListener;
+            childAddedListener.Enabled = false;
+            childRemovedListener.Enabled = false;
+            dividers = obj.Dividers;
+            for ii = 1:numel( dividers )
+                divider = dividers(ii);
+                divider.Parent = [];
+                divider.Parent = obj;
+            end
+            childAddedListener.Enabled = true;
+            childRemovedListener.Enabled = false;
+            
+        end
         
     end % methods
     
