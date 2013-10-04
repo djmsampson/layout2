@@ -262,6 +262,10 @@ classdef HBox < uix.Container
     methods( Access = protected )
         
         function reorder( obj, indices )
+            %reorder  Reorder contents
+            %
+            %  c.reorder(i) reorders the container contents using indices
+            %  i, c.Contents = c.Contents(i).
             
             % Reorder
             obj.Widths_ = obj.Widths_(indices,:);
