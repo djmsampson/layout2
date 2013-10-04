@@ -102,6 +102,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
     methods( Access = protected )
         
         function reorder( obj, indices )
+            %reorder  Reorder contents
+            %
+            %  c.reorder(i) reorders the container contents using indices
+            %  i, c.Contents = c.Contents(i).
             
             % Reorder
             obj.Contents_ = obj.Contents_(indices,:);
