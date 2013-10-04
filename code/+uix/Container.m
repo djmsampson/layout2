@@ -6,7 +6,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
     
     properties( Access = protected )
         Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
-        Listeners = event.listener.empty( [0 1] )
+        ChildAddedListener
+        ChildRemovedListener
+        SizeChangeListener
     end
     
     methods
@@ -28,8 +30,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
                 obj, 'SizeChange', @obj.onSizeChange );
             
             % Store listeners
-            obj.Listeners = [childAddedListener; childRemovedListener; ...
-                sizeChangeListener];
+            obj.ChildAddedListener = childAddedListener;
+            obj.ChildRemovedListener = childRemovedListener;
+            obj.SizeChangeListener = sizeChangeListener;
             
         end % constructor
         
