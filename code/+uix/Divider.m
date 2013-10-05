@@ -4,15 +4,19 @@ classdef Divider < hgsetget
         Parent
         Units
         Position
+        Visible
     end
     
-    properties
+    properties( AbortSet, SetObservable )
+        Color = get( 0, 'DefaultUicontrolBackgroundColor' )
         Orientation = 'vertical'
         Markings = 'on'
     end
     
     properties( Access = private )
         Control
+        PropertyListeners
+        SizeChangeListener
     end
     
     methods
@@ -21,8 +25,8 @@ classdef Divider < hgsetget
             
             % Create control
             control = matlab.ui.control.StyleControl( ...
-                'Style', 'frame', 'Internal', true, ...
-                'DeleteFcn', @obj.onDeleted );
+                'Style', 'checkbox', 'Internal', true, ...
+                'Enable', 'inactive', 'DeleteFcn', @obj.onDeleted );
             
             % Store control
             obj.Control = control;
@@ -31,6 +35,24 @@ classdef Divider < hgsetget
             if nargin > 0
                 set( obj, varargin{:} );
             end
+            
+            % Force update
+            obj.update()
+            
+            % Create listeners
+            sizeChangeListener = event.listener( control, 'SizeChange', ...
+                @obj.onSizeChange );
+            orientationPostSetListener = event.proplistener( obj, ...
+                findprop( obj, 'Orientation' ), 'PostSet', ...
+                @obj.onOrientationPostSet );
+            markingsPostSetListener = event.proplistener( obj, ...
+                findprop( obj, 'Markings' ), 'PostSet', ...
+                @obj.onMarkingsPostSet );
+            
+            % Store listeners
+            obj.SizeChangeListener = sizeChangeListener;
+            obj.PropertyListeners = [orientationPostSetListener; ...
+                markingsPostSetListener];
             
         end % constructor
         
@@ -79,9 +101,32 @@ classdef Divider < hgsetget
         
         function set.Position( obj, value )
             
+            % Set
             obj.Control.Position = value;
             
         end % set.Position
+        
+        function value = get.Visible( obj )
+            
+            value = obj.Control.Visible;
+            
+        end % get.Visible
+        
+        function set.Visible( obj, value )
+            
+            obj.Control.Visible = value;
+            
+        end % set.Visible
+        
+        function set.Color( obj, value )
+            
+            % Check
+            % TODO
+            
+            % Set
+            obj.Color = value;
+            
+        end
         
         function set.Orientation( obj, value )
             
@@ -115,5 +160,43 @@ classdef Divider < hgsetget
             
         end % onDeleted
         
-    end
+        function onSizeChange( obj, ~, ~ )
+            
+            % Update
+            obj.update()
+            
+        end % onSizeChange
+        
+        function onOrientationPostSet( obj, ~, ~ )
+            
+            % Update
+            obj.update()
+            
+        end % onOrientationPostSet
+        
+        function onMarkingsPostSet( obj, ~, ~ )
+            
+            % Update
+            obj.update()
+            
+        end % onMarkingsPostSet
+        
+    end % event handlers
+    
+    methods( Access = private )
+        
+        function update( obj )
+            
+            control = obj.Control;
+            position = control.Position;
+            color = obj.Color;
+            control.ForegroundColor = color;
+            control.BackgroundColor = color;
+            control.CData = repmat( reshape( color, [1 1 3] ), ...
+                floor( position([4 3]) ) - [1 1] );
+            
+        end % update
+        
+    end % methods
+    
 end % classdef
