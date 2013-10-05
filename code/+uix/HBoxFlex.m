@@ -2,7 +2,7 @@ classdef HBoxFlex < uix.HBox
     
     properties
         Dividers = uix.Divider.empty( [0 1] )
-        TopDivider = uix.Divider.empty( [0 0] )
+        FrontDivider
         AncestryObserver
         AncestryListener
         LocationObserver
@@ -25,6 +25,14 @@ classdef HBoxFlex < uix.HBox
             
             % Call superclass constructor
             obj@uix.HBox( notmypv{:} );
+            
+            % Create front divider
+            divider = uix.Divider( 'Parent', obj, ...
+                'Orientation', 'vertical', 'Markings', 'on', ...
+                'Visible', 'off' );
+            
+            % Store front divider
+            obj.FrontDivider = divider;
             
             % Create observers
             ancestryObserver = uix.AncestryObserver( obj );
@@ -60,13 +68,12 @@ classdef HBoxFlex < uix.HBox
                 divider = uix.Divider( 'Parent', obj, ...
                     'Orientation', 'vertical', 'Markings', 'on' );
                 obj.Dividers(end+1,:) = divider;
-                % Refresh top divider
-                delete( obj.TopDivider )
-                topDivider = uix.Divider( 'Parent', obj, ...
-                    'Orientation', 'vertical', 'Markings', 'on', ...
-                    'Visible', 'off' );
-                obj.TopDivider = topDivider;
             end
+            
+            % Bring front divider to the front
+            frontDivider = obj.FrontDivider;
+            frontDivider.Parent = [];
+            frontDivider.Parent = obj;
             
             % Call superclass method
             onChildAdded@uix.HBox( obj, source, eventData );
@@ -142,10 +149,10 @@ classdef HBoxFlex < uix.HBox
             obj.OldDividerPosition = divider.Position;
             
             % Activate divider
-            topDivider = obj.TopDivider;
-            topDivider.Position = divider.Position;
+            frontDivider = obj.FrontDivider;
+            frontDivider.Position = divider.Position;
             divider.Visible = 'off';
-            topDivider.Visible = 'on';
+            frontDivider.Visible = 'on';
             
         end % onMousePress
         
@@ -156,7 +163,7 @@ classdef HBoxFlex < uix.HBox
             if loc == 0, return, end
             
             % Deactivate divider
-            obj.TopDivider.Visible = 'off';
+            obj.FrontDivider.Visible = 'off';
             obj.Dividers(loc).Visible = 'on';
             
             % Reposition contents
@@ -204,7 +211,7 @@ classdef HBoxFlex < uix.HBox
             else % dragging
                 % Reposition divider
                 delta = obj.getMouseDragLength();
-                obj.TopDivider.Position = ...
+                obj.FrontDivider.Position = ...
                     obj.OldDividerPosition + [delta 0 0 0];
             end
             
