@@ -14,6 +14,7 @@ classdef HBoxFlex < uix.HBox
         MousePressLocation = [NaN NaN]
         OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
+        BackgroundColorListener
     end
     
     methods
@@ -29,7 +30,7 @@ classdef HBoxFlex < uix.HBox
             % Create front divider
             divider = uix.Divider( 'Parent', obj, ...
                 'Orientation', 'vertical', 'Markings', 'on', ...
-                'Visible', 'off' );
+                'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
             
             % Store front divider
             obj.FrontDivider = divider;
@@ -55,6 +56,14 @@ classdef HBoxFlex < uix.HBox
                 set( obj, mypv{:} )
             end
             
+            % Create listeners
+            backgroundColorListener = event.proplistener( obj, ...
+                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+                @obj.onBackgroundColorChange );
+            
+            % Store listeners
+            obj.BackgroundColorListener = backgroundColorListener;
+            
         end % constructor
         
     end % structors
@@ -66,7 +75,8 @@ classdef HBoxFlex < uix.HBox
             % Add divider if there will be more than one child
             if numel( obj.Contents_ ) > 0
                 divider = uix.Divider( 'Parent', obj, ...
-                    'Orientation', 'vertical', 'Markings', 'on' );
+                    'Orientation', 'vertical', 'Markings', 'on', ...
+                    'Color', obj.BackgroundColor );
                 obj.Dividers(end+1,:) = divider;
             end
             
@@ -217,6 +227,18 @@ classdef HBoxFlex < uix.HBox
             end
             
         end % onMouseMotion
+        
+        function onBackgroundColorChange( obj, ~, ~ )
+            
+            color = obj.BackgroundColor;
+            dividers = obj.Dividers;
+            for ii = 1:numel( dividers )
+                dividers(ii).Color = color;
+            end
+            frontDivider = obj.FrontDivider;
+            frontDivider.Color = color * 0.75;
+            
+        end % onBackgroundColorChange
         
     end % event handlers
     
