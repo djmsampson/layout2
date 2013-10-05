@@ -142,7 +142,7 @@ classdef HBoxFlex < uix.HBox
             [tf, loc] = obj.isMouseOverDivider();
             if ~tf, return, end
             
-            % Capture relevant state
+            % Capture state at button down
             divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
             obj.MousePressLocation = ROOT.PointerLocation;
@@ -184,7 +184,7 @@ classdef HBoxFlex < uix.HBox
             end
             obj.Widths(loc:loc+1) = newWidths;
             
-            % Reset button down event and divider state
+            % Reset state at button down
             obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
@@ -195,6 +195,7 @@ classdef HBoxFlex < uix.HBox
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
+                % Update pointer for mouse enter and mouse leave
                 isOver = obj.isMouseOverDivider();
                 wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
@@ -250,8 +251,8 @@ classdef HBoxFlex < uix.HBox
             %  d = c.getMouseDragLength() returns the drag length, that is
             %  the distance between the button down location and the
             %  current pointer location in the direction of dragging, in
-            %  pixels.  Note that a divider cannot be dragged beyond 1
-            %  pixel from its neighbors.
+            %  pixels.  Note that a divider cannot be dragged beyond the
+            %  minimum width from its neighbors.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -260,10 +261,12 @@ classdef HBoxFlex < uix.HBox
             assert( loc ~= 0, 'uix:InvalidOperation', ...
                 'Divider is not being dragged.' )
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
-            if delta < 0 % limit to 1 pixel from left neighbor
-                delta = max( delta, 1-obj.PixelWidths(loc) );
-            else % limit to 1 pixel from right neighbor
-                delta = min( delta, obj.PixelWidths(loc+1)-1 );
+            minimumWidths = obj.MinimumWidths;
+            pixelWidths = obj.PixelWidths;
+            if delta < 0 % limit to minimum distance from left neighbor
+                delta = max( delta, minimumWidths(loc) - pixelWidths(loc) );
+            else % limit to minimum distance from right neighbor
+                delta = min( delta, pixelWidths(loc+1) - minimumWidths(loc+1) );
             end
             
         end % getMouseDragLength
