@@ -42,17 +42,20 @@ classdef Divider < hgsetget
             % Create listeners
             sizeChangeListener = event.listener( control, 'SizeChange', ...
                 @obj.onSizeChange );
-            orientationPostSetListener = event.proplistener( obj, ...
+            colorListener = event.proplistener( obj, ...
+                findprop( obj, 'Color' ), 'PostSet', ...
+                @obj.onColorChange );
+            orientationListener = event.proplistener( obj, ...
                 findprop( obj, 'Orientation' ), 'PostSet', ...
-                @obj.onOrientationPostSet );
-            markingsPostSetListener = event.proplistener( obj, ...
+                @obj.onOrientationChange );
+            markingsListener = event.proplistener( obj, ...
                 findprop( obj, 'Markings' ), 'PostSet', ...
-                @obj.onMarkingsPostSet );
+                @obj.onMarkingsChange );
             
             % Store listeners
             obj.SizeChangeListener = sizeChangeListener;
-            obj.PropertyListeners = [orientationPostSetListener; ...
-                markingsPostSetListener];
+            obj.PropertyListeners = [colorListener; ...
+                orientationListener; markingsListener];
             
         end % constructor
         
@@ -167,19 +170,28 @@ classdef Divider < hgsetget
             
         end % onSizeChange
         
-        function onOrientationPostSet( obj, ~, ~ )
+        function onColorChange( obj, ~, ~ )
             
             % Update
             obj.update()
             
-        end % onOrientationPostSet
+        end % onColorChange
         
-        function onMarkingsPostSet( obj, ~, ~ )
+        function onOrientationChange( obj, ~, ~ )
             
             % Update
             obj.update()
             
-        end % onMarkingsPostSet
+        end % onOrientationChange
+        
+        function onMarkingsChange( obj, ~, ~ )
+            
+            % Update
+            obj.update()
+            
+        end % onMarkingsChange
+        
+        
         
     end % event handlers
     
