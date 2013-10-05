@@ -1,24 +1,28 @@
 classdef HBox < uix.Container
     
     properties
-        Padding = 0
-        Spacing = 0
+        Padding = 0 % space around contents, in pixels
+        Spacing = 0 % space between contents, in pixels
     end
     
     properties( Access = public, Dependent )
-        Widths
-        MinimumWidths
+        Widths % widths of contents, in pixels and/or weights
+        MinimumWidths % minimum widths of contents, in pixels
     end
     
     properties( Hidden, Access = public, Dependent )
-        Sizes
-        MinimumSizes
+        Sizes % deprecated
+        MinimumSizes % deprecated
     end
     
     properties( Access = private )
-        Widths_ = zeros( [0 1] )
-        MinimumWidths_ = zeros( [0 1] )
+        Widths_ = zeros( [0 1] ) % backing for Widths
+        MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
         ActivePositionPropertyListeners = cell( [0 1] )
+    end
+    
+    properties( GetAccess = protected, SetAccess = private )
+        PixelWidths = zeros( [0 1] ) % cache of widths, in pixels
     end
     
     methods
@@ -290,6 +294,7 @@ classdef HBox < uix.Container
                     child.Position = positions(ii,:);
                 end
             end
+            obj.PixelWidths = positions(:,3);
             
         end % reposition
         

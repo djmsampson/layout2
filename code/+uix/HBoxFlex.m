@@ -8,9 +8,9 @@ classdef HBoxFlex < uix.HBox
         MousePressListener
         MouseReleaseListener
         MouseMotionListener
-        Over = false
+        OldMouseOver = false
         ActiveDivider = 0
-        ButtonDownLocation = [NaN NaN]
+        MousePressLocation = [NaN NaN]
         OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
     end
@@ -64,8 +64,8 @@ classdef HBoxFlex < uix.HBox
             % Call superclass method
             onChildAdded@uix.HBox( obj, source, eventData );
             
-            % Restack
-            obj.restack()
+            % Update pointer
+            obj.onMouseMotion()
             
         end % onChildAdded
         
@@ -76,26 +76,27 @@ classdef HBoxFlex < uix.HBox
             
             % Remove divider if there is more than one child
             if numel( obj.Contents_ ) > 1
-                delete( obj.Dividers(end,:) )
-                obj.Dividers(end,:) = [];
+                loc = max( find( obj.Contents == eventData.Child ) - 1, 1 );
+                delete( obj.Dividers(loc) )
+                obj.Dividers(loc,:) = [];
             end
             
             % Call superclass method
             onChildRemoved@uix.HBox( obj, source, eventData );
             
+            % Update pointer
+            obj.onMouseMotion()
+            
         end % onChildRemoved
         
         function onAncestryChange( obj, ~, ~ )
             
-            % Create observers
+            % Create fresh location observer
             ancestryObserver = obj.AncestryObserver;
             ancestors = ancestryObserver.Ancestors;
             locationObserver = uix.LocationObserver( ancestors );
             
-            % Store observers
-            obj.LocationObserver = locationObserver;
-            
-            % Create listeners
+            % Create fresh mouse listeners
             figure = ancestryObserver.Figure;
             if isempty( figure )
                 mousePressListener = event.listener.empty( [0 0] );
@@ -110,7 +111,8 @@ classdef HBoxFlex < uix.HBox
                     'WindowMouseMotion', @obj.onMouseMotion );
             end
             
-            % Store listeners
+            % Replace existing observers and listeners
+            obj.LocationObserver = locationObserver;
             obj.MousePressListener = mousePressListener;
             obj.MouseReleaseListener = mouseReleaseListener;
             obj.MouseMotionListener = mouseMotionListener;
@@ -122,42 +124,61 @@ classdef HBoxFlex < uix.HBox
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
+            % Check whether mouse is over a divider
             [tf, loc] = obj.isMouseOverDivider();
-            if tf
-                obj.ActiveDivider = loc;
-                obj.ButtonDownLocation = ROOT.PointerLocation;
-                obj.OldDividerPosition = obj.Dividers(loc).Position;
-            end
+            if ~tf, return, end
+            
+            % Capture relevant state
+            divider = obj.Dividers(loc);
+            obj.ActiveDivider = loc;
+            obj.MousePressLocation = ROOT.PointerLocation;
+            obj.OldDividerPosition = divider.Position;
+            
+            % Activate divider
+            % TODO
             
         end % onMousePress
         
         function onMouseRelease( obj, ~, ~ )
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
+            % Check whether a divider is active
             loc = obj.ActiveDivider;
             if loc == 0, return, end
-            startLocation = obj.ButtonDownLocation;
-            finishLocation = ROOT.PointerLocation;
-            delta = finishLocation(1) - startLocation(1);
-            obj.Dividers(obj.ActiveDivider).Position = ...
-                obj.OldDividerPosition + [delta 0 0 0];
+            
+            % Deactivate divider
+            % TODO
+            
+            % Reposition contents
+            delta = obj.getMouseDragLength();
+            oldWidths = obj.Widths(loc:loc+1);
+            oldPixelWidths = obj.PixelWidths(loc:loc+1);
+            newPixelWidths = oldPixelWidths + delta * [1;-1];
+            if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
+                newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
+            elseif oldWidths(1) < 0 && oldWidths(2) >= 0 % weight, pixels
+                newWidths = [oldWidths(1) * newPixelWidths(1) / ...
+                    oldPixelWidths(1); newPixelWidths(2)];
+            elseif oldWidths(1) >= 0 && oldWidths(2) < 0 % pixels, weight
+                newWidths = [newPixelWidths(1); oldWidths(2) * ...
+                    newPixelWidths(2) / oldPixelWidths(2)];
+            else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
+                newWidths = newPixelWidths;
+            end
+            obj.Widths(loc:loc+1) = newWidths;
+            
+            % Reset button down event and divider state
             obj.ActiveDivider = 0;
-            obj.ButtonDownLocation = [NaN NaN];
+            obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
             
         end % onMouseRelease
         
         function onMouseMotion( obj, ~, ~ )
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
-            if obj.ActiveDivider == 0
-                
+            loc = obj.ActiveDivider;
+            if loc == 0 % hovering                
                 isOver = obj.isMouseOverDivider();
-                wasOver = obj.Over;
+                wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
                     figure = obj.AncestryObserver.Figure;
                     if isOver % enter
@@ -167,26 +188,26 @@ classdef HBoxFlex < uix.HBox
                         figure.Pointer = obj.OldPointer;
                         obj.OldPointer = 'unset';
                     end
-                    obj.Over = isOver;
+                    obj.OldMouseOver = isOver;
                 end
-                
-            else
-                
-                startLocation = obj.ButtonDownLocation;
-                finishLocation = ROOT.PointerLocation;
-                delta = finishLocation(1) - startLocation(1);
-                obj.Dividers(obj.ActiveDivider).Position = ...
+            else % dragging                
+                % Reposition divider
+                delta = obj.getMouseDragLength();
+                obj.Dividers(loc).Position = ...
                     obj.OldDividerPosition + [delta 0 0 0];
-                
             end
             
-        end
+        end % onMouseMotion
         
     end % event handlers
     
     methods( Access = protected )
         
         function reposition( obj, positions )
+            %reposition  Reposition contents
+            %
+            %  c.reposition(p) repositions the contents of the container c
+            %  to the pixel positions p.
             
             % Call superclass method
             reposition@uix.HBox( obj, positions )
@@ -205,7 +226,39 @@ classdef HBoxFlex < uix.HBox
             
         end % reposition
         
+        function delta = getMouseDragLength( obj )
+            %getMouseDragLength  Get length of current mouse drag
+            %
+            %  d = c.getMouseDragLength() returns the drag length, that is
+            %  the distance between the button down location and the
+            %  current pointer location in the direction of dragging, in
+            %  pixels.  Note that a divider cannot be dragged beyond 1
+            %  pixel from its neighbors.
+            
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
+            loc = obj.ActiveDivider;
+            assert( loc ~= 0, 'uix:InvalidOperation', ...
+                'Divider is not being dragged.' )
+            delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+            if delta < 0 % limit to 1 pixel from left neighbor
+                delta = max( delta, 1-obj.PixelWidths(loc) );
+            else % limit to 1 pixel from right neighbor
+                delta = min( delta, obj.PixelWidths(loc+1)-1 );
+            end
+            
+        end % getMouseDragLength
+        
         function [tf, loc] = isMouseOverDivider( obj )
+            %isMouseOverDivider  Test for mouse over divider
+            %
+            %  tf = c.isMouseOverDivider() returns true if the mouse is
+            %  over any divider of the container c, and false otherwise.
+            %
+            %  [tf,loc] = c.isMouseOverDivider() also returns an index loc
+            %  corresponding to the divider that the mouse is over.  If the
+            %  mouse is not over any divider then loc is 0.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -232,23 +285,6 @@ classdef HBoxFlex < uix.HBox
             end
             
         end % isMouseOverDivider
-        
-        function restack( obj )
-            
-            childAddedListener = obj.ChildAddedListener;
-            childRemovedListener = obj.ChildRemovedListener;
-            childAddedListener.Enabled = false;
-            childRemovedListener.Enabled = false;
-            dividers = obj.Dividers;
-            for ii = 1:numel( dividers )
-                divider = dividers(ii);
-                divider.Parent = [];
-                divider.Parent = obj;
-            end
-            childAddedListener.Enabled = true;
-            childRemovedListener.Enabled = false;
-            
-        end
         
     end % methods
     
