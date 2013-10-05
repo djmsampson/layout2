@@ -2,6 +2,7 @@ classdef HBoxFlex < uix.HBox
     
     properties
         Dividers = uix.Divider.empty( [0 1] )
+        TopDivider = uix.Divider.empty( [0 0] )
         AncestryObserver
         AncestryListener
         LocationObserver
@@ -59,6 +60,12 @@ classdef HBoxFlex < uix.HBox
                 divider = uix.Divider( 'Parent', obj, ...
                     'Orientation', 'vertical', 'Markings', 'on' );
                 obj.Dividers(end+1,:) = divider;
+                % Refresh top divider
+                delete( obj.TopDivider )
+                topDivider = uix.Divider( 'Parent', obj, ...
+                    'Orientation', 'vertical', 'Markings', 'on', ...
+                    'Visible', 'off' );
+                obj.TopDivider = topDivider;
             end
             
             % Call superclass method
@@ -135,7 +142,10 @@ classdef HBoxFlex < uix.HBox
             obj.OldDividerPosition = divider.Position;
             
             % Activate divider
-            % TODO
+            topDivider = obj.TopDivider;
+            topDivider.Position = divider.Position;
+            divider.Visible = 'off';
+            topDivider.Visible = 'on';
             
         end % onMousePress
         
@@ -146,7 +156,8 @@ classdef HBoxFlex < uix.HBox
             if loc == 0, return, end
             
             % Deactivate divider
-            % TODO
+            obj.TopDivider.Visible = 'off';
+            obj.Dividers(loc).Visible = 'on';
             
             % Reposition contents
             delta = obj.getMouseDragLength();
@@ -176,7 +187,7 @@ classdef HBoxFlex < uix.HBox
         function onMouseMotion( obj, ~, ~ )
             
             loc = obj.ActiveDivider;
-            if loc == 0 % hovering                
+            if loc == 0 % hovering
                 isOver = obj.isMouseOverDivider();
                 wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
@@ -190,10 +201,10 @@ classdef HBoxFlex < uix.HBox
                     end
                     obj.OldMouseOver = isOver;
                 end
-            else % dragging                
+            else % dragging
                 % Reposition divider
                 delta = obj.getMouseDragLength();
-                obj.Dividers(loc).Position = ...
+                obj.TopDivider.Position = ...
                     obj.OldDividerPosition + [delta 0 0 0];
             end
             
