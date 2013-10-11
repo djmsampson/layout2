@@ -58,34 +58,34 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Call reorder
             obj.reorder( indices )
             
+            % Redraw
+            obj.redraw()
+            
         end % set.Contents
         
     end % accessors
     
-    methods( Abstract, Access = protected )
-        
-        redraw( obj )
-        
-    end % protected methods
-    
-    methods( Access = protected )
+    methods( Access = private, Sealed )
         
         function onChildAdded( obj, ~, eventData )
             
-            % Add to contents
-            obj.Contents_(end+1,1) = eventData.Child;
+            % Add child
+            obj.addChild( eventData.Child )
             
-            % Call redraw
+            % Redraw
             obj.redraw()
             
         end % onChildAdded
         
         function onChildRemoved( obj, ~, eventData )
             
-            % Remove from contents
-            obj.Contents_(obj.Contents_==eventData.Child,:) = [];
+            % Do nothing if container is being deleted
+            if strcmp( obj.BeingDeleted, 'on' ), return, end
             
-            % Call redraw
+            % Remove child
+            obj.removeChild( eventData.Child )
+            
+            % Redraw
             obj.redraw()
             
         end % onChildRemoved
@@ -99,7 +99,39 @@ classdef Container < matlab.ui.container.internal.UIContainer
         
     end % event handlers
     
+    methods( Access = protected, Sealed )
+        
+        function redraw( obj )
+            %redraw  Request redraw
+            
+            % Redraw
+            obj.redrawnow()
+            
+        end % redraw
+        
+    end % protected methods
+    
+    methods( Abstract, Access = protected )
+        
+        redrawnow( obj )
+        
+    end % abstract template methods
+    
     methods( Access = protected )
+        
+        function addChild( obj, child )
+            
+            % Add to contents
+            obj.Contents_(end+1,1) = child;
+            
+        end % addChild
+        
+        function removeChild( obj, child )
+            
+            % Remove from contents
+            obj.Contents_(obj.Contents_==child) = [];
+            
+        end % removeChild
         
         function reorder( obj, indices )
             %reorder  Reorder contents
@@ -110,11 +142,8 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Reorder
             obj.Contents_ = obj.Contents_(indices,:);
             
-            % Redraw
-            obj.redraw()
-            
         end % reorder
         
-    end % operations
+    end % template methods
     
 end % classdef

@@ -1,6 +1,6 @@
 classdef HBoxFlex < uix.HBox
     
-    properties
+    properties( Access = protected )
         Dividers = uix.Divider.empty( [0 1] )
         FrontDivider
         AncestryObserver
@@ -69,49 +69,6 @@ classdef HBoxFlex < uix.HBox
     end % structors
     
     methods( Access = protected )
-        
-        function onChildAdded( obj, source, eventData )
-            
-            % Add divider if there will be more than one child
-            if numel( obj.Contents_ ) > 0
-                divider = uix.Divider( 'Parent', obj, ...
-                    'Orientation', 'vertical', 'Markings', 'on', ...
-                    'Color', obj.BackgroundColor );
-                obj.Dividers(end+1,:) = divider;
-            end
-            
-            % Bring front divider to the front
-            frontDivider = obj.FrontDivider;
-            frontDivider.Parent = [];
-            frontDivider.Parent = obj;
-            
-            % Call superclass method
-            onChildAdded@uix.HBox( obj, source, eventData );
-            
-            % Update pointer
-            obj.onMouseMotion()
-            
-        end % onChildAdded
-        
-        function onChildRemoved( obj, source, eventData )
-            
-            % Do nothing if container is being deleted
-            if strcmp( obj.BeingDeleted, 'on' ), return, end
-            
-            % Remove divider if there is more than one child
-            if numel( obj.Contents_ ) > 1
-                loc = max( find( obj.Contents == eventData.Child ) - 1, 1 );
-                delete( obj.Dividers(loc) )
-                obj.Dividers(loc,:) = [];
-            end
-            
-            % Call superclass method
-            onChildRemoved@uix.HBox( obj, source, eventData );
-            
-            % Update pointer
-            obj.onMouseMotion()
-            
-        end % onChildRemoved
         
         function onAncestryChange( obj, ~, ~ )
             
@@ -244,6 +201,46 @@ classdef HBoxFlex < uix.HBox
     
     methods( Access = protected )
         
+        function addChild( obj, child )
+            
+            % Add divider if there will be more than one child
+            if numel( obj.Contents_ ) > 0
+                divider = uix.Divider( 'Parent', obj, ...
+                    'Orientation', 'vertical', 'Markings', 'on', ...
+                    'Color', obj.BackgroundColor );
+                obj.Dividers(end+1,:) = divider;
+            end
+            
+            % Bring front divider to the front
+            frontDivider = obj.FrontDivider;
+            frontDivider.Parent = [];
+            frontDivider.Parent = obj;
+            
+            % Call superclass method
+            addChild@uix.HBox( obj, child );
+            
+            % Update pointer
+            obj.onMouseMotion()
+            
+        end % onChildAdded
+        
+        function removeChild( obj, child )
+            
+            % Remove divider if there is more than one child
+            if numel( obj.Contents_ ) > 1
+                loc = max( find( obj.Contents == child ) - 1, 1 );
+                delete( obj.Dividers(loc) )
+                obj.Dividers(loc,:) = [];
+            end
+            
+            % Call superclass method
+            removeChild@uix.HBox( obj, child );
+            
+            % Update pointer
+            obj.onMouseMotion()
+            
+        end % removeChild
+        
         function reposition( obj, positions )
             %reposition  Reposition contents
             %
@@ -266,6 +263,10 @@ classdef HBoxFlex < uix.HBox
             end
             
         end % reposition
+        
+    end % template methods
+    
+    methods( Access = private )
         
         function delta = getMouseDragLength( obj )
             %getMouseDragLength  Get length of current mouse drag
@@ -329,6 +330,6 @@ classdef HBoxFlex < uix.HBox
             
         end % isMouseOverDivider
         
-    end % methods
+    end % helper methods
     
 end % classdef

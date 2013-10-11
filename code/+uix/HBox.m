@@ -186,7 +186,18 @@ classdef HBox < uix.Container
     
     methods( Access = protected )
         
-        function redraw( obj )
+        function onActivePositionPropertyChange( obj, ~, ~ )
+            
+            % Redraw
+            obj.redraw()
+            
+        end % onActivePositionPropertyChange
+        
+    end % event handlers
+    
+    methods( Access = protected )
+        
+        function redrawnow( obj )
             
             % Abort for parentless containers
             if isempty( obj.Parent ), return, end
@@ -208,62 +219,43 @@ classdef HBox < uix.Container
             % Set positions
             obj.reposition( positions );
             
-        end % redraw
+        end % redrawnow
         
-    end % protected methods
-    
-    methods( Access = protected )
-        
-        function onChildAdded( obj, source, eventData )
+        function addChild( obj, child )
             
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
             obj.MinimumWidths_(end+1,:) = 1;
             
             % Call superclass method
-            onChildAdded@uix.Container( obj, source, eventData )
+            addChild@uix.Container( obj, child )
             
             % Add listeners
-            child = eventData.Child;
             if isa( child, 'matlab.graphics.axis.Axes' )
                 obj.ActivePositionPropertyListeners{end+1,:} = ...
                     event.proplistener( child, ...
                     findprop( child, 'ActivePositionProperty' ), ...
-                    'PostSet', @obj.onActivePositionPropertyPostSet );
+                    'PostSet', @obj.onActivePositionPropertyChange );
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
             
         end % onChildAdded
         
-        function onChildRemoved( obj, source, eventData )
-            
-            % Do nothing if container is being deleted
-            if strcmp( obj.BeingDeleted, 'on' ), return, end
+        function removeChild( obj, child )
             
             % Remove from sizes
-            tf = obj.Contents_ == eventData.Child;
+            tf = obj.Contents_ == child;
             obj.Widths_(tf,:) = [];
             obj.MinimumWidths_(tf,:) = [];
             
             % Call superclass method
-            onChildRemoved@uix.Container( obj, source, eventData )
+            removeChild@uix.Container( obj, child )
             
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
             
         end % onChildRemoved
-        
-        function onActivePositionPropertyPostSet( obj, ~, ~ )
-            
-            % Redraw
-            obj.redraw()
-            
-        end % onActivePositionPropertyPostSet
-        
-    end % event handlers
-    
-    methods( Access = protected )
         
         function reorder( obj, indices )
             %reorder  Reorder contents
@@ -298,6 +290,6 @@ classdef HBox < uix.Container
             
         end % reposition
         
-    end % methods
+    end % template methods
     
 end % classdef
