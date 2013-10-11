@@ -297,7 +297,7 @@ classdef HBoxFlex < uix.HBox
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
             minimumWidths = obj.MinimumWidths_;
             cPixelPositions = get( obj.Contents_, {'Position'} );
-            pixelPositions = vertcat( cPixelPositions );
+            pixelPositions = vertcat( cPixelPositions{:} );
             pixelWidths = pixelPositions(:,3);
             if delta < 0 % limit to minimum distance from left neighbor
                 delta = max( delta, minimumWidths(loc) - pixelWidths(loc) );
