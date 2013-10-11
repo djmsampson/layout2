@@ -133,10 +133,12 @@ classdef HBoxFlex < uix.HBox
             obj.FrontDivider.Visible = 'off';
             obj.Dividers(loc).Visible = 'on';
             
-            % Reposition contents
+            % Compute new positions
             delta = obj.getMouseDragLength();
-            oldWidths = obj.Widths(loc:loc+1);
-            oldPixelWidths = obj.PixelWidths(loc:loc+1);
+            oldWidths = obj.Widths_(loc:loc+1);
+            contents = obj.Contents_;
+            oldPixelWidths = [contents(loc).Position(3), ...
+                contents(loc+1).Position(3)];
             newPixelWidths = oldPixelWidths + delta * [1;-1];
             if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
                 newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
@@ -149,12 +151,20 @@ classdef HBoxFlex < uix.HBox
             else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
                 newWidths = newPixelWidths;
             end
-            obj.Widths(loc:loc+1) = newWidths;
             
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
+            
+            % Abort set
+            if isequal( oldWidths, newWidths ), return, end
+            
+            % Reposition contents
+            obj.Widths_(loc:loc+1) = newWidths;
+            
+            % Redraw
+            obj.redraw()
             
         end % onMouseRelease
         
@@ -227,8 +237,9 @@ classdef HBoxFlex < uix.HBox
         function removeChild( obj, child )
             
             % Remove divider if there is more than one child
+            tf = obj.Contents_ == child;
             if numel( obj.Contents_ ) > 1
-                loc = max( find( obj.Contents == child ) - 1, 1 );
+                loc = max( find( tf ) - 1, 1 );
                 delete( obj.Dividers(loc) )
                 obj.Dividers(loc,:) = [];
             end
@@ -284,8 +295,10 @@ classdef HBoxFlex < uix.HBox
             assert( loc ~= 0, 'uix:InvalidOperation', ...
                 'Divider is not being dragged.' )
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
-            minimumWidths = obj.MinimumWidths;
-            pixelWidths = obj.PixelWidths;
+            minimumWidths = obj.MinimumWidths_;
+            cPixelPositions = get( obj.Contents_, {'Position'} );
+            pixelPositions = vertcat( cPixelPositions );
+            pixelWidths = pixelPositions(:,3);
             if delta < 0 % limit to minimum distance from left neighbor
                 delta = max( delta, minimumWidths(loc) - pixelWidths(loc) );
             else % limit to minimum distance from right neighbor
