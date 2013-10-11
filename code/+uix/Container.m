@@ -15,8 +15,11 @@ classdef Container < matlab.ui.container.internal.UIContainer
         
         function obj = Container( varargin )
             
+            % Split input arguments
+            [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
+            
             % Call superclass constructor
-            obj@matlab.ui.container.internal.UIContainer( varargin{:} );
+            obj@matlab.ui.container.internal.UIContainer( notmypv{:} );
             
             % Create child listeners
             childObserver = uix.ChildObserver( obj );
@@ -33,6 +36,11 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
             obj.SizeChangeListener = sizeChangeListener;
+            
+            % Set properties
+            if ~isempty( mypv )
+                set( obj, mypv{:} )
+            end
             
         end % constructor
         
