@@ -137,7 +137,7 @@ classdef HBoxFlex < uix.HBox
             delta = obj.getMouseDragLength();
             oldWidths = obj.Widths_(loc:loc+1);
             contents = obj.Contents_;
-            oldPixelWidths = [contents(loc).Position(3), ...
+            oldPixelWidths = [contents(loc).Position(3); ...
                 contents(loc+1).Position(3)];
             newPixelWidths = oldPixelWidths + delta * [1;-1];
             if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
