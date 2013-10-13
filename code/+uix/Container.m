@@ -6,6 +6,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
     
     properties( Access = protected )
         Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+    end
+    
+    properties( Access = private )
         ChildAddedListener
         ChildRemovedListener
         SizeChangeListener
