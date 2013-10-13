@@ -56,13 +56,17 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     ~isempty( ancestors ), 'uix.InvalidArgument', ...
                     'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
                 subject = ancestors(end);
-                figure = ancestors(1);
                 cParents = get( ancestors, {'Parent'} );
                 assert( isequal( ancestors(1:end-1,:), ...
                     vertcat( cParents{2:end} ) ), ...
                     'uix:InvalidArgument', 'Inconsistent ancestry.' )
-                assert( isequal( cParents{1}, ROOT ) || isempty( cParents{1} ), ...
-                    'uix:InvalidArgument', 'Incomplete ancestry.' )
+                if isequal( cParents{1}, ROOT ) % rooted
+                    figure = ancestors(1);
+                elseif isempty( cParents{1} ) % unrooted
+                    figure = cParents{1};
+                else % incomplete
+                    error( 'uix:InvalidArgument', 'Incomplete ancestry.' )
+                end
             end
             
             % Store subject, ancestors, figure
