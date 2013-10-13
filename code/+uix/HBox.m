@@ -1,11 +1,8 @@
 classdef HBox < uix.Container
     
-    properties
+    properties( Access = public, Dependent )
         Padding = 0 % space around contents, in pixels
         Spacing = 0 % space between contents, in pixels
-    end
-    
-    properties( Access = public, Dependent )
         Widths % widths of contents, in pixels and/or weights
         MinimumWidths % minimum widths of contents, in pixels
     end
@@ -16,6 +13,8 @@ classdef HBox < uix.Container
     end
     
     properties( Access = protected )
+        Padding_ = 0 % backing for Padding
+        Spacing_ = 0 % backing for Spacing
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
     end
@@ -45,6 +44,12 @@ classdef HBox < uix.Container
     
     methods
         
+        function value = get.Padding( obj )
+            
+            value = obj.Padding_;
+            
+        end % get.Padding
+        
         function set.Padding( obj, value )
             
             % Check
@@ -55,12 +60,18 @@ classdef HBox < uix.Container
                 'Property ''Padding'' must be a non-negative scalar.' )
             
             % Set
-            obj.Padding = value;
+            obj.Padding_ = value;
             
             % Redraw
             obj.redraw()
             
         end % set.Padding
+        
+        function value = get.Spacing( obj )
+            
+            value = obj.Spacing_;
+            
+        end % get.Spacing
         
         function set.Spacing( obj, value )
             
@@ -72,7 +83,7 @@ classdef HBox < uix.Container
                 'Property ''Spacing'' must be a non-negative scalar.' )
             
             % Set
-            obj.Spacing = value;
+            obj.Spacing_ = value;
             
             % Redraw
             obj.redraw()
@@ -206,8 +217,8 @@ classdef HBox < uix.Container
                 obj.Position, obj.Units, 'pixels', obj.Parent );
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
-            padding = obj.Padding;
-            spacing = obj.Spacing;
+            padding = obj.Padding_;
+            spacing = obj.Spacing_;
             xPositions = uix.calcPixelPositions( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
