@@ -196,7 +196,7 @@ classdef HBox < uix.Container
     
     methods( Access = protected )
         
-        function redrawnow( obj )
+        function redraw( obj )
             
             % Abort for parentless containers
             if isempty( obj.Parent ), return, end
@@ -218,7 +218,7 @@ classdef HBox < uix.Container
             % Set positions
             obj.reposition( positions );
             
-        end % redrawnow
+        end % redraw
         
         function addChild( obj, child )
             
