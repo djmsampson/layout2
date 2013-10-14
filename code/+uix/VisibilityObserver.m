@@ -30,19 +30,21 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
                     'uix.InvalidArgument', ...
                     'Subject must be a graphics object.' )
                 ancestors = uix.ancestors( subject );
+                ancestry = [ancestors; subject];
             else
-                ancestors = in;
-                assert( all( ishghandle( ancestors ) ) && ...
-                    ndims( ancestors ) == 2 && iscolumn( ancestors ) && ...
-                    ~isempty( ancestors ), 'uix.InvalidArgument', ...
+                ancestry = in;
+                assert( all( ishghandle( ancestry ) ) && ...
+                    ndims( ancestry ) == 2 && iscolumn( ancestry ) && ...
+                    ~isempty( ancestry ), 'uix.InvalidArgument', ...
                     'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
-                subject = ancestors(end);
-                cParents = get( ancestors, {'Parent'} );
-                assert( isequal( ancestors(1:end-1,:), ...
+                cParents = get( ancestry, {'Parent'} );
+                assert( isequal( ancestry(1:end-1,:), ...
                     vertcat( cParents{2:end} ) ), ...
                     'uix:InvalidArgument', 'Inconsistent ancestry.' )
                 assert( isequal( cParents{1}, ROOT ) || isempty( cParents{1} ), ...
                     'uix:InvalidArgument', 'Incomplete ancestry.' )
+                subject = ancestry(end,:);
+                ancestors = ancestry(1:end-1,:);
             end
             
             % Store subject, ancestors
@@ -56,12 +58,13 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             obj.update()
             
             % Create listeners
+            visibleListeners = event.listener.empty( [0 1] );
             cbVisibleChange = @obj.onVisibleChange;
-            for ii = 1:numel( ancestors )
-                ancestor = ancestors(ii);
+            for ii = 1:numel( ancestry )
+                ancestor = ancestry(ii);
                 visibleListeners(ii,:) = event.proplistener( ancestor, ...
                     findprop( ancestor, 'Visible' ), 'PostSet', ...
-                    cbVisibleChange ); %#ok<AGROW>
+                    cbVisibleChange );
             end
             
             % Store listeners
@@ -79,7 +82,8 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             oldVisible = obj.Visible;
             
             % Identify new value
-            visibles = get( obj.Ancestors, 'Visible' );
+            ancestry = [obj.Ancestors; obj.Subject];
+            visibles = get( ancestry, 'Visible' );
             newVisible = all( strcmp( visibles, 'on' ) );
             
             % Store new value

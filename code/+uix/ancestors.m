@@ -9,7 +9,7 @@ function [a, f] = ancestors( h )
 %  unrooted objects, f is an empty placeholder.
 
 % Find ancestors
-a = h; %  initialize
+a = matlab.graphics.GraphicsPlaceholder.empty( [0 1] ); %  initialize
 p = h.Parent;
 while ~isempty( p ) && ~isa( p, 'matlab.ui.Root' )
     a = [p; a]; %#ok<AGROW>

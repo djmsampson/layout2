@@ -6,9 +6,9 @@ classdef HBoxFlex < uix.HBox
         AncestryObserver
         AncestryListener
         LocationObserver
-        MousePressListener
-        MouseReleaseListener
-        MouseMotionListener
+        MousePressListener = event.listener.empty( [0 0] )
+        MouseReleaseListener = event.listener.empty( [0 0] )
+        MouseMotionListener = event.listener.empty( [0 0] )
         OldMouseOver = false
         ActiveDivider = 0
         MousePressLocation = [NaN NaN]
@@ -75,15 +75,15 @@ classdef HBoxFlex < uix.HBox
             % Create fresh location observer
             ancestryObserver = obj.AncestryObserver;
             ancestors = ancestryObserver.Ancestors;
-            locationObserver = uix.LocationObserver( ancestors );
+            locationObserver = uix.LocationObserver( [ancestors; obj] );
             
             % Create fresh mouse listeners
-            figure = ancestryObserver.Figure;
-            if isempty( figure )
+            if isempty( ancestors ) || ~isa( ancestors(1), 'matlab.ui.Figure' )
                 mousePressListener = event.listener.empty( [0 0] );
                 mouseReleaseListener = event.listener.empty( [0 0] );
                 mouseMotionListener = event.listener.empty( [0 0] );
             else
+                figure = ancestors(1,:);
                 mousePressListener = event.listener( figure, ...
                     'WindowMousePress', @obj.onMousePress );
                 mouseReleaseListener = event.listener( figure, ...

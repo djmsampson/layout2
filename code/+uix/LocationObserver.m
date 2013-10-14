@@ -49,17 +49,19 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     'uix.InvalidArgument', ...
                     'Subject must be a graphics object.' )
                 [ancestors, figure] = uix.ancestors( subject );
+                ancestry = [ancestors; subject];
             else
-                ancestors = in;
-                assert( all( ishghandle( ancestors ) ) && ...
-                    ndims( ancestors ) == 2 && iscolumn( ancestors ) && ...
-                    ~isempty( ancestors ), 'uix.InvalidArgument', ...
+                ancestry = in;
+                assert( all( ishghandle( ancestry ) ) && ...
+                    ndims( ancestry ) == 2 && iscolumn( ancestry ) && ...
+                    ~isempty( ancestry ), 'uix.InvalidArgument', ...
                     'Ancestry must be a vector of graphics objects.' ) %#ok<ISMAT>
-                subject = ancestors(end);
-                cParents = get( ancestors, {'Parent'} );
-                assert( isequal( ancestors(1:end-1,:), ...
+                cParents = get( ancestry, {'Parent'} );
+                assert( isequal( ancestry(1:end-1,:), ...
                     vertcat( cParents{2:end} ) ), ...
                     'uix:InvalidArgument', 'Inconsistent ancestry.' )
+                ancestors = ancestry(1:end-1,:);
+                subject = ancestry(end,:);
                 if isequal( cParents{1}, ROOT ) % rooted
                     figure = ancestors(1);
                 elseif isempty( cParents{1} ) % unrooted
@@ -87,14 +89,16 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             obj.update()
             
             % Create listeners
+            locationListeners = event.listener.empty( [0 1] );
+            sizeListeners = event.listener.empty( [0 1] );
             cbLocationChange = @obj.onLocationChange;
             cbSizeChange = @obj.onSizeChange;
-            for ii = 1:numel( ancestors )
-                ancestor = ancestors(ii);
+            for ii = 1:numel( ancestry )
+                ancestor = ancestry(ii);
                 locationListeners(ii,:) = event.listener( ancestor, ...
-                    'LocationChange', cbLocationChange ); %#ok<AGROW>
+                    'LocationChange', cbLocationChange );
                 sizeListeners(ii,:) = event.listener( ancestor, ...
-                    'SizeChange', cbSizeChange ); %#ok<AGROW>
+                    'SizeChange', cbSizeChange );
             end
             windowStyleListener = event.proplistener( figure, ...
                 findprop( figure, 'WindowStyle' ), 'PostSet', ...
@@ -125,17 +129,19 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             
             % Retrieve ancestors, parents and figure
             ancestors = obj.Ancestors;
-            parents = [ROOT; ancestors(1:end-1,:)];
+            subject = obj.Subject;
+            ancestry = [ancestors; subject];
+            parents = [ROOT; ancestry(1:end-1,:)];
             figure = obj.Figure;
             docked = strcmp( figure.WindowStyle, 'docked' );
             
             if nargin == 1 % recompute from scratch
                 
                 % Compute units, positions and offsets of all ancestors
-                units = get( ancestors, {'Units'} );
-                cPositions = get( ancestors, {'Position'} );
+                units = get( ancestry, {'Units'} );
+                cPositions = get( ancestry, {'Position'} );
                 positions = vertcat( cPositions{:} );
-                n = numel( ancestors );
+                n = numel( ancestry );
                 offsets = zeros( [n 2] ); % initialize
                 for ii = 1:n
                     if ii == 1 && docked
@@ -152,8 +158,8 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             else % specified modified ancestor
                 
                 % Compute units, position and offset of modified ancestor
-                tf = ancestors == source;
-                ancestor = ancestors(tf);
+                tf = ancestry == source;
+                ancestor = ancestry(tf);
                 parent = parents(tf);
                 if tf(1) && docked % docked figure
                     pixel = getFigurePixelPosition( ...

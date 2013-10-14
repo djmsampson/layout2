@@ -47,25 +47,23 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             
             % Identify new ancestors
             subject = obj.Subject;
-            [newAncestors, figure] = uix.ancestors( subject );
+            [newAncestors, newFigure] = uix.ancestors( subject );
+            newAncestry = [newAncestors; subject];
             
             % Create listeners
-            listeners = event.proplistener.empty( [0 1] ); % initialize
+            parentListeners = event.listener.empty( [0 1] ); % initialize
             cbParentChange = @obj.onParentChange;
-            for ii = 1:numel( newAncestors )
-                newAncestor = newAncestors(ii);
-                listeners(end+1,:) = event.proplistener( newAncestor, ...
+            for ii = 1:numel( newAncestry )
+                newAncestor = newAncestry(ii);
+                parentListeners(ii,:) = event.proplistener( newAncestor, ...
                     findprop( newAncestor, 'Parent' ), 'PostSet', ...
-                    cbParentChange ); %#ok<AGROW>
+                    cbParentChange );
             end
-            listeners(end+1,:) = event.proplistener( subject, ...
-                findprop( subject, 'Parent' ), 'PostSet', ...
-                @obj.onParentChange );
             
             % Store properties
-            obj.Figure = figure;
+            obj.Figure = newFigure;
             obj.Ancestors = newAncestors;
-            obj.ParentListeners = listeners;
+            obj.ParentListeners = parentListeners;
             
             % Raise event
             if ~isequal( oldAncestors, newAncestors )

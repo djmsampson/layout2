@@ -209,9 +209,6 @@ classdef HBox < uix.Container
         
         function redraw( obj )
             
-            % Abort for parentless containers
-            if isempty( obj.Parent ), return, end
-            
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
