@@ -25,7 +25,7 @@ classdef HBoxFlex < uix.HBox
             [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
             
             % Call superclass constructor
-            obj@uix.HBox( notmypv{:} );
+            obj@uix.HBox( notmypv{:} )
             
             % Create front divider
             divider = uix.Divider( 'Parent', obj, ...
@@ -215,6 +215,16 @@ classdef HBoxFlex < uix.HBox
     
     methods( Access = protected )
         
+        function redraw( obj )
+            
+            % Call superclass method
+            redraw@uix.HBox( obj )
+            
+            % Update pointer
+            obj.onMouseMotion()
+            
+        end % redraw
+        
         function addChild( obj, child )
             
             % Add divider if there will be more than one child
@@ -231,12 +241,9 @@ classdef HBoxFlex < uix.HBox
             frontDivider.Parent = obj;
             
             % Call superclass method
-            addChild@uix.HBox( obj, child );
+            addChild@uix.HBox( obj, child )
             
-            % Update pointer
-            obj.onMouseMotion()
-            
-        end % onChildAdded
+        end % addChild
         
         function removeChild( obj, child )
             
@@ -249,10 +256,7 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Call superclass method
-            removeChild@uix.HBox( obj, child );
-            
-            % Update pointer
-            obj.onMouseMotion()
+            removeChild@uix.HBox( obj, child )
             
         end % removeChild
         
