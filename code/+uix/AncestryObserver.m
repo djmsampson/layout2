@@ -51,11 +51,12 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             
             % Create listeners
             listeners = event.proplistener.empty( [0 1] ); % initialize
+            cbParentChange = @obj.onParentChange;
             for ii = 1:numel( newAncestors )
                 newAncestor = newAncestors(ii);
                 listeners(end+1,:) = event.proplistener( newAncestor, ...
                     findprop( newAncestor, 'Parent' ), 'PostSet', ...
-                    @obj.onParentChange ); %#ok<AGROW>
+                    cbParentChange ); %#ok<AGROW>
             end
             listeners(end+1,:) = event.proplistener( subject, ...
                 findprop( subject, 'Parent' ), 'PostSet', ...
