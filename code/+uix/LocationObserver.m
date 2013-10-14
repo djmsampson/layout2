@@ -48,8 +48,13 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     ~isequal( subject, ROOT ), ...
                     'uix.InvalidArgument', ...
                     'Subject must be a graphics object.' )
-                [ancestors, figure] = uix.ancestors( subject );
+                ancestors = uix.ancestors( subject );
                 ancestry = [ancestors; subject];
+                if isa( ancestry(1), 'matlab.ui.Figure' )
+                    figure = ancestry(1);
+                else
+                    error( 'uix:InvalidArgument', 'Unrooted subject.' )
+                end
             else
                 ancestry = in;
                 assert( all( ishghandle( ancestry ) ) && ...
@@ -65,7 +70,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 if isequal( cParents{1}, ROOT ) % rooted
                     figure = ancestors(1);
                 elseif isempty( cParents{1} ) % unrooted
-                    figure = cParents{1};
+                    error( 'uix:InvalidArgument', 'Unrooted subject.' )
                 else % incomplete
                     error( 'uix:InvalidArgument', 'Incomplete ancestry.' )
                 end

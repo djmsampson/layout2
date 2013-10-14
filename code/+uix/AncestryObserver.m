@@ -42,13 +42,21 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
         
         function update( obj )
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             % Capture old ancestors
             oldAncestors = obj.Ancestors;
             
             % Identify new ancestors
             subject = obj.Subject;
-            [newAncestors, newFigure] = uix.ancestors( subject );
+            newAncestors = uix.ancestors( subject );
             newAncestry = [newAncestors; subject];
+            if isa( newAncestry(1), 'matlab.ui.Figure' )
+                newFigure = newAncestry(1);
+            else
+                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            end
             
             % Create listeners
             parentListeners = event.listener.empty( [0 1] ); % initialize
