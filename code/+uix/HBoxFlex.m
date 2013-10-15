@@ -3,8 +3,6 @@ classdef HBoxFlex < uix.HBox
     properties( Access = protected )
         Dividers = uix.Divider.empty( [0 1] )
         FrontDivider
-        AncestryObserver
-        AncestryListener
         LocationObserver
         MousePressListener = event.listener.empty( [0 0] )
         MouseReleaseListener = event.listener.empty( [0 0] )
@@ -32,77 +30,29 @@ classdef HBoxFlex < uix.HBox
                 'Orientation', 'vertical', 'Markings', 'on', ...
                 'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
             
-            % Store front divider
+            % Create observers and listeners
+            locationObserver = uix.LocationObserver( obj );
+            backgroundColorListener = event.proplistener( obj, ...
+                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+                @obj.onBackgroundColorChange );
+            
+            % Store properties
             obj.FrontDivider = divider;
-            
-            % Create observers
-            ancestryObserver = uix.AncestryObserver( obj );
-            
-            % Store observers
-            obj.AncestryObserver = ancestryObserver;
-            
-            % Create listeners
-            ancestryListener = event.listener( ancestryObserver, ...
-                'AncestryChange', @obj.onAncestryChange );
-            
-            % Store listeners
-            obj.AncestryListener = ancestryListener;
-            
-            % Force ancestry change
-            obj.onAncestryChange()
+            obj.LocationObserver = locationObserver;
+            obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
             if ~isempty( mypv )
                 set( obj, mypv{:} )
             end
             
-            % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChange );
-            
             % Store listeners
-            obj.BackgroundColorListener = backgroundColorListener;
             
         end % constructor
         
     end % structors
     
     methods( Access = protected )
-        
-        function onAncestryChange( obj, ~, ~ )
-            
-            % Create fresh location observer
-            ancestryObserver = obj.AncestryObserver;
-            ancestors = ancestryObserver.Ancestors;
-            if ~isempty( ancestors ) && isa( ancestors(1), 'matlab.ui.Figure' )
-                figure = ancestors(1);
-            else
-                figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-            end
-            locationObserver = uix.LocationObserver( [ancestors; obj] );
-            
-            % Create fresh mouse listeners
-            if ~isempty( figure )
-                mousePressListener = event.listener( figure, ...
-                    'WindowMousePress', @obj.onMousePress );
-                mouseReleaseListener = event.listener( figure, ...
-                    'WindowMouseRelease', @obj.onMouseRelease );
-                mouseMotionListener = event.listener( figure, ...
-                    'WindowMouseMotion', @obj.onMouseMotion );
-            else
-                mousePressListener = event.listener.empty( [0 0] );
-                mouseReleaseListener = event.listener.empty( [0 0] );
-                mouseMotionListener = event.listener.empty( [0 0] );
-            end
-            
-            % Replace existing observers and listeners
-            obj.LocationObserver = locationObserver;
-            obj.MousePressListener = mousePressListener;
-            obj.MouseReleaseListener = mouseReleaseListener;
-            obj.MouseMotionListener = mouseMotionListener;
-            
-        end % onAncestryChange
         
         function onMousePress( obj, ~, ~ )
             
@@ -167,12 +117,12 @@ classdef HBoxFlex < uix.HBox
             % Reposition contents
             obj.Widths_(loc:loc+1) = newWidths;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, ~, ~ )
+        function onMouseMotion( obj, source, ~ )
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
@@ -180,7 +130,7 @@ classdef HBoxFlex < uix.HBox
                 isOver = obj.isMouseOverDivider();
                 wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
-                    figure = obj.AncestryObserver.Figure;
+                    figure = source;
                     if isOver % enter
                         obj.OldPointer = figure.Pointer;
                         figure.Pointer = 'left';
@@ -259,6 +209,37 @@ classdef HBoxFlex < uix.HBox
             removeChild@uix.HBox( obj, child )
             
         end % removeChild
+        
+        function reparent( obj, oldAncestors, newAncestors )
+            
+            % Create fresh location observer
+            locationObserver = uix.LocationObserver( [newAncestors; obj] );
+            
+            % Create fresh mouse listeners
+            figure = ancestor( obj, 'figure' );
+            if ~isempty( figure )
+                mousePressListener = event.listener( figure, ...
+                    'WindowMousePress', @obj.onMousePress );
+                mouseReleaseListener = event.listener( figure, ...
+                    'WindowMouseRelease', @obj.onMouseRelease );
+                mouseMotionListener = event.listener( figure, ...
+                    'WindowMouseMotion', @obj.onMouseMotion );
+            else
+                mousePressListener = event.listener.empty( [0 0] );
+                mouseReleaseListener = event.listener.empty( [0 0] );
+                mouseMotionListener = event.listener.empty( [0 0] );
+            end
+            
+            % Replace existing observers and listeners
+            obj.LocationObserver = locationObserver;
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
+            obj.MouseMotionListener = mouseMotionListener;
+            
+            % Call superclass method
+            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            
+        end % reparent
         
         function reposition( obj, positions )
             %reposition  Reposition contents

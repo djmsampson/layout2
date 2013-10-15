@@ -1,19 +1,19 @@
 classdef ( Hidden, Sealed ) LocationObserver < handle
     
     properties( SetAccess = private )
-        Subject
-        Location = [NaN NaN NaN NaN]
+        Subject % observer subject
+        Location = [NaN NaN NaN NaN] % subject location on screen [pixels]
     end
     
     properties( Access = private )
-        Figure
-        FigurePanelContainer
-        Ancestors
-        Offsets = zeros( [0 2] )
-        Extent = [NaN NaN]
-        LocationListeners = event.listener.empty( [0 1] )
-        SizeListeners = event.listener.empty( [0 1] )
-        WindowStyleListener = event.proplistener.empty( [0 1] )
+        Figure % figure
+        FigurePanelContainer % figure panel container
+        Ancestors % ancestors
+        Offsets = zeros( [0 2] ) % offsets [pixels]
+        Extent = [NaN NaN] % extent [pixels]
+        LocationListeners = event.listener.empty( [0 1] ) % move listeners
+        SizeListeners = event.listener.empty( [0 1] ) % resize listeners
+        WindowStyleListener = event.proplistener.empty( [0 1] ) % un/dock listener
     end
     
     events( NotifyAccess = private )
@@ -50,10 +50,11 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     'Subject must be a graphics object.' )
                 ancestors = uix.ancestors( subject );
                 ancestry = [ancestors; subject];
-                if isa( ancestry(1), 'matlab.ui.Figure' ) % rooted
+                parent = ancestry(1).Parent;
+                if isequal( parent, ROOT )
                     figure = ancestry(1);
-                else % unrooted
-                    figure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+                else
+                    figure = parent;
                 end
             else
                 ancestry = in;
@@ -99,7 +100,6 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             cbLocationChange = @obj.onLocationChange;
             cbSizeChange = @obj.onSizeChange;
             for ii = 1:numel( ancestry )
-                ancestor = ancestry(ii);
                 locationListeners(ii,:) = event.listener( ancestor, ...
                     'LocationChange', cbLocationChange );
                 sizeListeners(ii,:) = event.listener( ancestor, ...

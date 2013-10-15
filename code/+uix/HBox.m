@@ -62,8 +62,8 @@ classdef HBox < uix.Container
             % Set
             obj.Padding_ = value;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.Padding
         
@@ -85,8 +85,8 @@ classdef HBox < uix.Container
             % Set
             obj.Spacing_ = value;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.Spacing
         
@@ -114,8 +114,8 @@ classdef HBox < uix.Container
             % Set
             obj.Widths_ = value;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.Widths
         
@@ -143,8 +143,8 @@ classdef HBox < uix.Container
             % Set
             obj.MinimumWidths_ = value;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.MinimumWidths
         
@@ -198,8 +198,8 @@ classdef HBox < uix.Container
         
         function onActivePositionPropertyChange( obj, ~, ~ )
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % onActivePositionPropertyChange
         

@@ -4,11 +4,20 @@ classdef Container < matlab.ui.container.internal.UIContainer
         Contents
     end
     
-    properties( Access = protected )
+    properties( GetAccess = protected, SetAccess = private )
         Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
     end
     
+    properties( Dependent, Access = protected )
+        Dirty
+    end
+    
     properties( Access = private )
+        Dirty_ = false
+        AncestryObserver
+        AncestryListener
+        Ancestors
+        ChildObserver
         ChildAddedListener
         ChildRemovedListener
         SizeChangeListener
@@ -25,6 +34,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj@matlab.ui.container.internal.UIContainer( notmypv{:} );
             
             % Create child listeners
+            ancestryObserver = uix.AncestryObserver( obj );
+            ancestryListener = event.listener( ancestryObserver, ...
+                'AncestryChange', @obj.onAncestryChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -36,6 +48,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
                 obj, 'SizeChange', @obj.onSizeChange );
             
             % Store listeners
+            obj.AncestryObserver = ancestryObserver;
+            obj.AncestryListener = ancestryListener;
+            obj.Ancestors = ancestryObserver.Ancestors;
+            obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
             obj.SizeChangeListener = sizeChangeListener;
@@ -69,22 +85,58 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Call reorder
             obj.reorder( indices )
             
-            % Redraw
-            obj.redraw()
-            
         end % set.Contents
+        
+        function value = get.Dirty( obj )
+            
+            value = obj.Dirty_;
+            
+        end % get.Dirty
+        
+        function set.Dirty( obj, value )
+            
+            if value
+                if isempty( ancestor( obj, 'figure' ) )
+                    obj.Dirty_ = true;
+                else
+                    obj.redraw()
+                end
+            end
+            
+        end % set.Dirty
         
     end % accessors
     
     methods( Access = private, Sealed )
         
+        function onAncestryChange( obj, ~, ~ )
+            
+            % Identify old and new ancestors
+            oldAncestors = obj.Ancestors;
+            ancestryObserver = obj.AncestryObserver;
+            newAncestors = ancestryObserver.Ancestors;
+            
+            % Call template method
+            obj.reparent( oldAncestors, newAncestors )
+            
+            % Redraw if dirty and being rooted
+            if obj.Dirty_
+                oldRooted = ~isempty( oldAncestors ) && ...
+                    isa( oldAncestors(1), 'matlab.ui.Figure' );
+                newRooted = ~isempty( newAncestors ) && ...
+                    isa( newAncestors(1), 'matlab.ui.Figure' );
+                if ~oldRooted && newRooted
+                    obj.redraw()
+                    obj.Dirty_ = false;
+                end
+            end
+            
+        end % onAncestryChange
+        
         function onChildAdded( obj, ~, eventData )
             
-            % Add child
+            % Call template method
             obj.addChild( eventData.Child )
-            
-            % Redraw
-            obj.redraw()
             
         end % onChildAdded
         
@@ -93,18 +145,15 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Do nothing if container is being deleted
             if strcmp( obj.BeingDeleted, 'on' ), return, end
             
-            % Remove child
+            % Call template method
             obj.removeChild( eventData.Child )
-            
-            % Redraw
-            obj.redraw()
             
         end % onChildRemoved
         
         function onSizeChange( obj, ~, ~ )
             
-            % Call redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % onSizeChange
         
@@ -123,6 +172,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Add to contents
             obj.Contents_(end+1,1) = child;
             
+            % Mark as dirty
+            obj.Dirty = true;
+            
         end % addChild
         
         function removeChild( obj, child )
@@ -130,7 +182,14 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Remove from contents
             obj.Contents_(obj.Contents_==child) = [];
             
+            % Mark as dirty
+            obj.Dirty = true;
+            
         end % removeChild
+        
+        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+            
+        end % reparent
         
         function reorder( obj, indices )
             %reorder  Reorder contents
@@ -140,6 +199,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
             % Reorder
             obj.Contents_ = obj.Contents_(indices,:);
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % reorder
         

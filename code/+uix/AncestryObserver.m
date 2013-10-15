@@ -2,7 +2,6 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
     
     properties( GetAccess = public, SetAccess = private )
         Subject
-        Figure
         Ancestors
     end
     
@@ -52,11 +51,6 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             subject = obj.Subject;
             newAncestors = uix.ancestors( subject );
             newAncestry = [newAncestors; subject];
-            if isa( newAncestry(1), 'matlab.ui.Figure' )
-                newFigure = newAncestry(1);
-            else
-                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-            end
             
             % Create listeners
             parentListeners = event.listener.empty( [0 1] ); % initialize
@@ -69,7 +63,6 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             end
             
             % Store properties
-            obj.Figure = newFigure;
             obj.Ancestors = newAncestors;
             obj.ParentListeners = parentListeners;
             
