@@ -100,6 +100,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             cbLocationChange = @obj.onLocationChange;
             cbSizeChange = @obj.onSizeChange;
             for ii = 1:numel( ancestry )
+                ancestor = ancestry(ii);
                 locationListeners(ii,:) = event.listener( ancestor, ...
                     'LocationChange', cbLocationChange );
                 sizeListeners(ii,:) = event.listener( ancestor, ...
