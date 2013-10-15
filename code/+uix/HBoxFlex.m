@@ -1,6 +1,6 @@
 classdef HBoxFlex < uix.HBox
     
-    properties( Access = protected )
+    properties( Access = private )
         Dividers = uix.Divider.empty( [0 1] )
         FrontDivider
         LocationObserver
@@ -46,8 +46,6 @@ classdef HBoxFlex < uix.HBox
                 set( obj, mypv{:} )
             end
             
-            % Store listeners
-            
         end % constructor
         
     end % structors
@@ -55,6 +53,7 @@ classdef HBoxFlex < uix.HBox
     methods( Access = protected )
         
         function onMousePress( obj, ~, ~ )
+            %onMousePress  Handler for WindowMousePress events
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -78,6 +77,7 @@ classdef HBoxFlex < uix.HBox
         end % onMousePress
         
         function onMouseRelease( obj, ~, ~ )
+            %onMousePress  Handler for WindowMouseRelease events
             
             % Check whether a divider is active
             loc = obj.ActiveDivider;
@@ -123,6 +123,7 @@ classdef HBoxFlex < uix.HBox
         end % onMouseRelease
         
         function onMouseMotion( obj, source, ~ )
+            %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
@@ -166,6 +167,9 @@ classdef HBoxFlex < uix.HBox
     methods( Access = protected )
         
         function redraw( obj )
+            %redraw  Redraw contents
+            %
+            %  c.redraw() redraws the container c.
             
             % Call superclass method
             redraw@uix.HBox( obj )
@@ -176,6 +180,9 @@ classdef HBoxFlex < uix.HBox
         end % redraw
         
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(x) adds the child x to the container c.
             
             % Add divider if there will be more than one child
             if numel( obj.Contents ) > 0
@@ -196,6 +203,9 @@ classdef HBoxFlex < uix.HBox
         end % addChild
         
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(x) removes the child x from the container c.
             
             % Remove divider if there is more than one child
             contents = obj.Contents;
@@ -212,12 +222,16 @@ classdef HBoxFlex < uix.HBox
         end % removeChild
         
         function reparent( obj, oldAncestors, newAncestors )
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c to the ancestors a
+            %  to the ancestors b.
             
-            % Create fresh location observer
+            % Refresh location observer
             locationObserver = uix.LocationObserver( [newAncestors; obj] );
             obj.LocationObserver = locationObserver;
             
-            % Create fresh mouse listeners if figure has changed
+            % Refresh mouse listeners if figure has changed
             if isempty( oldAncestors ) || ...
                     ~isa( oldAncestors(1), 'matlab.ui.Figure' )
                 oldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
