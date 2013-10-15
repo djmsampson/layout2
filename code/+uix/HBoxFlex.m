@@ -90,7 +90,7 @@ classdef HBoxFlex < uix.HBox
             % Compute new positions
             delta = obj.getMouseDragLength();
             oldWidths = obj.Widths_(loc:loc+1);
-            contents = obj.Contents;
+            contents = obj.Contents_;
             oldPixelWidths = [contents(loc).Position(3); ...
                 contents(loc+1).Position(3)];
             newPixelWidths = oldPixelWidths + delta * [1;-1];
@@ -185,7 +185,7 @@ classdef HBoxFlex < uix.HBox
             %  c.addChild(x) adds the child x to the container c.
             
             % Add divider if there will be more than one child
-            if numel( obj.Contents ) > 0
+            if numel( obj.Contents_ ) > 0
                 divider = uix.Divider( 'Parent', obj, ...
                     'Orientation', 'vertical', 'Markings', 'on', ...
                     'Color', obj.BackgroundColor );
@@ -208,7 +208,7 @@ classdef HBoxFlex < uix.HBox
             %  c.removeChild(x) removes the child x from the container c.
             
             % Remove divider if there is more than one child
-            contents = obj.Contents;
+            contents = obj.Contents_;
             tf = contents == child;
             if numel( contents ) > 1
                 loc = max( find( tf ) - 1, 1 );
@@ -311,7 +311,7 @@ classdef HBoxFlex < uix.HBox
                 'Divider is not being dragged.' )
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
             minimumWidths = obj.MinimumWidths_;
-            cPixelPositions = get( obj.Contents, {'Position'} );
+            cPixelPositions = get( obj.Contents_, {'Position'} );
             pixelPositions = vertcat( cPixelPositions{:} );
             pixelWidths = pixelPositions(:,3);
             if delta < 0 % limit to minimum distance from left neighbor

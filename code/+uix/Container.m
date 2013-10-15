@@ -4,12 +4,15 @@ classdef Container < matlab.ui.container.internal.UIContainer
         Contents
     end
     
+    properties( Access = protected )
+        Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+    end
+    
     properties( Dependent, Access = protected )
         Dirty
     end
     
     properties( Access = private )
-        Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
         Dirty_ = false
         AncestryObserver
         AncestryListener
