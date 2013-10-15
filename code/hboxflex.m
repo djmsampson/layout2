@@ -7,7 +7,7 @@ uix.pvchk( varargin )
 obj = uix.HBoxFlex( varargin{:} );
 
 % Auto-parent
-if ~ismember( varargin(1:2:end), 'Parent' )
+if ~ismember( 'Parent', varargin(1:2:end) )
     obj.Parent = gcf;
 end
 
