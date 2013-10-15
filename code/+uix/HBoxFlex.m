@@ -90,7 +90,7 @@ classdef HBoxFlex < uix.HBox
             % Compute new positions
             delta = obj.getMouseDragLength();
             oldWidths = obj.Widths_(loc:loc+1);
-            contents = obj.Contents_;
+            contents = obj.Contents;
             oldPixelWidths = [contents(loc).Position(3); ...
                 contents(loc+1).Position(3)];
             newPixelWidths = oldPixelWidths + delta * [1;-1];
@@ -171,14 +171,14 @@ classdef HBoxFlex < uix.HBox
             redraw@uix.HBox( obj )
             
             % Update pointer
-            obj.onMouseMotion()
+            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
             
         end % redraw
         
         function addChild( obj, child )
             
             % Add divider if there will be more than one child
-            if numel( obj.Contents_ ) > 0
+            if numel( obj.Contents ) > 0
                 divider = uix.Divider( 'Parent', obj, ...
                     'Orientation', 'vertical', 'Markings', 'on', ...
                     'Color', obj.BackgroundColor );
@@ -198,8 +198,9 @@ classdef HBoxFlex < uix.HBox
         function removeChild( obj, child )
             
             % Remove divider if there is more than one child
-            tf = obj.Contents_ == child;
-            if numel( obj.Contents_ ) > 1
+            contents = obj.Contents;
+            tf = contents == child;
+            if numel( contents ) > 1
                 loc = max( find( tf ) - 1, 1 );
                 delete( obj.Dividers(loc) )
                 obj.Dividers(loc,:) = [];
@@ -214,27 +215,38 @@ classdef HBoxFlex < uix.HBox
             
             % Create fresh location observer
             locationObserver = uix.LocationObserver( [newAncestors; obj] );
-            
-            % Create fresh mouse listeners
-            figure = ancestor( obj, 'figure' );
-            if ~isempty( figure )
-                mousePressListener = event.listener( figure, ...
-                    'WindowMousePress', @obj.onMousePress );
-                mouseReleaseListener = event.listener( figure, ...
-                    'WindowMouseRelease', @obj.onMouseRelease );
-                mouseMotionListener = event.listener( figure, ...
-                    'WindowMouseMotion', @obj.onMouseMotion );
-            else
-                mousePressListener = event.listener.empty( [0 0] );
-                mouseReleaseListener = event.listener.empty( [0 0] );
-                mouseMotionListener = event.listener.empty( [0 0] );
-            end
-            
-            % Replace existing observers and listeners
             obj.LocationObserver = locationObserver;
-            obj.MousePressListener = mousePressListener;
-            obj.MouseReleaseListener = mouseReleaseListener;
-            obj.MouseMotionListener = mouseMotionListener;
+            
+            % Create fresh mouse listeners if figure has changed
+            if isempty( oldAncestors ) || ...
+                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
+                oldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            else
+                oldFigure = oldAncestors(1);
+            end
+            if isempty( newAncestors ) || ...
+                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
+                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            else
+                newFigure = newAncestors(1);
+            end
+            if ~isequal( oldFigure, newFigure )
+                if isempty( newFigure )
+                    mousePressListener = event.listener.empty( [0 0] );
+                    mouseReleaseListener = event.listener.empty( [0 0] );
+                    mouseMotionListener = event.listener.empty( [0 0] );
+                else
+                    mousePressListener = event.listener( newFigure, ...
+                        'WindowMousePress', @obj.onMousePress );
+                    mouseReleaseListener = event.listener( newFigure, ...
+                        'WindowMouseRelease', @obj.onMouseRelease );
+                    mouseMotionListener = event.listener( newFigure, ...
+                        'WindowMouseMotion', @obj.onMouseMotion );
+                end
+                obj.MousePressListener = mousePressListener;
+                obj.MouseReleaseListener = mouseReleaseListener;
+                obj.MouseMotionListener = mouseMotionListener;
+            end
             
             % Call superclass method
             reparent@uix.Container( obj, oldAncestors, newAncestors )
@@ -285,7 +297,7 @@ classdef HBoxFlex < uix.HBox
                 'Divider is not being dragged.' )
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
             minimumWidths = obj.MinimumWidths_;
-            cPixelPositions = get( obj.Contents_, {'Position'} );
+            cPixelPositions = get( obj.Contents, {'Position'} );
             pixelPositions = vertcat( cPixelPositions{:} );
             pixelWidths = pixelPositions(:,3);
             if delta < 0 % limit to minimum distance from left neighbor

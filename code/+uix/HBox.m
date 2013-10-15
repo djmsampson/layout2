@@ -104,7 +104,7 @@ classdef HBox < uix.Container
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            assert( isequal( size( obj.Contents_ ), size( value ) ), ...
+            assert( isequal( size( obj.Contents ), size( value ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Size of property ''Widths'' must match size of contents.' )
             
@@ -133,7 +133,7 @@ classdef HBox < uix.Container
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be non-negative.' )
-            assert( isequal( size( obj.Contents_ ), size( value ) ), ...
+            assert( isequal( size( obj.Contents ), size( value ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Size of property ''MinimumWidths'' must match size of contents.' )
             
@@ -252,7 +252,7 @@ classdef HBox < uix.Container
         function removeChild( obj, child )
             
             % Remove from sizes
-            tf = obj.Contents_ == child;
+            tf = obj.Contents == child;
             obj.Widths_(tf,:) = [];
             obj.MinimumWidths_(tf,:) = [];
             
@@ -283,7 +283,7 @@ classdef HBox < uix.Container
         
         function reposition( obj, positions )
             
-            children = obj.Contents_;
+            children = obj.Contents;
             for ii = 1:numel( children )
                 child = children(ii);
                 child.Units = 'pixels';

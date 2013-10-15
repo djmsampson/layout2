@@ -4,19 +4,16 @@ classdef Container < matlab.ui.container.internal.UIContainer
         Contents
     end
     
-    properties( GetAccess = protected, SetAccess = private )
-        Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
-    end
-    
     properties( Dependent, Access = protected )
         Dirty
     end
     
     properties( Access = private )
+        Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
         Dirty_ = false
         AncestryObserver
         AncestryListener
-        Ancestors
+        OldAncestors
         ChildObserver
         ChildAddedListener
         ChildRemovedListener
@@ -37,6 +34,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             ancestryObserver = uix.AncestryObserver( obj );
             ancestryListener = event.listener( ancestryObserver, ...
                 'AncestryChange', @obj.onAncestryChange );
+            ancestors = ancestryObserver.Ancestors;
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -50,7 +48,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Store listeners
             obj.AncestryObserver = ancestryObserver;
             obj.AncestryListener = ancestryListener;
-            obj.Ancestors = ancestryObserver.Ancestors;
+            obj.OldAncestors = ancestors;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -96,10 +94,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
         function set.Dirty( obj, value )
             
             if value
-                if isempty( ancestor( obj, 'figure' ) )
-                    obj.Dirty_ = true;
-                else
+                if obj.isDrawable()
                     obj.redraw()
+                else
+                    obj.Dirty_ = true;
                 end
             end
             
@@ -111,25 +109,24 @@ classdef Container < matlab.ui.container.internal.UIContainer
         
         function onAncestryChange( obj, ~, ~ )
             
-            % Identify old and new ancestors
-            oldAncestors = obj.Ancestors;
+            % Retrieve old ancestors from cache
+            oldAncestors = obj.OldAncestors;
+            
+            % Retrieve new ancestors from observer
             ancestryObserver = obj.AncestryObserver;
             newAncestors = ancestryObserver.Ancestors;
             
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
             
-            % Redraw if dirty and being rooted
-            if obj.Dirty_
-                oldRooted = ~isempty( oldAncestors ) && ...
-                    isa( oldAncestors(1), 'matlab.ui.Figure' );
-                newRooted = ~isempty( newAncestors ) && ...
-                    isa( newAncestors(1), 'matlab.ui.Figure' );
-                if ~oldRooted && newRooted
-                    obj.redraw()
-                    obj.Dirty_ = false;
-                end
+            % Redraw if possible and if dirty
+            if obj.Dirty_ && obj.isDrawable()
+                obj.redraw()
+                obj.Dirty_ = false;
             end
+            
+            % Update cache
+            obj.OldAncestors = newAncestors;
             
         end % onAncestryChange
         
@@ -204,6 +201,14 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj.Dirty = true;
             
         end % reorder
+        
+        function tf = isDrawable( obj )
+            
+            ancestors = obj.AncestryObserver.Ancestors;
+            tf = ~isempty( ancestors ) && ...
+                isa( ancestors(1), 'matlab.ui.Figure' );
+            
+        end % isDrawable
         
     end % template methods
     
