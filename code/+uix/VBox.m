@@ -1,8 +1,8 @@
-classdef HBox < uix.Box
+classdef VBox < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
-        Widths % widths of contents, in pixels and/or weights
-        MinimumWidths % minimum widths of contents, in pixels
+        Heights % heights of contents, in pixels and/or weights
+        MinimumHeights % minimum heights of contents, in pixels
     end
     
     properties( Hidden, Access = public, Dependent )
@@ -11,13 +11,13 @@ classdef HBox < uix.Box
     end
     
     properties( Access = protected )
-        Widths_ = zeros( [0 1] ) % backing for Widths
-        MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
+        Heights_ = zeros( [0 1] ) % backing for Heights
+        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
     end
     
     methods
         
-        function obj = HBox( varargin )
+        function obj = VBox( varargin )
             
             % Split input arguments
             [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
@@ -36,84 +36,84 @@ classdef HBox < uix.Box
     
     methods
         
-        function value = get.Widths( obj )
+        function value = get.Heights( obj )
             
-            value = obj.Widths_;
+            value = obj.Heights_;
             
-        end % get.Widths
+        end % get.Heights
         
-        function set.Widths( obj, value )
+        function set.Heights( obj, value )
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''Widths'' must be of type double.' )
+                'Property ''Heights'' must be of type double.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''Widths'' must be real and finite.' )
+                'Elements of property ''Heights'' must be real and finite.' )
             if isequal( size( value ), size( obj.Contents_ ) )
                 % OK
             elseif isequal( size( value' ), size( obj.Contents_ ) )
                 % Warn and transpose
                 warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
+                    'Size of property ''Heights'' must match size of contents.' )
                 value = value';
             else
                 % Error
                 error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
+                    'Size of property ''Heights'' must match size of contents.' )
             end
             
             % Set
-            obj.Widths_ = value;
+            obj.Heights_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.Widths
+        end % set.Heights
         
-        function value = get.MinimumWidths( obj )
+        function value = get.MinimumHeights( obj )
             
-            value = obj.MinimumWidths_;
+            value = obj.MinimumHeights_;
             
-        end % get.MinimumWidths
+        end % get.MinimumHeights
         
-        function set.MinimumWidths( obj, value )
+        function set.MinimumHeights( obj, value )
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''MinimumWidths'' must be of type double.' )
+                'Property ''MinimumHeights'' must be of type double.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''MinimumWidths'' must be non-negative.' )
+                'Elements of property ''MinimumHeights'' must be non-negative.' )
             if isequal( size( value ), size( obj.Contents_ ) )
                 % OK
             elseif isequal( size( value' ), size( obj.Contents_ ) )
                 % Warn and transpose
                 warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
+                    'Size of property ''MinimumHeights'' must match size of contents.' )
                 value = value';
             else
                 % Error
                 error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
+                    'Size of property ''MinimumHeights'' must match size of contents.' )
             end
             
             % Set
-            obj.MinimumWidths_ = value;
+            obj.MinimumHeights_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.MinimumWidths
+        end % set.MinimumHeights
         
         function value = get.Sizes( obj )
             
             % Warn
             warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
             
             % Get
-            value = obj.Widths;
+            value = obj.Heights;
             
         end % get.Sizes
         
@@ -121,10 +121,10 @@ classdef HBox < uix.Box
             
             % Warn
             warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
             
             % Get
-            obj.Widths = value;
+            obj.Heights = value;
             
         end % set.Sizes
         
@@ -132,10 +132,10 @@ classdef HBox < uix.Box
             
             % Warn
             warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
             
             % Get
-            value = obj.MinimumWidths;
+            value = obj.MinimumHeights;
             
         end % get.MinimumSizes
         
@@ -143,10 +143,10 @@ classdef HBox < uix.Box
             
             % Warn
             warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
             
             % Get
-            obj.MinimumWidths = value;
+            obj.MinimumHeights = value;
             
         end % set.MinimumSizes
         
@@ -159,17 +159,17 @@ classdef HBox < uix.Box
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
-            widths = obj.Widths_;
-            minimumWidths = obj.MinimumWidths_;
+            heights = obj.Heights_;
+            minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
-            n = numel( widths );
-            xSizes = uix.calcPixelSizes( bounds(3), widths, ...
-                minimumWidths, padding, spacing );
-            xPositions = [cumsum( [0; xSizes(1:end-1,:)] ) + padding + ...
-                spacing * transpose( 0:n-1 ) + 1, xSizes];
-            yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, [n 1] );
+            n = numel( heights );
+            xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
+            xPositions = repmat( xPositions, [n 1] );
+            ySizes = uix.calcPixelSizes( bounds(4), heights, ...
+                minimumHeights, padding, spacing );
+            yPositions = [bounds(4) - cumsum( ySizes ) - padding - ...
+                spacing * transpose( 0:n-1 ) + 1, ySizes];
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             
@@ -181,8 +181,8 @@ classdef HBox < uix.Box
         function addChild( obj, child )
             
             % Add to sizes
-            obj.Widths_(end+1,:) = -1;
-            obj.MinimumWidths_(end+1,:) = 1;
+            obj.Heights_(end+1,:) = -1;
+            obj.MinimumHeights_(end+1,:) = 1;
             
             % Call superclass method
             addChild@uix.Box( obj, child )
@@ -193,8 +193,8 @@ classdef HBox < uix.Box
             
             % Remove from sizes
             tf = obj.Contents_ == child;
-            obj.Widths_(tf,:) = [];
-            obj.MinimumWidths_(tf,:) = [];
+            obj.Heights_(tf,:) = [];
+            obj.MinimumHeights_(tf,:) = [];
             
             % Call superclass method
             removeChild@uix.Box( obj, child )
@@ -208,8 +208,8 @@ classdef HBox < uix.Box
             %  i, c.Contents = c.Contents(i).
             
             % Reorder
-            obj.Widths_ = obj.Widths_(indices,:);
-            obj.MinimumWidths_ = obj.MinimumWidths_(indices,:);
+            obj.Heights_ = obj.Heights_(indices,:);
+            obj.MinimumHeights_ = obj.MinimumHeights_(indices,:);
             
             % Call superclass method
             reorder@uix.Box( obj, indices )

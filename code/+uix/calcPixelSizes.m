@@ -1,13 +1,10 @@
-function pPositions = calcPixelPositions( pTotal, mSizes, pMinimumSizes, pPadding, pSpacing )
-%calcPixelPositions  Calculate child positions in pixels
+function pSizes = calcPixelSizes( pTotal, mSizes, pMinimumSizes, pPadding, pSpacing )
+%calcPixelSizes  Calculate child positions in pixels
 %
-%  positions = uix.calcPixelPositions(total,sizes,minSizes,padding,spacing)
-%  computes child positions given total available size (in pixels), child
-%  sizes (in pixels and/or relative), minimum child sizes (in pixels),
-%  padding (in pixels) and spacing (in pixels).  positions is an n-by-2
-%  matrix, where n is the number of children, with the first column
-%  corresponding to left/bottom, and the second column corresponding to
-%  width/height.
+%  pSizes = uix.calcPixelSizes(total,mSizes,minSizes,padding,spacing)
+%  computes child sizes (in pixels) given total available size (in pixels),
+%  child sizes (in pixels and/or relative), minimum child sizes (in
+%  pixels), padding (in pixels) and spacing (in pixels).
 %
 %  Notes:
 %  * All children are at least as large as the minimum specified size
@@ -23,7 +20,7 @@ n = numel( mSizes ); % number of children
 
 if n == 0
     
-    pPositions = zeros( [n 2] );
+    pSizes = zeros( [n 1] );
     
 else
     
@@ -44,9 +41,5 @@ else
     pTotalRelative = max( pTotal - 2 * pPadding - (n-1) * pSpacing - ...
         sum( pSizes(a|s) ), 0 );
     pSizes(~a&~s) = pTotalRelative * mSizes(~a&~s) / sum( mSizes(~a&~s) );
-    
-    % Compute positions
-    pPositions = [cumsum( [0; pSizes(1:end-1,:)] ) + pPadding + ...
-        pSpacing * transpose( 0:n-1 ) + 1, pSizes];
     
 end % getPixelPositions
