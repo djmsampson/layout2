@@ -1,14 +1,14 @@
-function obj = vbox( varargin )
+function obj = uixhbox( varargin )
 
 % Check inputs
 uix.pvchk( varargin )
 
 % Construct
-obj = uix.VBox( varargin{:} );
+obj = uix.HBox( varargin{:} );
 
 % Auto-parent
 if ~ismember( 'Parent', varargin(1:2:end) )
     obj.Parent = gcf;
 end
 
-end % vbox
+end % uixhbox

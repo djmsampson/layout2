@@ -1,14 +1,14 @@
-function obj = vboxflex( varargin )
+function obj = uixgrid( varargin )
 
 % Check inputs
 uix.pvchk( varargin )
 
 % Construct
-obj = uix.VBoxFlex( varargin{:} );
+obj = uix.Grid( varargin{:} );
 
 % Auto-parent
 if ~ismember( 'Parent', varargin(1:2:end) )
     obj.Parent = gcf;
 end
 
-end % vboxflex
+end % uixgrid

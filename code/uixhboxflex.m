@@ -1,4 +1,4 @@
-function obj = hboxflex( varargin )
+function obj = uixhboxflex( varargin )
 
 % Check inputs
 uix.pvchk( varargin )
@@ -11,4 +11,4 @@ if ~ismember( 'Parent', varargin(1:2:end) )
     obj.Parent = gcf;
 end
 
-end % hboxflex
+end % uixhboxflex
