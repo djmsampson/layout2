@@ -140,6 +140,7 @@ classdef Box < uix.Container
             removeChild@uix.Container( obj, child )
             
             % Remove listeners
+            tf = obj.Contents_ == child;
             obj.ActivePositionPropertyListeners(tf,:) = [];
             
         end % onChildRemoved
