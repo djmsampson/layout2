@@ -56,21 +56,28 @@ classdef Grid < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
-            end
+            % TODO add more checking code
             
             % Set
+            n = numel( obj.Contents_ );
+            nxo = numel( obj.Widths_ );
+            nyo = numel( obj.Heights_ );
+            nxn = numel( value );
+            nyn = ceil( n / nxn );
             obj.Widths_ = value;
+            if nxn < nxo % number of columns decreasing
+                obj.MinimumWidths_(nxn+1:end,:) = [];
+                if nyn > nyo % number of rows increasing
+                    obj.Heights_(end+1:nyn,:) = -1;
+                    obj.MinimumHeights_(end+1:nyn,:) = 1;
+                end
+            elseif nxn > nxo % number of columns increasing
+                obj.MinimumWidths_(end+1:nxn,:) = -1;
+                if nyn < nyo % number of rows decreasing
+                    obj.Heights_(nyn+1:end,:) = [];
+                    obj.MinimumHeights_(nyn+1:end,:) = [];
+                end
+            end
             
             % Mark as dirty
             obj.Dirty = true;
@@ -170,21 +177,28 @@ classdef Grid < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Heights'' must be real and finite.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Heights'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Heights'' must match size of contents.' )
-            end
+            % TODO add more checking code
             
             % Set
+            n = numel( obj.Contents_ );
+            nxo = numel( obj.Widths_ );
+            nyo = numel( obj.Heights_ );
+            nyn = numel( value );
+            nxn = ceil( n / nyn );
             obj.Heights_ = value;
+            if nyn < nyo % number of rows decreasing
+                obj.MinimumHeights_(nyn+1:end,:) = [];
+                if nxn > nxo % number of columns increasing
+                    obj.Widths_(end+1:nxn,:) = -1;
+                    obj.MinimumWidths_(end+1:nxn,:) = 1;
+                end
+            elseif nyn > nyo % number of rows increasing
+                obj.MinimumHeights_(end+1:nyn,:) = -1;
+                if nxn < nxo % number of columns decreasing
+                    obj.Widths_(nxn+1:end,:) = [];
+                    obj.MinimumWidths_(nxn+1:end,:) = [];
+                end
+            end
             
             % Mark as dirty
             obj.Dirty = true;
@@ -296,7 +310,7 @@ classdef Grid < uix.Box
                 minimumHeights, padding, spacing );
             yPositions = [bounds(4) - cumsum( ySizes ) - padding - ...
                 spacing * transpose( 0:ny-1 ) + 1, ySizes];
-            [ix, iy] = ind2sub( [nx ny], transpose( 1:n ) );
+            [iy, ix] = ind2sub( [ny nx], transpose( 1:n ) );
             positions = [xPositions(ix,1), yPositions(iy,1), ...
                 xPositions(ix,2), yPositions(iy,2)];
             
@@ -307,7 +321,7 @@ classdef Grid < uix.Box
         
         function addChild( obj, child )
             
-            % Add column if necessary
+            % Add column and even a row if necessary
             n = numel( obj.Contents_ );
             nx = numel( obj.Widths_ );
             ny = numel( obj.Heights_ );
@@ -328,7 +342,7 @@ classdef Grid < uix.Box
         
         function removeChild( obj, child )
             
-            % Add column if necessary
+            % Remove column and even row if necessary
             n = numel( obj.Contents_ );
             nx = numel( obj.Widths_ );
             ny = numel( obj.Heights_ );
