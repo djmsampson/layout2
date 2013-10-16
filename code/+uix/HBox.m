@@ -85,9 +85,9 @@ classdef HBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
+            if isequal( size( value ), size( obj.Widths_ ) )
                 % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
+            elseif isequal( size( value' ), size( obj.Widths_ ) )
                 % Warn and transpose
                 warning( 'uix:InvalidPropertyValue', ...
                     'Size of property ''MinimumWidths'' must match size of contents.' )

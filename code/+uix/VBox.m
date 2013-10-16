@@ -85,9 +85,9 @@ classdef VBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumHeights'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
+            if isequal( size( value ), size( obj.Heights_ ) )
                 % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
+            elseif isequal( size( value' ), size( obj.Heights_ ) )
                 % Warn and transpose
                 warning( 'uix:InvalidPropertyValue', ...
                     'Size of property ''MinimumHeights'' must match size of contents.' )
