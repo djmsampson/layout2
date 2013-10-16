@@ -221,11 +221,11 @@ classdef HBoxFlex < uix.HBox
             
         end % removeChild
         
-        function reparent( obj, oldAncestors, newAncestors )
-            %reparent  Reparent container
+        function transplant( obj, oldAncestors, newAncestors )
+            %transplant  Transplant container
             %
-            %  c.reparent(a,b) reparents the container c to the ancestors a
-            %  to the ancestors b.
+            %  c.transplant(a,b) transplants the container c from the
+            %  ancestors a to the ancestors b.
             
             % Refresh location observer
             locationObserver = uix.LocationObserver( [newAncestors; obj] );
@@ -263,9 +263,9 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            transplant@uix.Container( obj, oldAncestors, newAncestors )
             
-        end % reparent
+        end % transplant
         
         function reposition( obj, positions )
             %reposition  Reposition contents

@@ -120,7 +120,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             newAncestors = ancestryObserver.Ancestors;
             
             % Call template method
-            obj.reparent( oldAncestors, newAncestors )
+            obj.transplant( oldAncestors, newAncestors )
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -187,9 +187,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % removeChild
         
-        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+        function transplant( obj, oldAncestors, newAncestors ) %#ok<INUSD>
             
-        end % reparent
+        end % transplant
         
         function reorder( obj, indices )
             %reorder  Reorder contents
