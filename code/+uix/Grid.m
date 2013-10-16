@@ -14,6 +14,13 @@ classdef Grid < uix.Box
         MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
     end
     
+    properties( Hidden, Access = public, Dependent )
+        ColumnSizes % deprecated
+        MinimumColumnSizes % deprecated
+        RowSizes % deprecated
+        MinimumRowSizes % deprecated
+    end
+    
     methods
         
         function obj = Grid( varargin )
@@ -105,6 +112,50 @@ classdef Grid < uix.Box
             
         end % set.MinimumWidths
         
+        function value = get.ColumnSizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
+            
+            % Get
+            value = obj.Widths;
+            
+        end % get.ColumnSizes
+        
+        function set.ColumnSizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
+            
+            % Get
+            obj.Widths = value;
+            
+        end % set.ColumnSizes
+        
+        function value = get.MinimumColumnSizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumColumnSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+            
+            % Get
+            value = obj.MinimumWidths;
+            
+        end % get.MinimumColumnSizes
+        
+        function set.MinimumColumnSizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumColumnSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+            
+            % Get
+            obj.MinimumWidths = value;
+            
+        end % set.MinimumColumnSizes
+        
         function value = get.Heights( obj )
             
             value = obj.Heights_;
@@ -174,6 +225,50 @@ classdef Grid < uix.Box
             obj.Dirty = true;
             
         end % set.MinimumHeights
+        
+        function value = get.RowSizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
+            
+            % Get
+            value = obj.Heights;
+            
+        end % get.RowSizes
+        
+        function set.RowSizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
+            
+            % Get
+            obj.Heights = value;
+            
+        end % set.RowSizes
+        
+        function value = get.MinimumRowSizes( obj )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumRowSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+            
+            % Get
+            value = obj.MinimumHeights;
+            
+        end % get.MinimumRowSizes
+        
+        function set.MinimumRowSizes( obj, value )
+            
+            % Warn
+            warning( 'uix:DeprecatedProperty', ...
+                'Property ''MinimumRowSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+            
+            % Get
+            obj.MinimumHeights = value;
+            
+        end % set.MinimumRowSizes
         
     end % accessors
     
