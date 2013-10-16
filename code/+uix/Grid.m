@@ -53,17 +53,34 @@ classdef Grid < uix.Box
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Widths'' must be of type double.' )
+            assert( isvector( value ), 'uix:InvalidPropertyValue', ...
+                'Property ''Widths'' must be a column vector.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            % TODO add more checking code
-            
-            % Set
+            if ~iscolumn( value )
+                % Warn and transpose
+                warning( 'uix:InvalidPropertyValue' , ...
+                    'Property ''Widths'' must be a column vector.' )
+                value = value';
+            end
             n = numel( obj.Contents_ );
             nxo = numel( obj.Widths_ );
             nyo = numel( obj.Heights_ );
             nxn = numel( value );
             nyn = ceil( n / nxn );
+            if nxn < min( [1 n] )
+                error( 'uix:InvalidPropertyValue' , ...
+                    'Property ''Widths'' must be non-empty for non-empty contents.' )
+            elseif ceil( n / nyn ) < nxn
+                error( 'uix:InvalidPropertyValue' , ...
+                    'Size of property ''Widths'' must not lead to empty columns.' )
+            elseif nxn > n
+                error( 'uix:InvalidPropertyValue' , ...
+                    'Size of property ''Widths'' must be no larger than size of contents.' )
+            end
+            
+            % Set
             obj.Widths_ = value;
             if nxn < nxo % number of columns decreasing
                 obj.MinimumWidths_(nxn+1:end,:) = [];
@@ -174,17 +191,31 @@ classdef Grid < uix.Box
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Heights'' must be of type double.' )
+            assert( isvector( value ), 'uix:InvalidPropertyValue', ...
+                'Property ''Heights'' must be a column vector.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Heights'' must be real and finite.' )
-            % TODO add more checking code
-            
-            % Set
+            if ~iscolumn( value )
+                % Warn and transpose
+                warning( 'uix:InvalidPropertyValue' , ...
+                    'Property ''Heights'' must be a column vector.' )
+                value = value';
+            end
             n = numel( obj.Contents_ );
             nxo = numel( obj.Widths_ );
             nyo = numel( obj.Heights_ );
             nyn = numel( value );
             nxn = ceil( n / nyn );
+            if nyn < min( [1 n] )
+                error( 'uix:InvalidPropertyValue' , ...
+                    'Property ''Heights'' must be non-empty for non-empty contents.' )
+            elseif nyn > n
+                error( 'uix:InvalidPropertyValue' , ...
+                    'Size of property ''Heights'' must be no larger than size of contents.' )
+            end
+            
+            % Set
             obj.Heights_ = value;
             if nyn < nyo % number of rows decreasing
                 obj.MinimumHeights_(nyn+1:end,:) = [];
