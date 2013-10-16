@@ -1,6 +1,6 @@
 classdef HBox < uix.Container
     
-    properties( Access = public, Dependent )
+    properties( Access = public, Dependent, AbortSet )
         Padding = 0 % space around contents, in pixels
         Spacing = 0 % space between contents, in pixels
         Widths % widths of contents, in pixels and/or weights
@@ -104,12 +104,18 @@ classdef HBox < uix.Container
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            assert( isequal( size( obj.Contents_ ), size( value ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Size of property ''Widths'' must match size of contents.' )
-            
-            % Abort set
-            if isequal( obj.Widths_, value ), return, end
+            if isequal( size( value ), size( obj.Contents_ ) )
+                % OK
+            elseif isequal( size( value' ), size( obj.Contents_ ) )
+                % Warn and transpose
+                warning( 'uix:InvalidPropertyValue', ...
+                    'Size of property ''Widths'' must match size of contents.' )
+                value = value';
+            else
+                % Error
+                error( 'uix:InvalidPropertyValue', ...
+                    'Size of property ''Widths'' must match size of contents.' )
+            end
             
             % Set
             obj.Widths_ = value;
@@ -133,12 +139,18 @@ classdef HBox < uix.Container
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be non-negative.' )
-            assert( isequal( size( obj.Contents_ ), size( value ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Size of property ''MinimumWidths'' must match size of contents.' )
-            
-            % Abort set
-            if isequal( obj.MinimumWidths_, value ), return, end
+            if isequal( size( value ), size( obj.Contents_ ) )
+                % OK
+            elseif isequal( size( value' ), size( obj.Contents_ ) )
+                % Warn and transpose
+                warning( 'uix:InvalidPropertyValue', ...
+                    'Size of property ''MinimumWidths'' must match size of contents.' )
+                value = value';
+            else
+                % Error
+                error( 'uix:InvalidPropertyValue', ...
+                    'Size of property ''MinimumWidths'' must match size of contents.' )
+            end
             
             % Set
             obj.MinimumWidths_ = value;
