@@ -5,11 +5,6 @@ classdef HBox < uix.Box
         MinimumWidths % minimum widths of contents, in pixels
     end
     
-    properties( Hidden, Access = public, Dependent )
-        Sizes % deprecated
-        MinimumSizes % deprecated
-    end
-    
     properties( Access = protected )
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
@@ -50,18 +45,9 @@ classdef HBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Widths'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''Widths'' must match size of contents.' )
             
             % Set
             obj.Widths_ = value;
@@ -85,18 +71,9 @@ classdef HBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Widths_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Widths_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Widths_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumWidths'' must match size of contents.' )
             
             % Set
             obj.MinimumWidths_ = value;
@@ -105,50 +82,6 @@ classdef HBox < uix.Box
             obj.Dirty = true;
             
         end % set.MinimumWidths
-        
-        function value = get.Sizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
-            
-            % Get
-            value = obj.Widths;
-            
-        end % get.Sizes
-        
-        function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
-            
-            % Get
-            obj.Widths = value;
-            
-        end % set.Sizes
-        
-        function value = get.MinimumSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
-            
-            % Get
-            value = obj.MinimumWidths;
-            
-        end % get.MinimumSizes
-        
-        function set.MinimumSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
-            
-            % Get
-            obj.MinimumWidths = value;
-            
-        end % set.MinimumSizes
         
     end % accessors
     

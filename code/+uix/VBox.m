@@ -5,11 +5,6 @@ classdef VBox < uix.Box
         MinimumHeights % minimum heights of contents, in pixels
     end
     
-    properties( Hidden, Access = public, Dependent )
-        Sizes % deprecated
-        MinimumSizes % deprecated
-    end
-    
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
         MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
@@ -50,18 +45,9 @@ classdef VBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Heights'' must be real and finite.' )
-            if isequal( size( value ), size( obj.Contents_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Contents_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Heights'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''Heights'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''Heights'' must match size of contents.' )
             
             % Set
             obj.Heights_ = value;
@@ -85,18 +71,9 @@ classdef VBox < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumHeights'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Heights_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Heights_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumHeights'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumHeights'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Heights_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumHeights'' must match size of contents.' )
             
             % Set
             obj.MinimumHeights_ = value;
@@ -105,50 +82,6 @@ classdef VBox < uix.Box
             obj.Dirty = true;
             
         end % set.MinimumHeights
-        
-        function value = get.Sizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
-            
-            % Get
-            value = obj.Heights;
-            
-        end % get.Sizes
-        
-        function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
-            
-            % Get
-            obj.Heights = value;
-            
-        end % set.Sizes
-        
-        function value = get.MinimumSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
-            
-            % Get
-            value = obj.MinimumHeights;
-            
-        end % get.MinimumSizes
-        
-        function set.MinimumSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
-            
-            % Get
-            obj.MinimumHeights = value;
-            
-        end % set.MinimumSizes
         
     end % accessors
     

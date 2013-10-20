@@ -14,13 +14,6 @@ classdef Grid < uix.Box
         MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
     end
     
-    properties( Hidden, Access = public, Dependent )
-        ColumnSizes % deprecated
-        MinimumColumnSizes % deprecated
-        RowSizes % deprecated
-        MinimumRowSizes % deprecated
-    end
-    
     methods
         
         function obj = Grid( varargin )
@@ -53,46 +46,41 @@ classdef Grid < uix.Box
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Widths'' must be of type double.' )
-            assert( isvector( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''Widths'' must be a column vector.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Widths'' must be real and finite.' )
-            if ~iscolumn( value )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue' , ...
-                    'Property ''Widths'' must be a column vector.' )
-                value = value';
-            end
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''Widths'' must match size of contents.' )
             n = numel( obj.Contents_ );
-            nxo = numel( obj.Widths_ );
-            nyo = numel( obj.Heights_ );
-            nxn = numel( value );
-            nyn = ceil( n / nxn );
-            if nxn < min( [1 n] )
+            co = numel( obj.Widths_ );
+            ro = numel( obj.Heights_ );
+            cn = numel( value );
+            rn = ceil( n / cn );
+            if cn < min( [1 n] )
                 error( 'uix:InvalidPropertyValue' , ...
                     'Property ''Widths'' must be non-empty for non-empty contents.' )
-            elseif ceil( n / nyn ) < nxn
+            elseif ceil( n / rn ) < cn
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Widths'' must not lead to empty columns.' )
-            elseif nxn > n
+            elseif cn > n
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Widths'' must be no larger than size of contents.' )
             end
             
             % Set
             obj.Widths_ = value;
-            if nxn < nxo % number of columns decreasing
-                obj.MinimumWidths_(nxn+1:end,:) = [];
-                if nyn > nyo % number of rows increasing
-                    obj.Heights_(end+1:nyn,:) = -1;
-                    obj.MinimumHeights_(end+1:nyn,:) = 1;
+            if cn < co % number of columns decreasing
+                obj.MinimumWidths_(cn+1:end,:) = [];
+                if rn > ro % number of rows increasing
+                    obj.Heights_(end+1:rn,:) = -1;
+                    obj.MinimumHeights_(end+1:rn,:) = 1;
                 end
-            elseif nxn > nxo % number of columns increasing
-                obj.MinimumWidths_(end+1:nxn,:) = -1;
-                if nyn < nyo % number of rows decreasing
-                    obj.Heights_(nyn+1:end,:) = [];
-                    obj.MinimumHeights_(nyn+1:end,:) = [];
+            elseif cn > co % number of columns increasing
+                obj.MinimumWidths_(end+1:cn,:) = -1;
+                if rn < ro % number of rows decreasing
+                    obj.Heights_(rn+1:end,:) = [];
+                    obj.MinimumHeights_(rn+1:end,:) = [];
                 end
             end
             
@@ -115,18 +103,9 @@ classdef Grid < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumWidths'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Widths_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Widths_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumWidths'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Widths_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumWidths'' must match size of contents.' )
             
             % Set
             obj.MinimumWidths_ = value;
@@ -135,50 +114,6 @@ classdef Grid < uix.Box
             obj.Dirty = true;
             
         end % set.MinimumWidths
-        
-        function value = get.ColumnSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
-            
-            % Get
-            value = obj.Widths;
-            
-        end % get.ColumnSizes
-        
-        function set.ColumnSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
-            
-            % Get
-            obj.Widths = value;
-            
-        end % set.ColumnSizes
-        
-        function value = get.MinimumColumnSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumColumnSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
-            
-            % Get
-            value = obj.MinimumWidths;
-            
-        end % get.MinimumColumnSizes
-        
-        function set.MinimumColumnSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumColumnSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
-            
-            % Get
-            obj.MinimumWidths = value;
-            
-        end % set.MinimumColumnSizes
         
         function value = get.Heights( obj )
             
@@ -191,43 +126,38 @@ classdef Grid < uix.Box
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Heights'' must be of type double.' )
-            assert( isvector( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''Heights'' must be a column vector.' )
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Heights'' must be real and finite.' )
-            if ~iscolumn( value )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue' , ...
-                    'Property ''Heights'' must be a column vector.' )
-                value = value';
-            end
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''Heights'' must match size of contents.' )
             n = numel( obj.Contents_ );
-            nxo = numel( obj.Widths_ );
-            nyo = numel( obj.Heights_ );
-            nyn = numel( value );
-            nxn = ceil( n / nyn );
-            if nyn < min( [1 n] )
+            co = numel( obj.Widths_ );
+            ro = numel( obj.Heights_ );
+            rn = numel( value );
+            cn = ceil( n / rn );
+            if rn < min( [1 n] )
                 error( 'uix:InvalidPropertyValue' , ...
                     'Property ''Heights'' must be non-empty for non-empty contents.' )
-            elseif nyn > n
+            elseif rn > n
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Heights'' must be no larger than size of contents.' )
             end
             
             % Set
             obj.Heights_ = value;
-            if nyn < nyo % number of rows decreasing
-                obj.MinimumHeights_(nyn+1:end,:) = [];
-                if nxn > nxo % number of columns increasing
-                    obj.Widths_(end+1:nxn,:) = -1;
-                    obj.MinimumWidths_(end+1:nxn,:) = 1;
+            if rn < ro % number of rows decreasing
+                obj.MinimumHeights_(rn+1:end,:) = [];
+                if cn > co % number of columns increasing
+                    obj.Widths_(end+1:cn,:) = -1;
+                    obj.MinimumWidths_(end+1:cn,:) = 1;
                 end
-            elseif nyn > nyo % number of rows increasing
-                obj.MinimumHeights_(end+1:nyn,:) = -1;
-                if nxn < nxo % number of columns decreasing
-                    obj.Widths_(nxn+1:end,:) = [];
-                    obj.MinimumWidths_(nxn+1:end,:) = [];
+            elseif rn > ro % number of rows increasing
+                obj.MinimumHeights_(end+1:rn,:) = -1;
+                if cn < co % number of columns decreasing
+                    obj.Widths_(cn+1:end,:) = [];
+                    obj.MinimumWidths_(cn+1:end,:) = [];
                 end
             end
             
@@ -250,18 +180,9 @@ classdef Grid < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 all( value >= 0 ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''MinimumHeights'' must be non-negative.' )
-            if isequal( size( value ), size( obj.Heights_ ) )
-                % OK
-            elseif isequal( size( value' ), size( obj.Heights_ ) )
-                % Warn and transpose
-                warning( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumHeights'' must match size of contents.' )
-                value = value';
-            else
-                % Error
-                error( 'uix:InvalidPropertyValue', ...
-                    'Size of property ''MinimumHeights'' must match size of contents.' )
-            end
+            assert( isequal( size( value ), size( obj.Heights_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumHeights'' must match size of contents.' )
             
             % Set
             obj.MinimumHeights_ = value;
@@ -270,50 +191,6 @@ classdef Grid < uix.Box
             obj.Dirty = true;
             
         end % set.MinimumHeights
-        
-        function value = get.RowSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
-            
-            % Get
-            value = obj.Heights;
-            
-        end % get.RowSizes
-        
-        function set.RowSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
-            
-            % Get
-            obj.Heights = value;
-            
-        end % set.RowSizes
-        
-        function value = get.MinimumRowSizes( obj )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumRowSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
-            
-            % Get
-            value = obj.MinimumHeights;
-            
-        end % get.MinimumRowSizes
-        
-        function set.MinimumRowSizes( obj, value )
-            
-            % Warn
-            warning( 'uix:DeprecatedProperty', ...
-                'Property ''MinimumRowSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
-            
-            % Get
-            obj.MinimumHeights = value;
-            
-        end % set.MinimumRowSizes
         
     end % accessors
     
