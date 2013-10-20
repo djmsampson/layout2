@@ -375,14 +375,17 @@ classdef Grid < uix.Box
             
             % Remove column and even row if necessary
             n = numel( obj.Contents_ );
-            nx = numel( obj.Widths_ );
-            ny = numel( obj.Heights_ );
+            c = numel( obj.Widths_ );
+            r = numel( obj.Heights_ );
             if n == 1
                 obj.Widths_(end,:) = [];
                 obj.MinimumWidths_(end,:) = [];
                 obj.Heights_(end,:) = [];
                 obj.MinimumHeights_(end,:) = [];
-            elseif ceil( (n-1)/ny ) < nx
+            elseif c == 1
+                obj.Heights_(end,:) = [];
+                obj.MinimumHeights_(end,:) = [];
+            elseif ceil( (n-1)/r ) < c
                 obj.Widths_(end,:) = [];
                 obj.MinimumWidths_(end,:) = [];
             end
