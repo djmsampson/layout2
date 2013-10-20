@@ -21,6 +21,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
         ChildAddedListener
         ChildRemovedListener
         SizeChangeListener
+        ActivePositionPropertyListeners = cell( [0 1] )
     end
     
     methods
@@ -157,6 +158,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % onSizeChange
         
+        function onActivePositionPropertyChange( obj, ~, ~ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % onActivePositionPropertyChange
+        
     end % event handlers
     
     methods( Abstract, Access = protected )
@@ -172,6 +180,16 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Add to contents
             obj.Contents_(end+1,1) = child;
             
+            % Add listeners
+            if isa( child, 'matlab.graphics.axis.Axes' )
+                obj.ActivePositionPropertyListeners{end+1,:} = ...
+                    event.proplistener( child, ...
+                    findprop( child, 'ActivePositionProperty' ), ...
+                    'PostSet', @obj.onActivePositionPropertyChange );
+            else
+                obj.ActivePositionPropertyListeners{end+1,:} = [];
+            end
+            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -181,6 +199,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
             % Remove from contents
             obj.Contents_(obj.Contents_==child) = [];
+            
+            % Remove listeners
+            tf = obj.Contents_ == child;
+            obj.ActivePositionPropertyListeners(tf,:) = [];
             
             % Mark as dirty
             obj.Dirty = true;
@@ -197,8 +219,12 @@ classdef Container < matlab.ui.container.internal.UIContainer
             %  c.reorder(i) reorders the container contents using indices
             %  i, c.Contents = c.Contents(i).
             
-            % Reorder
+            % Reorder contents
             obj.Contents_ = obj.Contents_(indices,:);
+            
+            % Reorder listeners
+            obj.ActivePositionPropertyListeners = ...
+                obj.ActivePositionPropertyListeners(indices,:);
             
             % Mark as dirty
             obj.Dirty = true;

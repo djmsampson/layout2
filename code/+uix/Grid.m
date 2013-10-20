@@ -346,7 +346,16 @@ classdef Grid < uix.Box
                 xPositions(ix,2), yPositions(iy,2)];
             
             % Set positions
-            obj.reposition( positions );
+            children = obj.Contents_;
+            for ii = 1:numel( children )
+                child = children(ii);
+                child.Units = 'pixels';
+                if isa( child, 'matlab.graphics.axis.Axes' )
+                    child.( child.ActivePositionProperty ) = positions(ii,:);
+                else
+                    child.Position = positions(ii,:);
+                end
+            end
             
         end % redraw
         

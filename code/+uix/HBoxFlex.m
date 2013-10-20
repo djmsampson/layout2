@@ -26,7 +26,7 @@ classdef HBoxFlex < uix.HBox
             obj@uix.HBox( notmypv{:} )
             
             % Create front divider
-            divider = uix.Divider( 'Parent', obj, ...
+            frontDivider = uix.Divider( 'Parent', obj, ...
                 'Orientation', 'vertical', 'Markings', 'on', ...
                 'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
             
@@ -37,7 +37,7 @@ classdef HBoxFlex < uix.HBox
                 @obj.onBackgroundColorChange );
             
             % Store properties
-            obj.FrontDivider = divider;
+            obj.FrontDivider = frontDivider;
             obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
             
@@ -174,52 +174,51 @@ classdef HBoxFlex < uix.HBox
             % Call superclass method
             redraw@uix.HBox( obj )
             
+            % Create or destroy dividers
+            do = numel( obj.Dividers ); % current number of dividers
+            c = numel( obj.Contents_ ); % current number of contents
+            dn = max( [c-1 0] ); % required number of dividers
+            if do < dn % create
+                for ii = do+1:dn
+                    divider = uix.Divider( 'Parent', obj, ...
+                        'Orientation', 'vertical', 'Markings', 'on', ...
+                        'Color', obj.BackgroundColor );
+                    obj.Dividers(ii,:) = divider;
+                end
+                % Bring front divider to the front
+                frontDivider = obj.FrontDivider;
+                frontDivider.Parent = [];
+                frontDivider.Parent = obj;
+            elseif do > dn % destroy
+                % Destroy dividers
+                delete( obj.Dividers(dn+1:do,:) )
+                obj.Dividers(dn+1:do,:) = [];
+            end
+            
+            % Position dividers
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                obj.Position, obj.Units, 'pixels', obj.Parent );
+            widths = obj.Widths_;
+            minimumWidths = obj.MinimumWidths_;
+            padding = obj.Padding_;
+            spacing = obj.Spacing_;
+            xSizes = uix.calcPixelSizes( bounds(3), widths, ...
+                minimumWidths, padding, spacing );
+            xPositions = [cumsum( xSizes(1:dn,:) ) + padding + ...
+                spacing * transpose( 0:dn-1 ) + 1, repmat( spacing, [dn 1] )];
+            yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
+            yPositions = repmat( yPositions, [dn 1] );
+            positions = [xPositions(:,1), yPositions(:,1), ...
+                xPositions(:,2), yPositions(:,2)];
+            for ii = 1:dn
+                divider = obj.Dividers(ii);
+                divider.Position = positions(ii,:);
+            end
+            
             % Update pointer
             obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
             
         end % redraw
-        
-        function addChild( obj, child )
-            %addChild  Add child
-            %
-            %  c.addChild(x) adds the child x to the container c.
-            
-            % Add divider if there will be more than one child
-            if numel( obj.Contents_ ) > 0
-                divider = uix.Divider( 'Parent', obj, ...
-                    'Orientation', 'vertical', 'Markings', 'on', ...
-                    'Color', obj.BackgroundColor );
-                obj.Dividers(end+1,:) = divider;
-            end
-            
-            % Bring front divider to the front
-            frontDivider = obj.FrontDivider;
-            frontDivider.Parent = [];
-            frontDivider.Parent = obj;
-            
-            % Call superclass method
-            addChild@uix.HBox( obj, child )
-            
-        end % addChild
-        
-        function removeChild( obj, child )
-            %removeChild  Remove child
-            %
-            %  c.removeChild(x) removes the child x from the container c.
-            
-            % Remove divider if there is more than one child
-            contents = obj.Contents_;
-            tf = contents == child;
-            if numel( contents ) > 1
-                loc = max( find( tf ) - 1, 1 );
-                delete( obj.Dividers(loc) )
-                obj.Dividers(loc,:) = [];
-            end
-            
-            % Call superclass method
-            removeChild@uix.HBox( obj, child )
-            
-        end % removeChild
         
         function transplant( obj, oldAncestors, newAncestors )
             %transplant  Transplant container
@@ -266,29 +265,6 @@ classdef HBoxFlex < uix.HBox
             transplant@uix.Container( obj, oldAncestors, newAncestors )
             
         end % transplant
-        
-        function reposition( obj, positions )
-            %reposition  Reposition contents
-            %
-            %  c.reposition(p) repositions the contents of the container c
-            %  to the pixel positions p.
-            
-            % Call superclass method
-            reposition@uix.HBox( obj, positions )
-            
-            % Set divider positions
-            dividerPositions = [ ...
-                positions(1:end-1,1)+positions(1:end-1,3), ...
-                positions(1:end-1,2), ...
-                diff( positions(:,1), 1, 1 ) - positions(1:end-1,3), ...
-                positions(1:end-1,4)];
-            dividerPositions(:,3) = max( dividerPositions(:,3), eps );
-            dividers = obj.Dividers;
-            for ii = 1:numel( dividers )
-                obj.Dividers(ii).Position = dividerPositions(ii,:);
-            end
-            
-        end % reposition
         
     end % template methods
     
