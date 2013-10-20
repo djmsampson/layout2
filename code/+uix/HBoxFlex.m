@@ -59,7 +59,11 @@ classdef HBoxFlex < uix.HBox
             if isequal( ROOT, [] ), ROOT = groot(); end
             
             % Check whether mouse is over a divider
-            [tf, loc] = obj.isMouseOverDivider();
+            point = ROOT.PointerLocation - ...
+                obj.LocationObserver.Location(1:2) + [1 1];
+            cPositions = get( obj.Dividers, {'Position'} );
+            positions = vertcat( cPositions{:} );
+            [tf, loc] = uix.inrectangle( point, positions );
             if ~tf, return, end
             
             % Capture state at button down
@@ -125,10 +129,17 @@ classdef HBoxFlex < uix.HBox
         function onMouseMotion( obj, source, ~ )
             %onMouseMotion  Handler for WindowMouseMotion events
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
                 % Update pointer for mouse enter and mouse leave
-                isOver = obj.isMouseOverDivider();
+                point = ROOT.PointerLocation - ...
+                    obj.LocationObserver.Location(1:2) + [1 1];
+                cPositions = get( obj.Dividers, {'Position'} );
+                positions = vertcat( cPositions{:} );
+                isOver = uix.inrectangle( point, positions );
                 wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
                     figure = source;
@@ -297,42 +308,6 @@ classdef HBoxFlex < uix.HBox
             end
             
         end % getMouseDragLength
-        
-        function [tf, loc] = isMouseOverDivider( obj )
-            %isMouseOverDivider  Test for mouse over divider
-            %
-            %  tf = c.isMouseOverDivider() returns true if the mouse is
-            %  over any divider of the container c, and false otherwise.
-            %
-            %  [tf,loc] = c.isMouseOverDivider() also returns an index loc
-            %  corresponding to the divider that the mouse is over.  If the
-            %  mouse is not over any divider then loc is 0.
-            
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
-            point = ROOT.PointerLocation - ...
-                obj.LocationObserver.Location(1:2) + [1 1];
-            cPositions = get( obj.Dividers, {'Position'} );
-            positions = vertcat( cPositions{:} );
-            if isempty( positions )
-                overs = true( size( positions ) );
-            else
-                overs = point(1) >= positions(:,1) & ...
-                    point(1) < positions(:,1) + positions(:,3) & ...
-                    point(2) >= positions(:,2) & ...
-                    point(2) < positions(:,2) + positions(:,4);
-            end
-            index = find( overs, 1, 'first' );
-            if isempty( index )
-                tf = false;
-                loc = 0;
-            else
-                tf = true;
-                loc = index;
-            end
-            
-        end % isMouseOverDivider
         
     end % helper methods
     
