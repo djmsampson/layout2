@@ -83,6 +83,9 @@ classdef HBoxFlex < uix.HBox
         function onMouseRelease( obj, ~, ~ )
             %onMousePress  Handler for WindowMouseRelease events
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             % Check whether a divider is active
             loc = obj.ActiveDivider;
             if loc == 0, return, end
@@ -92,7 +95,14 @@ classdef HBoxFlex < uix.HBox
             obj.Dividers(loc).Visible = 'on';
             
             % Compute new positions
-            delta = obj.getMouseDragLength();
+            delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+            if delta < 0 % limit to minimum distance from left neighbor
+                delta = max( delta, obj.MinimumWidths_(loc) - ...
+                    obj.Contents_(loc).Position(3) );
+            else % limit to minimum distance from right neighbor
+                delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
+                    obj.MinimumWidths_(loc+1) );
+            end
             oldWidths = obj.Widths_(loc:loc+1);
             contents = obj.Contents_;
             oldPixelWidths = [contents(loc).Position(3); ...
@@ -154,7 +164,14 @@ classdef HBoxFlex < uix.HBox
                 end
             else % dragging
                 % Reposition divider
-                delta = obj.getMouseDragLength();
+                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                if delta < 0 % limit to minimum distance from left neighbor
+                    delta = max( delta, obj.MinimumWidths_(loc) - ...
+                        obj.Contents_(loc).Position(3) );
+                else % limit to minimum distance from right neighbor
+                    delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
+                        obj.MinimumWidths_(loc+1) );
+                end
                 obj.FrontDivider.Position = ...
                     obj.OldDividerPosition + [delta 0 0 0];
             end
@@ -278,37 +295,5 @@ classdef HBoxFlex < uix.HBox
         end % transplant
         
     end % template methods
-    
-    methods( Access = private )
-        
-        function delta = getMouseDragLength( obj )
-            %getMouseDragLength  Get length of current mouse drag
-            %
-            %  d = c.getMouseDragLength() returns the drag length, that is
-            %  the distance between the button down location and the
-            %  current pointer location in the direction of dragging, in
-            %  pixels.  Note that a divider cannot be dragged beyond the
-            %  minimum width from its neighbors.
-            
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
-            loc = obj.ActiveDivider;
-            assert( loc ~= 0, 'uix:InvalidOperation', ...
-                'Divider is not being dragged.' )
-            delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
-            minimumWidths = obj.MinimumWidths_;
-            cPixelPositions = get( obj.Contents_, {'Position'} );
-            pixelPositions = vertcat( cPixelPositions{:} );
-            pixelWidths = pixelPositions(:,3);
-            if delta < 0 % limit to minimum distance from left neighbor
-                delta = max( delta, minimumWidths(loc) - pixelWidths(loc) );
-            else % limit to minimum distance from right neighbor
-                delta = min( delta, pixelWidths(loc+1) - minimumWidths(loc+1) );
-            end
-            
-        end % getMouseDragLength
-        
-    end % helper methods
     
 end % classdef
