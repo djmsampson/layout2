@@ -96,13 +96,13 @@ classdef VBox < uix.Box
             minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
-            n = numel( heights );
+            r = numel( heights );
             xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
-            xPositions = repmat( xPositions, [n 1] );
+            xPositions = repmat( xPositions, [r 1] );
             ySizes = uix.calcPixelSizes( bounds(4), heights, ...
                 minimumHeights, padding, spacing );
             yPositions = [bounds(4) - cumsum( ySizes ) - padding - ...
-                spacing * transpose( 0:n-1 ) + 1, ySizes];
+                spacing * transpose( 0:r-1 ) + 1, ySizes];
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             

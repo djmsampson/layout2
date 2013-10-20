@@ -207,18 +207,18 @@ classdef Grid < uix.Box
             minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
-            nx = numel( widths );
-            ny = numel( heights );
+            c = numel( widths );
+            r = numel( heights );
             n = numel( obj.Contents_ );
             xSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             xPositions = [cumsum( [0; xSizes(1:end-1,:)] ) + padding + ...
-                spacing * transpose( 0:nx-1 ) + 1, xSizes];
+                spacing * transpose( 0:c-1 ) + 1, xSizes];
             ySizes = uix.calcPixelSizes( bounds(4), heights, ...
                 minimumHeights, padding, spacing );
             yPositions = [bounds(4) - cumsum( ySizes ) - padding - ...
-                spacing * transpose( 0:ny-1 ) + 1, ySizes];
-            [iy, ix] = ind2sub( [ny nx], transpose( 1:n ) );
+                spacing * transpose( 0:r-1 ) + 1, ySizes];
+            [iy, ix] = ind2sub( [r c], transpose( 1:n ) );
             positions = [xPositions(ix,1), yPositions(iy,1), ...
                 xPositions(ix,2), yPositions(iy,2)];
             
@@ -240,14 +240,14 @@ classdef Grid < uix.Box
             
             % Add column and even a row if necessary
             n = numel( obj.Contents_ );
-            nx = numel( obj.Widths_ );
-            ny = numel( obj.Heights_ );
+            c = numel( obj.Widths_ );
+            r = numel( obj.Heights_ );
             if n == 0
                 obj.Widths_(end+1,:) = -1;
                 obj.MinimumWidths_(end+1,:) = 1;
                 obj.Heights_(end+1,:) = -1;
                 obj.MinimumHeights_(end+1,:) = 1;
-            elseif ceil( (n+1)/ny ) > nx
+            elseif ceil( (n+1)/r ) > c
                 obj.Widths_(end+1,:) = -1;
                 obj.MinimumWidths_(end+1,:) = 1;
             end

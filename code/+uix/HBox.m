@@ -96,13 +96,13 @@ classdef HBox < uix.Box
             minimumWidths = obj.MinimumWidths_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
-            n = numel( widths );
+            c = numel( widths );
             xSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             xPositions = [cumsum( [0; xSizes(1:end-1,:)] ) + padding + ...
-                spacing * transpose( 0:n-1 ) + 1, xSizes];
+                spacing * transpose( 0:c-1 ) + 1, xSizes];
             yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, [n 1] );
+            yPositions = repmat( yPositions, [c 1] );
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             
