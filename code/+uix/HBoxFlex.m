@@ -59,7 +59,8 @@ classdef HBoxFlex < uix.HBox
             if isequal( ROOT, [] ), ROOT = groot(); end
             
             % Check whether mouse is over a divider
-            point = ROOT.PointerLocation - ...
+            pointerLocation = ROOT.PointerLocation;
+            point = pointerLocation - ...
                 obj.LocationObserver.Location(1:2) + [1 1];
             cPositions = get( obj.Dividers, {'Position'} );
             positions = vertcat( cPositions{:} );
@@ -69,7 +70,7 @@ classdef HBoxFlex < uix.HBox
             % Capture state at button down
             divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
-            obj.MousePressLocation = ROOT.PointerLocation;
+            obj.MousePressLocation = pointerLocation;
             obj.OldDividerPosition = divider.Position;
             
             % Activate divider
