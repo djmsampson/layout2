@@ -204,11 +204,10 @@ classdef VBoxFlex < uix.VBox
             redraw@uix.VBox( obj )
             
             % Create or destroy dividers
-            do = numel( obj.Dividers ); % current number of dividers
-            n = numel( obj.Contents_ ); % current number of contents
-            dn = max( [n-1 0] ); % required number of dividers
-            if do < dn % create
-                for ii = do+1:dn
+            q = numel( obj.Dividers ); % current number of dividers
+            r = max( [numel( obj.Contents_ )-1 0] ); % required number of dividers
+            if q < r % create
+                for ii = q+1:r
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'horizontal', 'Markings', 'on', ...
                         'Color', obj.BackgroundColor );
@@ -218,10 +217,10 @@ classdef VBoxFlex < uix.VBox
                 frontDivider = obj.FrontDivider;
                 frontDivider.Parent = [];
                 frontDivider.Parent = obj;
-            elseif do > dn % destroy
+            elseif q > r % destroy
                 % Destroy dividers
-                delete( obj.Dividers(dn+1:do,:) )
-                obj.Dividers(dn+1:do,:) = [];
+                delete( obj.Dividers(r+1:q,:) )
+                obj.Dividers(r+1:q,:) = [];
             end
             
             % Position dividers
@@ -232,14 +231,14 @@ classdef VBoxFlex < uix.VBox
             padding = obj.Padding_;
             spacing = obj.Spacing_;
             xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
-            xPositions = repmat( xPositions, [dn 1] );
+            xPositions = repmat( xPositions, [r 1] );
             ySizes = uix.calcPixelSizes( bounds(4), heights, ...
                 minimumHeights, padding, spacing );
-            yPositions = [bounds(4) - cumsum( ySizes(1:dn,:) ) - padding - ...
-                spacing * transpose( 1:dn ) + 1, repmat( spacing, [dn 1] )];
+            yPositions = [bounds(4) - cumsum( ySizes(1:r,:) ) - padding - ...
+                spacing * transpose( 1:r ) + 1, repmat( spacing, [r 1] )];
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
-            for ii = 1:dn
+            for ii = 1:r
                 divider = obj.Dividers(ii);
                 divider.Position = positions(ii,:);
             end

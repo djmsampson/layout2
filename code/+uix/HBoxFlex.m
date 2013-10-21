@@ -204,11 +204,10 @@ classdef HBoxFlex < uix.HBox
             redraw@uix.HBox( obj )
             
             % Create or destroy dividers
-            do = numel( obj.Dividers ); % current number of dividers
-            n = numel( obj.Contents_ ); % current number of contents
-            dn = max( [n-1 0] ); % required number of dividers
-            if do < dn % create
-                for ii = do+1:dn
+            b = numel( obj.Dividers ); % current number of dividers
+            c = max( [numel( obj.Contents_ )-1 0] ); % required number of dividers
+            if b < c % create
+                for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'vertical', 'Markings', 'on', ...
                         'Color', obj.BackgroundColor );
@@ -218,10 +217,10 @@ classdef HBoxFlex < uix.HBox
                 frontDivider = obj.FrontDivider;
                 frontDivider.Parent = [];
                 frontDivider.Parent = obj;
-            elseif do > dn % destroy
+            elseif b > c % destroy
                 % Destroy dividers
-                delete( obj.Dividers(dn+1:do,:) )
-                obj.Dividers(dn+1:do,:) = [];
+                delete( obj.Dividers(c+1:b,:) )
+                obj.Dividers(c+1:b,:) = [];
             end
             
             % Position dividers
@@ -233,13 +232,13 @@ classdef HBoxFlex < uix.HBox
             spacing = obj.Spacing_;
             xSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
-            xPositions = [cumsum( xSizes(1:dn,:) ) + padding + ...
-                spacing * transpose( 0:dn-1 ) + 1, repmat( spacing, [dn 1] )];
+            xPositions = [cumsum( xSizes(1:c,:) ) + padding + ...
+                spacing * transpose( 0:c-1 ) + 1, repmat( spacing, [c 1] )];
             yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, [dn 1] );
+            yPositions = repmat( yPositions, [c 1] );
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
-            for ii = 1:dn
+            for ii = 1:c
                 divider = obj.Dividers(ii);
                 divider.Position = positions(ii,:);
             end
