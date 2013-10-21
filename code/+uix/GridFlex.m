@@ -68,7 +68,7 @@ classdef GridFlex < uix.Grid
             [tfr, locr] = uix.inrectangle( point, rowPositions );
             cColumnPositions = get( obj.ColumnDividers, {'Position'} );
             columnPositions = vertcat( cColumnPositions{:} );
-            [tfc, locc] = uix.inrectable( point, columnPositions );
+            [tfc, locc] = uix.inrectangle( point, columnPositions );
             if tfr
                 loc = locr;
                 divider = obj.RowDividers(locr);
@@ -101,11 +101,19 @@ classdef GridFlex < uix.Grid
             
             % Check whether a divider is active
             loc = obj.ActiveDivider;
-            if loc == 0, return, end
+            if loc > 0
+                divider = obj.RowDividers(loc);
+            elseif loc < 0
+                divider = obj.ColumnDividers(-loc);
+            else
+                return
+            end
             
             % Deactivate divider
             obj.FrontDivider.Visible = 'off';
-            obj.Dividers(loc).Visible = 'on';
+            divider.Visible = 'on';
+            
+            return
             
             % Compute new positions
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
