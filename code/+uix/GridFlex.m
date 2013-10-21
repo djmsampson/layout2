@@ -8,10 +8,10 @@ classdef GridFlex < uix.Grid
         MousePressListener = event.listener.empty( [0 0] )
         MouseReleaseListener = event.listener.empty( [0 0] )
         MouseMotionListener = event.listener.empty( [0 0] )
-        OldMouseOver = false
         ActiveDivider = 0
         MousePressLocation = [NaN NaN]
         OldDividerPosition = [NaN NaN NaN NaN]
+        OldDivider = 0
         OldPointer = 'unset'
         BackgroundColorListener
     end
@@ -196,13 +196,23 @@ classdef GridFlex < uix.Grid
                 cColumnPositions = get( obj.ColumnDividers, {'Position'} );
                 columnPositions = vertcat( cColumnPositions{:} );
                 tfc = uix.inrectangle( point, columnPositions );
-                if tfr
-                    source.Pointer = 'top';
-                elseif tfc
-                    source.Pointer = 'right';
-                else
-                    source.Pointer = 'arrow';
+                oldDivider = obj.OldDivider;
+                                
+                if ( tfr || tfc ) && oldDivider == 0
+                    obj.OldPointer = source.Pointer;
                 end
+                if tfr && oldDivider ~= 1
+                    source.Pointer = 'top';
+                    obj.OldDivider = 1;
+                elseif tfc && oldDivider ~= -1
+                    source.Pointer = 'left';
+                    obj.OldDivider = -1;
+                elseif ( ~tfr && ~tfc ) && oldDivider ~= 0
+                    source.Pointer = obj.OldPointer;
+                    obj.OldPointer = 'unset';
+                    obj.OldDivider = 0;
+                end
+                
             elseif loc > 0 % dragging row divider
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
                 ih = loc;
