@@ -180,30 +180,49 @@ classdef GridFlex < uix.Grid
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            return
-            
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
                 % Update pointer for mouse enter and mouse leave
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
-                cPositions = get( obj.Dividers, {'Position'} );
-                positions = vertcat( cPositions{:} );
-                isOver = uix.inrectangle( point, positions );
+                cRowPositions = get( obj.RowDividers, {'Position'} );
+                rowPositions = vertcat( cRowPositions{:} );
+                tfr = uix.inrectangle( point, rowPositions );
+                cColumnPositions = get( obj.ColumnDividers, {'Position'} );
+                columnPositions = vertcat( cColumnPositions{:} );
+                tfc = uix.inrectangle( point, columnPositions );
+                isOver = tfr || tfc;
                 wasOver = obj.OldMouseOver;
                 if wasOver ~= isOver
                     figure = source;
                     if isOver % enter
                         obj.OldPointer = figure.Pointer;
-                        figure.Pointer = 'left';
+                        if tfr
+                            figure.Pointer = 'top';
+                        else
+                            figure.Pointer = 'left';
+                        end
                     else % leave
                         figure.Pointer = obj.OldPointer;
                         obj.OldPointer = 'unset';
                     end
                     obj.OldMouseOver = isOver;
                 end
-            else % dragging
-                % Reposition divider
+            elseif loc > 0
+                % Reposition row divider
+                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                if delta < 0 % limit to minimum distance from lower neighbor
+                    delta = max( delta, obj.MinimumHeights_(loc+1) - ...
+                        obj.Contents_(loc+1).Position(4) );
+                else % limit to minimum distance from upper neighbor
+                    delta = min( delta, obj.Contents_(loc).Position(4) - ...
+                        obj.MinimumHeights_(loc) );
+                end
+                obj.FrontDivider.Position = ...
+                    obj.OldDividerPosition + [0 delta 0 0];
+            else % loc < 0
+                % Reposition column divider
+                loc = -loc;
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 if delta < 0 % limit to minimum distance from left neighbor
                     delta = max( delta, obj.MinimumWidths_(loc) - ...
