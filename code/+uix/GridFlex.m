@@ -101,20 +101,23 @@ classdef GridFlex < uix.Grid
             
             % Compute new positions
             loc = obj.ActiveDivider;
+            r = numel( obj.Heights_ );
+            contents = obj.Contents_;
             if loc > 0
-                divider = obj.RowDividers(loc);
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                ih = loc;
+                jh = loc + 1;
+                ic = loc;
+                jc = loc + 1;
+                divider = obj.RowDividers(loc);
+                oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
+                minimumHeights = obj.MinimumHeights_(ih:jh,:);
                 if delta < 0 % limit to minimum distance from lower neighbor
-                    delta = max( delta, obj.MinimumHeights_(loc+1) - ...
-                        obj.Contents_(loc+1).Position(4) );
+                    delta = max( delta, minimumHeights(jh) - contents(jc).Position(4) );
                 else % limit to minimum distance from upper neighbor
-                    delta = min( delta, obj.Contents_(loc).Position(4) - ...
-                        obj.MinimumHeights_(loc) );
+                    delta = min( delta, contents(ic).Position(4) - minimumHeights(ih) );
                 end
                 oldHeights = obj.Heights_(loc:loc+1);
-                contents = obj.Contents_;
-                oldPixelHeights = [contents(loc).Position(4); ...
-                    contents(loc+1).Position(4)];
                 newPixelHeights = oldPixelHeights - delta * [1;-1];
                 if oldHeights(1) < 0 && oldHeights(2) < 0 % weight, weight
                     newHeights = oldHeights .* newPixelHeights ./ oldPixelHeights;
@@ -129,20 +132,20 @@ classdef GridFlex < uix.Grid
                 end
                 obj.Heights_(loc:loc+1) = newHeights;
             elseif loc < 0
-                loc = -loc;
-                divider = obj.ColumnDividers(loc);
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                iw = -loc;
+                jw = -loc + 1;
+                ic = r * (-loc-1) + 1;
+                jc = r * -loc + 1;
+                divider = obj.ColumnDividers(iw);
+                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
-                    delta = max( delta, obj.MinimumWidths_(loc) - ...
-                        obj.Contents_(loc).Position(3) );
+                    delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
                 else % limit to minimum distance from right neighbor
-                    delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
-                        obj.MinimumWidths_(loc+1) );
+                    delta = min( delta, oldPixelWidths(2) - minimumWidths(2) );
                 end
-                oldWidths = obj.Widths_(loc:loc+1);
-                contents = obj.Contents_;
-                oldPixelWidths = [contents(loc).Position(3); ...
-                    contents(loc+1).Position(3)];
+                oldWidths = obj.Widths_(iw:jw);
                 newPixelWidths = oldPixelWidths + delta * [1;-1];
                 if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
                     newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
@@ -155,7 +158,7 @@ classdef GridFlex < uix.Grid
                 else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
                     newWidths = newPixelWidths;
                 end
-                obj.Widths_(loc:loc+1) = newWidths;
+                obj.Widths_(iw:jw) = newWidths;
             else
                 return
             end
@@ -191,22 +194,12 @@ classdef GridFlex < uix.Grid
                 cColumnPositions = get( obj.ColumnDividers, {'Position'} );
                 columnPositions = vertcat( cColumnPositions{:} );
                 tfc = uix.inrectangle( point, columnPositions );
-                isOver = tfr || tfc;
-                wasOver = obj.OldMouseOver;
-                if wasOver ~= isOver
-                    figure = source;
-                    if isOver % enter
-                        obj.OldPointer = figure.Pointer;
-                        if tfr
-                            figure.Pointer = 'top';
-                        else
-                            figure.Pointer = 'left';
-                        end
-                    else % leave
-                        figure.Pointer = obj.OldPointer;
-                        obj.OldPointer = 'unset';
-                    end
-                    obj.OldMouseOver = isOver;
+                if tfr
+                    source.Pointer = 'top';
+                elseif tfc
+                    source.Pointer = 'right';
+                else
+                    source.Pointer = 'arrow';
                 end
             elseif loc > 0
                 % Reposition row divider
