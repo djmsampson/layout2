@@ -205,7 +205,7 @@ classdef HBoxFlex < uix.HBox
             
             % Create or destroy dividers
             b = numel( obj.Dividers ); % current number of dividers
-            c = max( [numel( obj.Contents_ )-1 0] ); % required number of dividers
+            c = max( [numel( obj.Widths_ )-1 0] ); % required number of dividers
             if b < c % create
                 for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...

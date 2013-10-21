@@ -205,7 +205,7 @@ classdef VBoxFlex < uix.VBox
             
             % Create or destroy dividers
             q = numel( obj.Dividers ); % current number of dividers
-            r = max( [numel( obj.Contents_ )-1 0] ); % required number of dividers
+            r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
             if q < r % create
                 for ii = q+1:r
                     divider = uix.Divider( 'Parent', obj, ...
