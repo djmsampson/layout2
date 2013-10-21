@@ -1,17 +1,18 @@
 classdef VBoxFlex < uix.VBox
     
-    properties( SetAccess = private )
-        MouseObserver
-        MousePressListener
-        MouseReleaseListener
-        MouseMotionListener
+    properties( Access = private )
         Dividers = uix.Divider.empty( [0 1] )
         FrontDivider
+        LocationObserver
+        MousePressListener = event.listener.empty( [0 0] )
+        MouseReleaseListener = event.listener.empty( [0 0] )
+        MouseMotionListener = event.listener.empty( [0 0] )
+        OldMouseOver = false
         ActiveDivider = 0
-        Dragging = false
         MousePressLocation = [NaN NaN]
         OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
+        BackgroundColorListener
     end
     
     methods
@@ -24,26 +25,21 @@ classdef VBoxFlex < uix.VBox
             % Call superclass constructor
             obj@uix.VBox( notmypv{:} )
             
-            % Create mouse observer
-            mouseObserver = uix.MouseObserver( obj );
-            mousePressListener = event.listener( mouseObserver, ...
-                'MousePress', @obj.onMousePress );
-            mouseReleaseListener = event.listener( mouseObserver, ...
-                'MouseRelease', @obj.onMouseRelease );
-            mouseMotionListener = event.listener( mouseObserver, ...
-                'MouseMotion', @obj.onMouseMotion );
-            
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
-                'Orientation', 'vertical', 'Markings', 'on', ...
+                'Orientation', 'horizontal', 'Markings', 'on', ...
                 'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
             
+            % Create observers and listeners
+            locationObserver = uix.LocationObserver( obj );
+            backgroundColorListener = event.proplistener( obj, ...
+                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+                @obj.onBackgroundColorChange );
+            
             % Store properties
-            obj.MouseObserver = mouseObserver;
-            obj.MousePressListener = mousePressListener;
-            obj.MouseReleaseListener = mouseReleaseListener;
-            obj.MouseMotionListener = mouseMotionListener;
             obj.FrontDivider = frontDivider;
+            obj.LocationObserver = locationObserver;
+            obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
             if ~isempty( mypv )
@@ -56,100 +52,25 @@ classdef VBoxFlex < uix.VBox
     
     methods( Access = protected )
         
-        function addChild( obj, child )
-            %addChild  Add child
-            %
-            %  c.addChild(x) adds the child x to the container c.
-            
-            % Add divider if there will be more than one child
-            if numel( obj.Contents_ ) > 0
-                divider = uix.Divider( 'Parent', obj, ...
-                    'Orientation', 'horizontal', 'Markings', 'on', ...
-                    'Color', obj.BackgroundColor );
-                obj.Dividers(end+1,:) = divider;
-            end
-            
-            % Bring front divider to the front
-            frontDivider = obj.FrontDivider;
-            frontDivider.Parent = [];
-            frontDivider.Parent = obj;
-            
-            % Call superclass method
-            addChild@uix.VBox( obj, child )
-            
-        end % addChild
-        
-        function removeChild( obj, child )
-            %removeChild  Remove child
-            %
-            %  c.removeChild(x) removes the child x from the container c.
-            
-            % Remove divider if there is more than one child
-            contents = obj.Contents_;
-            tf = contents == child;
-            if numel( contents ) > 1
-                loc = max( find( tf ) - 1, 1 );
-                delete( obj.Dividers(loc) )
-                obj.Dividers(loc,:) = [];
-            end
-            
-            % Call superclass method
-            removeChild@uix.VBox( obj, child )
-            
-        end % removeChild
-        
-        function transplant( obj, oldAncestors, newAncestors )
-            
-            % Identify old and new figures
-            if isempty( oldAncestors ) || ...
-                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-            else
-                oldFigure = oldAncestors(1);
-            end
-            if isempty( newAncestors ) || ...
-                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
-                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
-            else
-                newFigure = newAncestors(1);
-            end
-            
-            % Create new mouse observer if necessary
-            if ~isequal( oldFigure, newFigure )
-                mouseObserver = uix.MouseObserver( obj );
-                mousePressListener = event.listener( mouseObserver, ...
-                    'MousePress', @obj.onMousePress );
-                mouseReleaseListener = event.listener( mouseObserver, ...
-                    'MouseRelease', @obj.onMouseRelease );
-                mouseMotionListener = event.listener( mouseObserver, ...
-                    'MouseMotion', @obj.onMouseMotion );
-                obj.MouseObserver = mouseObserver;
-                obj.MousePressListener = mousePressListener;
-                obj.MouseReleaseListener = mouseReleaseListener;
-                obj.MouseMotionListener = mouseMotionListener;
-            end
-            
-        end % transplant
-        
-    end % template methods
-    
-    methods( Access = private )
-        
         function onMousePress( obj, ~, ~ )
-            %onMousePress  Handler for MousePress events
+            %onMousePress  Handler for WindowMousePress events
+            
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
             
             % Check whether mouse is over a divider
-            mouseObserver = obj.MouseObserver;
+            pointerLocation = ROOT.PointerLocation;
+            point = pointerLocation - ...
+                obj.LocationObserver.Location(1:2) + [1 1];
             cPositions = get( obj.Dividers, {'Position'} );
             positions = vertcat( cPositions{:} );
-            [tf, loc] = mouseObserver.isOver( positions );
+            [tf, loc] = uix.inrectangle( point, positions );
             if ~tf, return, end
             
             % Capture state at button down
-            obj.MousePressLocation = mouseObserver.PointerLocation;
-            obj.Dragging = true;
             divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
+            obj.MousePressLocation = pointerLocation;
             obj.OldDividerPosition = divider.Position;
             
             % Activate divider
@@ -161,23 +82,33 @@ classdef VBoxFlex < uix.VBox
         end % onMousePress
         
         function onMouseRelease( obj, ~, ~ )
-            %onMousePress  Handler for MouseRelease events
+            %onMousePress  Handler for WindowMouseRelease events
             
-            % Check whether dragging
-            if ~obj.Dragging, return, end
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
+            % Check whether a divider is active
+            loc = obj.ActiveDivider;
+            if loc == 0, return, end
             
             % Deactivate divider
-            loc = obj.ActiveDivider;
             obj.FrontDivider.Visible = 'off';
             obj.Dividers(loc).Visible = 'on';
             
             % Compute new positions
-            delta = obj.MouseObserver.PointerLocation - obj.MousePressLocation;
+            delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+            if delta < 0 % limit to minimum distance from lower neighbor
+                delta = max( delta, obj.MinimumHeights_(loc+1) - ...
+                    obj.Contents_(loc+1).Position(4) );
+            else % limit to minimum distance from upper neighbor
+                delta = min( delta, obj.Contents_(loc).Position(4) - ...
+                    obj.MinimumHeights_(loc) );
+            end
             oldHeights = obj.Heights_(loc:loc+1);
             contents = obj.Contents_;
-            oldPixelHeights = [contents(loc).Position(3); ...
-                contents(loc+1).Position(3)];
-            newPixelHeights = oldPixelHeights + delta * [1;-1];
+            oldPixelHeights = [contents(loc).Position(4); ...
+                contents(loc+1).Position(4)];
+            newPixelHeights = oldPixelHeights - delta * [1;-1];
             if oldHeights(1) < 0 && oldHeights(2) < 0 % weight, weight
                 newHeights = oldHeights .* newPixelHeights ./ oldPixelHeights;
             elseif oldHeights(1) < 0 && oldHeights(2) >= 0 % weight, pixels
@@ -191,7 +122,7 @@ classdef VBoxFlex < uix.VBox
             end
             
             % Reset state at button down
-            obj.Dragging = false;
+            obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
             
@@ -206,42 +137,164 @@ classdef VBoxFlex < uix.VBox
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, eventData )
-            %onMouseMotion  Handler for MouseMotion events
+        function onMouseMotion( obj, source, ~ )
+            %onMouseMotion  Handler for WindowMouseMotion events
             
-            disp MouseMotion
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
             
-            %             loc = obj.ActiveDivider;
-            %             if loc == 0 % hovering
-            %                 % Update pointer for mouse enter and mouse leave
-            %                 isOver = obj.isMouseOverDivider();
-            %                 wasOver = obj.OldMouseOver;
-            %                 if wasOver ~= isOver
-            %                     figure = source;
-            %                     if isOver % enter
-            %                         obj.OldPointer = figure.Pointer;
-            %                         figure.Pointer = 'left';
-            %                     else % leave
-            %                         figure.Pointer = obj.OldPointer;
-            %                         obj.OldPointer = 'unset';
-            %                     end
-            %                     obj.OldMouseOver = isOver;
-            %                 end
-            %             else % dragging
-            %                 % Reposition divider
-            %                 delta = obj.getMouseDragLength();
-            %                 obj.FrontDivider.Position = ...
-            %                     obj.OldDividerPosition + [delta 0 0 0];
-            %             end
+            loc = obj.ActiveDivider;
+            if loc == 0 % hovering
+                % Update pointer for mouse enter and mouse leave
+                point = ROOT.PointerLocation - ...
+                    obj.LocationObserver.Location(1:2) + [1 1];
+                cPositions = get( obj.Dividers, {'Position'} );
+                positions = vertcat( cPositions{:} );
+                isOver = uix.inrectangle( point, positions );
+                wasOver = obj.OldMouseOver;
+                if wasOver ~= isOver
+                    figure = source;
+                    if isOver % enter
+                        obj.OldPointer = figure.Pointer;
+                        figure.Pointer = 'top';
+                    else % leave
+                        figure.Pointer = obj.OldPointer;
+                        obj.OldPointer = 'unset';
+                    end
+                    obj.OldMouseOver = isOver;
+                end
+            else % dragging
+                % Reposition divider
+                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                if delta < 0 % limit to minimum distance from lower neighbor
+                    delta = max( delta, obj.MinimumHeights_(loc+1) - ...
+                        obj.Contents_(loc+1).Position(4) );
+                else % limit to minimum distance from upper neighbor
+                    delta = min( delta, obj.Contents_(loc).Position(4) - ...
+                        obj.MinimumHeights_(loc) );
+                end
+                obj.FrontDivider.Position = ...
+                    obj.OldDividerPosition + [0 delta 0 0];
+            end
             
         end % onMouseMotion
         
-        function onBackgroundColorChange( obj, source, eventData )
+        function onBackgroundColorChange( obj, ~, ~ )
             
-            disp onBackgroundColorChange
+            color = obj.BackgroundColor;
+            dividers = obj.Dividers;
+            for ii = 1:numel( dividers )
+                dividers(ii).Color = color;
+            end
+            frontDivider = obj.FrontDivider;
+            frontDivider.Color = color * 0.75;
             
         end % onBackgroundColorChange
         
     end % event handlers
+    
+    methods( Access = protected )
+        
+        function redraw( obj )
+            %redraw  Redraw contents
+            %
+            %  c.redraw() redraws the container c.
+            
+            % Call superclass method
+            redraw@uix.VBox( obj )
+            
+            % Create or destroy dividers
+            do = numel( obj.Dividers ); % current number of dividers
+            n = numel( obj.Contents_ ); % current number of contents
+            dn = max( [n-1 0] ); % required number of dividers
+            if do < dn % create
+                for ii = do+1:dn
+                    divider = uix.Divider( 'Parent', obj, ...
+                        'Orientation', 'horizontal', 'Markings', 'on', ...
+                        'Color', obj.BackgroundColor );
+                    obj.Dividers(ii,:) = divider;
+                end
+                % Bring front divider to the front
+                frontDivider = obj.FrontDivider;
+                frontDivider.Parent = [];
+                frontDivider.Parent = obj;
+            elseif do > dn % destroy
+                % Destroy dividers
+                delete( obj.Dividers(dn+1:do,:) )
+                obj.Dividers(dn+1:do,:) = [];
+            end
+            
+            % Position dividers
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                obj.Position, obj.Units, 'pixels', obj.Parent );
+            heights = obj.Heights_;
+            minimumHeights = obj.MinimumHeights_;
+            padding = obj.Padding_;
+            spacing = obj.Spacing_;
+            xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
+            xPositions = repmat( xPositions, [dn 1] );
+            ySizes = uix.calcPixelSizes( bounds(4), heights, ...
+                minimumHeights, padding, spacing );
+            yPositions = [bounds(4) - cumsum( ySizes(1:dn,:) ) - padding - ...
+                spacing * transpose( 1:dn ) + 1, repmat( spacing, [dn 1] )];
+            positions = [xPositions(:,1), yPositions(:,1), ...
+                xPositions(:,2), yPositions(:,2)];
+            for ii = 1:dn
+                divider = obj.Dividers(ii);
+                divider.Position = positions(ii,:);
+            end
+            
+            % Update pointer
+            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
+            
+        end % redraw
+        
+        function transplant( obj, oldAncestors, newAncestors )
+            %transplant  Transplant container
+            %
+            %  c.transplant(a,b) transplants the container c from the
+            %  ancestors a to the ancestors b.
+            
+            % Refresh location observer
+            locationObserver = uix.LocationObserver( [newAncestors; obj] );
+            obj.LocationObserver = locationObserver;
+            
+            % Refresh mouse listeners if figure has changed
+            if isempty( oldAncestors ) || ...
+                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
+                oldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            else
+                oldFigure = oldAncestors(1);
+            end
+            if isempty( newAncestors ) || ...
+                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
+                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+            else
+                newFigure = newAncestors(1);
+            end
+            if ~isequal( oldFigure, newFigure )
+                if isempty( newFigure )
+                    mousePressListener = event.listener.empty( [0 0] );
+                    mouseReleaseListener = event.listener.empty( [0 0] );
+                    mouseMotionListener = event.listener.empty( [0 0] );
+                else
+                    mousePressListener = event.listener( newFigure, ...
+                        'WindowMousePress', @obj.onMousePress );
+                    mouseReleaseListener = event.listener( newFigure, ...
+                        'WindowMouseRelease', @obj.onMouseRelease );
+                    mouseMotionListener = event.listener( newFigure, ...
+                        'WindowMouseMotion', @obj.onMouseMotion );
+                end
+                obj.MousePressListener = mousePressListener;
+                obj.MouseReleaseListener = mouseReleaseListener;
+                obj.MouseMotionListener = mouseMotionListener;
+            end
+            
+            % Call superclass method
+            transplant@uix.Container( obj, oldAncestors, newAncestors )
+            
+        end % transplant
+        
+    end % template methods
     
 end % classdef
