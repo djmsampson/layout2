@@ -203,8 +203,7 @@ classdef GridFlex < uix.Grid
                 else
                     source.Pointer = 'arrow';
                 end
-            elseif loc > 0
-                % Reposition row divider
+            elseif loc > 0 % dragging row divider
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
                 ih = loc;
                 jh = loc + 1;
@@ -219,8 +218,7 @@ classdef GridFlex < uix.Grid
                 end
                 obj.FrontDivider.Position = ...
                     obj.OldDividerPosition + [0 delta 0 0];
-            else % loc < 0
-                % Reposition column divider
+            else % loc < 0, dragging column divider
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
@@ -283,7 +281,7 @@ classdef GridFlex < uix.Grid
                 obj.ColumnDividers(c+1:b,:) = [];
             end
             
-            % Create or destroy column dividers
+            % Create or destroy row dividers
             q = numel( obj.RowDividers ); % current number of dividers
             r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
             if q < r % create
@@ -303,9 +301,11 @@ classdef GridFlex < uix.Grid
                 obj.RowDividers(r+1:q,:) = [];
             end
             
-            % Compute container bounds and retrieve sizes
+            % Compute container bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
+            
+            % Retrieve size properties
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
             heights = obj.Heights_;
