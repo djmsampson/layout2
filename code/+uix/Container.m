@@ -5,7 +5,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
     end
     
     properties( Access = protected )
-        Contents_ = matlab.graphics.GraphicsPlaceholder.empty( [0 1] )
+        Contents_ = gobjects( [0 1] )
     end
     
     properties( Dependent, Access = protected )

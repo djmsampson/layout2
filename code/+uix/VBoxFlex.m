@@ -258,13 +258,13 @@ classdef VBoxFlex < uix.VBox
             % Refresh mouse listeners if figure has changed
             if isempty( oldAncestors ) || ...
                     ~isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+                oldFigure = gobjects( [0 0] );
             else
                 oldFigure = oldAncestors(1);
             end
             if isempty( newAncestors ) || ...
                     ~isa( newAncestors(1), 'matlab.ui.Figure' )
-                newFigure = matlab.graphics.GraphicsPlaceholder.empty( [0 0] );
+                newFigure = gobjects( [0 0] );
             else
                 newFigure = newAncestors(1);
             end

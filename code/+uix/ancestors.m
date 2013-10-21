@@ -6,7 +6,7 @@ function a = ancestors( h )
 %  figure, not the root.
 
 % Find ancestors
-a = matlab.graphics.GraphicsPlaceholder.empty( [0 1] ); %  initialize
+a = gobjects( [0 1] ); %  initialize
 p = h.Parent;
 while ~isempty( p ) && ~isa( p, 'matlab.ui.Root' )
     a = [p; a]; %#ok<AGROW>

@@ -33,7 +33,7 @@ o = nGetParent( groot() ); % search the entire tree
                 end
             end
         end
-        p = matlab.graphics.GraphicsPlaceholder.empty( [0 0] ); % unsuccessful
+        p = gobjects( [0 0] ); % unsuccessful
         
     end % nGetParent
 
