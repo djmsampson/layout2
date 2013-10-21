@@ -113,9 +113,9 @@ classdef GridFlex < uix.Grid
                 oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
                 minimumHeights = obj.MinimumHeights_(ih:jh,:);
                 if delta < 0 % limit to minimum distance from lower neighbor
-                    delta = max( delta, minimumHeights(jh) - contents(jc).Position(4) );
+                    delta = max( delta, minimumHeights(2) - oldPixelHeights(2) );
                 else % limit to minimum distance from upper neighbor
-                    delta = min( delta, contents(ic).Position(4) - minimumHeights(ih) );
+                    delta = min( delta, oldPixelHeights(1) - minimumHeights(1) );
                 end
                 oldHeights = obj.Heights_(loc:loc+1);
                 newPixelHeights = oldPixelHeights - delta * [1;-1];
@@ -184,6 +184,8 @@ classdef GridFlex < uix.Grid
             if isequal( ROOT, [] ), ROOT = groot(); end
             
             loc = obj.ActiveDivider;
+            r = numel( obj.Heights_ );
+            contents = obj.Contents_;
             if loc == 0 % hovering
                 % Update pointer for mouse enter and mouse leave
                 point = ROOT.PointerLocation - ...
@@ -204,25 +206,32 @@ classdef GridFlex < uix.Grid
             elseif loc > 0
                 % Reposition row divider
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                ih = loc;
+                jh = loc + 1;
+                ic = loc;
+                jc = loc + 1;
+                oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
+                minimumHeights = obj.MinimumHeights_(ih:jh,:);
                 if delta < 0 % limit to minimum distance from lower neighbor
-                    delta = max( delta, obj.MinimumHeights_(loc+1) - ...
-                        obj.Contents_(loc+1).Position(4) );
+                    delta = max( delta, minimumHeights(2) - oldPixelHeights(2) );
                 else % limit to minimum distance from upper neighbor
-                    delta = min( delta, obj.Contents_(loc).Position(4) - ...
-                        obj.MinimumHeights_(loc) );
+                    delta = min( delta, oldPixelHeights(1) - minimumHeights(1) );
                 end
                 obj.FrontDivider.Position = ...
                     obj.OldDividerPosition + [0 delta 0 0];
             else % loc < 0
                 % Reposition column divider
-                loc = -loc;
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                iw = -loc;
+                jw = -loc + 1;
+                ic = r * (-loc-1) + 1;
+                jc = r * -loc + 1;
+                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
-                    delta = max( delta, obj.MinimumWidths_(loc) - ...
-                        obj.Contents_(loc).Position(3) );
+                    delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
                 else % limit to minimum distance from right neighbor
-                    delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
-                        obj.MinimumWidths_(loc+1) );
+                    delta = min( delta, oldPixelWidths(2) - minimumWidths(2) );
                 end
                 obj.FrontDivider.Position = ...
                     obj.OldDividerPosition + [delta 0 0 0];
