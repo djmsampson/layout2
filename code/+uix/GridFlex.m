@@ -99,12 +99,63 @@ classdef GridFlex < uix.Grid
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            % Check whether a divider is active
+            % Compute new positions
             loc = obj.ActiveDivider;
             if loc > 0
                 divider = obj.RowDividers(loc);
+                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                if delta < 0 % limit to minimum distance from lower neighbor
+                    delta = max( delta, obj.MinimumHeights_(loc+1) - ...
+                        obj.Contents_(loc+1).Position(4) );
+                else % limit to minimum distance from upper neighbor
+                    delta = min( delta, obj.Contents_(loc).Position(4) - ...
+                        obj.MinimumHeights_(loc) );
+                end
+                oldHeights = obj.Heights_(loc:loc+1);
+                contents = obj.Contents_;
+                oldPixelHeights = [contents(loc).Position(4); ...
+                    contents(loc+1).Position(4)];
+                newPixelHeights = oldPixelHeights - delta * [1;-1];
+                if oldHeights(1) < 0 && oldHeights(2) < 0 % weight, weight
+                    newHeights = oldHeights .* newPixelHeights ./ oldPixelHeights;
+                elseif oldHeights(1) < 0 && oldHeights(2) >= 0 % weight, pixels
+                    newHeights = [oldHeights(1) * newPixelHeights(1) / ...
+                        oldPixelHeights(1); newPixelHeights(2)];
+                elseif oldHeights(1) >= 0 && oldHeights(2) < 0 % pixels, weight
+                    newHeights = [newPixelHeights(1); oldHeights(2) * ...
+                        newPixelHeights(2) / oldPixelHeights(2)];
+                else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
+                    newHeights = newPixelHeights;
+                end
+                obj.Heights_(loc:loc+1) = newHeights;
             elseif loc < 0
-                divider = obj.ColumnDividers(-loc);
+                loc = -loc;
+                divider = obj.ColumnDividers(loc);
+                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                if delta < 0 % limit to minimum distance from left neighbor
+                    delta = max( delta, obj.MinimumWidths_(loc) - ...
+                        obj.Contents_(loc).Position(3) );
+                else % limit to minimum distance from right neighbor
+                    delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
+                        obj.MinimumWidths_(loc+1) );
+                end
+                oldWidths = obj.Widths_(loc:loc+1);
+                contents = obj.Contents_;
+                oldPixelWidths = [contents(loc).Position(3); ...
+                    contents(loc+1).Position(3)];
+                newPixelWidths = oldPixelWidths + delta * [1;-1];
+                if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
+                    newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
+                elseif oldWidths(1) < 0 && oldWidths(2) >= 0 % weight, pixels
+                    newWidths = [oldWidths(1) * newPixelWidths(1) / ...
+                        oldPixelWidths(1); newPixelWidths(2)];
+                elseif oldWidths(1) >= 0 && oldWidths(2) < 0 % pixels, weight
+                    newWidths = [newPixelWidths(1); oldWidths(2) * ...
+                        newPixelWidths(2) / oldPixelWidths(2)];
+                else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
+                    newWidths = newPixelWidths;
+                end
+                obj.Widths_(loc:loc+1) = newWidths;
             else
                 return
             end
@@ -113,44 +164,10 @@ classdef GridFlex < uix.Grid
             obj.FrontDivider.Visible = 'off';
             divider.Visible = 'on';
             
-            return
-            
-            % Compute new positions
-            delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
-            if delta < 0 % limit to minimum distance from left neighbor
-                delta = max( delta, obj.MinimumWidths_(loc) - ...
-                    obj.Contents_(loc).Position(3) );
-            else % limit to minimum distance from right neighbor
-                delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
-                    obj.MinimumWidths_(loc+1) );
-            end
-            oldWidths = obj.Widths_(loc:loc+1);
-            contents = obj.Contents_;
-            oldPixelWidths = [contents(loc).Position(3); ...
-                contents(loc+1).Position(3)];
-            newPixelWidths = oldPixelWidths + delta * [1;-1];
-            if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
-                newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
-            elseif oldWidths(1) < 0 && oldWidths(2) >= 0 % weight, pixels
-                newWidths = [oldWidths(1) * newPixelWidths(1) / ...
-                    oldPixelWidths(1); newPixelWidths(2)];
-            elseif oldWidths(1) >= 0 && oldWidths(2) < 0 % pixels, weight
-                newWidths = [newPixelWidths(1); oldWidths(2) * ...
-                    newPixelWidths(2) / oldPixelWidths(2)];
-            else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
-                newWidths = newPixelWidths;
-            end
-            
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
-            
-            % Abort set
-            if isequal( oldWidths, newWidths ), return, end
-            
-            % Reposition contents
-            obj.Widths_(loc:loc+1) = newWidths;
             
             % Mark as dirty
             obj.Dirty = true;

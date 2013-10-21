@@ -91,10 +91,6 @@ classdef VBoxFlex < uix.VBox
             loc = obj.ActiveDivider;
             if loc == 0, return, end
             
-            % Deactivate divider
-            obj.FrontDivider.Visible = 'off';
-            obj.Dividers(loc).Visible = 'on';
-            
             % Compute new positions
             delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
             if delta < 0 % limit to minimum distance from lower neighbor
@@ -121,13 +117,14 @@ classdef VBoxFlex < uix.VBox
                 newHeights = newPixelHeights;
             end
             
+            % Deactivate divider
+            obj.FrontDivider.Visible = 'off';
+            obj.Dividers(loc).Visible = 'on';
+            
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
-            
-            % Abort set
-            if isequal( oldHeights, newHeights ), return, end
             
             % Reposition contents
             obj.Heights_(loc:loc+1) = newHeights;

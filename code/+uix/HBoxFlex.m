@@ -91,10 +91,6 @@ classdef HBoxFlex < uix.HBox
             loc = obj.ActiveDivider;
             if loc == 0, return, end
             
-            % Deactivate divider
-            obj.FrontDivider.Visible = 'off';
-            obj.Dividers(loc).Visible = 'on';
-            
             % Compute new positions
             delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
             if delta < 0 % limit to minimum distance from left neighbor
@@ -121,13 +117,14 @@ classdef HBoxFlex < uix.HBox
                 newWidths = newPixelWidths;
             end
             
+            % Deactivate divider
+            obj.FrontDivider.Visible = 'off';
+            obj.Dividers(loc).Visible = 'on';
+            
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.MousePressLocation = [NaN NaN];
             obj.OldDividerPosition = [NaN NaN NaN NaN];
-            
-            % Abort set
-            if isequal( oldWidths, newWidths ), return, end
             
             % Reposition contents
             obj.Widths_(loc:loc+1) = newWidths;
