@@ -1,7 +1,8 @@
 classdef GridFlex < uix.Grid
     
     properties( Access = private )
-        Dividers = uix.Divider.empty( [0 1] )
+        RowDividers = uix.Divider.empty( [0 1] )
+        ColumnDividers = uix.Divider.empty( [0 1] )
         FrontDivider
         LocationObserver
         MousePressListener = event.listener.empty( [0 0] )
@@ -62,13 +63,23 @@ classdef GridFlex < uix.Grid
             pointerLocation = ROOT.PointerLocation;
             point = pointerLocation - ...
                 obj.LocationObserver.Location(1:2) + [1 1];
-            cPositions = get( obj.Dividers, {'Position'} );
-            positions = vertcat( cPositions{:} );
-            [tf, loc] = uix.inrectangle( point, positions );
-            if ~tf, return, end
+            cRowPositions = get( obj.RowDividers, {'Position'} );
+            rowPositions = vertcat( cRowPositions{:} );
+            [tfr, locr] = uix.inrectangle( point, rowPositions );
+            cColumnPositions = get( obj.ColumnDividers, {'Position'} );
+            columnPositions = vertcat( cColumnPositions{:} );
+            [tfc, locc] = uix.inrectable( point, columnPositions );
+            if tfr
+                loc = locr;
+                divider = obj.RowDividers(locr);
+            elseif tfc
+                loc = -locc;
+                divider = obj.ColumnDividers(locc);
+            else
+                return
+            end
             
             % Capture state at button down
-            divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
             obj.MousePressLocation = pointerLocation;
             obj.OldDividerPosition = divider.Position;
@@ -76,6 +87,7 @@ classdef GridFlex < uix.Grid
             % Activate divider
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
+            frontDivider.Orientation = divider.Orientation;
             divider.Visible = 'off';
             frontDivider.Visible = 'on';
             
@@ -143,6 +155,8 @@ classdef GridFlex < uix.Grid
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
+            return
+            
             loc = obj.ActiveDivider;
             if loc == 0 % hovering
                 % Update pointer for mouse enter and mouse leave
@@ -203,15 +217,15 @@ classdef GridFlex < uix.Grid
             % Call superclass method
             redraw@uix.Grid( obj )
             
-            % Create or destroy dividers
-            b = numel( obj.Dividers ); % current number of dividers
-            c = max( [numel( obj.Contents_ )-1 0] ); % required number of dividers
+            % Create or destroy column dividers
+            b = numel( obj.ColumnDividers ); % current number of dividers
+            c = max( [numel( obj.Widths_ )-1 0] ); % required number of dividers
             if b < c % create
                 for ii = b+1:c
-                    divider = uix.Divider( 'Parent', obj, ...
+                    columnDivider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'vertical', 'Markings', 'on', ...
                         'Color', obj.BackgroundColor );
-                    obj.Dividers(ii,:) = divider;
+                    obj.ColumnDividers(ii,:) = columnDivider;
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
@@ -219,17 +233,55 @@ classdef GridFlex < uix.Grid
                 frontDivider.Parent = obj;
             elseif b > c % destroy
                 % Destroy dividers
-                delete( obj.Dividers(c+1:b,:) )
-                obj.Dividers(c+1:b,:) = [];
+                delete( obj.ColumnDividers(c+1:b,:) )
+                obj.ColumnDividers(c+1:b,:) = [];
             end
             
-            % Position dividers
+            % Create or destroy column dividers
+            q = numel( obj.RowDividers ); % current number of dividers
+            r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
+            if q < r % create
+                for ii = q+1:r
+                    columnDivider = uix.Divider( 'Parent', obj, ...
+                        'Orientation', 'horizontal', 'Markings', 'on', ...
+                        'Color', obj.BackgroundColor );
+                    obj.RowDividers(ii,:) = columnDivider;
+                end
+                % Bring front divider to the front
+                frontDivider = obj.FrontDivider;
+                frontDivider.Parent = [];
+                frontDivider.Parent = obj;
+            elseif q > r % destroy
+                % Destroy dividers
+                delete( obj.RowDividers(r+1:q,:) )
+                obj.RowDividers(r+1:q,:) = [];
+            end
+            
+            % Compute container bounds and retrieve sizes
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
+            heights = obj.Heights_;
+            minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
+            
+            % Position row dividers
+            xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
+            xPositions = repmat( xPositions, [r 1] );
+            ySizes = uix.calcPixelSizes( bounds(4), heights, ...
+                minimumHeights, padding, spacing );
+            yPositions = [bounds(4) - cumsum( ySizes(1:r,:) ) - padding - ...
+                spacing * transpose( 1:r ) + 1, repmat( spacing, [r 1] )];
+            positions = [xPositions(:,1), yPositions(:,1), ...
+                xPositions(:,2), yPositions(:,2)];
+            for ii = 1:r
+                rowDivider = obj.RowDividers(ii);
+                rowDivider.Position = positions(ii,:);
+            end
+            
+            % Position column dividers
             xSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             xPositions = [cumsum( xSizes(1:c,:) ) + padding + ...
@@ -239,8 +291,8 @@ classdef GridFlex < uix.Grid
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             for ii = 1:c
-                divider = obj.Dividers(ii);
-                divider.Position = positions(ii,:);
+                columnDivider = obj.ColumnDividers(ii);
+                columnDivider.Position = positions(ii,:);
             end
             
             % Update pointer
