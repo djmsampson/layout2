@@ -53,34 +53,34 @@ classdef Grid < uix.Box
                 'uix:InvalidPropertyValue', ...
                 'Size of property ''Widths'' must match size of contents.' )
             n = numel( obj.Contents_ );
-            co = numel( obj.Widths_ );
-            ro = numel( obj.Heights_ );
-            cn = numel( value );
-            rn = ceil( n / cn );
-            if cn < min( [1 n] )
+            b = numel( obj.Widths_ );
+            q = numel( obj.Heights_ );
+            c = numel( value );
+            r = ceil( n / c );
+            if c < min( [1 n] )
                 error( 'uix:InvalidPropertyValue' , ...
                     'Property ''Widths'' must be non-empty for non-empty contents.' )
-            elseif ceil( n / rn ) < cn
+            elseif ceil( n / r ) < c
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Widths'' must not lead to empty columns.' )
-            elseif cn > n
+            elseif c > n
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Widths'' must be no larger than size of contents.' )
             end
             
             % Set
             obj.Widths_ = value;
-            if cn < co % number of columns decreasing
-                obj.MinimumWidths_(cn+1:end,:) = [];
-                if rn > ro % number of rows increasing
-                    obj.Heights_(end+1:rn,:) = -1;
-                    obj.MinimumHeights_(end+1:rn,:) = 1;
+            if c < b % number of columns decreasing
+                obj.MinimumWidths_(c+1:end,:) = [];
+                if r > q % number of rows increasing
+                    obj.Heights_(end+1:r,:) = -1;
+                    obj.MinimumHeights_(end+1:r,:) = 1;
                 end
-            elseif cn > co % number of columns increasing
-                obj.MinimumWidths_(end+1:cn,:) = -1;
-                if rn < ro % number of rows decreasing
-                    obj.Heights_(rn+1:end,:) = [];
-                    obj.MinimumHeights_(rn+1:end,:) = [];
+            elseif c > b % number of columns increasing
+                obj.MinimumWidths_(end+1:c,:) = -1;
+                if r < q % number of rows decreasing
+                    obj.Heights_(r+1:end,:) = [];
+                    obj.MinimumHeights_(r+1:end,:) = [];
                 end
             end
             
@@ -129,35 +129,32 @@ classdef Grid < uix.Box
             assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
                 ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
                 'Elements of property ''Heights'' must be real and finite.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Size of property ''Heights'' must match size of contents.' )
             n = numel( obj.Contents_ );
-            co = numel( obj.Widths_ );
-            ro = numel( obj.Heights_ );
-            rn = numel( value );
-            cn = ceil( n / rn );
-            if rn < min( [1 n] )
+            b = numel( obj.Widths_ );
+            q = numel( obj.Heights_ );
+            r = numel( value );
+            c = ceil( n / r );
+            if r < min( [1 n] )
                 error( 'uix:InvalidPropertyValue' , ...
                     'Property ''Heights'' must be non-empty for non-empty contents.' )
-            elseif rn > n
+            elseif r > n
                 error( 'uix:InvalidPropertyValue' , ...
                     'Size of property ''Heights'' must be no larger than size of contents.' )
             end
             
             % Set
             obj.Heights_ = value;
-            if rn < ro % number of rows decreasing
-                obj.MinimumHeights_(rn+1:end,:) = [];
-                if cn > co % number of columns increasing
-                    obj.Widths_(end+1:cn,:) = -1;
-                    obj.MinimumWidths_(end+1:cn,:) = 1;
+            if r < q % number of rows decreasing
+                obj.MinimumHeights_(r+1:end,:) = [];
+                if c > b % number of columns increasing
+                    obj.Widths_(end+1:c,:) = -1;
+                    obj.MinimumWidths_(end+1:c,:) = 1;
                 end
-            elseif rn > ro % number of rows increasing
-                obj.MinimumHeights_(end+1:rn,:) = -1;
-                if cn < co % number of columns decreasing
-                    obj.Widths_(cn+1:end,:) = [];
-                    obj.MinimumWidths_(cn+1:end,:) = [];
+            elseif r > q % number of rows increasing
+                obj.MinimumHeights_(end+1:r,:) = -1;
+                if c < b % number of columns decreasing
+                    obj.Widths_(c+1:end,:) = [];
+                    obj.MinimumWidths_(c+1:end,:) = [];
                 end
             end
             
