@@ -223,13 +223,17 @@ classdef HBoxFlex < uix.HBox
                 obj.ColumnDividers(c+1:b,:) = [];
             end
             
-            % Position dividers
+            % Compute container bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
+            
+            % Retrieve size properties
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
+            
+            % Position column dividers
             xSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
             xPositions = [cumsum( xSizes(1:c,:) ) + padding + ...
@@ -239,8 +243,8 @@ classdef HBoxFlex < uix.HBox
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             for ii = 1:c
-                divider = obj.ColumnDividers(ii);
-                divider.Position = positions(ii,:);
+                columnDivider = obj.ColumnDividers(ii);
+                columnDivider.Position = positions(ii,:);
             end
             
             % Update pointer
