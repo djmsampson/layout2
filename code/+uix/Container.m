@@ -17,6 +17,8 @@ classdef Container < matlab.ui.container.internal.UIContainer
         AncestryObserver
         AncestryListeners
         OldAncestors
+        VisibilityObserver
+        VisibilityListener
         ChildObserver
         ChildAddedListener
         ChildRemovedListener
@@ -41,6 +43,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
                 'AncestryPreChange', @obj.onAncestryPreChange ); ...
                 event.listener( ancestryObserver, ...
                 'AncestryPostChange', @obj.onAncestryPostChange )];
+            visibilityObserver = uix.VisibilityObserver( obj );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -54,6 +59,8 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Store listeners
             obj.AncestryObserver = ancestryObserver;
             obj.AncestryListeners = ancestryListeners;
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -149,6 +156,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % onAncestryPostChange
         
+        function onVisibilityChange( obj, ~, ~ ) %#ok<INUSD>
+            
+        end % onVisibilityChange
+        
         function onChildAdded( obj, ~, eventData )
             
             % Call template method
@@ -228,7 +239,14 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % unparent
         
-        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSL>
+            
+            % Refresh visibility observer and listener
+            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
             
         end % reparent
         

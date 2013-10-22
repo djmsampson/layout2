@@ -52,7 +52,7 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             obj.Ancestors = ancestors;
             
             % Stop early for unrooted subjects
-            if ~isequal( ancestors(1).Parent, ROOT ), return, end
+            if isempty( ancestors ) || ~isequal( ancestors(1).Parent, ROOT ), return, end
             
             % Force update
             obj.update()
@@ -78,9 +78,6 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
         
         function update( obj )
             
-            % Get old value
-            oldVisible = obj.Visible;
-            
             % Identify new value
             ancestry = [obj.Ancestors; obj.Subject];
             visibles = get( ancestry, 'Visible' );
@@ -88,11 +85,6 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             
             % Store new value
             obj.Visible = newVisible;
-            
-            % Raise event
-            if ~isequal( oldVisible, newVisible )
-                notify( obj, 'VisibilityChange' )
-            end
             
         end % update
         
@@ -104,6 +96,9 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             
             % Update
             obj.update()
+            
+            % Raise event
+            notify( obj, 'VisibilityChange' )
             
         end % onVisibleChange
         
