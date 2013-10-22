@@ -11,8 +11,8 @@ classdef GridFlex < uix.Grid
         ActiveDivider = 0
         ActiveDividerPosition = [NaN NaN NaN NaN]
         MousePressLocation = [NaN NaN]
-        OldDivider = 0
-        OldPointer = 'unset'
+        Pointer = 'unset'
+        OldPointer = 0
         BackgroundColorListener
     end
     
@@ -196,23 +196,24 @@ classdef GridFlex < uix.Grid
                 cColumnPositions = get( obj.ColumnDividers, {'Position'} );
                 columnPositions = vertcat( cColumnPositions{:} );
                 tfc = uix.inrectangle( point, columnPositions );
-                oldDivider = obj.OldDivider;
-                                
-                if ( tfr || tfc ) && oldDivider == 0
-                    obj.OldPointer = source.Pointer;
+                oldPointer = obj.OldPointer;
+                newPointer = tfr - ( tfc && ~tfr );
+                switch oldPointer + 1i * newPointer
+                    case {-1,1}
+                        source.Pointer = obj.Pointer; % restore
+                        obj.Pointer = 'unset'; % unset
+                    case -1+1i
+                        source.Pointer = 'top';
+                    case 0-1i
+                        obj.Pointer = source.Pointer; % set
+                        source.Pointer = 'left';
+                    case 0+1i
+                        obj.Pointer = source.Pointer; % set
+                        source.Pointer = 'top';
+                    case 1-1i
+                        source.Pointer = 'left';
                 end
-                if tfr && oldDivider ~= 1
-                    source.Pointer = 'top';
-                    obj.OldDivider = 1;
-                elseif tfc && oldDivider ~= -1
-                    source.Pointer = 'left';
-                    obj.OldDivider = -1;
-                elseif ( ~tfr && ~tfc ) && oldDivider ~= 0
-                    source.Pointer = obj.OldPointer;
-                    obj.OldPointer = 'unset';
-                    obj.OldDivider = 0;
-                end
-                
+                obj.OldPointer = newPointer;
             elseif loc > 0 % dragging row divider
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
                 ih = loc;
