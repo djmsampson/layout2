@@ -184,7 +184,6 @@ classdef GridFlex < uix.Grid
             if isequal( ROOT, [] ), ROOT = groot(); end
             
             loc = obj.ActiveDivider;
-            r = numel( obj.Heights_ );
             contents = obj.Contents_;
             if loc == 0 % hovering
                 % Update pointer for mouse enter and mouse leave
@@ -232,6 +231,7 @@ classdef GridFlex < uix.Grid
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
+                r = numel( obj.Heights_ );
                 ic = r * (-loc-1) + 1;
                 jc = r * -loc + 1;
                 oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];

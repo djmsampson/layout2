@@ -202,7 +202,7 @@ classdef HBoxFlex < uix.HBox
             % Call superclass method
             redraw@uix.HBox( obj )
             
-            % Create or destroy dividers
+            % Create or destroy column dividers
             b = numel( obj.ColumnDividers ); % current number of dividers
             c = max( [numel( obj.Widths_ )-1 0] ); % required number of dividers
             if b < c % create

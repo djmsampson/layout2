@@ -206,7 +206,7 @@ classdef VBoxFlex < uix.VBox
             % Call superclass method
             redraw@uix.VBox( obj )
             
-            % Create or destroy dividers
+            % Create or destroy row dividers
             q = numel( obj.RowDividers ); % current number of dividers
             r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
             if q < r % create
