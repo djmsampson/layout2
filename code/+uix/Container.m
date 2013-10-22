@@ -121,6 +121,9 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
+            % Call template method
+            obj.unparent( oldAncestors )
+            
         end % onAncestryPreChange
         
         function onAncestryPostChange( obj, ~, ~ )
@@ -133,7 +136,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             newAncestors = ancestryObserver.Ancestors;
             
             % Call template method
-            obj.transplant( oldAncestors, newAncestors )
+            obj.reparent( oldAncestors, newAncestors )
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -221,9 +224,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % removeChild
         
-        function transplant( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+        function unparent( obj, oldAncestors ) %#ok<INUSD>
             
-        end % transplant
+        end % unparent
+        
+        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+            
+        end % reparent
         
         function reorder( obj, indices )
             %reorder  Reorder contents
