@@ -356,6 +356,25 @@ classdef GridFlex < uix.Grid
             
         end % redraw
         
+        function unparent( obj, oldAncestors )
+            
+            % Restore figure pointer
+            if ~isempty( oldAncestors ) && ...
+                    isa( oldAncestors(1), 'matlab.ui.Figure' )
+                oldFigure = oldAncestors(1);
+                oldPointer = obj.OldPointer;
+                if oldPointer ~= 0
+                    oldFigure.Pointer = obj.Pointer;
+                    obj.Pointer = 'unset';
+                    obj.OldPointer = 0;
+                end
+            end
+            
+            % Call superclass method
+            unparent@uix.Container( obj, oldAncestors )
+            
+        end % unparent
+        
         function reparent( obj, oldAncestors, newAncestors )
             %reparent  Reparent container
             %
@@ -399,6 +418,9 @@ classdef GridFlex < uix.Grid
             
             % Call superclass method
             reparent@uix.Container( obj, oldAncestors, newAncestors )
+            
+            % Update pointer
+            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
             
         end % reparent
         
