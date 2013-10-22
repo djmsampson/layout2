@@ -101,7 +101,6 @@ classdef GridFlex < uix.Grid
             
             % Compute new positions
             loc = obj.ActiveDivider;
-            r = numel( obj.Heights_ );
             contents = obj.Contents_;
             if loc > 0
                 delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
@@ -135,6 +134,7 @@ classdef GridFlex < uix.Grid
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
+                r = numel( obj.Heights_ );
                 ic = r * (-loc-1) + 1;
                 jc = r * -loc + 1;
                 divider = obj.ColumnDividers(iw);

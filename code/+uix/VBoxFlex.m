@@ -1,7 +1,7 @@
 classdef VBoxFlex < uix.VBox
     
     properties( Access = private )
-        Dividers = uix.Divider.empty( [0 1] )
+        RowDividers = uix.Divider.empty( [0 1] )
         FrontDivider
         LocationObserver
         MousePressListener = event.listener.empty( [0 0] )
@@ -62,13 +62,13 @@ classdef VBoxFlex < uix.VBox
             pointerLocation = ROOT.PointerLocation;
             point = pointerLocation - ...
                 obj.LocationObserver.Location(1:2) + [1 1];
-            cPositions = get( obj.Dividers, {'Position'} );
-            positions = vertcat( cPositions{:} );
-            [tf, loc] = uix.inrectangle( point, positions );
+            cRowPositions = get( obj.RowDividers, {'Position'} );
+            rowPositions = vertcat( cRowPositions{:} );
+            [tf, loc] = uix.inrectangle( point, rowPositions );
             if ~tf, return, end
             
             % Capture state at button down
-            divider = obj.Dividers(loc);
+            divider = obj.RowDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
             obj.MousePressLocation = pointerLocation;
@@ -92,42 +92,48 @@ classdef VBoxFlex < uix.VBox
             if loc == 0, return, end
             
             % Compute new positions
-            delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
-            if delta < 0 % limit to minimum distance from lower neighbor
-                delta = max( delta, obj.MinimumHeights_(loc+1) - ...
-                    obj.Contents_(loc+1).Position(4) );
-            else % limit to minimum distance from upper neighbor
-                delta = min( delta, obj.Contents_(loc).Position(4) - ...
-                    obj.MinimumHeights_(loc) );
-            end
-            oldHeights = obj.Heights_(loc:loc+1);
+            loc = obj.ActiveDivider;
             contents = obj.Contents_;
-            oldPixelHeights = [contents(loc).Position(4); ...
-                contents(loc+1).Position(4)];
-            newPixelHeights = oldPixelHeights - delta * [1;-1];
-            if oldHeights(1) < 0 && oldHeights(2) < 0 % weight, weight
-                newHeights = oldHeights .* newPixelHeights ./ oldPixelHeights;
-            elseif oldHeights(1) < 0 && oldHeights(2) >= 0 % weight, pixels
-                newHeights = [oldHeights(1) * newPixelHeights(1) / ...
-                    oldPixelHeights(1); newPixelHeights(2)];
-            elseif oldHeights(1) >= 0 && oldHeights(2) < 0 % pixels, weight
-                newHeights = [newPixelHeights(1); oldHeights(2) * ...
-                    newPixelHeights(2) / oldPixelHeights(2)];
-            else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
-                newHeights = newPixelHeights;
+            if loc > 0
+                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                ih = loc;
+                jh = loc + 1;
+                ic = loc;
+                jc = loc + 1;
+                divider = obj.RowDividers(loc);
+                oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
+                minimumHeights = obj.MinimumHeights_(ih:jh,:);
+                if delta < 0 % limit to minimum distance from lower neighbor
+                    delta = max( delta, minimumHeights(2) - oldPixelHeights(2) );
+                else % limit to minimum distance from upper neighbor
+                    delta = min( delta, oldPixelHeights(1) - minimumHeights(1) );
+                end
+                oldHeights = obj.Heights_(loc:loc+1);
+                newPixelHeights = oldPixelHeights - delta * [1;-1];
+                if oldHeights(1) < 0 && oldHeights(2) < 0 % weight, weight
+                    newHeights = oldHeights .* newPixelHeights ./ oldPixelHeights;
+                elseif oldHeights(1) < 0 && oldHeights(2) >= 0 % weight, pixels
+                    newHeights = [oldHeights(1) * newPixelHeights(1) / ...
+                        oldPixelHeights(1); newPixelHeights(2)];
+                elseif oldHeights(1) >= 0 && oldHeights(2) < 0 % pixels, weight
+                    newHeights = [newPixelHeights(1); oldHeights(2) * ...
+                        newPixelHeights(2) / oldPixelHeights(2)];
+                else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
+                    newHeights = newPixelHeights;
+                end
+                obj.Heights_(loc:loc+1) = newHeights;
+            else
+                return
             end
             
             % Deactivate divider
             obj.FrontDivider.Visible = 'off';
-            obj.Dividers(loc).Visible = 'on';
+            divider.Visible = 'on';
             
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            
-            % Reposition contents
-            obj.Heights_(loc:loc+1) = newHeights;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -145,7 +151,7 @@ classdef VBoxFlex < uix.VBox
                 % Update pointer for mouse enter and mouse leave
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
-                cPositions = get( obj.Dividers, {'Position'} );
+                cPositions = get( obj.RowDividers, {'Position'} );
                 positions = vertcat( cPositions{:} );
                 isOver = uix.inrectangle( point, positions );
                 wasOver = obj.OldMouseOver;
@@ -179,7 +185,7 @@ classdef VBoxFlex < uix.VBox
         function onBackgroundColorChange( obj, ~, ~ )
             
             color = obj.BackgroundColor;
-            dividers = obj.Dividers;
+            dividers = obj.RowDividers;
             for ii = 1:numel( dividers )
                 dividers(ii).Color = color;
             end
@@ -201,14 +207,14 @@ classdef VBoxFlex < uix.VBox
             redraw@uix.VBox( obj )
             
             % Create or destroy dividers
-            q = numel( obj.Dividers ); % current number of dividers
+            q = numel( obj.RowDividers ); % current number of dividers
             r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
             if q < r % create
                 for ii = q+1:r
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'horizontal', 'Markings', 'on', ...
                         'Color', obj.BackgroundColor );
-                    obj.Dividers(ii,:) = divider;
+                    obj.RowDividers(ii,:) = divider;
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
@@ -216,8 +222,8 @@ classdef VBoxFlex < uix.VBox
                 frontDivider.Parent = obj;
             elseif q > r % destroy
                 % Destroy dividers
-                delete( obj.Dividers(r+1:q,:) )
-                obj.Dividers(r+1:q,:) = [];
+                delete( obj.RowDividers(r+1:q,:) )
+                obj.RowDividers(r+1:q,:) = [];
             end
             
             % Position dividers
@@ -236,7 +242,7 @@ classdef VBoxFlex < uix.VBox
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             for ii = 1:r
-                divider = obj.Dividers(ii);
+                divider = obj.RowDividers(ii);
                 divider.Position = positions(ii,:);
             end
             
