@@ -52,7 +52,7 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             obj.Ancestors = ancestors;
             
             % Stop early for unrooted subjects
-            if isempty( ancestors ) || ~isequal( ancestors(1).Parent, ROOT ), return, end
+            if ~isequal( ancestry(1).Parent, ROOT ), return, end
             
             % Force update
             obj.update()

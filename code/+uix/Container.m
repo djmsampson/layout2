@@ -36,7 +36,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             % Call superclass constructor
             obj@matlab.ui.container.internal.UIContainer( notmypv{:} );
             
-            % Create child listeners
+            % Create observers and listeners
             ancestryObserver = uix.AncestryObserver( obj );
             ancestryListeners = [ ...
                 event.listener( ancestryObserver, ...
@@ -51,12 +51,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
                 childObserver, 'ChildAdded', @obj.onChildAdded );
             childRemovedListener = event.listener( ...
                 childObserver, 'ChildRemoved', @obj.onChildRemoved );
-            
-            % Create resize listener
             sizeChangeListener = event.listener( ...
                 obj, 'SizeChange', @obj.onSizeChange );
             
-            % Store listeners
+            % Store observers and listeners
             obj.AncestryObserver = ancestryObserver;
             obj.AncestryListeners = ancestryListeners;
             obj.VisibilityObserver = visibilityObserver;
@@ -106,10 +104,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
         function set.Dirty( obj, value )
             
             if value
-                if obj.isDrawable()
-                    obj.redraw()
-                else
-                    obj.Dirty_ = true;
+                if obj.isDrawable() % drawable
+                    obj.redraw() % redraw now
+                else % not drawable
+                    obj.Dirty_ = true; % flag for future redraw
                 end
             end
             
@@ -156,7 +154,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
         end % onAncestryPostChange
         
-        function onVisibilityChange( obj, ~, ~ ) %#ok<INUSD>
+        function onVisibilityChange( obj, ~, ~ )
+            
+            % Redraw if possible and if dirty
+            if obj.Dirty_ && obj.isDrawable()
+                obj.redraw()
+                obj.Dirty_ = false;
+            end
             
         end % onVisibilityChange
         
@@ -236,15 +240,25 @@ classdef Container < matlab.ui.container.internal.UIContainer
         end % removeChild
         
         function unparent( obj, oldAncestors ) %#ok<INUSD>
+            %unparent  Unparent container
+            %
+            %  c.unparent(a) unparents the container c from the ancestors
+            %  a.
             
         end % unparent
         
         function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSL>
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the ancestors
+            %  a to the ancestors b.
             
             % Refresh visibility observer and listener
             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
+            
+            % Store observer and listener
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
             
@@ -269,9 +283,15 @@ classdef Container < matlab.ui.container.internal.UIContainer
         end % reorder
         
         function tf = isDrawable( obj )
+            %isDrawable  Test for drawability
+            %
+            %  c.isDrawable() is true if the container c is drawable, and
+            %  false otherwise.  To be drawable, a container must be rooted
+            %  and visible.
             
             ancestors = obj.AncestryObserver.Ancestors;
-            tf = ~isempty( ancestors ) && ...
+            visible = obj.VisibilityObserver.Visible;
+            tf = visible && ~isempty( ancestors ) && ...
                 isa( ancestors(1), 'matlab.ui.Figure' );
             
         end % isDrawable
