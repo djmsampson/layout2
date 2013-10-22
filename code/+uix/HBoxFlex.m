@@ -1,7 +1,7 @@
 classdef HBoxFlex < uix.HBox
     
     properties( Access = private )
-        Dividers = uix.Divider.empty( [0 1] )
+        ColumnDividers = uix.Divider.empty( [0 1] )
         FrontDivider
         LocationObserver
         MousePressListener = event.listener.empty( [0 0] )
@@ -62,13 +62,13 @@ classdef HBoxFlex < uix.HBox
             pointerLocation = ROOT.PointerLocation;
             point = pointerLocation - ...
                 obj.LocationObserver.Location(1:2) + [1 1];
-            cPositions = get( obj.Dividers, {'Position'} );
-            positions = vertcat( cPositions{:} );
-            [tf, loc] = uix.inrectangle( point, positions );
+            cColumnPositions = get( obj.ColumnDividers, {'Position'} );
+            columnPositions = vertcat( cColumnPositions{:} );
+            [tf, loc] = uix.inrectangle( point, columnPositions );
             if ~tf, return, end
             
             % Capture state at button down
-            divider = obj.Dividers(loc);
+            divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
             obj.MousePressLocation = pointerLocation;
@@ -87,47 +87,49 @@ classdef HBoxFlex < uix.HBox
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            % Check whether a divider is active
-            loc = obj.ActiveDivider;
-            if loc == 0, return, end
-            
             % Compute new positions
-            delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
-            if delta < 0 % limit to minimum distance from left neighbor
-                delta = max( delta, obj.MinimumWidths_(loc) - ...
-                    obj.Contents_(loc).Position(3) );
-            else % limit to minimum distance from right neighbor
-                delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
-                    obj.MinimumWidths_(loc+1) );
-            end
-            oldWidths = obj.Widths_(loc:loc+1);
+            loc = obj.ActiveDivider;
             contents = obj.Contents_;
-            oldPixelWidths = [contents(loc).Position(3); ...
-                contents(loc+1).Position(3)];
-            newPixelWidths = oldPixelWidths + delta * [1;-1];
-            if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
-                newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
-            elseif oldWidths(1) < 0 && oldWidths(2) >= 0 % weight, pixels
-                newWidths = [oldWidths(1) * newPixelWidths(1) / ...
-                    oldPixelWidths(1); newPixelWidths(2)];
-            elseif oldWidths(1) >= 0 && oldWidths(2) < 0 % pixels, weight
-                newWidths = [newPixelWidths(1); oldWidths(2) * ...
-                    newPixelWidths(2) / oldPixelWidths(2)];
-            else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
-                newWidths = newPixelWidths;
+            if loc > 0
+                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                iw = loc;
+                jw = loc + 1;
+                ic = loc;
+                jc = loc + 1;
+                divider = obj.ColumnDividers(iw);
+                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                minimumWidths = obj.MinimumWidths_(iw:jw,:);
+                if delta < 0 % limit to minimum distance from left neighbor
+                    delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
+                else % limit to minimum distance from right neighbor
+                    delta = min( delta, oldPixelWidths(2) - minimumWidths(2) );
+                end
+                oldWidths = obj.Widths_(iw:jw);
+                newPixelWidths = oldPixelWidths + delta * [1;-1];
+                if oldWidths(1) < 0 && oldWidths(2) < 0 % weight, weight
+                    newWidths = oldWidths .* newPixelWidths ./ oldPixelWidths;
+                elseif oldWidths(1) < 0 && oldWidths(2) >= 0 % weight, pixels
+                    newWidths = [oldWidths(1) * newPixelWidths(1) / ...
+                        oldPixelWidths(1); newPixelWidths(2)];
+                elseif oldWidths(1) >= 0 && oldWidths(2) < 0 % pixels, weight
+                    newWidths = [newPixelWidths(1); oldWidths(2) * ...
+                        newPixelWidths(2) / oldPixelWidths(2)];
+                else % sizes(1) >= 0 && sizes(2) >= 0 % pixels, pixels
+                    newWidths = newPixelWidths;
+                end
+                obj.Widths_(iw:jw) = newWidths;
+            else
+                return
             end
             
             % Deactivate divider
             obj.FrontDivider.Visible = 'off';
-            obj.Dividers(loc).Visible = 'on';
+            divider.Visible = 'on';
             
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            
-            % Reposition contents
-            obj.Widths_(loc:loc+1) = newWidths;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -145,7 +147,7 @@ classdef HBoxFlex < uix.HBox
                 % Update pointer for mouse enter and mouse leave
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
-                cPositions = get( obj.Dividers, {'Position'} );
+                cPositions = get( obj.ColumnDividers, {'Position'} );
                 positions = vertcat( cPositions{:} );
                 isOver = uix.inrectangle( point, positions );
                 wasOver = obj.OldMouseOver;
@@ -179,7 +181,7 @@ classdef HBoxFlex < uix.HBox
         function onBackgroundColorChange( obj, ~, ~ )
             
             color = obj.BackgroundColor;
-            dividers = obj.Dividers;
+            dividers = obj.ColumnDividers;
             for ii = 1:numel( dividers )
                 dividers(ii).Color = color;
             end
@@ -201,14 +203,14 @@ classdef HBoxFlex < uix.HBox
             redraw@uix.HBox( obj )
             
             % Create or destroy dividers
-            b = numel( obj.Dividers ); % current number of dividers
+            b = numel( obj.ColumnDividers ); % current number of dividers
             c = max( [numel( obj.Widths_ )-1 0] ); % required number of dividers
             if b < c % create
                 for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'vertical', 'Markings', 'on', ...
                         'Color', obj.BackgroundColor );
-                    obj.Dividers(ii,:) = divider;
+                    obj.ColumnDividers(ii,:) = divider;
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
@@ -216,8 +218,8 @@ classdef HBoxFlex < uix.HBox
                 frontDivider.Parent = obj;
             elseif b > c % destroy
                 % Destroy dividers
-                delete( obj.Dividers(c+1:b,:) )
-                obj.Dividers(c+1:b,:) = [];
+                delete( obj.ColumnDividers(c+1:b,:) )
+                obj.ColumnDividers(c+1:b,:) = [];
             end
             
             % Position dividers
@@ -236,7 +238,7 @@ classdef HBoxFlex < uix.HBox
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             for ii = 1:c
-                divider = obj.Dividers(ii);
+                divider = obj.ColumnDividers(ii);
                 divider.Position = positions(ii,:);
             end
             
