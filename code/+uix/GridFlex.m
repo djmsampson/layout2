@@ -198,20 +198,19 @@ classdef GridFlex < uix.Grid
                 tfc = uix.inrectangle( point, columnPositions );
                 oldPointer = obj.OldPointer;
                 newPointer = tfr - ( tfc && ~tfr );
-                switch oldPointer + 1i * newPointer
-                    case {-1,1}
-                        source.Pointer = obj.Pointer; % restore
-                        obj.Pointer = 'unset'; % unset
-                    case -1+1i
-                        source.Pointer = 'top';
-                    case 0-1i
-                        obj.Pointer = source.Pointer; % set
-                        source.Pointer = 'left';
-                    case 0+1i
-                        obj.Pointer = source.Pointer; % set
-                        source.Pointer = 'top';
-                    case 1-1i
-                        source.Pointer = 'left';
+                if oldPointer == -1 && newPointer == 1
+                    source.Pointer = 'top';
+                elseif oldPointer == 1 && newPointer == -1
+                    source.Pointer = 'left';
+                elseif oldPointer ~= 0 && newPointer == 0
+                    source.Pointer = obj.Pointer; % restore
+                    obj.Pointer = 'unset'; % unset
+                elseif oldPointer == 0 && newPointer == -1
+                    obj.Pointer = source.Pointer; % set
+                    source.Pointer = 'left';
+                elseif oldPointer == 0 && newPointer == 1
+                    obj.Pointer = source.Pointer; % set
+                    source.Pointer = 'top';
                 end
                 obj.OldPointer = newPointer;
             elseif loc > 0 % dragging row divider
