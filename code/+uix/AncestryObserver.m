@@ -10,7 +10,8 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
     end
     
     events( NotifyAccess = private )
-        AncestryChange
+        AncestryPreChange
+        AncestryPostChange
     end
     
     methods
@@ -68,7 +69,7 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             
             % Raise event
             if ~isequal( oldAncestors, newAncestors )
-                notify( obj, 'AncestryChange' )
+                notify( obj, 'AncestryPostChange' )
             end
             
         end % update

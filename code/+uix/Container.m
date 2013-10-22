@@ -15,7 +15,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
     properties( Access = private )
         Dirty_ = false
         AncestryObserver
-        AncestryListener
+        AncestryListeners
         OldAncestors
         ChildObserver
         ChildAddedListener
@@ -36,9 +36,11 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
             % Create child listeners
             ancestryObserver = uix.AncestryObserver( obj );
-            ancestryListener = event.listener( ancestryObserver, ...
-                'AncestryChange', @obj.onAncestryChange );
-            ancestors = ancestryObserver.Ancestors;
+            ancestryListeners = [ ...
+                event.listener( ancestryObserver, ...
+                'AncestryPreChange', @obj.onAncestryPreChange ); ...
+                event.listener( ancestryObserver, ...
+                'AncestryPostChange', @obj.onAncestryPostChange )];
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -51,8 +53,7 @@ classdef Container < matlab.ui.container.internal.UIContainer
             
             % Store listeners
             obj.AncestryObserver = ancestryObserver;
-            obj.AncestryListener = ancestryListener;
-            obj.OldAncestors = ancestors;
+            obj.AncestryListeners = ancestryListeners;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -111,7 +112,18 @@ classdef Container < matlab.ui.container.internal.UIContainer
     
     methods( Access = private, Sealed )
         
-        function onAncestryChange( obj, ~, ~ )
+        function onAncestryPreChange( obj, ~, ~ )
+            
+            % Retrieve ancestors from observer
+            ancestryObserver = obj.AncestryObserver;
+            oldAncestors = ancestryObserver.Ancestors;
+            
+            % Store ancestors in cache
+            obj.OldAncestors = oldAncestors;
+            
+        end % onAncestryPreChange
+        
+        function onAncestryPostChange( obj, ~, ~ )
             
             % Retrieve old ancestors from cache
             oldAncestors = obj.OldAncestors;
@@ -129,10 +141,10 @@ classdef Container < matlab.ui.container.internal.UIContainer
                 obj.Dirty_ = false;
             end
             
-            % Update cache
-            obj.OldAncestors = newAncestors;
+            % Reset cache
+            obj.OldAncestors = [];
             
-        end % onAncestryChange
+        end % onAncestryPostChange
         
         function onChildAdded( obj, ~, eventData )
             
