@@ -45,32 +45,27 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
             
-            % Capture old ancestors
-            oldAncestors = obj.Ancestors;
-            
             % Identify new ancestors
             subject = obj.Subject;
             newAncestors = uix.ancestors( subject );
             newAncestry = [newAncestors; subject];
             
             % Create listeners
-            parentListeners = event.listener.empty( [0 1] ); % initialize
-            cbParentChange = @obj.onParentChange;
+            preListeners = event.listener.empty( [0 1] ); % initialize
+            postListeners = event.listener.empty( [0 1] ); % initialize
+            cbPreChange = @obj.onPreChange;
+            cbPostChange = @obj.onPostChange;
             for ii = 1:numel( newAncestry )
-                newAncestor = newAncestry(ii);
-                parentListeners(ii,:) = event.proplistener( newAncestor, ...
-                    findprop( newAncestor, 'Parent' ), 'PostSet', ...
-                    cbParentChange );
+                ancestor = newAncestry(ii);
+                preListeners(ii,:) = event.proplistener( ancestor, ...
+                    findprop( ancestor, 'Parent' ), 'PreSet', cbPreChange );
+                postListeners(ii,:) = event.proplistener( ancestor, ...
+                    findprop( ancestor, 'Parent' ), 'PostSet', cbPostChange );
             end
             
             % Store properties
             obj.Ancestors = newAncestors;
-            obj.ParentListeners = parentListeners;
-            
-            % Raise event
-            if ~isequal( oldAncestors, newAncestors )
-                notify( obj, 'AncestryPostChange' )
-            end
+            obj.ParentListeners = [preListeners postListeners];
             
         end % update
         
@@ -78,12 +73,22 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
     
     methods
         
-        function onParentChange( obj, ~, ~ )
+        function onPreChange( obj, ~, ~ )
+            
+            % Raise event
+            notify( obj, 'AncestryPreChange' )
+            
+        end % onPreChange
+        
+        function onPostChange( obj, ~, ~ )
             
             % Update
             obj.update()
             
-        end % onParentChange
+            % Raise event
+            notify( obj, 'AncestryPostChange' )
+            
+        end % onPostChange
         
     end % event handlers
     
