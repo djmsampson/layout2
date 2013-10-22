@@ -245,6 +245,29 @@ classdef VBoxFlex < uix.VBox
             
         end % redraw
         
+        function unparent( obj, oldAncestors )
+            %unparent  Unparent container
+            %
+            %  c.unparent(a) unparents the container c from the ancestors
+            %  a.
+            
+            % Restore figure pointer
+            if ~isempty( oldAncestors ) && ...
+                    isa( oldAncestors(1), 'matlab.ui.Figure' )
+                oldFigure = oldAncestors(1);
+                oldPointer = obj.OldPointer;
+                if oldPointer ~= 0
+                    oldFigure.Pointer = obj.Pointer;
+                    obj.Pointer = 'unset';
+                    obj.OldPointer = 0;
+                end
+            end
+            
+            % Call superclass method
+            unparent@uix.Container( obj, oldAncestors )
+            
+        end % unparent
+        
         function reparent( obj, oldAncestors, newAncestors )
             %reparent  Reparent container
             %
@@ -288,6 +311,9 @@ classdef VBoxFlex < uix.VBox
             
             % Call superclass method
             reparent@uix.Container( obj, oldAncestors, newAncestors )
+            
+            % Update pointer
+            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
             
         end % reparent
         
