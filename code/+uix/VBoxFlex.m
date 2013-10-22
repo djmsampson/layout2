@@ -9,8 +9,8 @@ classdef VBoxFlex < uix.VBox
         MouseMotionListener = event.listener.empty( [0 0] )
         OldMouseOver = false
         ActiveDivider = 0
+        ActiveDividerPosition = [NaN NaN NaN NaN]
         MousePressLocation = [NaN NaN]
-        OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
         BackgroundColorListener
     end
@@ -70,8 +70,8 @@ classdef VBoxFlex < uix.VBox
             % Capture state at button down
             divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
+            obj.ActiveDividerPosition = divider.Position;
             obj.MousePressLocation = pointerLocation;
-            obj.OldDividerPosition = divider.Position;
             
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -123,8 +123,8 @@ classdef VBoxFlex < uix.VBox
             
             % Reset state at button down
             obj.ActiveDivider = 0;
+            obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            obj.OldDividerPosition = [NaN NaN NaN NaN];
             
             % Reposition contents
             obj.Heights_(loc:loc+1) = newHeights;
@@ -171,7 +171,7 @@ classdef VBoxFlex < uix.VBox
                         obj.MinimumHeights_(loc) );
                 end
                 obj.FrontDivider.Position = ...
-                    obj.OldDividerPosition + [0 delta 0 0];
+                    obj.ActiveDividerPosition + [0 delta 0 0];
             end
             
         end % onMouseMotion

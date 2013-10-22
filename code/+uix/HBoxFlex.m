@@ -9,8 +9,8 @@ classdef HBoxFlex < uix.HBox
         MouseMotionListener = event.listener.empty( [0 0] )
         OldMouseOver = false
         ActiveDivider = 0
+        ActiveDividerPosition = [NaN NaN NaN NaN]
         MousePressLocation = [NaN NaN]
-        OldDividerPosition = [NaN NaN NaN NaN]
         OldPointer = 'unset'
         BackgroundColorListener
     end
@@ -70,8 +70,8 @@ classdef HBoxFlex < uix.HBox
             % Capture state at button down
             divider = obj.Dividers(loc);
             obj.ActiveDivider = loc;
+            obj.ActiveDividerPosition = divider.Position;
             obj.MousePressLocation = pointerLocation;
-            obj.OldDividerPosition = divider.Position;
             
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -123,8 +123,8 @@ classdef HBoxFlex < uix.HBox
             
             % Reset state at button down
             obj.ActiveDivider = 0;
+            obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            obj.OldDividerPosition = [NaN NaN NaN NaN];
             
             % Reposition contents
             obj.Widths_(loc:loc+1) = newWidths;
@@ -171,7 +171,7 @@ classdef HBoxFlex < uix.HBox
                         obj.MinimumWidths_(loc+1) );
                 end
                 obj.FrontDivider.Position = ...
-                    obj.OldDividerPosition + [delta 0 0 0];
+                    obj.ActiveDividerPosition + [delta 0 0 0];
             end
             
         end % onMouseMotion

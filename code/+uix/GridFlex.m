@@ -9,8 +9,8 @@ classdef GridFlex < uix.Grid
         MouseReleaseListener = event.listener.empty( [0 0] )
         MouseMotionListener = event.listener.empty( [0 0] )
         ActiveDivider = 0
+        ActiveDividerPosition = [NaN NaN NaN NaN]
         MousePressLocation = [NaN NaN]
-        OldDividerPosition = [NaN NaN NaN NaN]
         OldDivider = 0
         OldPointer = 'unset'
         BackgroundColorListener
@@ -81,8 +81,8 @@ classdef GridFlex < uix.Grid
             
             % Capture state at button down
             obj.ActiveDivider = loc;
+            obj.ActiveDividerPosition = divider.Position;
             obj.MousePressLocation = pointerLocation;
-            obj.OldDividerPosition = divider.Position;
             
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -169,8 +169,8 @@ classdef GridFlex < uix.Grid
             
             % Reset state at button down
             obj.ActiveDivider = 0;
+            obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            obj.OldDividerPosition = [NaN NaN NaN NaN];
             
             % Mark as dirty
             obj.Dirty = true;
@@ -227,7 +227,7 @@ classdef GridFlex < uix.Grid
                     delta = min( delta, oldPixelHeights(1) - minimumHeights(1) );
                 end
                 obj.FrontDivider.Position = ...
-                    obj.OldDividerPosition + [0 delta 0 0];
+                    obj.ActiveDividerPosition + [0 delta 0 0];
             else % loc < 0, dragging column divider
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
@@ -242,7 +242,7 @@ classdef GridFlex < uix.Grid
                     delta = min( delta, oldPixelWidths(2) - minimumWidths(2) );
                 end
                 obj.FrontDivider.Position = ...
-                    obj.OldDividerPosition + [delta 0 0 0];
+                    obj.ActiveDividerPosition + [delta 0 0 0];
             end
             
         end % onMouseMotion
