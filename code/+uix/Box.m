@@ -79,23 +79,4 @@ classdef Box < uix.Container
         
     end % accessors
     
-    methods( Access = protected )
-        
-        function reposition( obj, positions )
-            
-            children = obj.Contents_;
-            for ii = 1:numel( children )
-                child = children(ii);
-                child.Units = 'pixels';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    child.( child.ActivePositionProperty ) = positions(ii,:);
-                else
-                    child.Position = positions(ii,:);
-                end
-            end
-            
-        end % reposition
-        
-    end % template methods
-    
 end % classdef
