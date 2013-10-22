@@ -7,11 +7,11 @@ classdef HBoxFlex < uix.HBox
         MousePressListener = event.listener.empty( [0 0] )
         MouseReleaseListener = event.listener.empty( [0 0] )
         MouseMotionListener = event.listener.empty( [0 0] )
-        OldMouseOver = false
         ActiveDivider = 0
         ActiveDividerPosition = [NaN NaN NaN NaN]
         MousePressLocation = [NaN NaN]
-        OldPointer = 'unset'
+        Pointer = 'unset'
+        OldPointer = 0
         BackgroundColorListener
     end
     
@@ -146,21 +146,19 @@ classdef HBoxFlex < uix.HBox
             if loc == 0 % hovering, update pointer
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
-                cPositions = get( obj.ColumnDividers, {'Position'} );
-                positions = vertcat( cPositions{:} );
-                isOver = uix.inrectangle( point, positions );
-                wasOver = obj.OldMouseOver;
-                if wasOver ~= isOver
-                    figure = source;
-                    if isOver % enter
-                        obj.OldPointer = figure.Pointer;
-                        figure.Pointer = 'left';
-                    else % leave
-                        figure.Pointer = obj.OldPointer;
-                        obj.OldPointer = 'unset';
-                    end
-                    obj.OldMouseOver = isOver;
+                cColumnPositions = get( obj.ColumnDividers, {'Position'} );
+                columnPositions = vertcat( cColumnPositions{:} );
+                tfc = uix.inrectangle( point, columnPositions );
+                oldPointer = obj.OldPointer;
+                newPointer = double( tfc );
+                if oldPointer == 1 && newPointer == 0
+                    source.Pointer = obj.Pointer; % restore
+                    obj.Pointer = 'unset'; % unset
+                elseif oldPointer == 0 && newPointer == 1
+                    obj.Pointer = source.Pointer; % set
+                    source.Pointer = 'left';
                 end
+                obj.OldPointer = newPointer;
             else % dragging column divider
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = loc;
