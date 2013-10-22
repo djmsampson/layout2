@@ -162,15 +162,19 @@ classdef HBoxFlex < uix.HBox
                     end
                     obj.OldMouseOver = isOver;
                 end
-            else % dragging
-                % Reposition divider
+            else % dragging column divider
                 delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                iw = loc;
+                jw = loc + 1;
+                ic = loc;
+                jc = loc + 1;
+                contents = obj.Contents_;
+                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
-                    delta = max( delta, obj.MinimumWidths_(loc) - ...
-                        obj.Contents_(loc).Position(3) );
+                    delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
                 else % limit to minimum distance from right neighbor
-                    delta = min( delta, obj.Contents_(loc+1).Position(3) - ...
-                        obj.MinimumWidths_(loc+1) );
+                    delta = min( delta, oldPixelWidths(2) - minimumWidths(2) );
                 end
                 obj.FrontDivider.Position = ...
                     obj.ActiveDividerPosition + [delta 0 0 0];
