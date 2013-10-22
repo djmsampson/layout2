@@ -160,7 +160,7 @@ classdef VBoxFlex < uix.VBox
                     obj.Pointer = 'unset'; % unset
                 elseif oldPointer == 0 && newPointer == 1
                     obj.Pointer = source.Pointer; % set
-                    source.Pointer = 'left';
+                    source.Pointer = 'top';
                 end
                 obj.OldPointer = newPointer;
             else % dragging row divider
@@ -227,13 +227,17 @@ classdef VBoxFlex < uix.VBox
                 obj.RowDividers(r+1:q,:) = [];
             end
             
-            % Position dividers
+            % Compute container bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
+            
+            % Retrieve size properties
             heights = obj.Heights_;
             minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
+            
+            % Position row dividers
             xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
             xPositions = repmat( xPositions, [r 1] );
             ySizes = uix.calcPixelSizes( bounds(4), heights, ...
@@ -243,8 +247,8 @@ classdef VBoxFlex < uix.VBox
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
             for ii = 1:r
-                divider = obj.RowDividers(ii);
-                divider.Position = positions(ii,:);
+                rowDivider = obj.RowDividers(ii);
+                rowDivider.Position = positions(ii,:);
             end
             
             % Update pointer
