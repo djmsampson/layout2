@@ -357,6 +357,10 @@ classdef GridFlex < uix.Grid
         end % redraw
         
         function unparent( obj, oldAncestors )
+            %unparent  Unparent container
+            %
+            %  c.unparent(a) unparents the container c from the ancestors
+            %  a.
             
             % Restore figure pointer
             if ~isempty( oldAncestors ) && ...
