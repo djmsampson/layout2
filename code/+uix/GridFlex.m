@@ -185,8 +185,7 @@ classdef GridFlex < uix.Grid
             
             loc = obj.ActiveDivider;
             contents = obj.Contents_;
-            if loc == 0 % hovering
-                % Update pointer for mouse enter and mouse leave
+            if loc == 0 % hovering, update pointer
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
                 cRowPositions = get( obj.RowDividers, {'Position'} );

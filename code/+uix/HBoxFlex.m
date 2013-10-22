@@ -143,8 +143,7 @@ classdef HBoxFlex < uix.HBox
             if isequal( ROOT, [] ), ROOT = groot(); end
             
             loc = obj.ActiveDivider;
-            if loc == 0 % hovering
-                % Update pointer for mouse enter and mouse leave
+            if loc == 0 % hovering, update pointer
                 point = ROOT.PointerLocation - ...
                     obj.LocationObserver.Location(1:2) + [1 1];
                 cPositions = get( obj.ColumnDividers, {'Position'} );
