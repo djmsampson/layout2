@@ -45,7 +45,7 @@ classdef HButtonBox < uix.ButtonBox
                 case 'middle'
                     yPositions = [(bounds(4) - ySizes) / 2 + 1, ySizes];
                 case 'bottom'
-                    yPositions = [padding + 1, ySizes];
+                    yPositions = [repmat( padding, [c 1] ) + 1, ySizes];
             end
             positions = [xPositions(:,1), yPositions(:,1), ...
                 xPositions(:,2), yPositions(:,2)];
