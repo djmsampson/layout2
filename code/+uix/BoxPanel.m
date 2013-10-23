@@ -378,38 +378,38 @@ classdef BoxPanel < uix.Box
     
     methods( Access = private )
         
-        function onClose( obj, ~, ~ )
+        function onClose( obj, source, eventData )
             
             closeFcn = obj.DeleteFcn;
             if ~isempty( closeFcn )
-                feval( closeFcn )
+                closeFcn( source, eventData )
             end
             
         end % onClose
         
-        function onDock( obj, ~, ~ )
+        function onDock( obj, source, eventData )
             
             dockFcn = obj.DockFcn;
             if ~isempty( dockFcn )
-                feval( dockFcn )
+                dockFcn( source, eventData )
             end
             
         end % onDock
         
-        function onHelp( obj, ~, ~ )
+        function onHelp( obj, source, eventData )
             
             helpFcn = obj.HelpFcn;
             if ~isempty( helpFcn )
-                feval( helpFcn )
+                helpFcn( source, eventData )
             end
             
         end % onHelp
         
-        function onMinimize( obj, ~, ~ )
+        function onMinimize( obj, source, eventData )
             
             minimizeFcn = obj.MinimizeFcn;
             if ~isempty( minimizeFcn )
-                feval( minimizeFcn )
+                minimizeFcn( source, eventData )
             end
             
         end % onMinimize
