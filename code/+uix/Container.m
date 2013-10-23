@@ -4,8 +4,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
         Contents
     end
     
+    properties( Access = public, Dependent, AbortSet )
+        Padding % space around contents, in pixels
+    end
+    
     properties( Access = protected )
         Contents_ = gobjects( [0 1] )
+        Padding_ = 0 % backing for Padding
     end
     
     properties( Dependent, Access = protected )
@@ -94,6 +99,29 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj.reorder( indices )
             
         end % set.Contents
+        
+        function value = get.Padding( obj )
+            
+            value = obj.Padding_;
+            
+        end % get.Padding
+        
+        function set.Padding( obj, value )
+            
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value >= 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''Padding'' must be a non-negative scalar.' )
+            
+            % Set
+            obj.Padding_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.Padding
         
         function value = get.Dirty( obj )
             
