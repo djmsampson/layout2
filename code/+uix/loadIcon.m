@@ -1,23 +1,18 @@
-function cdata = loadLayoutIcon(imagefilename,bgcol)
-%loadLayoutIcon  Load an icon and set the transparent color
+function cdata = loadIcon(imagefilename,bgcol)
+%loadIcon  Load an icon and set the transparent color
 %
-%   cdata = uiextras.loadLayoutIcon(filename) tries to load the icon specified by
-%   filename. If the icon is a PNG file with transparency then transparent
-%   pixels are set to NaN. If not, then any pixel that is pure green is set
-%   to transparent (i.e. "green screen"). The resulting CDATA is an RGB
+%   cdata = uix.loadIcon(filename) loads the icon from the specified
+%   filename.  For PNG files with transparency, the transparent pixels are
+%   set to NaN.  For other files, pixels that are pure green are set to
+%   transparent (i.e., "green screen").  The resulting cdata is an RGB
 %   double array.
 %
-%   cdata = uiextras.loadLayoutIcon(filename,bgcol) tries to merge with the
-%   specified background colour bgcol. Fully transparent pixels are still
-%   set to NaN, but partially transparent ones are merged with the
+%   cdata = uix.loadIcon(filename,bgcol) tries to merge the color data with
+%   the specified background colour bgcol.  Fully transparent pixels are
+%   still set to NaN, but partially transparent pixels are merged with the
 %   background.
 %
-%   See also: IMREAD
-
-%   Copyright 2005-2010 The MathWorks Ltd.
-%   $Revision: 288 $    
-%   $Date: 2010-07-14 12:23:50 +0100 (Wed, 14 Jul 2010) $
-
+%   See also: imread
 
 error( nargchk( 1, 2, nargin ) );
 if nargin < 2
@@ -44,7 +39,7 @@ cdata = convertToDouble( cdata );
 
 [rows,cols,depth] = size( cdata ); %#ok<NASGU>
 if ~isempty( alpha )
-alpha = convertToDouble( alpha );
+    alpha = convertToDouble( alpha );
     f = find( alpha==0 );
     if ~isempty( f )
         cdata(f) = nan;
@@ -74,7 +69,7 @@ function cdata = convertToDouble( cdata )
 % Convert an image to double precision in the range 0 to 1
 switch lower( class( cdata ) )
     case 'double'
-    % Do nothing
+        % Do nothing
     case 'single'
         cdata = double( cdata );
     case 'uint8'
