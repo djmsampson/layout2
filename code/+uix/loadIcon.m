@@ -1,4 +1,4 @@
-function cdata = loadIcon(imagefilename,bgcol)
+function cdata = loadIcon( filename, bgcol )
 %loadIcon  Load an icon and set the transparent color
 %
 %   cdata = uix.loadIcon(filename) loads the icon from the specified
@@ -22,12 +22,12 @@ end
 % First try normally
 thisDir = fileparts( mfilename( 'fullpath' ) );
 iconDir = fullfile( thisDir, 'Resources' );
-if exist( imagefilename, 'file' )
-    [cdata, map, alpha] = imread( imagefilename );
-elseif exist( fullfile( iconDir, imagefilename ), 'file' )
-    [cdata, map, alpha] = imread( fullfile( iconDir, imagefilename ) );
+if exist( filename, 'file' )
+    [cdata, map, alpha] = imread( filename );
+elseif exist( fullfile( iconDir, filename ), 'file' )
+    [cdata, map, alpha] = imread( fullfile( iconDir, filename ) );
 else
-    error( 'uix:FileNotFound', 'Cannot open file ''%s''.', imagefilename )
+    error( 'uix:FileNotFound', 'Cannot open file ''%s''.', filename )
 end
 
 % Convert indexed images to RGB

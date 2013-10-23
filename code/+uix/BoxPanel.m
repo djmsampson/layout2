@@ -58,12 +58,12 @@ classdef BoxPanel < uix.Box
                 'BackgroundColor', titleColor );
             
             % Create buttons
-            cData.Close = uiextras.loadLayoutIcon( 'panelClose.png' );
-            cData.Dock = uiextras.loadLayoutIcon( 'panelDock.png' );
-            cData.Undock = uiextras.loadLayoutIcon( 'panelUndock.png' );
-            cData.Help = uiextras.loadLayoutIcon( 'panelHelp.png' );
-            cData.Minimize = uiextras.loadLayoutIcon( 'panelMinimize.png' );
-            cData.Maximize = uiextras.loadLayoutIcon( 'panelMaximize.png' );
+            cData.Close = uix.loadIcon( 'panelClose.png' );
+            cData.Dock = uix.loadIcon( 'panelDock.png' );
+            cData.Undock = uix.loadIcon( 'panelUndock.png' );
+            cData.Help = uix.loadIcon( 'panelHelp.png' );
+            cData.Minimize = uix.loadIcon( 'panelMinimize.png' );
+            cData.Maximize = uix.loadIcon( 'panelMaximize.png' );
             closeButton = uicontrol( 'Internal', true, 'Parent', obj, ...
                 'Callback', @obj.onClose, 'Style', 'checkbox', ...
                 'CData', cData.Close, 'BackgroundColor', titleColor, ...
