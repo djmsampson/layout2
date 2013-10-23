@@ -2,6 +2,7 @@ classdef BoxPanel < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
         CloseRequestFcn
+        Docked
         DockFcn
         FontAngle
         FontName
@@ -9,8 +10,7 @@ classdef BoxPanel < uix.Box
         FontUnits
         FontWeight
         HelpFcn
-        IsDocked
-        IsMinimized
+        Minimized
         MinimizeFcn
         Title
         TitleColor
@@ -25,8 +25,8 @@ classdef BoxPanel < uix.Box
         DockButton
         MinimizeButton
         CData
-        IsDocked_ = true
-        IsMinimized_ = false
+        Docked_ = true
+        Minimized_ = false
     end
     
     methods
@@ -269,21 +269,21 @@ classdef BoxPanel < uix.Box
             
         end % set.MinimizeFcn
         
-        function value = get.IsDocked( obj )
+        function value = get.Docked( obj )
             
-            value = obj.IsDocked_;
+            value = obj.Docked_;
             
-        end % get.IsDocked
+        end % get.Docked
         
-        function set.IsDocked( obj, value )
+        function set.Docked( obj, value )
             
             % Check
             assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''IsDocked'' must be true or false.' )
+                'Property ''Docked'' must be true or false.' )
             
             % Set
-            obj.IsDocked_ = value;
+            obj.Docked_ = value;
             
             % Update button
             dockButton = obj.DockButton;
@@ -295,23 +295,23 @@ classdef BoxPanel < uix.Box
                 dockButton.TooltipString = 'Dock this panel';
             end
             
-        end % set.IsDocked
+        end % set.Docked
         
-        function value = get.IsMinimized( obj )
+        function value = get.Minimized( obj )
             
-            value = obj.IsMinimized_;
+            value = obj.Minimized_;
             
-        end % get.IsMinimized
+        end % get.Minimized
         
-        function set.IsMinimized( obj, value )
+        function set.Minimized( obj, value )
             
             % Check
             assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''IsDocked'' must be true or false.' )
+                'Property ''Minimized'' must be true or false.' )
             
             % Set
-            obj.IsMinimized_ = value;
+            obj.Minimized_ = value;
             
             % Update button
             minimizeButton = obj.MinimizeButton;
@@ -323,7 +323,7 @@ classdef BoxPanel < uix.Box
                 minimizeButton.TooltipString = 'Minimize this panel';
             end
             
-        end % set.IsMinimized
+        end % set.Minimized
         
     end % accessors
     
