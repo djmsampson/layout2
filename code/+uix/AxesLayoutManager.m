@@ -44,7 +44,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
     methods
         function set.Axes(hObj,hAx)
             hObj.Axes = hAx;
-            hObj.addAxesListeners;
         end
     end
     
@@ -86,31 +85,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
 
         end
         
-        function insertAboveAxesPlotyy(hObj, hPlotyyPeer)
-            % Insert the manager into the tree.  Preserve existing
-            % child order prior to layout manager being added.
-            % @todo use SET instead of dot notation (g641267)
-            hAx = hObj.Axes;
-            hAxParent = hAx.Parent;
-            hAxSiblings = flipud(get(hAxParent,'Children'));
-            for i = 1:numel(hAxSiblings)
-                if hAxSiblings(i)==hAx
-                    emptyGroup = matlab.graphics.primitive.world.Group.empty();
-                    set(hAxSiblings(i+1:end),'Parent',emptyGroup);
-                    hObj.Parent = hAxParent;
-                    set(flipud(hAxSiblings), 'Parent', hAxParent);
-                end
-            end
-            % Make sure the opaque axes is behind the transparent axes
-            if strcmp(hPlotyyPeer.Color,'none')
-                hObj.addNode(hAx);
-                hObj.addNode(hPlotyyPeer);
-            else
-                hObj.addNode(hPlotyyPeer);
-                hObj.addNode(hAx);
-            end
-        end
-        
         function addInstancePropToAxes(hObj, hAx)
             hP = addprop(hAx,'LayoutManager');
             hP.Hidden = true;
@@ -119,112 +93,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
             hP.SetAccess = 'private';
         end
         
-        function isValid = ValidateObject(~,obj)
-            isValid = true;
-            if ~ishghandle(obj)
-                isValid = false;
-                return;
-            end
-            if ~isprop(obj,'Position_I') || ~isprop(obj,'Units')
-                isValid = false;
-                return;
-            end
-            if numel(obj.Position_I) ~= 4
-                isValid = false;
-                return;
-            end
-            if ~ismethod(obj,'getPreferredSize') || ~ismethod(obj,'getPreferredLocation') || ~ismethod(obj,'isStretchToFill')
-                isValid = false;
-                return;
-            end
-        end
-        
-        function addAxesListeners(hObj)
-            % @todo we really want something like CheckDirtyChildren here
-            % so that axes gets dirty when Title, XLabel, YLabel, ZLabel
-            % are dirty and we don't have to listen for label MarkedDirty
-            % independently.
-            hAx = hObj.Axes;
-            hObj.AxesDirtyListener = event.listener(hAx,'MarkedDirty',@(obj,evd)(hObj.MarkDirty('all')));
-            
-            hObj.AxesPositionListeners(1) = addlistener(hAx,'Position','PostSet', @(h,e) localAxesPositionPostSetCB(hObj));
-            hObj.AxesPositionListeners(2) = addlistener(hAx,'OuterPosition','PostSet', @(h,e) localAxesPositionPostSetCB(hObj));
-            
-            % We want to destroy this object when its peer axes goes away
-            addlistener(hAx,'ObjectBeingDestroyed',@(obj,evd)(localDestroyLayoutManager(obj,hObj)));
-            
-            function localDestroyLayoutManager(hAx,hLayoutManager)
-                set(hAx,'Parent',[]);
-                delete(hLayoutManager);
-            end
-
-            % We want to reinsert this object when the axes is reparented
-            addlistener(hAx,'Reparent',@(h,e) localReparentCB(h,e,hObj));
-            
-            function localAxesPositionPostSetCB(hLayoutManager)
-                if hLayoutManager.MakeRoom && ~isempty(hLayoutManager.OuterList)
-                    hLayoutManager.MakeRoom = false;
-                end
-            end
-            
-            function localReparentCB(hAx,e,hLayoutManager)
-                if isequal(e.NewValue,hLayoutManager) || ~isvalid(hAx) || ~isvalid(hLayoutManager)
-                    return
-                else
-                    % temporarily remove from Lists and unparent current 
-                    % children from the layout manager to ensure the axes 
-                    % is the first child for rendering order and 
-                    % deserialization order.
-                    tmpInnerList = hLayoutManager.InnerList;
-                    hLayoutManager.InnerList = matlab.graphics.shape.internal.ListComponent.empty;
-                    tmpOuterList = hLayoutManager.OuterList;
-                    hLayoutManager.OuterList = matlab.graphics.shape.internal.ListComponent.empty;
-                    layoutChildren = hLayoutManager.Children;
-                    set(layoutChildren,'Parent_I',matlab.graphics.primitive.world.Group.empty);
-                    % Insert the manager into the tree.                    
-                    set(hLayoutManager, 'Parent', hAx.Parent);
-                    hLayoutManager.addNode(hAx);
-                    % reparent current children, use flipud to maintain
-                    % child order
-                    for k = numel(layoutChildren):-1:1
-                        hLayoutManager.addNode(layoutChildren(k));
-                    end
-                    hLayoutManager.InnerList = tmpInnerList;
-                    hLayoutManager.OuterList = tmpOuterList;
-                end
-            end
-        end
-        
-        function addLayoutObjListeners(hObj,obj)
-            % We want to listen to the "MarkedDirty" event on the new
-            % object
-            hObj.ListenerList(end+1) = event.listener(obj,'MarkedDirty',@(obj,evd)(hObj.MarkDirty('all')));
-            % We also want to remove it from the layout in the event
-            % of its destruction
-            addlistener(obj,'ObjectBeingDestroyed',@localRemoveObject);
-            
-            function localRemoveObject(obj,~)
-                if isvalid(hObj)
-                    hObj.removeFromLayout(obj);
-                end
-            end
-        end
-        
-        function index = findInInnerList(hObj,obj)
-            % Check to see if an object is already in the list.
-            index = [];
-            if ~isempty(hObj.InnerList)
-                index = find([hObj.InnerList.ObjectHandle] == obj);
-            end
-        end
-        
-        function index = findInOuterList(hObj,obj)
-            % Check to see if an object is already in the list.
-            index = [];
-            if ~isempty(hObj.OuterList)
-                index = find([hObj.OuterList.ObjectHandle] == obj);
-            end
-        end
     end
     
     methods (Access = public)
@@ -265,41 +133,10 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
                 error(message('MATLAB:graphics:axeslayoutmanager:InvalidList'));
             end
 
-            % Add listeners to new object's MarkedDirty and ObjectBeingDestroyed events 
-            hObj.addLayoutObjListeners(obj);
-            
             % Mark the object dirty:
             hObj.MarkDirty('all');
         end
             
-        function removeFromLayout(hObj, obj)
-            % Remove a given object from the layout:
-            innerIndex = hObj.findInInnerList(obj);
-            outerIndex = hObj.findInOuterList(obj);
-            % return if object is not currently in the layout
-            if isempty([innerIndex outerIndex])
-                return
-            end
-            % Remove the object from the inner list.
-            hObj.InnerList(innerIndex) = [];
-            % Remove the object from the outer list.
-            hObj.OuterList(outerIndex) = [];
-            % Remove its associated listeners
-            listIndex = [];
-            for i=1:numel(hObj.ListenerList)
-                if numel(hObj.ListenerList(i).Source) == 1 && ...
-                    hObj.ListenerList(i).Source{1} == obj
-                    listIndex = i;
-                    break;
-                end
-            end
-            hL = hObj.ListenerList(listIndex);
-            hObj.ListenerList(listIndex) = [];
-            delete(hL);
-            % Mark the manager dirty:
-            hObj.MarkDirty('all');
-        end
-        
         function doUpdate(hObj, updateState)
             % Perform the layout:
             
