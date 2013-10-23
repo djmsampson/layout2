@@ -215,7 +215,11 @@ classdef BoxPanel < uix.Box
         
         function set.DockFcn( obj, value )
             
+            % Set
             obj.DockFcn_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.DockFcn
         
@@ -227,7 +231,11 @@ classdef BoxPanel < uix.Box
         
         function set.HelpFcn( obj, value )
             
+            % Set
             obj.HelpFcn_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.HelpFcn
         
@@ -239,7 +247,11 @@ classdef BoxPanel < uix.Box
         
         function set.MinimizeFcn( obj, value )
             
+            % Set
             obj.MinimizeFcn_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.MinimizeFcn
         
@@ -263,10 +275,57 @@ classdef BoxPanel < uix.Box
                 bounds(3) - 4, titleHeight];
             panelPosition = [1, bounds(4) - titleHeight - 3, ...
                 bounds(3), titleHeight + 4];
+            buttonHeight = 9;
+            buttonWidth = 10;
+            buttonX = bounds(3) - buttonWidth - 4;
+            buttonY = bounds(4) - titleHeight / 2 - buttonHeight / 2 - 1;
+            closeButtonEnabled = ~isempty( obj.DeleteFcn );
+            if closeButtonEnabled
+                closePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            dockButtonEnabled = ~isempty( obj.DockFcn );
+            if dockButtonEnabled
+                dockPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            minimizeButtonEnabled = ~isempty( obj.MinimizeFcn );
+            if minimizeButtonEnabled
+                minimizePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            helpButtonEnabled = ~isempty( obj.HelpFcn );
+            if helpButtonEnabled
+                helpPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+            end
             
             % Set positions of decorations
             obj.TitleText.Position = textPosition;
             obj.TitlePanel.Position = panelPosition;
+            if closeButtonEnabled
+                obj.CloseButton.Position = closePosition;
+                obj.CloseButton.Visible = 'on';
+            else
+                obj.CloseButton.Visible = 'off';
+            end
+            if dockButtonEnabled
+                obj.DockButton.Position = dockPosition;
+                obj.DockButton.Visible = 'on';
+            else
+                obj.DockButton.Visible = 'off';
+            end
+            if minimizeButtonEnabled
+                obj.MinimizeButton.Position = minimizePosition;
+                obj.MinimizeButton.Visible = 'on';
+            else
+                obj.MinimizeButton.Visible = 'off';
+            end
+            if helpButtonEnabled
+                obj.HelpButton.Position = helpPosition;
+                obj.HelpButton.Visible = 'on';
+            else
+                obj.HelpButton.Visible = 'off';
+            end
             
             % Compute positions of contents
             c = numel( obj.Contents_ );
