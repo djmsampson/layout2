@@ -16,7 +16,7 @@ function [version, versionDate] = layoutVersion()
 %   Copyright 2009-2013 The MathWorks Ltd.
 
 % Issue warning
-warning( 'uiextras:Deprecated', 'layoutVersion is deprecated.  Please use ver(''layout'') instead.' )
+warning( 'uiextras:Deprecated', 'layoutVersion will be removed in a future release.  Please use ver(''layout'') instead.' )
 
 % Return information from ver
 v = ver( 'layout' );

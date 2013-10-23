@@ -37,7 +37,7 @@ classdef CardPanel < uix.CardPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.CardPanel is deprecated.  Please use uix.CardPanel instead.' )
+                'uiextras.CardPanel will be removed in a future release.  Please use uix.CardPanel instead.' )
             
             % Do
             obj@uix.CardPanel( varargin{:} )
@@ -52,7 +52,7 @@ classdef CardPanel < uix.CardPanel
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''SelectedChild'' is deprecated.  Use ''Selection'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.  Use ''Selection'' instead.' )
             
             % Get
             value = obj.Selection;
@@ -63,7 +63,7 @@ classdef CardPanel < uix.CardPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' is deprecated.  Use ''Selection'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.  Use ''Selection'' instead.' )
             
             % Set
             obj.Selection = value;

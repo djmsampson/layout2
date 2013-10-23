@@ -41,7 +41,7 @@ classdef Panel < matlab.ui.container.Panel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.Panel is deprecated.  Please use matlab.ui.container.Panel instead.' )
+                'uiextras.Panel will be removed in a future release.  Please use matlab.ui.container.Panel instead.' )
             
             % Do
             obj@matlab.ui.container.Panel( varargin{:} )
@@ -56,7 +56,7 @@ classdef Panel < matlab.ui.container.Panel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' is deprecated.' )
+                'Property ''SelectedChild'' will be removed in a future release.' )
             
             % Get
             if isempty( obj.Contents_ )
@@ -71,7 +71,7 @@ classdef Panel < matlab.ui.container.Panel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
             
         end % set.SelectedChild
         

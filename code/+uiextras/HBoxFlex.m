@@ -38,7 +38,7 @@ classdef HBoxFlex < uix.HBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.HBoxFlex is deprecated.  Please use uix.HBoxFlex instead.' )
+                'uiextras.HBoxFlex will be removed in a future release.  Please use uix.HBoxFlex instead.' )
             
             % Do
             obj@uix.HBoxFlex( varargin{:} )
@@ -53,7 +53,7 @@ classdef HBoxFlex < uix.HBoxFlex
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Use ''Widths'' instead.' )
             
             % Get
             value = transpose( obj.Widths );
@@ -64,7 +64,7 @@ classdef HBoxFlex < uix.HBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Use ''Widths'' instead.' )
             
             % Set
             obj.Widths = transpose( value );
@@ -75,7 +75,7 @@ classdef HBoxFlex < uix.HBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumWidths'' instead.' )
             
             % Get
             value = transpose( obj.MinimumWidths );
@@ -86,7 +86,7 @@ classdef HBoxFlex < uix.HBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumWidths'' instead.' )
             
             % Get
             obj.MinimumWidths = transpose( value );

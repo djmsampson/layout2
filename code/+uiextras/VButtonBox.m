@@ -33,7 +33,7 @@ classdef VButtonBox < uix.VButtonBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.HButtonBox is deprecated.  Please use uix.HButtonBox instead.' )
+                'uiextras.HButtonBox will be removed in a future release.  Please use uix.HButtonBox instead.' )
             
             % Do
             obj@uix.VButtonBox( varargin{:} )

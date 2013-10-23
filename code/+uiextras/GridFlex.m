@@ -46,7 +46,7 @@ classdef GridFlex < uix.GridFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.GridFlex is deprecated.  Please use uix.GridFlex instead.' )
+                'uiextras.GridFlex will be removed in a future release.  Please use uix.GridFlex instead.' )
             
             % Do
             obj@uix.GridFlex( varargin{:} )
@@ -61,7 +61,7 @@ classdef GridFlex < uix.GridFlex
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
+                'Property ''RowSizes'' will be removed in a future release.  Use ''Heights'' instead.' )
             
             % Get
             value = transpose( obj.Widths );
@@ -72,7 +72,7 @@ classdef GridFlex < uix.GridFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' is deprecated.  Use ''Heights'' instead.' )
+                'Property ''RowSizes'' will be removed in a future release.  Use ''Heights'' instead.' )
             
             % Set
             obj.Widths = transpose( value );
@@ -83,7 +83,7 @@ classdef GridFlex < uix.GridFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''ColumnSizes'' will be removed in a future release.  Use ''Widths'' instead.' )
             
             % Get
             value = transpose( obj.Widths );
@@ -94,7 +94,7 @@ classdef GridFlex < uix.GridFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''ColumnSizes'' will be removed in a future release.  Use ''Widths'' instead.' )
             
             % Get
             obj.Widths = transpose( value );

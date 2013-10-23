@@ -46,7 +46,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.BoxPanel is deprecated.  Please use uix.BoxPanel instead.' )
+                'uiextras.BoxPanel will be removed in a future release.  Please use uix.BoxPanel instead.' )
             
             % Do
             obj@uix.BoxPanel( varargin{:} )
@@ -61,7 +61,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' is deprecated.  Use ''Docked'' instead.' )
+                'Property ''IsDocked'' will be removed in a future release.  Use ''Docked'' instead.' )
             
             % Get
             value = obj.Docked;
@@ -72,7 +72,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' is deprecated.  Use ''Docked'' instead.' )
+                'Property ''IsDocked'' will be removed in a future release.  Use ''Docked'' instead.' )
             
             % Get
             obj.Docked = value;
@@ -83,7 +83,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' is deprecated.  Use ''Minimized'' instead.' )
+                'Property ''IsMinimized'' will be removed in a future release.  Use ''Minimized'' instead.' )
             
             % Get
             value = obj.Minimized;
@@ -94,7 +94,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' is deprecated.  Use ''Minimized'' instead.' )
+                'Property ''IsMinimized'' will be removed in a future release.  Use ''Minimized'' instead.' )
             
             % Get
             obj.Minimized = value;
@@ -105,7 +105,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' is deprecated.' )
+                'Property ''SelectedChild'' will be removed in a future release.' )
             
             % Get
             if isempty( obj.Contents_ )
@@ -120,7 +120,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
             
         end % set.SelectedChild
         

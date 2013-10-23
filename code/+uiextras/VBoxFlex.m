@@ -38,7 +38,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.VBoxFlex is deprecated.  Please use uix.VBoxFlex instead.' )
+                'uiextras.VBoxFlex will be removed in a future release.  Please use uix.VBoxFlex instead.' )
             
             % Do
             obj@uix.VBoxFlex( varargin{:} )
@@ -53,7 +53,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Use ''Heights'' instead.' )
             
             % Get
             value = transpose( obj.Heights );
@@ -64,7 +64,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Use ''Heights'' instead.' )
             
             % Set
             obj.Heights = transpose( value );
@@ -75,7 +75,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
             
             % Get
             value = transpose( obj.MinimumHeights );
@@ -86,7 +86,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
             
             % Get
             obj.MinimumHeights = transpose( value );
