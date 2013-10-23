@@ -25,10 +25,6 @@ classdef BoxPanel < uix.Box
         DockButton
         MinimizeButton
         CData
-        CloseRequestFcn_ = ''
-        DockFcn_ = ''
-        HelpFcn_ = ''
-        MinimizeFcn_ = ''
         IsDocked_ = true
         IsMinimized_ = false
     end
@@ -66,21 +62,21 @@ classdef BoxPanel < uix.Box
             cData.Minimize = uix.loadIcon( 'panelMinimize.png' );
             cData.Maximize = uix.loadIcon( 'panelMaximize.png' );
             closeButton = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Callback', @obj.onClose, 'Style', 'checkbox', ...
-                'CData', cData.Close, 'BackgroundColor', titleColor, ...
-                'Visible', 'off', 'TooltipString', 'Close this panel' );
+                'Style', 'checkbox', 'CData', cData.Close, ...
+                'BackgroundColor', titleColor, 'Visible', 'off', ...
+                'TooltipString', 'Close this panel' );
             dockButton = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Callback', @obj.onDock, 'Style', 'checkbox', ...
-                'CData', cData.Undock, 'BackgroundColor', titleColor, ...
-                'Visible', 'off', 'TooltipString', 'Undock this panel' );
+                'Style', 'checkbox', 'CData', cData.Undock, ...
+                'BackgroundColor', titleColor, 'Visible', 'off', ...
+                'TooltipString', 'Undock this panel' );
             helpButton = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Callback', @obj.onHelp, 'Style', 'checkbox', ...
-                'CData', cData.Help, 'BackgroundColor', titleColor, ...
-                'Visible', 'off', 'TooltipString', 'Get help on this panel' );
+                'Style', 'checkbox', 'CData', cData.Help, ...
+                'BackgroundColor', titleColor, 'Visible', 'off', ...
+                'TooltipString', 'Get help on this panel' );
             minimizeButton = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Callback', @obj.onMinimize, 'Style', 'checkbox', ...
-                'CData', cData.Minimize, 'BackgroundColor', titleColor, ...
-                'Visible', 'off', 'TooltipString', 'Minimize this panel' );
+                'Style', 'checkbox', 'CData', cData.Minimize, ...
+                'BackgroundColor', titleColor, 'Visible', 'off', ...
+                'TooltipString', 'Minimize this panel' );
             
             % Store properties
             obj.TitlePanel = titlePanel;
@@ -211,19 +207,14 @@ classdef BoxPanel < uix.Box
         
         function value = get.CloseRequestFcn( obj )
             
-            value = obj.CloseRequestFcn_;
+            value = obj.CloseButton.Callback;
             
         end % get.CloseRequestFcn
         
         function set.CloseRequestFcn( obj, value )
             
-            % Check
-            if isequal( value, [] ), value = ''; end
-            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''CloseRequestFcn'' must be a callback.' )
-            
             % Set
-            obj.CloseRequestFcn_ = value;
+            obj.CloseButton.Callback = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -232,19 +223,14 @@ classdef BoxPanel < uix.Box
         
         function value = get.DockFcn( obj )
             
-            value = obj.DockFcn_;
+            value = obj.DockButton.Callback;
             
         end % get.DockFcn
         
         function set.DockFcn( obj, value )
             
-            % Check
-            if isequal( value, [] ), value = ''; end
-            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''DockFcn'' must be a callback.' )
-            
             % Set
-            obj.DockFcn_ = value;
+            obj.DockButton.Callback = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -253,19 +239,14 @@ classdef BoxPanel < uix.Box
         
         function value = get.HelpFcn( obj )
             
-            value = obj.HelpFcn_;
+            value = obj.HelpButton.Callback;
             
         end % get.HelpFcn
         
         function set.HelpFcn( obj, value )
             
-            % Check
-            if isequal( value, [] ), value = ''; end
-            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''HelpFcn'' must be a callback.' )
-            
             % Set
-            obj.HelpFcn_ = value;
+            obj.HelpButton.Callback = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -274,19 +255,14 @@ classdef BoxPanel < uix.Box
         
         function value = get.MinimizeFcn( obj )
             
-            value = obj.MinimizeFcn_;
+            value = obj.MinimizeButton.Callback;
             
         end % get.MinimizeFcn
         
         function set.MinimizeFcn( obj, value )
             
-            % Check
-            if isequal( value, [] ), value = ''; end
-            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''MinimizeFcn'' must be a callback.' )
-            
             % Set
-            obj.MinimizeFcn_ = value;
+            obj.MinimizeButton.Callback = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -482,39 +458,3 @@ classdef BoxPanel < uix.Box
     end % end
     
 end % classdef
-
-function tf = iscb( f )
-%iscb  Test for callback
-%
-%  tf = iscb(f) is true is f is a valid callback, and false otherwise.
-%  Valid callbacks are strings, function handles, or cell arrays with a
-%  function handle in the first element.
-
-if ischar( f )
-    tf = true;
-elseif isa( f, 'function_handle' ) && isequal( size( f ), [1 1] )
-    tf = true;
-elseif iscell( f ) && ~isempty( f ) && isrow( f ) && ...
-        isa( f{1}, 'function_handle' ) && isequal( size( f{1} ), [1 1] )
-    tf = true;
-else
-    tf = false;
-end
-
-end % iscb
-
-function callCallback( cb, source, eventData )
-%callCallback  Call callback
-%
-%  callCallback(cb,s,e) calls the callback cb with the source s and the
-%  event data e.
-
-if isempty( cb )
-    % do nothing
-elseif iscell( cb )
-    feval( cb{1}, source, eventData, cb{2:end} )
-else
-    feval( cb, source, eventData )
-end
-
-end % callCallback
