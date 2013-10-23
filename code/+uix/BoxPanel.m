@@ -24,6 +24,7 @@ classdef BoxPanel < uix.Box
         DockFcn_ = ''
         HelpFcn_ = ''
         MinimizeFcn_ = ''
+        DeleteFcnListener
     end
     
     methods
@@ -73,6 +74,11 @@ classdef BoxPanel < uix.Box
                 'BackgroundColor', titleColor, 'Visible', 'off', ...
                 'TooltipString', 'Minimize this panel' );
             
+            % Create listeners
+            deleteFcnListener = event.proplistener( obj, ...
+                findprop( obj, 'DeleteFcn' ), 'PostSet', ...
+                @obj.onDeleteFcnChange );
+            
             % Store properties
             obj.TitlePanel = titlePanel;
             obj.TitleText = titleText;
@@ -81,6 +87,7 @@ classdef BoxPanel < uix.Box
             obj.CloseButton = closeButton;
             obj.DockButton = dockButton;
             obj.MinimizeButton = minimizeButton;
+            obj.DeleteFcnListener = deleteFcnListener;
             
             % Set properties
             if ~isempty( mypv )
@@ -373,7 +380,7 @@ classdef BoxPanel < uix.Box
         
         function onClose( obj, ~, ~ )
             
-            closeFcn = obj.CloseFcn;
+            closeFcn = obj.DeleteFcn;
             if ~isempty( closeFcn )
                 feval( closeFcn )
             end
@@ -406,6 +413,13 @@ classdef BoxPanel < uix.Box
             end
             
         end % onMinimize
+        
+        function onDeleteFcnChange( obj, ~, ~ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % onDeleteFcnChange
         
     end % end
     
