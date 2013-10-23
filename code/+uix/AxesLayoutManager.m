@@ -50,8 +50,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
     methods (Access = public, Static = true)        
         function hObj = getManager(hAx)
                 hObj = uix.AxesLayoutManager(hAx);
-                % Store the object on an instance property of the axes.
-                hObj.addInstancePropToAxes(hAx);
                 % Insert the manager into the tree.
                 hObj.insertAboveAxes();
         end
@@ -83,14 +81,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
 
             hObj.addNode(hAx);
 
-        end
-        
-        function addInstancePropToAxes(hObj, hAx)
-            hP = addprop(hAx,'LayoutManager');
-            hP.Hidden = true;
-            hP.Transient = true;
-            hAx.LayoutManager = hObj;
-            hP.SetAccess = 'private';
         end
         
     end
