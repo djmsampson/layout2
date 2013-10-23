@@ -216,8 +216,7 @@ classdef BoxPanel < uix.Box
             
             % Check
             if isequal( value, [] ), value = ''; end
-            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
-                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
                 'Property ''DockFcn'' must be a callback.' )
             
             % Set
@@ -238,8 +237,7 @@ classdef BoxPanel < uix.Box
             
             % Check
             if isequal( value, [] ), value = ''; end
-            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
-                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
                 'Property ''HelpFcn'' must be a callback.' )
             
             % Set
@@ -260,8 +258,7 @@ classdef BoxPanel < uix.Box
             
             % Check
             if isequal( value, [] ), value = ''; end
-            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
-                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
                 'Property ''MinimizeFcn'' must be a callback.' )
             
             % Set
@@ -424,3 +421,23 @@ classdef BoxPanel < uix.Box
     end % end
     
 end % classdef
+
+function tf = iscb( f )
+%iscb  Test for callback
+%
+%  tf = iscb(f) is true is f is a valid callback, and false otherwise.
+%  Valid callbacks are strings, function handles, or cell arrays with a
+%  function handle in the first element.
+
+if ischar( f )
+    tf = true;
+elseif isa( f, 'function_handle' ) && isequal( size( f ), [1 1] )
+    tf = true;
+elseif iscell( f ) && ~isempty( f ) && isrow( f ) && ...
+        isa( f{1}, 'function_handle' ) && isequal( size( f{1} ), [1 1] )
+    tf = true;
+else
+    tf = false;
+end
+
+end % iscb
