@@ -35,6 +35,8 @@ classdef BoxPanel < uix.BoxPanel
     %   $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Hidden, Access = public, Dependent )
+        IsDocked % deprecated
+        IsMinimized % deprecated
         SelectedChild % deprecated
     end
     
@@ -54,6 +56,50 @@ classdef BoxPanel < uix.BoxPanel
     end % structors
     
     methods
+        
+        function value = get.IsDocked( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''IsDocked'' is deprecated.  Use ''Docked'' instead.' )
+            
+            % Get
+            value = obj.Docked;
+            
+        end % get.IsDocked
+        
+        function set.IsDocked( obj, value )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''IsDocked'' is deprecated.  Use ''Docked'' instead.' )
+            
+            % Get
+            obj.Docked = value;
+            
+        end % set.IsDocked
+        
+        function value = get.IsMinimized( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''IsMinimized'' is deprecated.  Use ''Minimized'' instead.' )
+            
+            % Get
+            value = obj.Minimized;
+            
+        end % get.IsMinimized
+        
+        function set.IsMinimized( obj, value )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''IsMinimized'' is deprecated.  Use ''Minimized'' instead.' )
+            
+            % Get
+            obj.Minimized = value;
+            
+        end % set.IsMinimized
         
         function value = get.SelectedChild( obj )
             
