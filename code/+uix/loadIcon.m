@@ -14,22 +14,23 @@ function cdata = loadIcon(imagefilename,bgcol)
 %
 %   See also: imread
 
-error( nargchk( 1, 2, nargin ) );
+narginchk( 1, 2 )
 if nargin < 2
     bgcol = get( 0, 'DefaultUIControlBackgroundColor' );
 end
 
 % First try normally
-this_dir = fileparts( mfilename( 'fullpath' ) );
-icon_dir = fullfile( this_dir, 'Resources' );
+thisDir = fileparts( mfilename( 'fullpath' ) );
+iconDir = fullfile( thisDir, 'Resources' );
 if exist( imagefilename, 'file' )
-    [cdata,map,alpha] = imread( imagefilename );
-elseif exist( fullfile( icon_dir, imagefilename ), 'file' )
-    [cdata,map,alpha] = imread( fullfile( icon_dir, imagefilename ));
+    [cdata, map, alpha] = imread( imagefilename );
+elseif exist( fullfile( iconDir, imagefilename ), 'file' )
+    [cdata, map, alpha] = imread( fullfile( iconDir, imagefilename ) );
 else
-    error( 'GUILayout:loadIcon:FileNotFound', 'Cannot open file ''%s''.', imagefilename );
+    error( 'uix:FileNotFound', 'Cannot open file ''%s''.', imagefilename )
 end
 
+% Convert indexed images to RGB
 if ~isempty( map )
     cdata = ind2rgb( cdata, map );
 end
@@ -37,16 +38,18 @@ end
 % Convert to double before applying transparency
 cdata = convertToDouble( cdata );
 
-[rows,cols,depth] = size( cdata ); %#ok<NASGU>
+% Handle transparency
+[rows, cols, depth] = size( cdata ); %#ok<NASGU>
 if ~isempty( alpha )
+    
+    % Transparency specified
     alpha = convertToDouble( alpha );
     f = find( alpha==0 );
     if ~isempty( f )
-        cdata(f) = nan;
-        cdata(f + rows*cols) = nan;
-        cdata(f + 2*rows*cols) = nan;
+        cdata(f) = NaN;
+        cdata(f + rows*cols) = NaN;
+        cdata(f + 2*rows*cols) = NaN;
     end
-    
     % Now blend partial alphas
     f = find( alpha(:)>0 & alpha(:)<1 );
     if ~isempty(f)
@@ -56,20 +59,27 @@ if ~isempty( alpha )
     end
     
 else
-    % Instead do a "green screen", treating anything pure-green as transparent
-    f = find((cdata(:,:,1)==0) & (cdata(:,:,2)==1) & (cdata(:,:,3)==0));
-    cdata(f) = nan;
-    cdata(f + rows*cols) = nan;
-    cdata(f + 2*rows*cols) = nan;
+    
+    % Do a "green screen", treating anything pure-green as transparent
+    f = find( cdata(:,:,1)==0 & cdata(:,:,2)==1 & cdata(:,:,3)==0 );
+    cdata(f) = NaN;
+    cdata(f + rows*cols) = NaN;
+    cdata(f + 2*rows*cols) = NaN;
     
 end
 
-%-------------------------------------------------------------------------%
+end % uix.loadIcon
+
+% -------------------------------------------------------------------------
+
 function cdata = convertToDouble( cdata )
-% Convert an image to double precision in the range 0 to 1
+%convertToDouble  Convert image data to double in the range [0,1]
+%
+%  cdata = convertToDouble(cData)
+
 switch lower( class( cdata ) )
     case 'double'
-        % Do nothing
+        % do nothing
     case 'single'
         cdata = double( cdata );
     case 'uint8'
@@ -81,6 +91,8 @@ switch lower( class( cdata ) )
     case 'int16'
         cdata = ( double( cdata ) + 32768 ) / 65535;
     otherwise
-        error( 'GUILayout:LoadIcon:BadCData', ...
-            'Image data of type ''%s'' is not supported.', class( cdata ) );
+        error( 'uix:InvalidArgument', ...
+            'Image data of type ''%s'' is not supported.', class( cdata ) )
 end
+
+end % convertToDouble
