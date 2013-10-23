@@ -50,111 +50,17 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
     
     methods (Access = public, Static = true)        
         function hObj = getManager(hAx)
-            assert(isa(hAx,'matlab.graphics.axis.Axes'),...
-                'matlab:graphics:shape:internal:AxesLayoutManager:invalidAxes',...
-                'An AxesLayoutManager object may only be created for an Axes object.');
-
-            % handle plotyy peers
-            if isappdata(hAx,'graphicsPlotyyPeer') && isvalid(getappdata(hAx,'graphicsPlotyyPeer'))
-                hObj = uix.AxesLayoutManager.getManagerPlotyy(hAx);
-                return;
-            end
-            
-            if isprop(hAx,'LayoutManager') 
-                if isempty(hAx.LayoutManager) ...
-                        || ~isvalid(hAx.LayoutManager)
-                    hP = hAx.findprop('LayoutManager');
-                    hP.SetAccess = 'public';
-                    hObj = uix.AxesLayoutManager(hAx);
-                    hAx.LayoutManager = hObj;
-                    hP.SetAccess = 'private';
-                    % Insert the manager into the tree.  
-                    hObj.insertAboveAxes();
-                end
-                hObj = hAx.LayoutManager;
-            else
                 hObj = uix.AxesLayoutManager(hAx);
                 % Store the object on an instance property of the axes.
                 hObj.addInstancePropToAxes(hAx);
                 % Insert the manager into the tree.
                 hObj.insertAboveAxes();
-            end
-        end
-        
-        function removeManager(hAx)
-            % Remove a layout manager from a given axes.
-            % The current business rule is that a layout manager persists
-            % until the axes is deleted.  This method was implemented for
-            % symmetry only and revealed a bug in the unit test for this
-            % method.  If we discover a use case for this method we can
-            % reimplement and turn the unit test back on.
-        end
-    end
-    
-    methods (Access = private, Static = true)
-        function hObj = getManagerPlotyy(hAx)
-            hPlotyyPeer = getappdata(hAx,'graphicsPlotyyPeer');
-            if isprop(hAx,'LayoutManager') 
-                if isempty(hAx.LayoutManager) ...
-                        || ~isvalid(hAx.LayoutManager)
-                    hP = hAx.findprop('LayoutManager');
-                    hP.SetAccess = 'public';
-                    hObj = uix.AxesLayoutManager(hAx);
-                    hAx.LayoutManager = hObj;
-                    hP.SetAccess = 'private';
-                    % now add the reference to the plotyy peer
-                    % if one plotyy axes has this prop, then the plotyy
-                    % peer will also
-                    hP = hPlotyyPeer.findprop('LayoutManager');
-                    hP.SetAccess = 'public';
-                    hPlotyyPeer.LayoutManager = hObj;
-                    hP.SetAccess = 'private';                    
-                    % Insert the manager into the tree.
-                    hObj.insertAboveAxesPlotyy(hPlotyyPeer);
-                end
-                hObj = hAx.LayoutManager;
-            else
-                hObj = uix.AxesLayoutManager(hAx);
-                % Store the object on an instance property of the axes.
-                hObj.addInstancePropToAxes(hAx);
-                % Store the object on the plotyy peer as well
-                hObj.addInstancePropToAxes(hPlotyyPeer);                
-                % Insert the manager into the tree.
-                hObj.insertAboveAxesPlotyy(hPlotyyPeer);
-            end
-            % add a reference to the PlotyyPeer on the layout manager
-            if ~isprop(hObj,'PlotyyPeer')
-                hP = addprop(hObj,'PlotyyPeer');
-                hP.Hidden = true;
-                hP.Transient = true;
-                hObj.PlotyyPeer = hPlotyyPeer;
-                hP.SetAccess = 'private';
-            end
         end
     end
     
     methods (Access = private)
         function hObj = AxesLayoutManager(hAx)
             hObj.Axes = hAx;
-        end
-        
-        function syncLayoutInfoFromAxes(hObj)
-            if hObj.SyncLayoutInfo
-                hAx = hObj.Axes;
-                if isappdata(hAx,'LayoutInfo')
-                    layoutInfo = getappdata(hAx,'LayoutInfo');
-                    hObj.MakeRoom = layoutInfo.MakeRoom;
-                    hObj.ExpectedAxesPositionNorm = layoutInfo.ExpectedAxesPositionNorm;
-                    hObj.ExpectedAxesPositionPixels = layoutInfo.ExpectedAxesPositionPixels;
-                    hObj.ExpectedAxesPositionProperty = layoutInfo.ExpectedAxesPositionProperty;
-                    hObj.StartingLayoutPosition = layoutInfo.StartingLayoutPosition;
-                end
-            end
-            hObj.SyncLayoutInfo = false;
-        end
-        
-        function delete(~)
-            % Called when the object is deleted. 
         end
         
         function insertAboveAxes(hObj)
@@ -177,31 +83,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
             end
 
             hObj.addNode(hAx);
-
-            if ~isempty(oldSubplotGrid)
-              % reparenting hAxSiblings(i+1:end) will have the side
-              % effect of removing them from the SubplotGrid. We need
-              % to put them back.
-              newSubplotGrid = getappdata(hAxParent,'SubplotGrid');
-              if isempty(newSubplotGrid)
-                newSubplotGrid = oldSubplotGrid;
-                for i=1:numel(newSubplotGrid)
-                  newSubplotGrid(i) = matlab.graphics.GraphicsPlaceholder;
-                end
-              end
-              
-              found_one = false;
-              for i=1:numel(hAxSiblings)
-                c = find(oldSubplotGrid==hAxSiblings(i));
-                if ~isempty(c)
-                  newSubplotGrid(c(1)) = oldSubplotGrid(c(1));
-                  found_one = true;
-                end
-              end
-              if found_one
-                setappdata(hAxParent,'SubplotGrid',newSubplotGrid);
-              end
-            end
 
         end
         
@@ -421,11 +302,6 @@ classdef AxesLayoutManager < matlab.graphics.primitive.world.Group & matlab.grap
         
         function doUpdate(hObj, updateState)
             % Perform the layout:
-            
-            % sync LayoutInfo from axes appdata only once.
-            % this is for loading fig files where the LayoutInfo is on the
-            % axes appdata.
-            hObj.syncLayoutInfoFromAxes();
             
             % If the figure is being destroyed, bail out early
             hAx = hObj.Axes;
