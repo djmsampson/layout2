@@ -1,7 +1,13 @@
 classdef BoxPanel < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
+        FontAngle
+        FontName
+        FontSize
+        FontUnits
+        FontWeight
         Title
+        TitleColor
     end
     
     properties( Access = private )
@@ -88,6 +94,83 @@ classdef BoxPanel < uix.Box
     end % structors
     
     methods
+        
+        function value = get.FontAngle( obj )
+            
+            value = obj.TitleText.FontAngle;
+            
+        end % get.FontAngle
+        
+        function set.FontAngle( obj, value )
+            
+            % Set
+            obj.TitleText.FontAngle = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontAngle
+        
+        function value = get.FontName( obj )
+            
+            value = obj.TitleText.FontName;
+            
+        end % get.FontName
+        
+        function set.FontName( obj, value )
+            
+            % Set
+            obj.TitleText.FontName = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontName
+        
+        function value = get.FontSize( obj )
+            
+            value = obj.TitleText.FontSize;
+            
+        end % get.FontSize
+        
+        function set.FontSize( obj, value )
+            
+            % Set
+            obj.TitleText.FontSize = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontSize
+        
+        function value = get.FontUnits( obj )
+            
+            value = obj.TitleText.FontUnits;
+            
+        end % get.FontUnits
+        
+        function set.FontUnits( obj, value )
+            
+            % Set
+            obj.TitleText.FontUnits = value;
+            
+        end % set.FontUnits
+        
+        function value = get.FontWeight( obj )
+            
+            value = obj.TitleText.FontWeight;
+            
+        end % get.FontWeight
+        
+        function set.FontWeight( obj, value )
+            
+            % Set
+            obj.TitleText.FontWeight = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontWeight
         
         function value = get.Title( obj )
             
