@@ -377,37 +377,25 @@ classdef BoxPanel < uix.Box
         
         function onClose( obj, source, eventData )
             
-            closeFcn = obj.DeleteFcn;
-            if ~isempty( closeFcn )
-                closeFcn( source, eventData )
-            end
+            callCallback( obj.DeleteFcn, source, eventData )
             
         end % onClose
         
         function onDock( obj, source, eventData )
             
-            dockFcn = obj.DockFcn;
-            if ~isempty( dockFcn )
-                dockFcn( source, eventData )
-            end
+            callCallback( obj.DockFcn, source, eventData )
             
         end % onDock
         
         function onHelp( obj, source, eventData )
             
-            helpFcn = obj.HelpFcn;
-            if ~isempty( helpFcn )
-                helpFcn( source, eventData )
-            end
+            callCallback( obj.HelpFcn, source, eventData )
             
         end % onHelp
         
         function onMinimize( obj, source, eventData )
             
-            minimizeFcn = obj.MinimizeFcn;
-            if ~isempty( minimizeFcn )
-                minimizeFcn( source, eventData )
-            end
+            callCallback( obj.MinimizeFcn, source, eventData )
             
         end % onMinimize
         
@@ -441,3 +429,19 @@ else
 end
 
 end % iscb
+
+function callCallback( cb, source, eventData )
+%callCallback  Call callback
+%
+%  callCallback(cb,s,e) calls the callback cb with the source s and the
+%  event data e.
+
+if isempty( cb )
+    % do nothing
+elseif iscell( cb )
+    feval( cb{1}, source, eventData, cb{2:end} )
+else
+    feval( cb, source, eventData )
+end
+
+end % callCallback
