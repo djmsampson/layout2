@@ -207,6 +207,12 @@ classdef BoxPanel < uix.Box
         
         function set.DockFcn( obj, value )
             
+            % Check
+            if isequal( value, [] ), value = ''; end
+            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
+                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+                'Property ''DockFcn'' must be a callback.' )
+            
             % Set
             obj.DockFcn_ = value;
             
@@ -223,6 +229,12 @@ classdef BoxPanel < uix.Box
         
         function set.HelpFcn( obj, value )
             
+            % Check
+            if isequal( value, [] ), value = ''; end
+            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
+                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+                'Property ''HelpFcn'' must be a callback.' )
+            
             % Set
             obj.HelpFcn_ = value;
             
@@ -238,6 +250,12 @@ classdef BoxPanel < uix.Box
         end % get.MinimizeFcn
         
         function set.MinimizeFcn( obj, value )
+            
+            % Check
+            if isequal( value, [] ), value = ''; end
+            assert( ischar( value ) || ( isa( value, 'function_handle' ) && ...
+                isequal( size( value ), [1 1] ) ), 'uix:InvalidPropertyValue', ...
+                'Property ''MinimizeFcn'' must be a callback.' )
             
             % Set
             obj.MinimizeFcn_ = value;
