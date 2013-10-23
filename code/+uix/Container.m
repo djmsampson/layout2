@@ -4,12 +4,16 @@ classdef Container < matlab.ui.container.internal.UIContainer
         Contents
     end
     
+    properties( Access = public, AbortSet )
+        Enable = 'on'
+    end
+    
     properties( Access = public, Dependent, AbortSet )
         Padding % space around contents, in pixels
     end
     
     properties( Access = protected )
-        Contents_ = gobjects( [0 1] )
+        Contents_ = gobjects( [0 1] ) % backing for Contents
         Padding_ = 0 % backing for Padding
     end
     
@@ -99,6 +103,19 @@ classdef Container < matlab.ui.container.internal.UIContainer
             obj.reorder( indices )
             
         end % set.Contents
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on';'off'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uix:Unimplemented', ...
+                'Property ''Enable'' is not implemented.' )
+            
+        end % set.Enable
         
         function value = get.Padding( obj )
             
