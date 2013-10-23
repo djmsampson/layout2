@@ -8,6 +8,8 @@ classdef BoxPanel < uix.Box
         FontUnits
         FontWeight
         HelpFcn
+        IsDocked
+        IsMinimized
         MinimizeFcn
         Title
         TitleColor
@@ -21,9 +23,12 @@ classdef BoxPanel < uix.Box
         CloseButton
         DockButton
         MinimizeButton
+        CData
         DockFcn_ = ''
         HelpFcn_ = ''
         MinimizeFcn_ = ''
+        IsDocked_ = true
+        IsMinimized_ = false
         DeleteFcnListener
     end
     
@@ -53,26 +58,28 @@ classdef BoxPanel < uix.Box
                 'BackgroundColor', titleColor );
             
             % Create buttons
+            cData.Close = uiextras.loadLayoutIcon( 'panelClose.png' );
+            cData.Dock = uiextras.loadLayoutIcon( 'panelDock.png' );
+            cData.Undock = uiextras.loadLayoutIcon( 'panelUndock.png' );
+            cData.Help = uiextras.loadLayoutIcon( 'panelHelp.png' );
+            cData.Minimize = uiextras.loadLayoutIcon( 'panelMinimize.png' );
+            cData.Maximize = uiextras.loadLayoutIcon( 'panelMaximize.png' );
             closeButton = uicontrol( 'Internal', true, 'Parent', obj, ...
                 'Callback', @obj.onClose, 'Style', 'checkbox', ...
-                'CData', uiextras.loadLayoutIcon( 'panelClose.png' ), ...
-                'BackgroundColor', titleColor, 'Visible', 'off', ...
-                'TooltipString', 'Close this panel' );
+                'CData', cData.Close, 'BackgroundColor', titleColor, ...
+                'Visible', 'off', 'TooltipString', 'Close this panel' );
             dockButton = uicontrol( 'Internal', true, 'Parent', obj, ...
                 'Callback', @obj.onDock, 'Style', 'checkbox', ...
-                'CData', uiextras.loadLayoutIcon( 'panelUndock.png' ), ...
-                'BackgroundColor', titleColor, 'Visible', 'off', ...
-                'TooltipString', 'Undock this panel' );
+                'CData', cData.Undock, 'BackgroundColor', titleColor, ...
+                'Visible', 'off', 'TooltipString', 'Undock this panel' );
             helpButton = uicontrol( 'Internal', true, 'Parent', obj, ...
                 'Callback', @obj.onHelp, 'Style', 'checkbox', ...
-                'CData', uiextras.loadLayoutIcon( 'panelHelp.png' ), ...
-                'BackgroundColor', titleColor, 'Visible', 'off', ...
-                'TooltipString', 'Get help on this panel' );
+                'CData', cData.Help, 'BackgroundColor', titleColor, ...
+                'Visible', 'off', 'TooltipString', 'Get help on this panel' );
             minimizeButton = uicontrol( 'Internal', true, 'Parent', obj, ...
                 'Callback', @obj.onMinimize, 'Style', 'checkbox', ...
-                'CData', uiextras.loadLayoutIcon( 'panelMinimize.png' ), ...
-                'BackgroundColor', titleColor, 'Visible', 'off', ...
-                'TooltipString', 'Minimize this panel' );
+                'CData', cData.Minimize, 'BackgroundColor', titleColor, ...
+                'Visible', 'off', 'TooltipString', 'Minimize this panel' );
             
             % Create listeners
             deleteFcnListener = event.proplistener( obj, ...
@@ -87,6 +94,7 @@ classdef BoxPanel < uix.Box
             obj.CloseButton = closeButton;
             obj.DockButton = dockButton;
             obj.MinimizeButton = minimizeButton;
+            obj.CData = cData;
             obj.DeleteFcnListener = deleteFcnListener;
             
             % Set properties
@@ -268,6 +276,62 @@ classdef BoxPanel < uix.Box
             obj.Dirty = true;
             
         end % set.MinimizeFcn
+        
+        function value = get.IsDocked( obj )
+            
+            value = obj.IsDocked_;
+            
+        end % get.IsDocked
+        
+        function set.IsDocked( obj, value )
+            
+            % Check
+            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''IsDocked'' must be true or false.' )
+            
+            % Set
+            obj.IsDocked_ = value;
+            
+            % Update button
+            dockButton = obj.DockButton;
+            if value
+                dockButton.CData = obj.CData.Undock;
+                dockButton.TooltipString = 'Undock this panel';
+            else
+                dockButton.CData = obj.CData.Dock;
+                dockButton.TooltipString = 'Dock this panel';
+            end
+            
+        end % set.IsDocked
+        
+        function value = get.IsMinimized( obj )
+            
+            value = obj.IsMinimized_;
+            
+        end % get.IsMinimized
+        
+        function set.IsMinimized( obj, value )
+            
+            % Check
+            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''IsDocked'' must be true or false.' )
+            
+            % Set
+            obj.IsMinimized_ = value;
+            
+            % Update button
+            minimizeButton = obj.MinimizeButton;
+            if value
+                minimizeButton.CData = obj.CData.Maximize;
+                minimizeButton.TooltipString = 'Maximize this panel';
+            else
+                minimizeButton.CData = obj.CData.Minimize;
+                minimizeButton.TooltipString = 'Minimize this panel';
+            end
+            
+        end % set.IsMinimized
         
     end % accessors
     
