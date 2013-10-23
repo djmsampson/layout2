@@ -20,7 +20,7 @@ function obj = Empty( varargin )
 %   $Revision: 287 $ $Date: 2010-07-14 12:21:33 +0100 (Wed, 14 Jul 2010) $
 
 % Warn
-warning( 'uix:Deprecated', ...
+warning( 'uiextras:Deprecated', ...
     'uiextras.Empty is deprecated.  Please use uicontainer instead.' )
 
 % Do
