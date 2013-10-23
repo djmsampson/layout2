@@ -83,15 +83,19 @@ classdef CardPanel < uix.Container
             for ii = 1:numel( children )
                 child = children(ii);
                 if ii == selection
+                    child.Visible = 'on';
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
                         child.( child.ActivePositionProperty ) = position;
+                        child.ContentsVisible = 'on';
                     else
                         child.Position = position;
                     end
-                    child.Visible = 'on';
                 else
                     child.Visible = 'off';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'off';
+                    end
                 end
             end
             
