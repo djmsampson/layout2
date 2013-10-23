@@ -1,6 +1,7 @@
 classdef BoxPanel < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
+        CloseRequestFcn
         DockFcn
         FontAngle
         FontName
@@ -24,12 +25,12 @@ classdef BoxPanel < uix.Box
         DockButton
         MinimizeButton
         CData
+        CloseRequestFcn_ = ''
         DockFcn_ = ''
         HelpFcn_ = ''
         MinimizeFcn_ = ''
         IsDocked_ = true
         IsMinimized_ = false
-        DeleteFcnListener
     end
     
     methods
@@ -81,11 +82,6 @@ classdef BoxPanel < uix.Box
                 'CData', cData.Minimize, 'BackgroundColor', titleColor, ...
                 'Visible', 'off', 'TooltipString', 'Minimize this panel' );
             
-            % Create listeners
-            deleteFcnListener = event.proplistener( obj, ...
-                findprop( obj, 'DeleteFcn' ), 'PostSet', ...
-                @obj.onDeleteFcnChange );
-            
             % Store properties
             obj.TitlePanel = titlePanel;
             obj.TitleText = titleText;
@@ -95,7 +91,6 @@ classdef BoxPanel < uix.Box
             obj.DockButton = dockButton;
             obj.MinimizeButton = minimizeButton;
             obj.CData = cData;
-            obj.DeleteFcnListener = deleteFcnListener;
             
             % Set properties
             if ~isempty( mypv )
@@ -213,6 +208,27 @@ classdef BoxPanel < uix.Box
             obj.MinimizeButton.BackgroundColor = value;
             
         end % set.TitleColor
+        
+        function value = get.CloseRequestFcn( obj )
+            
+            value = obj.CloseRequestFcn_;
+            
+        end % get.CloseRequestFcn
+        
+        function set.CloseRequestFcn( obj, value )
+            
+            % Check
+            if isequal( value, [] ), value = ''; end
+            assert( iscb( value ), 'uix:InvalidPropertyValue', ...
+                'Property ''CloseRequestFcn'' must be a callback.' )
+            
+            % Set
+            obj.CloseRequestFcn_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.CloseRequestFcn
         
         function value = get.DockFcn( obj )
             
@@ -357,7 +373,7 @@ classdef BoxPanel < uix.Box
             buttonWidth = 10;
             buttonX = bounds(3) - buttonWidth - 4;
             buttonY = bounds(4) - titleHeight / 2 - buttonHeight / 2 - 1;
-            closeButtonEnabled = ~isempty( obj.DeleteFcn );
+            closeButtonEnabled = ~isempty( obj.CloseRequestFcn );
             if closeButtonEnabled
                 closePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
                 buttonX = buttonX - buttonWidth - 4;
@@ -441,7 +457,7 @@ classdef BoxPanel < uix.Box
         
         function onClose( obj, source, eventData )
             
-            callCallback( obj.DeleteFcn, source, eventData )
+            callCallback( obj.CloseRequestFcn, source, eventData )
             
         end % onClose
         
@@ -462,13 +478,6 @@ classdef BoxPanel < uix.Box
             callCallback( obj.MinimizeFcn, source, eventData )
             
         end % onMinimize
-        
-        function onDeleteFcnChange( obj, ~, ~ )
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % onDeleteFcnChange
         
     end % end
     
