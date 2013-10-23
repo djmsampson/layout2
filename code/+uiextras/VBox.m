@@ -1,18 +1,18 @@
-classdef HBox < uix.HBox
-    %uiextras.HBox  Arrange elements in a single horizontal row
+classdef VBox < uix.VBox
+    %uiextras.VBox  Arrange elements vertically in a single column
     %
-    %   obj = uiextras.HBox() creates a new horizontal box layout with
-    %   all parameters set to defaults. The output is a new layout object
-    %   that can be used as the parent for other user-interface components.
+    %   obj = uiextras.VBox() creates a new vertical box layout with all
+    %   parameters set to defaults. The output is a new layout object that
+    %   can be used as the parent for other user-interface components.
     %
-    %   obj = uiextras.HBox(param,value,...) also sets one or more
+    %   obj = uiextras.VBox(param,value,...) also sets one or more
     %   parameter values.
     %
-    %   See the <a href="matlab:doc uiextras.HBox">documentation</a> for more detail and the list of properties.
+    %   See the <a href="matlab:doc uiextras.VBox">documentation</a> for more detail and the list of properties.
     %
     %   Examples:
     %   >> f = figure();
-    %   >> b = uiextras.HBox( 'Parent', f );
+    %   >> b = uiextras.VBox( 'Parent', f );
     %   >> uicontrol( 'Parent', b, 'Background', 'r' )
     %   >> uicontrol( 'Parent', b, 'Background', 'b' )
     %   >> uicontrol( 'Parent', b, 'Background', 'g' )
@@ -26,12 +26,12 @@ classdef HBox < uix.HBox
     %   >> uicontrol( 'Parent', b2, 'String', 'Button2' )
     %   >> set( b1, 'Sizes', [30 -1] );
     %
-    %   See also: uiextras.VBox
-    %             uiextras.HBoxFlex
+    %   See also: uiextras.HBox
+    %             uiextras.VBoxFlex
     %             uiextras.Grid
     
-    %   Copyright 2009-2013 The MathWorks, Inc.
-    %   $Revision: 374 $ $Date: 2012-12-20 09:18:15 +0000 (Thu, 20 Dec 2012) $
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 366 $ $Date: 2011-02-10 15:48:11 +0000 (Thu, 10 Feb 2011) $
     
     properties( Hidden, Access = public, Dependent )
         Sizes % deprecated
@@ -40,14 +40,14 @@ classdef HBox < uix.HBox
     
     methods
         
-        function obj = HBox( varargin )
+        function obj = VBox( varargin )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.HBox is deprecated.  Please use uix.HBox instead.' )
+                'uiextras.VBox is deprecated.  Please use uix.VBox instead.' )
             
             % Do
-            obj@uix.HBox( varargin{:} )
+            obj@uix.VBox( varargin{:} )
             
         end % constructor
         
@@ -59,10 +59,10 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
             
             % Get
-            value = transpose( obj.Widths );
+            value = transpose( obj.Heights );
             
         end % get.Sizes
         
@@ -70,10 +70,10 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' is deprecated.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' is deprecated.  Use ''Heights'' instead.' )
             
             % Set
-            obj.Widths = transpose( value );
+            obj.Heights = transpose( value );
             
         end % set.Sizes
         
@@ -81,10 +81,10 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
             
             % Get
-            value = transpose( obj.MinimumWidths );
+            value = transpose( obj.MinimumHeights );
             
         end % get.MinimumSizes
         
@@ -92,10 +92,10 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
             
             % Get
-            obj.MinimumWidths = transpose( value );
+            obj.MinimumHeights = transpose( value );
             
         end % set.MinimumSizes
         

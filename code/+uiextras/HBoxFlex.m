@@ -1,37 +1,31 @@
-classdef HBox < uix.HBox
-    %uiextras.HBox  Arrange elements in a single horizontal row
+classdef HBoxFlex < uix.HBoxFlex
+    %uiextras.HBoxFlex  A dynamically resizable horizontal layout
     %
-    %   obj = uiextras.HBox() creates a new horizontal box layout with
-    %   all parameters set to defaults. The output is a new layout object
-    %   that can be used as the parent for other user-interface components.
+    %   obj = uiextras.HBoxFlex() creates a new dynamically resizable
+    %   horizontal box layout with all parameters set to defaults. The
+    %   output is a new layout object that can be used as the parent for
+    %   other user-interface components.
     %
-    %   obj = uiextras.HBox(param,value,...) also sets one or more
+    %   obj = uiextras.HBoxFlex(param,value,...) also sets one or more
     %   parameter values.
     %
-    %   See the <a href="matlab:doc uiextras.HBox">documentation</a> for more detail and the list of properties.
+    %   See the <a href="matlab:doc uiextras.HBoxFlex">documentation</a> for more detail and the list of properties.
     %
     %   Examples:
-    %   >> f = figure();
-    %   >> b = uiextras.HBox( 'Parent', f );
+    %   >> f = figure( 'Name', 'uiextras.HBoxFlex example' );
+    %   >> b = uiextras.HBoxFlex( 'Parent', f );
     %   >> uicontrol( 'Parent', b, 'Background', 'r' )
     %   >> uicontrol( 'Parent', b, 'Background', 'b' )
     %   >> uicontrol( 'Parent', b, 'Background', 'g' )
-    %   >> set( b, 'Sizes', [-1 100 -2], 'Spacing', 5 );
+    %   >> uicontrol( 'Parent', b, 'Background', 'y' )
+    %   >> set( b, 'Sizes', [-1 100 -2 -1], 'Spacing', 5 );
     %
-    %   >> f = figure();
-    %   >> b1 = uiextras.VBox( 'Parent', f );
-    %   >> b2 = uiextras.HBox( 'Parent', b1, 'Padding', 5, 'Spacing', 5 );
-    %   >> uicontrol( 'Style', 'frame', 'Parent', b1, 'Background', 'r' )
-    %   >> uicontrol( 'Parent', b2, 'String', 'Button1' )
-    %   >> uicontrol( 'Parent', b2, 'String', 'Button2' )
-    %   >> set( b1, 'Sizes', [30 -1] );
-    %
-    %   See also: uiextras.VBox
-    %             uiextras.HBoxFlex
+    %   See also: uiextras.VBoxFlex
+    %             uiextras.HBox
     %             uiextras.Grid
     
     %   Copyright 2009-2013 The MathWorks, Inc.
-    %   $Revision: 374 $ $Date: 2012-12-20 09:18:15 +0000 (Thu, 20 Dec 2012) $
+    %   $Revision: 366 $ $Date: 2011-02-10 15:48:11 +0000 (Thu, 10 Feb 2011) $
     
     properties( Hidden, Access = public, Dependent )
         Sizes % deprecated
@@ -40,14 +34,14 @@ classdef HBox < uix.HBox
     
     methods
         
-        function obj = HBox( varargin )
+        function obj = HBoxFlex( varargin )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.HBox is deprecated.  Please use uix.HBox instead.' )
+                'uiextras.HBoxFlex is deprecated.  Please use uix.HBoxFlex instead.' )
             
             % Do
-            obj@uix.HBox( varargin{:} )
+            obj@uix.HBoxFlex( varargin{:} )
             
         end % constructor
         
