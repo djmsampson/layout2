@@ -184,6 +184,23 @@ classdef BoxPanel < uix.Box
             
         end % set.Title
         
+        function value = get.TitleColor( obj )
+            
+            value = obj.TitlePanel.BackgroundColor;
+            
+        end % get.TitleColor
+        
+        function set.TitleColor( obj, value )
+            
+            obj.TitlePanel.BackgroundColor = value;
+            obj.TitleText.BackgroundColor = value;
+            obj.HelpButton.BackgroundColor = value;
+            obj.CloseButton.BackgroundColor = value;
+            obj.DockButton.BackgroundColor = value;
+            obj.MinimizeButton.BackgroundColor = value;
+            
+        end % set.TitleColor
+        
     end % accessors
     
     methods( Access = protected )
