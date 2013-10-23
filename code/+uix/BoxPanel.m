@@ -1,11 +1,14 @@
 classdef BoxPanel < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
+        DockFcn
         FontAngle
         FontName
         FontSize
         FontUnits
         FontWeight
+        HelpFcn
+        MinimizeFcn
         Title
         TitleColor
     end
@@ -18,6 +21,9 @@ classdef BoxPanel < uix.Box
         CloseButton
         DockButton
         MinimizeButton
+        DockFcn_ = ''
+        HelpFcn_ = ''
+        MinimizeFcn_ = ''
     end
     
     methods
@@ -200,6 +206,42 @@ classdef BoxPanel < uix.Box
             obj.MinimizeButton.BackgroundColor = value;
             
         end % set.TitleColor
+        
+        function value = get.DockFcn( obj )
+            
+            value = obj.DockFcn_;
+            
+        end % get.DockFcn
+        
+        function set.DockFcn( obj, value )
+            
+            obj.DockFcn_ = value;
+            
+        end % set.DockFcn
+        
+        function value = get.HelpFcn( obj )
+            
+            value = obj.HelpFcn_;
+            
+        end % get.HelpFcn
+        
+        function set.HelpFcn( obj, value )
+            
+            obj.HelpFcn_ = value;
+            
+        end % set.HelpFcn
+        
+        function value = get.MinimizeFcn( obj )
+            
+            value = obj.MinimizeFcn_;
+            
+        end % get.MinimizeFcn
+        
+        function set.MinimizeFcn( obj, value )
+            
+            obj.MinimizeFcn_ = value;
+            
+        end % set.MinimizeFcn
         
     end % accessors
     
