@@ -21,7 +21,7 @@ initTestSuite();
 function testDefaultConstructor()
 %testDefaultConstructor  Test constructing the widget with no arguments
 close all force;
-assertEqual( isa( uiextras.Empty(), 'uiextras.Empty' ), true );
+assertEqual( isa( uiextras.Empty(), 'matlab.ui.container.internal.UIContainer' ), true );
 close all force;
 
 
@@ -34,7 +34,7 @@ args = {
     'Visible',         'on'
     }';
     
-assertEqual( isa( uiextras.Empty( args{:} ), 'uiextras.Empty' ), true );
+assertEqual( isa( uiextras.Empty( args{:} ), 'matlab.ui.container.internal.UIContainer' ), true );
 close all force;
 
 
@@ -42,7 +42,7 @@ function testPositioning()
 %testChildren  Test adding and removing children
 close all force;
 
-h = uiextras.HBox( 'Units', 'Pixels', 'Position', [1 1 500 500] );
+h = uiextras.HBox( 'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500] );
 assertEqual( isa( h, 'uiextras.HBox' ), true );
 
 e = uiextras.Empty( 'Parent', h );
