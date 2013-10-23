@@ -228,10 +228,11 @@ classdef Container < matlab.ui.container.internal.UIContainer
         function removeChild( obj, child )
             
             % Remove from contents
-            obj.Contents_(obj.Contents_==child) = [];
+            contents = obj.Contents_;
+            tf = contents == child;
+            obj.Contents_(tf,:) = [];
             
             % Remove listeners
-            tf = obj.Contents_ == child;
             obj.ActivePositionPropertyListeners(tf,:) = [];
             
             % Mark as dirty
