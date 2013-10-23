@@ -43,8 +43,8 @@ assertEqual( isa( uiextras.HBox( args{:} ), 'uiextras.HBox' ), true );
 close all force;
 
 
-function testChildren()
-%testChildren  Test adding and removing children
+function testContents()
+%testContents  Test adding and removing children
 close all force;
 
 h = uiextras.HBox();
@@ -55,15 +55,15 @@ u = [
     uicontrol( 'Parent', h, 'BackgroundColor', 'g' )
     uicontrol( 'Parent', h, 'BackgroundColor', 'b' )
     ];
-assertEqual( h.Children, u );
+assertEqual( h.Contents, u );
 
 % Delete a child
 delete( u(2) )
-assertEqual( h.Children, u([1,3]) );
+assertEqual( h.Contents, u([1,3]) );
 
 % Reparent a child
 set( u(3), 'Parent', figure )
-assertEqual( h.Children, u(1) );
+assertEqual( h.Contents, u(1) );
 
 close all force;
 

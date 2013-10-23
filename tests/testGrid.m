@@ -42,8 +42,8 @@ assertEqual( isa( uiextras.Grid( args{:} ), 'uiextras.Grid' ), true );
 close all force;
 
 
-function testChildren()
-%testChildren  Test adding and removing children
+function testContents()
+%testContents  Test adding and removing children
 close all force;
 
 h = uiextras.Grid();
@@ -57,13 +57,13 @@ u = [
     uicontrol( 'Parent', h, 'BackgroundColor', 'm' )
     uicontrol( 'Parent', h, 'BackgroundColor', 'c' )
     ];
-assertEqual( h.Children, u );
+assertEqual( h.Contents, u );
 
 % Reshape
 set( h, 'RowSizes', [-1 200], 'ColumnSizes', [-1 100 -1] )
 
 delete( u(5) )
-assertEqual( h.Children, u([1:4,6]) );
+assertEqual( h.Contents, u([1:4,6]) );
 
 
 close all force;
