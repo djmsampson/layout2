@@ -34,6 +34,10 @@ classdef BoxPanel < uix.BoxPanel
     %   Copyright 2009-2013 The MathWorks, Inc.
     %   $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
+    properties( Hidden, Access = public, Dependent )
+        SelectedChild % deprecated
+    end
+    
     methods
         
         function obj = BoxPanel( varargin )
@@ -48,5 +52,32 @@ classdef BoxPanel < uix.BoxPanel
         end % constructor
         
     end % structors
+    
+    methods
+        
+        function value = get.SelectedChild( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''SelectedChild'' is deprecated.' )
+            
+            % Get
+            if isempty( obj.Contents_ )
+                value = [];
+            else
+                value = 1;
+            end
+            
+        end % get.SelectedChild
+        
+        function set.SelectedChild( ~, ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''MinimumSizes'' is deprecated.  Use ''MinimumHeights'' instead.' )
+            
+        end % set.SelectedChild
+        
+    end % accessors
     
 end % classdef
