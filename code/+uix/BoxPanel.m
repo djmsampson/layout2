@@ -12,10 +12,10 @@ classdef BoxPanel < uix.Box
         FontWeight
         ForegroundColor % TODO
         HelpFcn
-        HighlightColor % TODO
+        HighlightColor
         Minimized
         MinimizeFcn
-        ShadowColor % TODO
+        ShadowColor
         Title
         TitleColor
     end
@@ -193,6 +193,34 @@ classdef BoxPanel < uix.Box
             obj.Dirty = true;
             
         end % set.FontWeight
+        
+        function value = get.HighlightColor( obj )
+            
+            value = obj.TitlePanel.HighlightColor;
+            
+        end % get.HighlightColor
+        
+        function set.HighlightColor( obj, value )
+            
+            % Set
+            obj.TitlePanel.HighlightColor = value;
+            obj.ContentsPanel.HighlightColor = value;
+            
+        end % set.HighlightColor
+        
+        function value = get.ShadowColor( obj )
+            
+            value = obj.TitlePanel.ShadowColor;
+            
+        end % get.ShadowColor
+        
+        function set.ShadowColor( obj, value )
+            
+            % Set
+            obj.TitlePanel.ShadowColor = value;
+            obj.ContentsPanel.ShadowColor = value;
+            
+        end % set.ShadowColor
         
         function value = get.Title( obj )
             
