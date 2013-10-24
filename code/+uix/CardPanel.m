@@ -12,15 +12,15 @@ classdef CardPanel < uix.Container
         
         function obj = CardPanel( varargin )
             
-            % Split input arguments
-            [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
+            % Check inputs
+            uix.pvchk( varargin )
             
             % Call superclass constructor
-            obj@uix.Container( notmypv{:} );
+            obj@uix.Container()
             
             % Set properties
-            if ~isempty( mypv )
-                set( obj, mypv{:} )
+            if nargin > 0
+                set( obj, varargin{:} )
             end
             
         end % constructor

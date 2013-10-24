@@ -4,8 +4,16 @@ classdef HButtonBox < uix.ButtonBox
         
         function obj = HButtonBox( varargin )
             
+            % Check inputs
+            uix.pvchk( varargin )
+            
             % Call superclass constructor
-            obj@uix.ButtonBox( varargin{:} );
+            obj@uix.ButtonBox()
+            
+            % Set properties
+            if nargin > 0
+                set( obj, varargin{:} )
+            end
             
         end % constructor
         

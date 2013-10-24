@@ -20,11 +20,11 @@ classdef GridFlex < uix.Grid
         
         function obj = GridFlex( varargin )
             
-            % Split input arguments
-            [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
+            % Check inputs
+            uix.pvchk( varargin )
             
             % Call superclass constructor
-            obj@uix.Grid( notmypv{:} )
+            obj@uix.Grid()
             
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
@@ -43,8 +43,8 @@ classdef GridFlex < uix.Grid
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
-            if ~isempty( mypv )
-                set( obj, mypv{:} )
+            if nargin > 0
+                set( obj, varargin{:} )
             end
             
         end % constructor

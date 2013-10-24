@@ -37,11 +37,11 @@ classdef BoxPanel < uix.Box
         
         function obj = BoxPanel( varargin )
             
-            % Split input arguments
-            [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
+            % Check inputs
+            uix.pvchk( varargin )
             
             % Call superclass constructor
-            obj@uix.Box( notmypv{:} );
+            obj@uix.Box()
             
             % Create decorations
             titleColor = [0.75 0.9 1.0];
@@ -93,8 +93,8 @@ classdef BoxPanel < uix.Box
             obj.CData = cData;
             
             % Set properties
-            if ~isempty( mypv )
-                set( obj, mypv{:} )
+            if nargin > 0
+                set( obj, varargin{:} )
             end
             
         end % constructor

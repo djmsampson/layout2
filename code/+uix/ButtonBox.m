@@ -16,15 +16,15 @@ classdef ButtonBox < uix.Box
         
         function obj = ButtonBox( varargin )
             
-            % Split input arguments
-            [mypv, notmypv] = uix.pvsplit( varargin, mfilename( 'class' ) );
+            % Check inputs
+            uix.pvchk( varargin )
             
             % Call superclass constructor
-            obj@uix.Box( notmypv{:} );
+            obj@uix.Box()
             
             % Set properties
-            if ~isempty( mypv )
-                set( obj, mypv{:} )
+            if nargin > 0
+                set( obj, varargin{:} )
             end
             
         end % constructor
