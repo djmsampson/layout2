@@ -1,6 +1,7 @@
 classdef BoxPanel < uix.Box
     
     properties( Access = public, Dependent, AbortSet )
+        BorderType
         CloseRequestFcn
         Docked
         DockFcn
@@ -9,9 +10,12 @@ classdef BoxPanel < uix.Box
         FontSize
         FontUnits
         FontWeight
+        ForegroundColor % TODO
         HelpFcn
+        HighlightColor % TODO
         Minimized
         MinimizeFcn
+        ShadowColor % TODO
         Title
         TitleColor
     end
@@ -98,6 +102,20 @@ classdef BoxPanel < uix.Box
     end % structors
     
     methods
+        
+        function value = get.BorderType( obj )
+            
+            value = obj.TitlePanel.BorderType;
+            
+        end % get.BorderType
+        
+        function set.BorderType( obj, value )
+            
+            % Set
+            obj.TitlePanel.BorderType = value;
+            obj.ContentsPanel.BorderType = value;
+            
+        end % set.BorderType
         
         function value = get.FontAngle( obj )
             
