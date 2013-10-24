@@ -10,14 +10,14 @@ classdef BoxPanel < uix.Box
         FontSize
         FontUnits
         FontWeight
-        ForegroundColor
         HelpFcn
         HighlightColor
         Minimized
         MinimizeFcn
         ShadowColor
         Title
-        TitleColor
+        TitleForegroundColor
+        TitleBackgroundColor
     end
     
     properties( Access = private )
@@ -193,18 +193,6 @@ classdef BoxPanel < uix.Box
             
         end % set.FontWeight
         
-        function value = get.ForegroundColor( obj )
-            
-            value = obj.TitleText.ForegroundColor;
-            
-        end % get.ForegroundColor
-        
-        function set.ForegroundColor( obj, value )
-            
-            obj.TitleText.ForegroundColor = value;
-            
-        end % set.ForegroundColor
-        
         function value = get.HighlightColor( obj )
             
             value = obj.TitlePanel.HighlightColor;
@@ -243,13 +231,25 @@ classdef BoxPanel < uix.Box
             
         end % set.Title
         
-        function value = get.TitleColor( obj )
+        function value = get.TitleForegroundColor( obj )
+            
+            value = obj.TitleText.ForegroundColor;
+            
+        end % get.TitleForegroundColor
+        
+        function set.TitleForegroundColor( obj, value )
+            
+            obj.TitleText.ForegroundColor = value;
+            
+        end % set.TitleForegroundColor
+        
+        function value = get.TitleBackgroundColor( obj )
             
             value = obj.TitlePanel.BackgroundColor;
             
-        end % get.TitleColor
+        end % get.TitleBackgroundColor
         
-        function set.TitleColor( obj, value )
+        function set.TitleBackgroundColor( obj, value )
             
             obj.TitlePanel.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
@@ -258,7 +258,7 @@ classdef BoxPanel < uix.Box
             obj.DockButton.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
             
-        end % set.TitleColor
+        end % set.TitleBackgroundColor
         
         function value = get.CloseRequestFcn( obj )
             
