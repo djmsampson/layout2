@@ -10,7 +10,7 @@ classdef BoxPanel < uix.Box
         FontSize
         FontUnits
         FontWeight
-        ForegroundColor % TODO
+        ForegroundColor
         HelpFcn
         HighlightColor
         Minimized
@@ -173,7 +173,6 @@ classdef BoxPanel < uix.Box
         
         function set.FontUnits( obj, value )
             
-            % Set
             obj.TitleText.FontUnits = value;
             
         end % set.FontUnits
@@ -194,6 +193,18 @@ classdef BoxPanel < uix.Box
             
         end % set.FontWeight
         
+        function value = get.ForegroundColor( obj )
+            
+            value = obj.TitleText.ForegroundColor;
+            
+        end % get.ForegroundColor
+        
+        function set.ForegroundColor( obj, value )
+            
+            obj.TitleText.ForegroundColor = value;
+            
+        end % set.ForegroundColor
+        
         function value = get.HighlightColor( obj )
             
             value = obj.TitlePanel.HighlightColor;
@@ -202,7 +213,6 @@ classdef BoxPanel < uix.Box
         
         function set.HighlightColor( obj, value )
             
-            % Set
             obj.TitlePanel.HighlightColor = value;
             obj.ContentsPanel.HighlightColor = value;
             
@@ -216,7 +226,6 @@ classdef BoxPanel < uix.Box
         
         function set.ShadowColor( obj, value )
             
-            % Set
             obj.TitlePanel.ShadowColor = value;
             obj.ContentsPanel.ShadowColor = value;
             
@@ -324,7 +333,7 @@ classdef BoxPanel < uix.Box
         function set.Docked( obj, value )
             
             % Check
-            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+            assert( isequal( value, true ) || isequal( value, false ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''Docked'' must be true or false.' )
             
@@ -352,7 +361,7 @@ classdef BoxPanel < uix.Box
         function set.Minimized( obj, value )
             
             % Check
-            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+            assert( isequal( value, true ) || isequal( value, false ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''Minimized'' must be true or false.' )
             
