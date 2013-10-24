@@ -22,13 +22,13 @@ function testAxesPosition()
 %testAxesPosition  Test that axes get positioned properly
 close all force;
 
-h = uiextras.HBox( 'Units', 'Pixels', 'Position', [1 1 500 500] );
+h = uiextras.HBox( 'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500] );
 ax1 = axes( 'Parent', h, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
 
 ax2 = axes( 'Parent', h, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
 
 % Check that the legend doesn't appear as a child
-assertEqual( h.Children, [ax1;ax2] );
+assertEqual( h.Contents, [ax1;ax2] );
 
 % Check that the axes sizes are correct
 assertEqual( get( ax1, 'OuterPosition' ), [1 1 250 500] );
@@ -41,18 +41,18 @@ function testAxesLegend()
 %testAxesLegend  Test that axes legends are ignored properly
 close all force;
 
-h = uiextras.HBox( 'Units', 'Pixels', 'Position', [1 1 500 500] );
+h = uiextras.HBox( 'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500] );
 ax1 = axes( 'Parent', h, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
 plot( ax1, peaks(7) )
 axis( ax1, 'tight' )
-legend( 'line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 6', 'line 7' )
+le = legend( 'line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 6', 'line 7' );
 
 ax2 = axes( 'Parent', h, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
 imagesc( peaks(7), 'Parent', ax2 );
 axis( ax2, 'off' )
 
-% Check that the legend doesn't appear as a child
-assertEqual( h.Children, [ax1;ax2] );
+% Check that the legend does appear as a child
+assertEqual( h.Contents, [ax1;le;ax2] );
 
 close all force;
 
@@ -72,6 +72,6 @@ close all force;
 % axis( ax2, 'off' )
 % 
 % % Check that the legend doesn't appear as a child
-% assertEqual( h.Children, [ax1;ax2] );
+% assertEqual( h.Contents, [ax1;ax2] );
 % 
 % close all force;
