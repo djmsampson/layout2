@@ -70,7 +70,7 @@ classdef BoxPanel < uix.BoxPanel
             
         end % get.ForegroundColor
         
-        function set.ForegroundColor( ~, ~ )
+        function set.ForegroundColor( obj, value )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
@@ -92,7 +92,7 @@ classdef BoxPanel < uix.BoxPanel
             
         end % get.TitleColor
         
-        function set.TitleColor( ~, ~ )
+        function set.TitleColor( obj, value )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
