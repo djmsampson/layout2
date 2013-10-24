@@ -59,7 +59,7 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get
             value = transpose( obj.Widths );
@@ -70,7 +70,7 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Use ''Widths'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Set
             obj.Widths = transpose( value );
@@ -81,7 +81,7 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
             
             % Get
             value = transpose( obj.MinimumWidths );
@@ -92,7 +92,7 @@ classdef HBox < uix.HBox
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumWidths'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
             
             % Get
             obj.MinimumWidths = transpose( value );

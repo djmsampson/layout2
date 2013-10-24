@@ -71,7 +71,7 @@ classdef Panel < matlab.ui.container.Panel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.' )
             
         end % set.SelectedChild
         

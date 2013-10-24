@@ -53,7 +53,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Use ''Heights'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Get
             value = transpose( obj.Heights );
@@ -64,7 +64,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Use ''Heights'' instead.' )
+                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
             obj.Heights = transpose( value );
@@ -75,7 +75,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
             
             % Get
             value = transpose( obj.MinimumHeights );
@@ -86,7 +86,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
+                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
             
             % Get
             obj.MinimumHeights = transpose( value );

@@ -52,7 +52,7 @@ classdef CardPanel < uix.CardPanel
             
             % Warn
             warning( 'uix:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Use ''Selection'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
             
             % Get
             value = obj.Selection;
@@ -63,7 +63,7 @@ classdef CardPanel < uix.CardPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Use ''Selection'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
             
             % Set
             obj.Selection = value;
