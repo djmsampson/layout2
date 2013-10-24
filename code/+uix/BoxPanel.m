@@ -484,32 +484,4 @@ classdef BoxPanel < uix.Box
         
     end % template methods
     
-    methods( Access = private )
-        
-        function onClose( obj, source, eventData )
-            
-            callCallback( obj.CloseRequestFcn, source, eventData )
-            
-        end % onClose
-        
-        function onDock( obj, source, eventData )
-            
-            callCallback( obj.DockFcn, source, eventData )
-            
-        end % onDock
-        
-        function onHelp( obj, source, eventData )
-            
-            callCallback( obj.HelpFcn, source, eventData )
-            
-        end % onHelp
-        
-        function onMinimize( obj, source, eventData )
-            
-            callCallback( obj.MinimizeFcn, source, eventData )
-            
-        end % onMinimize
-        
-    end % end
-    
 end % classdef
