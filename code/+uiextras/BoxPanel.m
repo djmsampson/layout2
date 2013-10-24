@@ -35,6 +35,8 @@ classdef BoxPanel < uix.BoxPanel
     %   $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Hidden, Access = public, Dependent )
+        ForegroundColor % deprecated
+        TitleColor % deprecated
         IsDocked % deprecated
         IsMinimized % deprecated
         SelectedChild % deprecated
@@ -57,11 +59,55 @@ classdef BoxPanel < uix.BoxPanel
     
     methods
         
+        function value = get.ForegroundColor( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ForegroundColor'' will be removed in a future release.  Please use ''TitleForegroundColor'' instead.' )
+            
+            % Get
+            value = obj.TitleForegroundColor;
+            
+        end % get.ForegroundColor
+        
+        function set.ForegroundColor( ~, ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ForegroundColor'' will be removed in a future release.  Please use ''TitleForegroundColor'' instead.' )
+            
+            % Set
+            obj.TitleForegroundColor = value;
+            
+        end % set.ForegroundColor
+        
+        function value = get.TitleColor( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''TitleColor'' will be removed in a future release.  Please use ''TitleBackgroundColor'' instead.' )
+            
+            % Get
+            value = obj.TitleBackgroundColor;
+            
+        end % get.TitleColor
+        
+        function set.TitleColor( ~, ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''TitleColor'' will be removed in a future release.  Please use ''TitleBackgroundColor'' instead.' )
+            
+            % Set
+            obj.TitleBackgroundColor = value;
+            
+        end % set.TitleColor
+        
         function value = get.IsDocked( obj )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' will be removed in a future release.  Use ''Docked'' instead.' )
+                'Property ''IsDocked'' will be removed in a future release.  Please use ''Docked'' instead.' )
             
             % Get
             value = obj.Docked;
@@ -72,7 +118,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' will be removed in a future release.  Use ''Docked'' instead.' )
+                'Property ''IsDocked'' will be removed in a future release.  Please use ''Docked'' instead.' )
             
             % Get
             obj.Docked = value;
@@ -83,7 +129,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' will be removed in a future release.  Use ''Minimized'' instead.' )
+                'Property ''IsMinimized'' will be removed in a future release.  Please use ''Minimized'' instead.' )
             
             % Get
             value = obj.Minimized;
@@ -94,7 +140,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' will be removed in a future release.  Use ''Minimized'' instead.' )
+                'Property ''IsMinimized'' will be removed in a future release.  Please use ''Minimized'' instead.' )
             
             % Get
             obj.Minimized = value;
@@ -120,7 +166,7 @@ classdef BoxPanel < uix.BoxPanel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Use ''MinimumHeights'' instead.' )
+                'Property ''SelectedChild'' will be removed in a future release.' )
             
         end % set.SelectedChild
         
