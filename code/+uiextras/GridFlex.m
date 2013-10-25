@@ -38,6 +38,7 @@ classdef GridFlex < uix.GridFlex
     properties( Hidden, Access = public, Dependent )
         RowSizes % deprecated
         ColumnSizes % deprecated
+        ShowMarkings % deprecated
     end
     
     methods
@@ -100,6 +101,25 @@ classdef GridFlex < uix.GridFlex
             obj.Widths = transpose( value );
             
         end % set.ColumnSizes
+        
+        function value = get.ShowMarkings( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ShowMarkings'' will be removed in a future release.' )
+            
+            % Get
+            value = 'off';
+            
+        end % get.ShowMarkings
+        
+        function set.ShowMarkings( ~, ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ShowMarkings'' will be removed in a future release.' )
+            
+        end % set.ShowMarkings
         
     end % accessors
     

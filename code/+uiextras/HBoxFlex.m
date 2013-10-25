@@ -30,6 +30,7 @@ classdef HBoxFlex < uix.HBoxFlex
     properties( Hidden, Access = public, Dependent )
         Sizes % deprecated
         MinimumSizes % deprecated
+        ShowMarkings % deprecated
     end
     
     methods
@@ -92,6 +93,25 @@ classdef HBoxFlex < uix.HBoxFlex
             obj.MinimumWidths = transpose( value );
             
         end % set.MinimumSizes
+        
+        function value = get.ShowMarkings( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ShowMarkings'' will be removed in a future release.' )
+            
+            % Get
+            value = 'off';
+            
+        end % get.ShowMarkings
+        
+        function set.ShowMarkings( ~, ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''ShowMarkings'' will be removed in a future release.' )
+            
+        end % set.ShowMarkings
         
     end % accessors
     
