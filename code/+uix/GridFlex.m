@@ -312,7 +312,7 @@ classdef GridFlex < uix.Grid
             
             % Compute container bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
+                [0 0 1 1], 'normalized', 'pixels', obj );
             
             % Retrieve size properties
             widths = obj.Widths_;

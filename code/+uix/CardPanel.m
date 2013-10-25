@@ -71,7 +71,7 @@ classdef CardPanel < uix.Container
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
+                [0 0 1 1], 'normalized', 'pixels', obj );
             padding = obj.Padding_;
             xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
             ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
