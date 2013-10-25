@@ -249,9 +249,13 @@ classdef GridFlex < uix.Grid
         function onBackgroundColorChange( obj, ~, ~ )
             
             color = obj.BackgroundColor;
-            dividers = obj.Dividers;
-            for ii = 1:numel( dividers )
-                dividers(ii).Color = color;
+            rowDividers = obj.RowDividers;
+            for ii = 1:numel( rowDividers )
+                rowDividers(ii).Color = color;
+            end
+            columnDividers = obj.ColumnDividers;
+            for jj = 1:numel( columnDividers )
+                columnDividers(jj).Color = color;
             end
             frontDivider = obj.FrontDivider;
             frontDivider.Color = color * 0.75;
