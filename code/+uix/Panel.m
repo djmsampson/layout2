@@ -1,4 +1,4 @@
-classdef ( Sealed ) Panel < matlab.ui.container.Panel
+classdef Panel < matlab.ui.container.Panel
     
     properties( Dependent, Access = public )
         Contents
@@ -17,10 +17,21 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
         Padding_ = 0 % backing for Padding
     end
     
+    properties( Dependent, Access = protected )
+        Dirty
+    end
+    
     properties( Access = private )
+        Dirty_ = false
+        AncestryObserver
+        AncestryListeners
+        OldAncestors
+        VisibilityObserver
+        VisibilityListener
         ChildObserver
         ChildAddedListener
         ChildRemovedListener
+        SizeChangeListener
         ActivePositionPropertyListeners = cell( [0 1] )
     end
     
@@ -35,16 +46,32 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
             obj@matlab.ui.container.Panel()
             
             % Create observers and listeners
+            ancestryObserver = uix.AncestryObserver( obj );
+            ancestryListeners = [ ...
+                event.listener( ancestryObserver, ...
+                'AncestryPreChange', @obj.onAncestryPreChange ); ...
+                event.listener( ancestryObserver, ...
+                'AncestryPostChange', @obj.onAncestryPostChange )];
+            visibilityObserver = uix.VisibilityObserver( obj );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
             childRemovedListener = event.listener( ...
                 childObserver, 'ChildRemoved', @obj.onChildRemoved );
+            sizeChangeListener = event.listener( ...
+                obj, 'SizeChange', @obj.onSizeChange );
             
             % Store observers and listeners
+            obj.AncestryObserver = ancestryObserver;
+            obj.AncestryListeners = ancestryListeners;
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
+            obj.SizeChangeListener = sizeChangeListener;
             
             % Set properties
             if nargin > 0
@@ -108,15 +135,80 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
             % Set
             obj.Padding_ = value;
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.Padding
         
+        function value = get.Dirty( obj )
+            
+            value = obj.Dirty_;
+            
+        end % get.Dirty
+        
+        function set.Dirty( obj, value )
+            
+            if value
+                if obj.isDrawable() % drawable
+                    obj.redraw() % redraw now
+                else % not drawable
+                    obj.Dirty_ = true; % flag for future redraw
+                end
+            end
+            
+        end % set.Dirty
+        
     end % accessors
     
-    methods( Access = private )
-    
+    methods( Access = private, Sealed )
+        
+        function onAncestryPreChange( obj, ~, ~ )
+            
+            % Retrieve ancestors from observer
+            ancestryObserver = obj.AncestryObserver;
+            oldAncestors = ancestryObserver.Ancestors;
+            
+            % Store ancestors in cache
+            obj.OldAncestors = oldAncestors;
+            
+            % Call template method
+            obj.unparent( oldAncestors )
+            
+        end % onAncestryPreChange
+        
+        function onAncestryPostChange( obj, ~, ~ )
+            
+            % Retrieve old ancestors from cache
+            oldAncestors = obj.OldAncestors;
+            
+            % Retrieve new ancestors from observer
+            ancestryObserver = obj.AncestryObserver;
+            newAncestors = ancestryObserver.Ancestors;
+            
+            % Call template method
+            obj.reparent( oldAncestors, newAncestors )
+            
+            % Redraw if possible and if dirty
+            if obj.Dirty_ && obj.isDrawable()
+                obj.redraw()
+                obj.Dirty_ = false;
+            end
+            
+            % Reset cache
+            obj.OldAncestors = [];
+            
+        end % onAncestryPostChange
+        
+        function onVisibilityChange( obj, ~, ~ )
+            
+            % Redraw if possible and if dirty
+            if obj.Dirty_ && obj.isDrawable()
+                obj.redraw()
+                obj.Dirty_ = false;
+            end
+            
+        end % onVisibilityChange
+        
         function onChildAdded( obj, ~, eventData )
             
             % Call template method
@@ -134,16 +226,57 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
             
         end % onChildRemoved
         
+        function onSizeChange( obj, ~, ~ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % onSizeChange
+        
         function onActivePositionPropertyChange( obj, ~, ~ )
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % onActivePositionPropertyChange
         
     end % event handlers
     
     methods( Access = protected )
+        
+        function redraw( obj )
+            
+            % Compute positions
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                [0 0 1 1], 'normalized', 'pixels', obj );
+            padding = obj.Padding_;
+            xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
+            ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
+            position = [padding+1 padding+1 xSizes ySizes];
+            
+            % Set positions and visibility
+            children = obj.Contents_;
+            selection = numel( children );
+            for ii = 1:selection
+                child = children(ii);
+                if ii == selection
+                    child.Visible = 'on';
+                    child.Units = 'pixels';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.( child.ActivePositionProperty ) = position;
+                        child.ContentsVisible = 'on';
+                    else
+                        child.Position = position;
+                    end
+                else
+                    child.Visible = 'off';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'off';
+                    end
+                end
+            end
+            
+        end % redraw
         
         function addChild( obj, child )
             
@@ -160,8 +293,8 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % addChild
         
@@ -175,10 +308,35 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % removeChild
+        
+        function unparent( obj, oldAncestors ) %#ok<INUSD>
+            %unparent  Unparent container
+            %
+            %  c.unparent(a) unparents the container c from the ancestors
+            %  a.
+            
+        end % unparent
+        
+        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSL>
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the ancestors
+            %  a to the ancestors b.
+            
+            % Refresh visibility observer and listener
+            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
+            
+            % Store observer and listener
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
+            
+        end % reparent
         
         function reorder( obj, indices )
             %reorder  Reorder contents
@@ -193,36 +351,24 @@ classdef ( Sealed ) Panel < matlab.ui.container.Panel
             obj.ActivePositionPropertyListeners = ...
                 obj.ActivePositionPropertyListeners(indices,:);
             
-            % Redraw
-            obj.redraw()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % reorder
         
-        function redraw( obj )
+        function tf = isDrawable( obj )
+            %isDrawable  Test for drawability
+            %
+            %  c.isDrawable() is true if the container c is drawable, and
+            %  false otherwise.  To be drawable, a container must be rooted
+            %  and visible.
             
-            % Set positions and visibility
-            children = obj.Contents_;
-            selection = numel( children );
-            for ii = 1:selection
-                child = children(ii);
-                if ii == selection
-                    child.Visible = 'on';
-                    child.Units = 'normalized';
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.( child.ActivePositionProperty ) = [0 0 1 1];
-                        child.ContentsVisible = 'on';
-                    else
-                        child.Position = [0 0 1 1];
-                    end
-                else
-                    child.Visible = 'off';
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.ContentsVisible = 'off';
-                    end
-                end
-            end
+            ancestors = obj.AncestryObserver.Ancestors;
+            visible = obj.VisibilityObserver.Visible;
+            tf = visible && ~isempty( ancestors ) && ...
+                isa( ancestors(1), 'matlab.ui.Figure' );
             
-        end % redraw
+        end % isDrawable
         
     end % template methods
     
