@@ -91,7 +91,7 @@ classdef HBox < uix.Box
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
+                [0 0 1 1], 'normalized', 'pixels', obj );
             widths = obj.Widths_;
             minimumWidths = obj.MinimumWidths_;
             padding = obj.Padding_;

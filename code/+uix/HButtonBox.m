@@ -25,7 +25,7 @@ classdef HButtonBox < uix.ButtonBox
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
+                [0 0 1 1], 'normalized', 'pixels', obj );
             buttonSize = obj.ButtonSize_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;

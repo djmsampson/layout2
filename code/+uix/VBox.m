@@ -91,7 +91,7 @@ classdef VBox < uix.Box
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
+                [0 0 1 1], 'normalized', 'pixels', obj );
             heights = obj.Heights_;
             minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
