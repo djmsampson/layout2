@@ -153,6 +153,10 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                     if ii == 1 && docked
                         pixel = getFigurePixelPosition( ...
                             obj.FigurePanelContainer );
+                    elseif isa( ancestry(ii), 'matlab.ui.container.Panel' )
+                        pixel = hgconvertunits( figure, positions(ii,:), ...
+                            units{ii}, 'pixels', parents(ii) ) + ...
+                            [getPanelMargin( ancestry(ii) ) 0 0];
                     else
                         pixel = hgconvertunits( figure, positions(ii,:), ...
                             units{ii}, 'pixels', parents(ii) );
@@ -170,6 +174,10 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 if tf(1) && docked % docked figure
                     pixel = getFigurePixelPosition( ...
                         obj.FigurePanelContainer );
+                elseif isa( ancestor, 'matlab.ui.container.Panel' )
+                    pixel = hgconvertunits( figure, ancestor.Position, ...
+                        ancestor.Units, 'pixels', parent ) + ...
+                        [getPanelMargin( ancestor ) 0 0];
                 else % undocked figure or non-figure
                     pixel = hgconvertunits( figure, ancestor.Position, ...
                         ancestor.Units, 'pixels', parent );
@@ -211,6 +219,45 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 p = [x+1, screenSize(4)-y-h+1, w, h];
                 
             end % getFigurePixelPosition
+            
+            function m = getPanelMargin( panel )
+                %getPanelMargin  Get panel margin in pixels
+                %
+                %  m = getPanelMargin(p) returns the margin in pixels m of
+                %  the panel p.  The margin is the width and height of the
+                %  decoration in the lower left corner.
+                
+                outerBounds = hgconvertunits( figure, ...
+                    panel.Position, panel.Units, 'pixels', panel.Parent );
+                innerBounds = hgconvertunits( figure, ...
+                    [0 0 1 1], 'normalized', 'pixels', panel );
+                titlePosition = panel.TitlePosition;
+                borderType = panel.BorderType;
+                borderWidth = panel.BorderWidth;
+                switch titlePosition
+                    case {'lefttop','centertop','righttop'}
+                        switch borderType
+                            case 'none'
+                                m = [0 0];
+                            case 'line'
+                                m = borderWidth * [1 1];
+                            otherwise
+                                m = borderWidth * [2 2];
+                        end
+                    case {'leftbottom','centerbottom','rightbottom'}
+                        switch borderType
+                            case 'none'
+                                m = [0 outerBounds(4) - innerBounds(4)];
+                            case 'line'
+                                m = [0 outerBounds(4) - innerBounds(4)] + ...
+                                    borderWidth * [1 -1];
+                            otherwise
+                                m = [0 outerBounds(4) - innerBounds(4)] + ...
+                                    borderWidth * [2 -2];
+                        end
+                end
+                
+            end % getPanelMargin
             
         end % update
         
