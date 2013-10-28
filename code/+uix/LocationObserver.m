@@ -234,27 +234,20 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 titlePosition = panel.TitlePosition;
                 borderType = panel.BorderType;
                 borderWidth = panel.BorderWidth;
+                switch borderType
+                    case 'none'
+                        borderFactor = 0;
+                    case 'line'
+                        borderFactor = 1;
+                    otherwise
+                        borderFactor = 2;
+                end
                 switch titlePosition
                     case {'lefttop','centertop','righttop'}
-                        switch borderType
-                            case 'none'
-                                m = [0 0];
-                            case 'line'
-                                m = borderWidth * [1 1];
-                            otherwise
-                                m = borderWidth * [2 2];
-                        end
-                    case {'leftbottom','centerbottom','rightbottom'}
-                        switch borderType
-                            case 'none'
-                                m = [0 outerBounds(4) - innerBounds(4)];
-                            case 'line'
-                                m = [0 outerBounds(4) - innerBounds(4)] + ...
-                                    borderWidth * [1 -1];
-                            otherwise
-                                m = [0 outerBounds(4) - innerBounds(4)] + ...
-                                    borderWidth * [2 -2];
-                        end
+                        m = borderWidth * borderFactor * [1 1];
+                    otherwise
+                        m = [0 outerBounds(4) - innerBounds(4)] + ...
+                            borderWidth * borderFactor * [1 -1];
                 end
                 
             end % getPanelMargin
