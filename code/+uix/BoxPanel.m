@@ -37,9 +37,6 @@ classdef BoxPanel < uix.Box
         
         function obj = BoxPanel( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.Box()
             
@@ -94,6 +91,7 @@ classdef BoxPanel < uix.Box
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             

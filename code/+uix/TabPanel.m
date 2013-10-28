@@ -13,9 +13,6 @@ classdef TabPanel < uix.Container
         
         function obj = TabPanel( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.Container()
             
@@ -34,6 +31,7 @@ classdef TabPanel < uix.Container
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             

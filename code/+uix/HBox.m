@@ -14,14 +14,12 @@ classdef HBox < uix.Box
         
         function obj = HBox( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.Box()
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             

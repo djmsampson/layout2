@@ -19,9 +19,6 @@ classdef VBoxFlex < uix.VBox
         
         function obj = VBoxFlex( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.VBox()
             
@@ -43,6 +40,7 @@ classdef VBoxFlex < uix.VBox
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             

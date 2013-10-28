@@ -19,9 +19,6 @@ classdef HBoxFlex < uix.HBox
         
         function obj = HBoxFlex( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.HBox()
             
@@ -43,6 +40,7 @@ classdef HBoxFlex < uix.HBox
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             

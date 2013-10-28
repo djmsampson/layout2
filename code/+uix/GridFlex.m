@@ -20,9 +20,6 @@ classdef GridFlex < uix.Grid
         
         function obj = GridFlex( varargin )
             
-            % Check inputs
-            uix.pvchk( varargin )
-            
             % Call superclass constructor
             obj@uix.Grid()
             
@@ -44,6 +41,7 @@ classdef GridFlex < uix.Grid
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} )
             end
             
