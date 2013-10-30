@@ -1,13 +1,15 @@
 classdef BoxPanel < uix.Panel
     
     properties( Access = public, Dependent, AbortSet )
-        TitlePadding
+        TitleBarColor
+        TitleBarPadding
     end
     
     properties
         TitleBox
         TitleText
-        TitlePadding_ = 2
+        TitleBarColor_ = get( 0, 'DefaultUipanelBackgroundColor' )
+        TitleBarPadding_ = 2
         ParentListener
         TitleListener
         TitlePositionListener
@@ -22,6 +24,7 @@ classdef BoxPanel < uix.Panel
         ForegroundColorListener
         HighlightColorListener
         ShadowColorListener
+        VisibleListener
         LocationListener
         SizeListener
     end
@@ -104,6 +107,9 @@ classdef BoxPanel < uix.Panel
             shadowColorListener = event.proplistener( obj, ...
                 findprop( obj, 'ShadowColor' ), 'PostSet', ...
                 @obj.onShadowColorChange );
+            visibleListener = event.proplistener( obj, ...
+                findprop( obj, 'Visible' ), 'PostSet', ...
+                @obj.onVisibleChange );
             locationListener = event.listener( obj, ...
                 'LocationChange', @obj.onLocationChange );
             sizeListener = event.listener( obj, ...
@@ -124,6 +130,7 @@ classdef BoxPanel < uix.Panel
             obj.ForegroundColorListener = foregroundColorListener;
             obj.HighlightColorListener = highlightColorListener;
             obj.ShadowColorListener = shadowColorListener;
+            obj.VisibleListener = visibleListener;
             obj.LocationListener = locationListener;
             obj.SizeListener  = sizeListener;
             
@@ -155,28 +162,40 @@ classdef BoxPanel < uix.Panel
     
     methods
         
-        function value = get.TitlePadding( obj )
+        function value = get.TitleBarColor( obj )
             
-            value = obj.TitlePadding_;
+            value = obj.TitleBox.BackgroundColor;
             
-        end % get.TitlePadding
+        end % get.TitleBarColor
         
-        function set.TitlePadding( obj, value )
+        function set.TitleBarColor( obj, value )
+            
+            obj.TitleBox.BackgroundColor = value;
+            
+        end % set.TitleBarColor
+        
+        function value = get.TitleBarPadding( obj )
+            
+            value = obj.TitleBarPadding_;
+            
+        end % get.TitleBarPadding
+        
+        function set.TitleBarPadding( obj, value )
             
             % Check
             assert( isa( value, 'double' ) && isscalar( value ) && ...
                 isreal( value ) && ~isinf( value ) && ...
                 ~isnan( value ) && value >= 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TitlePadding'' must be a non-negative scalar.' )
+                'Property ''TitleBarPadding'' must be a non-negative scalar.' )
             
             % Set
-            obj.TitlePadding_ = value;
+            obj.TitleBarPadding_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.TitlePadding
+        end % set.TitleBarPadding
         
     end % accessors
     
@@ -212,20 +231,20 @@ classdef BoxPanel < uix.Panel
             % Set positions of decorations
             titleTextHeight = outerBounds(4) - innerBounds(4) - ...
                 borderWidth * borderFactor;
-            titleBoxHeight = titleTextHeight + 2 * obj.TitlePadding_ + ...
+            titleTextHeight = max( [titleTextHeight 0] );
+            titlePadding = obj.TitleBarPadding_;
+            titleBoxHeight = titleTextHeight + 2 * titlePadding + ...
                 2 * borderWidth * borderFactor;
             titleBoxPosition = [outerBounds(1), ...
                 outerBounds(2) + outerBounds(4) - titleBoxHeight, ...
                 outerBounds(3), titleBoxHeight];
             titleTextPosition = titleBoxPosition + ...
+                titlePadding * [0 1 0 -2] + ...
                 borderWidth * borderFactor * [1 1 -2 -2];
             
-            if any( titleBoxPosition(3:4) <= 0 ) || any( titleTextPosition(3:4) <= 0 )
-                disp Small!
-            end
-            
-            obj.TitleBox.Position = max( titleBoxPosition, [-Inf -Inf 1 1] );
-            obj.TitleText.Position = max( titleTextPosition, [-Inf -Inf 1 1] );
+            % Set properties
+            obj.TitleBox.Position = titleBoxPosition;
+            obj.TitleText.Position = titleTextPosition;
             
         end % redraw
         
@@ -250,7 +269,7 @@ classdef BoxPanel < uix.Panel
             else
                 obj.TitleBox.Visible = 'on';
                 obj.TitleText.Visible = 'on';
-            end                
+            end
             obj.TitleText.Title = deblank( title ); % TODO
             
         end % onTitleChange
@@ -328,6 +347,18 @@ classdef BoxPanel < uix.Panel
             obj.TitleBox.ShadowColor = obj.ShadowColor;
             
         end % onShadowColorChange
+        
+        function onVisibleChange( obj, ~, ~ )
+            
+            if strcmp( obj.Visible, 'on' ) && ~isempty( obj.Title )
+                visible = 'on';
+            else
+                visible = 'off';
+            end
+            obj.TitleBox.Visible = visible;
+            obj.TitleText.Visible = visible;
+            
+        end % onVisibleChange
         
         function onLocationChange( obj, ~, ~ )
             
