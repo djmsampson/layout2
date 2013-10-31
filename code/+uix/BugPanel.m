@@ -1,4 +1,4 @@
-classdef BugPanel < uix.Panel
+classdef BugPanel < matlab.ui.container.Panel
     
     properties % ( Access = private )
         TitleBox
@@ -13,7 +13,7 @@ classdef BugPanel < uix.Panel
         function obj = BugPanel( varargin )
             
             % Call superclass constructor
-            obj@uix.Panel()
+            obj@matlab.ui.container.Panel()
             
             titleBox = matlab.ui.container.Panel( ...
                 'Parent', obj.Parent, ...
@@ -84,63 +84,6 @@ classdef BugPanel < uix.Panel
     methods( Access = protected )
         
         function redraw( obj )
-            
-            % Compute positions
-            figure = ancestor( obj, 'figure' );
-            outerBounds = hgconvertunits( figure, ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
-            innerBounds = hgconvertunits( figure, ...
-                [0 0 1 1], 'normalized', 'pixels', obj );
-            titlePosition = obj.TitlePosition;
-            borderType = obj.BorderType;
-            borderWidth = obj.BorderWidth;
-            switch borderType
-                case 'none'
-                    borderFactor = 0;
-                case 'line'
-                    borderFactor = 1;
-                otherwise
-                    borderFactor = 2;
-            end
-            switch titlePosition
-                case {'lefttop','centertop','righttop'}
-                    margin = [1 1] * borderWidth * borderFactor;
-                otherwise
-                    margin = [0 outerBounds(4) - innerBounds(4)] + ...
-                        borderWidth * borderFactor * [1 -1];
-            end
-            
-            % Set positions of decorations
-            titleTextHeight = outerBounds(4) - innerBounds(4) - ...
-                borderWidth * borderFactor;
-            titleBoxHeight = titleTextHeight + ...
-                2 * borderWidth * borderFactor;
-            switch titlePosition
-                case {'lefttop','centertop','righttop'}
-                    titleBoxPosition = [outerBounds(1), ...
-                        outerBounds(2) + outerBounds(4) - titleBoxHeight, ...
-                        outerBounds(3), titleBoxHeight];
-                otherwise
-                    titleBoxPosition = [outerBounds(1:3), titleBoxHeight];
-            end
-            titleTextPosition = titleBoxPosition + ...
-                borderWidth * borderFactor * [1 1 -2 -2];
-            
-            % Set properties
-            titleBox = obj.TitleBox;
-            if all( titleBoxPosition(3:4) > 0 ) && ~isempty( obj.Title )
-                titleBox.Position = titleBoxPosition;
-                titleBox.Visible = 'on';
-            else
-                titleBox.Visible = 'off';
-            end
-            titleText = obj.TitleText;
-            if all( titleTextPosition(3:4) > 0 ) && ~isempty( obj.Title )
-                titleText.Position = titleTextPosition;
-                titleText.Visible = 'on';
-            else
-                titleText.Visible = 'off';
-            end
             
         end % redraw
         
