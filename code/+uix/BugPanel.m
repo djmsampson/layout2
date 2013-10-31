@@ -2,7 +2,6 @@ classdef BugPanel < matlab.ui.container.Panel
     
     properties % ( Access = private )
         TitleBox
-        TitleText
         ParentListener
         TitleListener
         SizeListener
@@ -20,15 +19,8 @@ classdef BugPanel < matlab.ui.container.Panel
                 'Units', 'pixels', ...
                 'Title', '', ...
                 'Visible', 'off' );
-            titleText = matlab.ui.container.Panel( ...
-                'Parent', obj.Parent, ...
-                'Units', 'pixels', ...
-                'Title', obj.Title, ...
-                'Visible', 'off' );
-            
             % Store properties
             obj.TitleBox = titleBox;
-            obj.TitleText = titleText;
             
             % Create listeners
             parentListener = event.proplistener( obj, ...
@@ -58,23 +50,9 @@ classdef BugPanel < matlab.ui.container.Panel
                 delete( titleText )
             end
             
-            % Dispose of title text
-            titleText = obj.TitleText;
-            if ishghandle( titleText ) && ~strcmp( titleText, 'off' )
-                delete( titleText )
-            end
-            
         end % destructor
         
     end % structors
-    
-    methods( Access = protected )
-        
-        function redraw( obj )
-            
-        end % redraw
-        
-    end % template methods
     
     methods
         
@@ -82,7 +60,6 @@ classdef BugPanel < matlab.ui.container.Panel
             
             parent = obj.Parent;
             obj.TitleBox.Parent = parent;
-            obj.TitleText.Parent = parent;
             
         end % onParentChange
         
@@ -91,12 +68,9 @@ classdef BugPanel < matlab.ui.container.Panel
             title = obj.Title;
             if isempty( title )
                 obj.TitleBox.Visible = 'off';
-                obj.TitleText.Visible = 'off';
             else
                 obj.TitleBox.Visible = 'on';
-                obj.TitleText.Visible = 'on';
             end
-            obj.TitleText.Title = deblank( title ); % TODO
             
         end % onTitleChange
         
