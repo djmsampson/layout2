@@ -1,15 +1,8 @@
 classdef BugPanel < uix.Panel
     
-    properties( Access = public, Dependent, AbortSet )
-        TitleBarColor
-        TitleBarPadding
-    end
-    
     properties % ( Access = private )
         TitleBox
         TitleText
-        TitleBarColor_ = get( 0, 'DefaultUipanelBackgroundColor' )
-        TitleBarPadding_ = 2
         ParentListener
         TitleListener
         SizeListener
@@ -88,45 +81,6 @@ classdef BugPanel < uix.Panel
         
     end % structors
     
-    methods
-        
-        function value = get.TitleBarColor( obj )
-            
-            value = obj.TitleBox.BackgroundColor;
-            
-        end % get.TitleBarColor
-        
-        function set.TitleBarColor( obj, value )
-            
-            obj.TitleBox.BackgroundColor = value;
-            
-        end % set.TitleBarColor
-        
-        function value = get.TitleBarPadding( obj )
-            
-            value = obj.TitleBarPadding_;
-            
-        end % get.TitleBarPadding
-        
-        function set.TitleBarPadding( obj, value )
-            
-            % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value >= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TitleBarPadding'' must be a non-negative scalar.' )
-            
-            % Set
-            obj.TitleBarPadding_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.TitleBarPadding
-        
-    end % accessors
-    
     methods( Access = protected )
         
         function redraw( obj )
@@ -159,8 +113,7 @@ classdef BugPanel < uix.Panel
             % Set positions of decorations
             titleTextHeight = outerBounds(4) - innerBounds(4) - ...
                 borderWidth * borderFactor;
-            titlePadding = obj.TitleBarPadding_;
-            titleBoxHeight = titleTextHeight + 2 * titlePadding + ...
+            titleBoxHeight = titleTextHeight + ...
                 2 * borderWidth * borderFactor;
             switch titlePosition
                 case {'lefttop','centertop','righttop'}
@@ -171,7 +124,6 @@ classdef BugPanel < uix.Panel
                     titleBoxPosition = [outerBounds(1:3), titleBoxHeight];
             end
             titleTextPosition = titleBoxPosition + ...
-                titlePadding * [0 1 0 -2] + ...
                 borderWidth * borderFactor * [1 1 -2 -2];
             
             % Set properties
