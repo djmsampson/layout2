@@ -234,23 +234,28 @@ classdef BoxPanel < uix.Panel
             titlePadding = obj.TitleBarPadding_;
             titleBoxHeight = titleTextHeight + 2 * titlePadding + ...
                 2 * borderWidth * borderFactor;
-            titleBoxPosition = [outerBounds(1), ...
-                outerBounds(2) + outerBounds(4) - titleBoxHeight, ...
-                outerBounds(3), titleBoxHeight];
+            switch titlePosition
+                case {'lefttop','centertop','righttop'}
+                    titleBoxPosition = [outerBounds(1), ...
+                        outerBounds(2) + outerBounds(4) - titleBoxHeight, ...
+                        outerBounds(3), titleBoxHeight];
+                otherwise
+                    titleBoxPosition = [outerBounds(1:3), titleBoxHeight];
+            end
             titleTextPosition = titleBoxPosition + ...
                 titlePadding * [0 1 0 -2] + ...
                 borderWidth * borderFactor * [1 1 -2 -2];
             
             % Set properties
             titleBox = obj.TitleBox;
-            if all( titleBoxPosition(3:4) > 0 )
+            if all( titleBoxPosition(3:4) > 0 ) && ~isempty( obj.Title )
                 titleBox.Position = titleBoxPosition;
                 titleBox.Visible = 'on';
             else
                 titleBox.Visible = 'off';
             end
             titleText = obj.TitleText;
-            if all( titleTextPosition(3:4) > 0 )
+            if all( titleTextPosition(3:4) > 0 ) && ~isempty( obj.Title )
                 titleText.Position = titleTextPosition;
                 titleText.Visible = 'on';
             else
@@ -285,9 +290,12 @@ classdef BoxPanel < uix.Panel
             
         end % onTitleChange
         
-        function onTitlePositionChange( obj, ~, ~ ) % TODO
+        function onTitlePositionChange( obj, ~, ~ )
             
             obj.TitleText.TitlePosition = obj.TitlePosition;
+            
+            % Set as dirty
+            obj.Dirty = true;
             
         end % onTitlePositionChange
         
