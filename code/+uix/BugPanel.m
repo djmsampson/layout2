@@ -12,11 +12,6 @@ classdef BugPanel < uix.Panel
         TitleBarPadding_ = 2
         ParentListener
         TitleListener
-        TitlePositionListener
-        BorderTypeListener
-        BorderWidthListener
-        VisibleListener
-        LocationListener
         SizeListener
     end
     
@@ -62,31 +57,12 @@ classdef BugPanel < uix.Panel
             titleListener = event.proplistener( obj, ...
                 findprop( obj, 'Title' ), 'PostSet', ...
                 @obj.onTitleChange );
-            titlePositionListener = event.proplistener( obj, ...
-                findprop( obj, 'TitlePosition' ), 'PostSet', ...
-                @obj.onTitlePositionChange );
-            borderTypeListener = event.proplistener( obj, ...
-                findprop( obj, 'BorderType' ), 'PostSet', ...
-                @obj.onBorderTypeChange );
-            borderWidthListener = event.proplistener( obj, ...
-                findprop( obj, 'BorderWidth' ), 'PostSet', ...
-                @obj.onBorderWidthChange );
-            visibleListener = event.proplistener( obj, ...
-                findprop( obj, 'Visible' ), 'PostSet', ...
-                @obj.onVisibleChange );
-            locationListener = event.listener( obj, ...
-                'LocationChange', @obj.onLocationChange );
             sizeListener = event.listener( obj, ...
                 'SizeChange', @obj.onSizeChange );
             
             % Store properties
             obj.ParentListener = parentListener;
             obj.TitleListener = titleListener;
-            obj.TitlePositionListener = titlePositionListener;
-            obj.BorderTypeListener = borderTypeListener;
-            obj.BorderWidthListener = borderWidthListener;
-            obj.VisibleListener = visibleListener;
-            obj.LocationListener = locationListener;
             obj.SizeListener  = sizeListener;
             
             % Set properties
@@ -244,46 +220,6 @@ classdef BugPanel < uix.Panel
             obj.TitleText.Title = deblank( title ); % TODO
             
         end % onTitleChange
-        
-        function onTitlePositionChange( obj, ~, ~ )
-            
-            obj.TitleText.TitlePosition = obj.TitlePosition;
-            
-            % Set as dirty
-            obj.Dirty = true;
-            
-        end % onTitlePositionChange
-        
-        function onBorderTypeChange( obj, ~, ~ )
-            
-            obj.TitleBox.BorderType = obj.BorderType;
-            
-        end % onBorderTypeChange
-        
-        function onBorderWidthChange( obj, ~, ~ )
-            
-            obj.TitleBox.BorderWidth = obj.BorderWidth;
-            
-        end % onBorderWidthChange
-        
-        function onVisibleChange( obj, ~, ~ )
-            
-            if strcmp( obj.Visible, 'on' ) && ~isempty( obj.Title )
-                visible = 'on';
-            else
-                visible = 'off';
-            end
-            obj.TitleBox.Visible = visible;
-            obj.TitleText.Visible = visible;
-            
-        end % onVisibleChange
-        
-        function onLocationChange( obj, ~, ~ )
-            
-            % Set as dirty
-            obj.Dirty = true;
-            
-        end % onLocationChange
         
         function onSizeChange( obj, ~, ~ )
             
