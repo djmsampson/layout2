@@ -57,13 +57,10 @@ classdef BugPanel < uix.Panel
             titleListener = event.proplistener( obj, ...
                 findprop( obj, 'Title' ), 'PostSet', ...
                 @obj.onTitleChange );
-            sizeListener = event.listener( obj, ...
-                'SizeChange', @obj.onSizeChange );
             
             % Store properties
             obj.ParentListener = parentListener;
             obj.TitleListener = titleListener;
-            obj.SizeListener  = sizeListener;
             
             % Set properties
             if nargin > 0
@@ -220,13 +217,6 @@ classdef BugPanel < uix.Panel
             obj.TitleText.Title = deblank( title ); % TODO
             
         end % onTitleChange
-        
-        function onSizeChange( obj, ~, ~ )
-            
-            % Set as dirty
-            obj.Dirty = true;
-            
-        end % onSizeChange
         
     end % event handlers
     
