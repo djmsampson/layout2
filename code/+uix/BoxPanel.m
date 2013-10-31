@@ -5,11 +5,11 @@ classdef BoxPanel < uix.Panel
         TitleBarPadding
     end
     
-    properties
+    properties( Access = private )
         TitleBox
         TitleText
         TitleBarColor_ = get( 0, 'DefaultUipanelBackgroundColor' )
-        TitleBarPadding_ = 2
+        TitleBarPadding_ = 0
         ParentListener
         TitleListener
         TitlePositionListener
@@ -220,13 +220,6 @@ classdef BoxPanel < uix.Panel
                 otherwise
                     borderFactor = 2;
             end
-            switch titlePosition
-                case {'lefttop','centertop','righttop'}
-                    margin = [1 1] * borderWidth * borderFactor;
-                otherwise
-                    margin = [0 outerBounds(4) - innerBounds(4)] + ...
-                        borderWidth * borderFactor * [1 -1];
-            end
             
             % Set positions of decorations
             titleTextHeight = outerBounds(4) - innerBounds(4) - ...
@@ -270,6 +263,7 @@ classdef BoxPanel < uix.Panel
         
         function onParentChange( obj, ~, ~ )
             
+            % Update title box and text
             parent = obj.Parent;
             obj.TitleBox.Parent = parent;
             obj.TitleText.Parent = parent;
@@ -278,20 +272,28 @@ classdef BoxPanel < uix.Panel
         
         function onTitleChange( obj, ~, ~ )
             
+            % Update title text
             title = obj.Title;
+            obj.TitleText.Title = deblank( title ); % workaround for G1010786
+            
+            % Show / hide title box and text            
             if isempty( title )
+                % Hide box
                 obj.TitleBox.Visible = 'off';
                 obj.TitleText.Visible = 'off';
             else
+                % Show box
                 obj.TitleBox.Visible = 'on';
                 obj.TitleText.Visible = 'on';
+                % Set as dirty
+                obj.Dirty = true;
             end
-            obj.TitleText.Title = deblank( title ); % TODO
             
         end % onTitleChange
         
         function onTitlePositionChange( obj, ~, ~ )
             
+            % Update position of title text
             obj.TitleText.TitlePosition = obj.TitlePosition;
             
             % Set as dirty
@@ -343,6 +345,7 @@ classdef BoxPanel < uix.Panel
         
         function onBackgroundColorChange( obj, ~, ~ )
             
+            % Update title box and text
             color = obj.BackgroundColor;
             obj.TitleBox.BackgroundColor = color;
             obj.TitleText.BackgroundColor = color;
@@ -370,12 +373,16 @@ classdef BoxPanel < uix.Panel
         function onVisibleChange( obj, ~, ~ )
             
             if strcmp( obj.Visible, 'on' ) && ~isempty( obj.Title )
-                visible = 'on';
+                % Show title box and text
+                obj.TitleBox.Visible = 'on';
+                obj.TitleText.Visible = 'on';
+                % Set as dirty
+                obj.Dirty = true;                
             else
-                visible = 'off';
+                % Hide title box and text
+                obj.TitleBox.Visible = 'off';
+                obj.TitleText.Visible = 'off';
             end
-            obj.TitleBox.Visible = visible;
-            obj.TitleText.Visible = visible;
             
         end % onVisibleChange
         
