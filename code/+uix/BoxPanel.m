@@ -231,7 +231,6 @@ classdef BoxPanel < uix.Panel
             % Set positions of decorations
             titleTextHeight = outerBounds(4) - innerBounds(4) - ...
                 borderWidth * borderFactor;
-            titleTextHeight = max( [titleTextHeight 0] );
             titlePadding = obj.TitleBarPadding_;
             titleBoxHeight = titleTextHeight + 2 * titlePadding + ...
                 2 * borderWidth * borderFactor;
@@ -243,8 +242,20 @@ classdef BoxPanel < uix.Panel
                 borderWidth * borderFactor * [1 1 -2 -2];
             
             % Set properties
-            obj.TitleBox.Position = titleBoxPosition;
-            obj.TitleText.Position = titleTextPosition;
+            titleBox = obj.TitleBox;
+            if all( titleBoxPosition(3:4) > 0 )
+                titleBox.Position = titleBoxPosition;
+                titleBox.Visible = 'on';
+            else
+                titleBox.Visible = 'off';
+            end
+            titleText = obj.TitleText;
+            if all( titleTextPosition(3:4) > 0 )
+                titleText.Position = titleTextPosition;
+                titleText.Visible = 'on';
+            else
+                titleText.Visible = 'off';
+            end
             
         end % redraw
         
