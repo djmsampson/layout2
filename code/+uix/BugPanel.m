@@ -12,7 +12,7 @@ classdef BugPanel < matlab.ui.container.Panel
         function obj = BugPanel( varargin )
             
             % Call superclass constructor
-            obj@matlab.ui.container.Panel()
+            obj@matlab.ui.container.Panel( varargin{:} )
             
             titleBox = matlab.ui.container.Panel( ...
                 'Parent', obj.Parent, ...
@@ -34,23 +34,7 @@ classdef BugPanel < matlab.ui.container.Panel
             obj.ParentListener = parentListener;
             obj.TitleListener = titleListener;
             
-            % Set properties
-            if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
-            end
-            
         end % constructor
-        
-        function delete( obj )
-            
-            % Dispose of title box
-            titleText = obj.TitleBox;
-            if ishghandle( titleText ) && ~strcmp( titleText, 'off' )
-                delete( titleText )
-            end
-            
-        end % destructor
         
     end % structors
     
