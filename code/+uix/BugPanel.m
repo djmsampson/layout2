@@ -15,15 +15,6 @@ classdef BugPanel < uix.Panel
         TitlePositionListener
         BorderTypeListener
         BorderWidthListener
-        FontAngleListener
-        FontNameListener
-        FontSizeListener
-        FontUnitsListener
-        FontWeightListener
-        BackgroundColorListener
-        ForegroundColorListener
-        HighlightColorListener
-        ShadowColorListener
         VisibleListener
         LocationListener
         SizeListener
@@ -80,33 +71,6 @@ classdef BugPanel < uix.Panel
             borderWidthListener = event.proplistener( obj, ...
                 findprop( obj, 'BorderWidth' ), 'PostSet', ...
                 @obj.onBorderWidthChange );
-            fontAngleListener = event.proplistener( obj, ...
-                findprop( obj, 'FontAngle' ), 'PostSet', ...
-                @obj.onFontAngleChange );
-            fontNameListener = event.proplistener( obj, ...
-                findprop( obj, 'FontName' ), 'PostSet', ...
-                @obj.onFontNameChange );
-            fontSizeListener = event.proplistener( obj, ...
-                findprop( obj, 'FontSize' ), 'PostSet', ...
-                @obj.onFontSizeChange );
-            fontUnitsListener = event.proplistener( obj, ...
-                findprop( obj, 'FontUnits' ), 'PostSet', ...
-                @obj.onFontUnitsChange );
-            fontWeightListener = event.proplistener( obj, ...
-                findprop( obj, 'FontWeight' ), 'PostSet', ...
-                @obj.onFontWeightChange );
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChange );
-            foregroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'ForegroundColor' ), 'PostSet', ...
-                @obj.onForegroundColorChange );
-            highlightColorListener = event.proplistener( obj, ...
-                findprop( obj, 'HighlightColor' ), 'PostSet', ...
-                @obj.onHighlightColorChange );
-            shadowColorListener = event.proplistener( obj, ...
-                findprop( obj, 'ShadowColor' ), 'PostSet', ...
-                @obj.onShadowColorChange );
             visibleListener = event.proplistener( obj, ...
                 findprop( obj, 'Visible' ), 'PostSet', ...
                 @obj.onVisibleChange );
@@ -121,15 +85,6 @@ classdef BugPanel < uix.Panel
             obj.TitlePositionListener = titlePositionListener;
             obj.BorderTypeListener = borderTypeListener;
             obj.BorderWidthListener = borderWidthListener;
-            obj.FontAngleListener = fontAngleListener;
-            obj.FontNameListener = fontNameListener;
-            obj.FontSizeListener = fontSizeListener;
-            obj.FontUnitsListener = fontUnitsListener;
-            obj.FontWeightListener = fontWeightListener;
-            obj.BackgroundColorListener = backgroundColorListener;
-            obj.ForegroundColorListener = foregroundColorListener;
-            obj.HighlightColorListener = highlightColorListener;
-            obj.ShadowColorListener = shadowColorListener;
             obj.VisibleListener = visibleListener;
             obj.LocationListener = locationListener;
             obj.SizeListener  = sizeListener;
@@ -278,16 +233,13 @@ classdef BugPanel < uix.Panel
         
         function onTitleChange( obj, ~, ~ )
             
-%             return
-            
             title = obj.Title;
             if isempty( title )
-%                 obj.TitleBox.Visible = 'off';
-%                 obj.TitleText.Visible = 'off';
+                obj.TitleBox.Visible = 'off';
+                obj.TitleText.Visible = 'off';
             else
-                obj.TitleBox.Visible % obj.TitleBox.Visible;
-%                 obj.TitleBox.Visible = 'on';
-%                 obj.TitleText.Visible = 'on';
+                obj.TitleBox.Visible = 'on';
+                obj.TitleText.Visible = 'on';
             end
             obj.TitleText.Title = deblank( title ); % TODO
             
@@ -313,62 +265,6 @@ classdef BugPanel < uix.Panel
             obj.TitleBox.BorderWidth = obj.BorderWidth;
             
         end % onBorderWidthChange
-        
-        function onFontAngleChange( obj, ~, ~ )
-            
-            obj.TitleText.FontAngle = obj.FontAngle;
-            
-        end % onFontAngleChange
-        
-        function onFontNameChange( obj, ~, ~ )
-            
-            obj.TitleText.FontName = obj.FontName;
-            
-        end % onFontNameChange
-        
-        function onFontSizeChange( obj, ~, ~ )
-            
-            obj.TitleText.FontSize = obj.FontSize;
-            
-        end % onFontSizeChange
-        
-        function onFontWeightChange( obj, ~, ~ )
-            
-            obj.TitleText.FontWeight = obj.FontWeight;
-            
-        end % onFontWeightChange
-        
-        function onFontUnitsChange( obj, ~, ~ )
-            
-            obj.TitleText.FontUnits = obj.FontUnits;
-            
-        end % onFontUnitsChange
-        
-        function onBackgroundColorChange( obj, ~, ~ )
-            
-            color = obj.BackgroundColor;
-            obj.TitleBox.BackgroundColor = color;
-            obj.TitleText.BackgroundColor = color;
-            
-        end % onBackgroundColorChange
-        
-        function onForegroundColorChange( obj, ~, ~ )
-            
-            obj.TitleText.ForegroundColor = obj.ForegroundColor;
-            
-        end % onForegroundColorChange
-        
-        function onHighlightColorChange( obj, ~, ~ )
-            
-            obj.TitleBox.HighlightColor = obj.HighlightColor;
-            
-        end % onHighlightColorChange
-        
-        function onShadowColorChange( obj, ~, ~ )
-            
-            obj.TitleBox.ShadowColor = obj.ShadowColor;
-            
-        end % onShadowColorChange
         
         function onVisibleChange( obj, ~, ~ )
             
