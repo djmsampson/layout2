@@ -203,7 +203,7 @@ classdef BoxPanel < uix.Panel
         
         function redraw( obj )
             
-            % Compute positions
+            % Compute positions of decorations
             figure = ancestor( obj, 'figure' );
             outerBounds = hgconvertunits( figure, ...
                 obj.Position, obj.Units, 'pixels', obj.Parent );
@@ -220,8 +220,6 @@ classdef BoxPanel < uix.Panel
                 otherwise
                     borderFactor = 2;
             end
-            
-            % Set positions of decorations
             titleTextHeight = outerBounds(4) - innerBounds(4) - ...
                 borderWidth * borderFactor;
             titlePadding = obj.TitleBarPadding_;
@@ -239,7 +237,7 @@ classdef BoxPanel < uix.Panel
                 titlePadding * [0 1 0 -2] + ...
                 borderWidth * borderFactor * [1 1 -2 -2];
             
-            % Set properties
+            % Set properties of decorations
             titleBox = obj.TitleBox;
             if all( titleBoxPosition(3:4) > 0 ) && ~isempty( obj.Title )
                 titleBox.Position = titleBoxPosition;
@@ -253,6 +251,41 @@ classdef BoxPanel < uix.Panel
                 titleText.Visible = 'on';
             else
                 titleText.Visible = 'off';
+            end
+            
+            % Compute positions of contents
+            padding = obj.Padding_;
+            switch titlePosition
+                case {'lefttop','centertop','righttop'}
+                    contentsPosition = innerBounds + ...
+                        padding * [1 1 -2 -2] + ...
+                        ( borderWidth + 2 * titlePadding ) * [0 0 -1 0];
+                otherwise
+                    contentsPosition = innerBounds + ...
+                        padding * [1 1 -2 -2] + ...
+                        ( borderWidth + 2 * titlePadding ) * [1 0 -1 0];
+            end
+            
+            % Set properties of contents
+            children = obj.Contents_;
+            selection = numel( children );
+            for ii = 1:selection
+                child = children(ii);
+                if ii == selection
+                    child.Visible = 'on';
+                    child.Units = 'pixels';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.( child.ActivePositionProperty ) = contentsPosition;
+                        child.ContentsVisible = 'on';
+                    else
+                        child.Position = contentsPosition;
+                    end
+                else
+                    child.Visible = 'off';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'off';
+                    end
+                end
             end
             
         end % redraw
