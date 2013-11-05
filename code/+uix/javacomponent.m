@@ -1,11 +1,10 @@
-function [hcomponent, hcontainer] = javacomponent( component, parent )
+function [hcomponent, hcontainer] = javacomponent( s, parent )
 
 %   Copyright 2010-2013 The MathWorks, Inc.
 
 position = [20 20 60 20]; % default;
 
-% Parse arguments and make sure they are legal
-[hcomponent, position, parent] = parseAndValidateArguments(component, position, parent);
+hcomponent = javaObjectEDT( s );
 
 %Show on screen and return the hg proxy
 [hcontainer, parent , hgCleansJava, javaCleansHG] = applyArgumentsAndShow(hcomponent, position, parent);
@@ -19,60 +18,12 @@ enableAutoCleanup(getHGOwnerForCleanup(hcontainer,parent), hcomponent, hgCleansJ
 end
 
 %-------------------------------------------------------------------
-function [hcomponent, position, parent] = parseAndValidateArguments(component, position, parent)
-    hcomponent = validateSwingComponent(component);
-    position = validatePosition(position);
-    parent = validateParent(parent);
-end
-
-%-------------------------------------------------------------------
-function retVal = validateSwingComponent(component)
-if ischar(component)
-    % create from class name
-    component = javaObjectEDT(component);
-elseif iscell(component)
-    % create from class name and input args
-    component = javaObjectEDT(component{:});
-elseif isa(component,'java')
-elseif isa(component,'handle') 
-    try
-        %Try to cast the UDD java handle to a java handle reference.
-        component = java(component)%#ok
-    catch ex %#ok
-        assert(false,'Invalid specification of the swing component');
-    end
-else
-    assert(false,'Invalid specification of the swing component');
-end
-retVal = handle(javaObjectEDT(component),'callbackproperties');
-end
-
-%-------------------------------------------------------------------
 function customizeSwingHandleForPainting(hcomponent)
 if isa(java(hcomponent), 'javax.swing.JComponent')
     % force component to be opaque if it's a JComponent. This prevents
     % lightweight component from showing the figure background (which
     % may never get a paint event)
     hcomponent.setOpaque(true);
-end
-end
-
-%-------------------------------------------------------------------
-function position = validatePosition(position)
-if (isempty(position))
-    position = [20 20 60 20];
-end
-
-if (isa(position,'java.lang.String'))
-    position = validateLayoutConstraint(char(position));
-end
-end
-
-%-------------------------------------------------------------------
-function parent = validateParent(parent)
-% Parent needs to be a valid hg handle
-if ~(isempty(parent) || ishghandle(parent))
-    assert(false,'Invalid parent specification');
 end
 end
 
@@ -188,17 +139,6 @@ addlistener(hgowner,'ObjectBeingDestroyed',hgCleansJava);
 %Set up auto deletion on the hgjavacomponent
 jListener = handle.listener(hcomponent, 'ObjectBeingDestroyed',javaCleansHG);
 savelistener(hcomponent, jListener);
-end
-
-%-------------------------------------------------------------------
-function newConstraint = validateLayoutConstraint(newConstraint)
-%Make sure legitimate values are saved.
-assert(isequal(char(newConstraint),char(java.awt.BorderLayout.NORTH)) || ...
-    isequal(char(newConstraint),char(java.awt.BorderLayout.SOUTH)) || ...
-    isequal(char(newConstraint),char(java.awt.BorderLayout.EAST))  || ...
-    isequal(char(newConstraint),char(java.awt.BorderLayout.WEST))  || ...
-    isequal(char(newConstraint),char('Overlay')));
-
 end
 
 %-----------------------------------------------------
