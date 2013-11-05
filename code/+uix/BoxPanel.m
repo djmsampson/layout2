@@ -2,10 +2,14 @@ classdef BoxPanel < uix.Container
     
     properties( Dependent )
         Title
+        BorderWidth
+        BorderType
     end
     
-    properties
+    properties( Access = private )
         Titlebar
+        BorderWidth_ = 0
+        BorderType_ = 'none'
     end
     
     methods
@@ -18,6 +22,7 @@ classdef BoxPanel < uix.Container
             % Create title
             titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Units', 'pixels' );
+            titlebar.BackgroundColor = [0 0 1];
             
             % Store properties
             obj.Titlebar = titlebar;
@@ -33,6 +38,36 @@ classdef BoxPanel < uix.Container
     end % structors
     
     methods
+        
+        function value = get.BorderWidth( obj )
+            
+            value = obj.BorderWidth_;
+            
+        end % get.BorderWidth
+        
+        function set.BorderWidth( obj, value )
+            
+            obj.BorderWidth_ = value;
+            
+            % Set as dirty
+            obj.Dirty = true;
+            
+        end % set.BorderWidth
+        
+        function value = get.BorderType( obj )
+            
+            value = obj.BorderType_;
+            
+        end % get.BorderType
+        
+        function set.BorderType( obj, value )
+            
+            obj.BorderType_ = value;
+            
+            % Set as dirty
+            obj.Dirty = true;
+            
+        end % set.BorderType
         
         function value = get.Title( obj )
             
@@ -58,14 +93,30 @@ classdef BoxPanel < uix.Container
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            padding = obj.Padding_;
             extent = obj.Titlebar.Extent;
-            xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
-            ySizes = uix.calcPixelSizes( bounds(4), [extent(4); -1], 1, padding, 0 );
-            position = [padding+1 padding+1 xSizes ySizes];
+            switch obj.BorderType_
+                case 'none'
+                    borderSize = 0;
+                case 'line'
+                    borderSize = obj.BorderWidth_;
+                otherwise
+                    borderSize = obj.BorderWidth_ * 2;
+            end
+            padding = obj.Padding_;
+            xSizes = uix.calcPixelSizes( bounds(3), -1, ...
+                2 * padding + 1, borderSize, borderSize );
+            ySizes = uix.calcPixelSizes( bounds(4), [extent(4); -1], ...
+                [extent(4); 1 + 2 * padding], borderSize, borderSize );
+            titlePosition = [borderSize, 2 * borderSize + ySizes(2), ...
+                xSizes, ySizes(1)];
+            contentsPosition = [borderSize + padding, ...
+                borderSize + padding, xSizes - 2 * padding, ...
+                ySizes(2) - 2 * padding];
+            
+            % Set decorations positions
+            obj.Titlebar.Position = titlePosition;
             
             % Set positions and visibility
-            obj.Titlebar.Position = [bounds(1), bounds(2) + bounds(4) - extent(4), bounds(3), extent(4)];
             children = obj.Contents_;
             selection = numel( children );
             for ii = 1:numel( children )
@@ -74,10 +125,10 @@ classdef BoxPanel < uix.Container
                     child.Visible = 'on';
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.( child.ActivePositionProperty ) = position;
+                        child.( child.ActivePositionProperty ) = contentsPosition;
                         child.ContentsVisible = 'on';
                     else
-                        child.Position = position;
+                        child.Position = contentsPosition;
                     end
                 else
                     child.Visible = 'off';
