@@ -3,16 +3,12 @@ function [hcomponent, hcontainer] = javacomponent( component, parent )
 %   Copyright 2010-2013 The MathWorks, Inc.
 
 position = [20 20 60 20]; % default;
-callback = ''; %default
 
 % Parse arguments and make sure they are legal
 [hcomponent, position, parent] = parseAndValidateArguments(component, position, parent);
 
 %Show on screen and return the hg proxy
 [hcontainer, parent , hgCleansJava, javaCleansHG] = applyArgumentsAndShow(hcomponent, position, parent);
-
-%Add all the callbacks
-addJavaCallbacks(hcomponent, hcontainer, callback);
 
 %Special bug fixes
 customizeSwingHandleForPainting(hcomponent);
@@ -204,29 +200,6 @@ assert(isequal(char(newConstraint),char(java.awt.BorderLayout.NORTH)) || ...
     isequal(char(newConstraint),char('Overlay')));
 
 end
-
-%-------------------------------------------------------------------
-function addJavaCallbacks(hcomponent, hcontainer, callback)
-% If asked for callbacks, add them now.
-if ~isempty(callback)
-    % The hg panel is the best place to store the listeners so they get
-    % cleaned up asap. We can't do that if the parent is a uitoolbar so we
-    % just put them on the toolbar itself.
-    lsnrParent = hcontainer;
-    if isempty(lsnrParent)
-        lsnrParent = get(hcontainer,'parent');
-    end
-    if mod(length(callback),2)
-        error(message('MATLAB:javacomponent:IncorrectUsage'));
-    end
-    for i = 1:2:length(callback)
-        lsnrs = getappdata(lsnrParent,'JavaComponentListeners');
-        l = javalistener(java(hcomponent), callback{i}, callback{i+1});
-        setappdata(lsnrParent,'JavaComponentListeners',[l lsnrs]);
-    end
-end
-end
-
 
 %-----------------------------------------------------
 % javalistener callback setup
