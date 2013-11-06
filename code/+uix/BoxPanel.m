@@ -107,10 +107,16 @@ classdef BoxPanel < uix.Container
         
         function set.FontAngle( obj, value ) % TODO
             
+            % Check
+            assert( any( strcmp( value, {'normal','italic','oblique'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontAngle'' must be ''normal'', ''italic'' or ''oblique''.' )
+            
             % Set font
             titleLabel = obj.TitleLabel;
             oldFont = titleLabel.getFont();
-            newFont = java.awt.Font( value, oldFont.getStyle(), oldFont.getSize2D() );
+            newStyle = 2 * ~strcmp( value, 'normal' ) + oldFont.isBold();
+            newFont = java.awt.Font( oldFont.getName(), newStyle, oldFont.getSize2D() );
             titleLabel.setFont( newFont );
             
             % Set as dirty
