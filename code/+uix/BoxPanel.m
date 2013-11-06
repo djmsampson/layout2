@@ -41,6 +41,8 @@ classdef BoxPanel < uix.Container
                 'HorizontalAlignment', 'left' );
             
             % Create borders
+            rightBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             topBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             middleBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
@@ -48,8 +50,6 @@ classdef BoxPanel < uix.Container
             bottomBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             leftBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            rightBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             
             % Store properties
@@ -270,14 +270,15 @@ classdef BoxPanel < uix.Container
                 1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
             topBorderPosition = [1 + borderSize, 1 + 2 * borderSize + ...
-                sum( ySizes ), xSizes, borderSize];
+                sum( ySizes ), xSizes, borderSize] + [-1 0 1 0];
             middleBorderPosition = [1 + borderSize, 1 + borderSize + ...
-                ySizes(2), xSizes, borderSize];
-            bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize];
+                ySizes(2), xSizes, borderSize] + [-1 0 1 0];
+            bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize] + ...
+                [-1 0 1 0];
             leftBorderPosition = [1, 1, borderSize, 3 * borderSize + ...
-                sum( ySizes )];
+                sum( ySizes )] + [-1 0 1 0];
             rightBorderPosition = [1 + borderSize + xSizes, 1, ...
-                borderSize, 3 * borderSize + sum( ySizes )];
+                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 0];
             
             % Set decorations positions
             obj.Titlebar.Position = titlePosition;
@@ -332,61 +333,61 @@ classdef BoxPanel < uix.Container
             % Compute color data
             switch obj.BorderType_
                 case 'none'
-                    topBorderCData = zeros( [[topBorder.Position(4), ceil( topBorder.Position(3) )] 3] );
-                    middleBorderCData = zeros( [[middleBorder.Position(4), ceil( middleBorder.Position(3) )] 3] );
-                    bottomBorderCData = zeros( [[bottomBorder.Position(4), ceil( bottomBorder.Position(3) )] 3] );
-                    leftBorderCData = zeros( [[ceil( leftBorder.Position(4) ), leftBorder.Position(3)] 3] );
-                    rightBorderCData = zeros( [[ceil( rightBorder.Position(4) ), rightBorder.Position(3)] 3] );
+                    topBorderCData = zeros( [[topBorder.Position(4), round( topBorder.Position(3) )] 3] );
+                    middleBorderCData = zeros( [[middleBorder.Position(4), round( middleBorder.Position(3) )] 3] );
+                    bottomBorderCData = zeros( [[bottomBorder.Position(4), round( bottomBorder.Position(3) )] 3] );
+                    leftBorderCData = zeros( [[round( leftBorder.Position(4) ), leftBorder.Position(3)] 3] );
+                    rightBorderCData = zeros( [[round( rightBorder.Position(4) ), rightBorder.Position(3)] 3] );
                 case 'line'
-                    topBorderCData = repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4), ceil( topBorder.Position(3) )] );
-                    middleBorderCData = repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4), ceil( middleBorder.Position(3) )] );
-                    bottomBorderCData = repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4), ceil( bottomBorder.Position(3) )] );
-                    leftBorderCData = repmat( permute( highlightColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( permute( highlightColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)] );
+                    topBorderCData = repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4), round( topBorder.Position(3) )] );
+                    middleBorderCData = repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4), round( middleBorder.Position(3) )] );
+                    bottomBorderCData = repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4), round( bottomBorder.Position(3) )] );
+                    leftBorderCData = repmat( permute( highlightColor, [3 1 2] ), [round( leftBorder.Position(4) ), leftBorder.Position(3)] );
+                    rightBorderCData = repmat( permute( highlightColor, [3 1 2] ), [round( rightBorder.Position(4) ), rightBorder.Position(3)] );
                 case 'beveledin'
-                    topBorderCData = repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4), ceil( topBorder.Position(3) )] );
-                    middleBorderCData = repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4), ceil( middleBorder.Position(3) )] );
-                    bottomBorderCData = repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4), ceil( bottomBorder.Position(3) )] );
-                    leftBorderCData = repmat( permute( shadowColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( permute( highlightColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)] );
+                    topBorderCData = repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4), round( topBorder.Position(3) )] );
+                    middleBorderCData = repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4), round( middleBorder.Position(3) )] );
+                    bottomBorderCData = repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4), round( bottomBorder.Position(3) )] );
+                    leftBorderCData = repmat( permute( shadowColor, [3 1 2] ), [round( leftBorder.Position(4) ), leftBorder.Position(3)] );
+                    rightBorderCData = repmat( permute( highlightColor, [3 1 2] ), [round( rightBorder.Position(4) ), rightBorder.Position(3)] );
                 case 'beveledout'
-                    topBorderCData = repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4), ceil( topBorder.Position(3) )] );
-                    middleBorderCData = repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4), ceil( middleBorder.Position(3) )] );
-                    bottomBorderCData = repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4), ceil( bottomBorder.Position(3) )] );
-                    leftBorderCData = repmat( permute( highlightColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( permute( shadowColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)] );
+                    topBorderCData = repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4), round( topBorder.Position(3) )] );
+                    middleBorderCData = repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4), round( middleBorder.Position(3) )] );
+                    bottomBorderCData = repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4), round( bottomBorder.Position(3) )] );
+                    leftBorderCData = repmat( permute( highlightColor, [3 1 2] ), [round( leftBorder.Position(4) ), leftBorder.Position(3)] );
+                    rightBorderCData = repmat( permute( shadowColor, [3 1 2] ), [round( rightBorder.Position(4) ), rightBorder.Position(3)] );
                 case 'etchedin'
                     topBorderCData = [ ...
-                        repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4)/2, ceil( topBorder.Position(3) )] ); ...
-                        repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4)/2, ceil( topBorder.Position(3) )] )];
+                        repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4)/2, round( topBorder.Position(3) )] ); ...
+                        repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4)/2, round( topBorder.Position(3) )] )];
                     middleBorderCData = [ ...
-                        repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4)/2, ceil( middleBorder.Position(3) )] ); ...
-                        repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4)/2, ceil( middleBorder.Position(3) )] )];
+                        repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4)/2, round( middleBorder.Position(3) )] ); ...
+                        repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4)/2, round( middleBorder.Position(3) )] )];
                     bottomBorderCData = [ ...
-                        repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4)/2, ceil( bottomBorder.Position(3) )] ); ...
-                        repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4)/2, ceil( bottomBorder.Position(3) )] )];
+                        repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4)/2, round( bottomBorder.Position(3) )] ); ...
+                        repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4)/2, round( bottomBorder.Position(3) )] )];
                     leftBorderCData = [ ...
-                        repmat( permute( shadowColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)/2] ), ...
-                        repmat( permute( highlightColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)/2] )];
+                        repmat( permute( shadowColor, [3 1 2] ), [round( leftBorder.Position(4) ), (leftBorder.Position(3)-1)/2] ), ...
+                        repmat( permute( highlightColor, [3 1 2] ), [round( leftBorder.Position(4) ), (leftBorder.Position(3)+1)/2] )];
                     rightBorderCData = [ ...
-                        repmat( permute( shadowColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)/2] ), ...
-                        repmat( permute( highlightColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)/2] )];
+                        repmat( permute( shadowColor, [3 1 2] ), [round( rightBorder.Position(4) ), (rightBorder.Position(3)-1)/2] ), ...
+                        repmat( permute( highlightColor, [3 1 2] ), [round( rightBorder.Position(4) ), (rightBorder.Position(3)+1)/2] )];
                 case 'etchedout'
                     topBorderCData = [ ...
-                        repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4)/2, ceil( topBorder.Position(3) )] ); ...
-                        repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4)/2, ceil( topBorder.Position(3) )] )];
+                        repmat( permute( highlightColor, [3 1 2] ), [topBorder.Position(4)/2, round( topBorder.Position(3) )] ); ...
+                        repmat( permute( shadowColor, [3 1 2] ), [topBorder.Position(4)/2, round( topBorder.Position(3) )] )];
                     middleBorderCData = [ ...
-                        repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4)/2, ceil( middleBorder.Position(3) )] ); ...
-                        repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4)/2, ceil( middleBorder.Position(3) )] )];
+                        repmat( permute( highlightColor, [3 1 2] ), [middleBorder.Position(4)/2, round( middleBorder.Position(3) )] ); ...
+                        repmat( permute( shadowColor, [3 1 2] ), [middleBorder.Position(4)/2, round( middleBorder.Position(3) )] )];
                     bottomBorderCData = [ ...
-                        repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4)/2, ceil( bottomBorder.Position(3) )] ); ...
-                        repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4)/2, ceil( bottomBorder.Position(3) )] )];
+                        repmat( permute( highlightColor, [3 1 2] ), [bottomBorder.Position(4)/2, round( bottomBorder.Position(3) )] ); ...
+                        repmat( permute( shadowColor, [3 1 2] ), [bottomBorder.Position(4)/2, round( bottomBorder.Position(3) )] )];
                     leftBorderCData = [ ...
-                        repmat( permute( highlightColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)/2] ), ...
-                        repmat( permute( shadowColor, [3 1 2] ), [ceil( leftBorder.Position(4) ), leftBorder.Position(3)/2] )];
+                        repmat( permute( highlightColor, [3 1 2] ), [round( leftBorder.Position(4) ), (leftBorder.Position(3)-1)/2] ), ...
+                        repmat( permute( shadowColor, [3 1 2] ), [round( leftBorder.Position(4) ), (leftBorder.Position(3)+1)/2] )];
                     rightBorderCData = [ ...
-                        repmat( permute( highlightColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)/2] ), ...
-                        repmat( permute( shadowColor, [3 1 2] ), [ceil( rightBorder.Position(4) ), rightBorder.Position(3)/2] )];
+                        repmat( permute( highlightColor, [3 1 2] ), [round( rightBorder.Position(4) ), (rightBorder.Position(3)-1)/2] ), ...
+                        repmat( permute( shadowColor, [3 1 2] ), [round( rightBorder.Position(4) ), (rightBorder.Position(3)+1)/2] )];
             end
             
             % Paint borders
