@@ -318,8 +318,15 @@ classdef BoxPanel < uix.Container
         
         function redrawBorders( obj )
             
-            
-            
+            switch obj.BorderType_
+                case 'none'
+                case 'line'
+                case 'beveledin'
+                case 'beveledout'
+                case 'etchedin'
+                case 'etchedout'
+            end
+                
         end % redrawBorders
         
     end % helper methods
