@@ -15,8 +15,8 @@ classdef BoxPanel < uix.Container
     end
     
     properties % ( Access = private )
-        JTitlebar
-        Titlebar
+        TitleLabel
+        TitleContainer
         BorderWidth_ = 0
         BorderType_ = 'none'
         HilightColor_ = [1 1 1]
@@ -31,14 +31,14 @@ classdef BoxPanel < uix.Container
             obj@uix.Container()
             
             % Create title
-            jTitlebar = javax.swing.JLabel();
-            titlebar = hgjavacomponent( 'Internal', true, ...
-                'Parent', obj, 'JavaPeer', jTitlebar );
-            titlebar.Units = 'pixels';
+            titleLabel = javax.swing.JLabel();
+            titleContainer = hgjavacomponent( 'Internal', true, ...
+                'Parent', obj, 'JavaPeer', titleLabel );
+            titleContainer.Units = 'pixels';
             
             % Store properties
-            obj.JTitlebar = jTitlebar;
-            obj.Titlebar = titlebar;
+            obj.TitleLabel = titleLabel;
+            obj.TitleContainer = titleContainer;
             
             % Set properties
             if nargin > 0
@@ -84,13 +84,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.FontAngle( obj ) % TODO
             
-            value = obj.Titlebar.FontAngle;
+            value = obj.TitleContainer.FontAngle;
             
         end % get.FontAngle
         
         function set.FontAngle( obj, value ) % TODO
             
-            obj.Titlebar.FontAngle = value;
+            obj.TitleContainer.FontAngle = value;
             
             % Set as dirty
             obj.Dirty = true;
@@ -99,13 +99,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.FontName( obj )
             
-            value = obj.JTitlebar.getFont().getFontName();
+            value = obj.TitleLabel.getFont().getFontName();
             
         end % get.FontName
         
         function set.FontName( obj, value ) % TODO
             
-            obj.Titlebar.FontName = value;
+            obj.TitleContainer.FontName = value;
             
             % Set as dirty
             obj.Dirty = true;
@@ -114,13 +114,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.FontSize( obj ) % TODO
             
-            value = obj.JTitlebar.getFont().getSize2D();
+            value = obj.TitleLabel.getFont().getSize2D();
             
         end % get.FontSize
         
         function set.FontSize( obj, value ) % TODO
             
-            obj.Titlebar.FontSize = value;
+            obj.TitleContainer.FontSize = value;
             
             % Set as dirty
             obj.Dirty = true;
@@ -129,13 +129,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.FontUnits( obj ) % TODO
             
-            value = obj.Titlebar.FontUnits;
+            value = obj.TitleContainer.FontUnits;
             
         end % get.FontUnits
         
         function set.FontUnits( obj, value ) % TODO
             
-            obj.Titlebar.FontUnits = value;
+            obj.TitleContainer.FontUnits = value;
             
             % Set as dirty
             obj.Dirty = true;
@@ -144,13 +144,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.FontWeight( obj ) % TODO
             
-            value = obj.Titlebar.FontWeight;
+            value = obj.TitleContainer.FontWeight;
             
         end % get.FontWeight
         
         function set.FontWeight( obj, value ) % TODO
             
-            obj.Titlebar.FontWeight = value;
+            obj.TitleContainer.FontWeight = value;
             
             % Set as dirty
             obj.Dirty = true;
@@ -159,13 +159,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.ForegroundColor( obj )
             
-            value = obj.Titlebar.ForegroundColor;
+            value = obj.TitleContainer.ForegroundColor;
             
         end % get.ForegroundColor
         
         function set.ForegroundColor( obj, value )
             
-            obj.Titlebar.ForegroundColor = value;
+            obj.TitleContainer.ForegroundColor = value;
             
         end % set.ForegroundColor
         
@@ -195,13 +195,13 @@ classdef BoxPanel < uix.Container
         
         function value = get.Title( obj )
             
-            value = char( obj.JTitlebar.getText() );
+            value = char( obj.TitleLabel.getText() );
             
         end % get.Title
         
         function set.Title( obj, value )
             
-            obj.JTitlebar.setText( value )
+            obj.TitleLabel.setText( value )
             
             % Set as dirty
             obj.Dirty = true;
@@ -239,7 +239,7 @@ classdef BoxPanel < uix.Container
                 ySizes(2) - 2 * padding];
             
             % Set decorations positions
-            obj.Titlebar.Position = titlePosition;
+            obj.TitleContainer.Position = titlePosition;
             
             % Set positions and visibility
             children = obj.Contents_;
