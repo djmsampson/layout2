@@ -9,12 +9,18 @@ classdef BoxPanel < uix.Container
         FontSize
         FontUnits
         FontWeight
+        ForegroundColor
+        HighlightColor
+        ShadowColor
+        TitleColor
     end
     
     properties( Access = private )
         Titlebar
         BorderWidth_ = 0
         BorderType_ = 'none'
+        HilightColor_ = [1 1 1]
+        ShadowColor_ = [0.7 0.7 0.7]
     end
     
     methods
@@ -142,6 +148,50 @@ classdef BoxPanel < uix.Container
             
         end % set.FontWeight
         
+        function value = get.ForegroundColor( obj )
+            
+            value = obj.Titlebar.ForegroundColor;
+            
+        end % get.ForegroundColor
+        
+        function set.ForegroundColor( obj, value )
+            
+            obj.Titlebar.ForegroundColor = value;
+            
+        end % set.ForegroundColor
+        
+        function value = get.HighlightColor( obj )
+            
+            value = obj.HighlightColor_;
+            
+        end % get.HighlightColor
+        
+        function set.HighlightColor( obj, value )
+            
+            % Set
+            obj.HighlightColor_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.HighlightColor
+        
+        function value = get.ShadowColor( obj )
+            
+            value = obj.ShadowColor_;
+            
+        end % get.ShadowColor
+        
+        function set.ShadowColor( obj, value )
+            
+            % Set
+            obj.ShadowColor_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.ShadowColor
+        
         function value = get.Title( obj )
             
             value = obj.Titlebar.String;
@@ -156,6 +206,18 @@ classdef BoxPanel < uix.Container
             obj.Dirty = true;
             
         end % set.Title
+        
+        function value = get.TitleColor( obj )
+            
+            value = obj.Titlebar.BackgroundColor;
+            
+        end % get.TitleColor
+        
+        function set.TitleColor( obj, value )
+            
+            obj.Titlebar.BackgroundColor = value;
+            
+        end % set.TitleColor
         
     end % accessors
     
