@@ -17,9 +17,14 @@ classdef BoxPanel < uix.Container
     
     properties( Access = private )
         Titlebar
+        TopBorder
+        MiddleBorder
+        BottomBorder
+        LeftBorder
+        RightBorder
         BorderWidth_ = 0
         BorderType_ = 'none'
-        HilightColor_ = [1 1 1]
+        HighlightColor_ = [1 1 1]
         ShadowColor_ = [0.7 0.7 0.7]
     end
     
@@ -35,8 +40,25 @@ classdef BoxPanel < uix.Container
                 'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
                 'HorizontalAlignment', 'left' );
             
+            % Create borders
+            topBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            middleBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            bottomBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            leftBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            rightBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            
             % Store properties
             obj.Titlebar = titlebar;
+            obj.TopBorder = topBorder;
+            obj.MiddleBorder = middleBorder;
+            obj.BottomBorder = bottomBorder;
+            obj.LeftBorder = leftBorder;
+            obj.RightBorder = rightBorder;
             
             % Set properties
             if nargin > 0
@@ -232,9 +254,9 @@ classdef BoxPanel < uix.Container
             switch obj.BorderType_
                 case 'none'
                     borderSize = 0;
-                case 'line'
+                case {'line','beveledin','beveledout'}
                     borderSize = obj.BorderWidth_;
-                otherwise
+                case {'etchedin','etchedout'}
                     borderSize = obj.BorderWidth_ * 2;
             end
             padding = obj.Padding_;
@@ -247,9 +269,24 @@ classdef BoxPanel < uix.Container
             contentsPosition = [1 + borderSize + padding, ...
                 1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
+            topBorderPosition = [1 + borderSize, 1 + 2 * borderSize + ...
+                sum( ySizes ), xSizes, borderSize];
+            middleBorderPosition = [1 + borderSize, 1 + borderSize + ...
+                ySizes(2), xSizes, borderSize];
+            bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize];
+            leftBorderPosition = [1, 1, borderSize, 3 * borderSize + ...
+                sum( ySizes )];
+            rightBorderPosition = [1 + borderSize + xSizes, 1, ...
+                borderSize, 3 * borderSize + sum( ySizes )];
             
             % Set decorations positions
             obj.Titlebar.Position = titlePosition;
+            obj.TopBorder.Position = topBorderPosition;
+            obj.MiddleBorder.Position = middleBorderPosition;
+            obj.BottomBorder.Position = bottomBorderPosition;
+            obj.LeftBorder.Position = leftBorderPosition;
+            obj.RightBorder.Position = rightBorderPosition;
+            obj.redrawBorders()            
             
             % Set positions and visibility
             children = obj.Contents_;
@@ -276,5 +313,15 @@ classdef BoxPanel < uix.Container
         end % redraw
         
     end % template methods
+    
+    methods
+        
+        function redrawBorders( obj )
+            
+            
+            
+        end % redrawBorders
+        
+    end % helper methods
     
 end % classdef
