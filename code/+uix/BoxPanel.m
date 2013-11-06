@@ -4,6 +4,11 @@ classdef BoxPanel < uix.Container
         Title
         BorderWidth
         BorderType
+        FontAngle
+        FontName
+        FontSize
+        FontUnits
+        FontWeight
     end
     
     properties( Access = private )
@@ -21,8 +26,8 @@ classdef BoxPanel < uix.Container
             
             % Create title
             titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'text', 'Units', 'pixels' );
-            titlebar.BackgroundColor = [0 0 1];
+                'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
+                'HorizontalAlignment', 'left' );
             
             % Store properties
             obj.Titlebar = titlebar;
@@ -69,6 +74,74 @@ classdef BoxPanel < uix.Container
             
         end % set.BorderType
         
+        function value = get.FontAngle( obj )
+            
+            value = obj.Titlebar.FontAngle;
+            
+        end % get.FontAngle
+        
+        function set.FontAngle( obj, value )
+            
+            obj.Titlebar.FontAngle = value;
+            
+        end % set.FontAngle
+        
+        function value = get.FontName( obj )
+            
+            value = obj.Titlebar.FontName;
+            
+        end % get.FontName
+        
+        function set.FontName( obj, value )
+            
+            % Set
+            obj.Titlebar.FontName = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontName
+        
+        function value = get.FontSize( obj )
+            
+            value = obj.Titlebar.FontSize;
+            
+        end % get.FontSize
+        
+        function set.FontSize( obj, value )
+            
+            % Set
+            obj.Titlebar.FontSize = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontSize
+        
+        function value = get.FontUnits( obj )
+            
+            value = obj.Titlebar.FontUnits;
+            
+        end % get.FontUnits
+        
+        function set.FontUnits( obj, value )
+            
+            obj.Titlebar.FontUnits = value;
+            
+        end % set.FontUnits
+        
+        function value = get.FontWeight( obj )
+            
+            value = obj.Titlebar.FontWeight;
+            
+        end % get.FontWeight
+        
+        function set.FontWeight( obj, value )
+            
+            obj.Titlebar.FontWeight = value;
+            
+        end % set.FontWeight
+        
         function value = get.Title( obj )
             
             value = obj.Titlebar.String;
@@ -107,10 +180,10 @@ classdef BoxPanel < uix.Container
                 2 * padding + 1, borderSize, borderSize );
             ySizes = uix.calcPixelSizes( bounds(4), [extent(4); -1], ...
                 [extent(4); 1 + 2 * padding], borderSize, borderSize );
-            titlePosition = [borderSize, 2 * borderSize + ySizes(2), ...
+            titlePosition = [1 + borderSize, 1 + 2 * borderSize + ySizes(2), ...
                 xSizes, ySizes(1)];
-            contentsPosition = [borderSize + padding, ...
-                borderSize + padding, xSizes - 2 * padding, ...
+            contentsPosition = [1 + borderSize + padding, ...
+                1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
             
             % Set decorations positions
