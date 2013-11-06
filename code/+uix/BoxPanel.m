@@ -25,6 +25,9 @@ classdef BoxPanel < uix.Container
     end
     
     properties( Access = private, Constant )
+        DefaultFontName = get( 0, 'DefaultUicontrolFontName' )
+        DefaultFontSize = get( 0, 'DefaultUicontrolFontSize' )
+        DefaultFontUnits = get( 0, 'DefaultUicontrolFontUnits' )
         ScreenPixelsPerInch = get( 0, 'ScreenPixelsPerInch' )
     end
     
@@ -44,6 +47,11 @@ classdef BoxPanel < uix.Container
             % Store properties
             obj.TitleLabel = titleLabel;
             obj.TitleContainer = titleContainer;
+            
+            % Apply defaults
+            obj.FontName = obj.DefaultFontName;
+            obj.FontUnits = obj.DefaultFontUnits;
+            obj.FontSize = obj.DefaultFontSize;
             
             % Set properties
             if nargin > 0
@@ -149,7 +157,7 @@ classdef BoxPanel < uix.Container
             
         end % get.FontSize
         
-        function set.FontSize( obj, value ) % TODO
+        function set.FontSize( obj, value )
             
             % Check
             assert( isa( value, 'double' ) && isscalar( value ) && ...
@@ -185,7 +193,7 @@ classdef BoxPanel < uix.Container
             
         end % get.FontUnits
         
-        function set.FontUnits( obj, value ) % TODO
+        function set.FontUnits( obj, value )
             
             % Check
             assert( any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
