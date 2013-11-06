@@ -19,8 +19,13 @@ classdef BoxPanel < uix.Container
         TitleContainer
         BorderWidth_ = 0
         BorderType_ = 'none'
+        FontUnits_ = 'points'
         HilightColor_ = [1 1 1]
         ShadowColor_ = [0.7 0.7 0.7]
+    end
+    
+    properties( Access = private, Constant )
+        ScreenPixelsPerInch = get( 0, 'ScreenPixelsPerInch' )
     end
     
     methods
@@ -31,7 +36,7 @@ classdef BoxPanel < uix.Container
             obj@uix.Container()
             
             % Create title
-            titleLabel = javax.swing.JLabel();
+            titleLabel = javaObjectEDT( 'javax.swing.JLabel' );
             titleContainer = hgjavacomponent( 'Internal', true, ...
                 'Parent', obj, 'JavaPeer', titleLabel );
             titleContainer.Units = 'pixels';
@@ -82,15 +87,23 @@ classdef BoxPanel < uix.Container
             
         end % set.BorderType
         
-        function value = get.FontAngle( obj ) % TODO
+        function value = get.FontAngle( obj )
             
-            value = obj.TitleContainer.FontAngle;
+            if obj.TitleLabel.getFont().isItalic()
+                value = 'italic';
+            else
+                value = 'normal';
+            end
             
         end % get.FontAngle
         
         function set.FontAngle( obj, value ) % TODO
             
-            obj.TitleContainer.FontAngle = value;
+            % Set font
+            titleLabel = obj.TitleLabel;
+            oldFont = titleLabel.getFont();
+            newFont = java.awt.Font( value, oldFont.getStyle(), oldFont.getSize2D() );
+            titleLabel.setFont( newFont );
             
             % Set as dirty
             obj.Dirty = true;
@@ -103,48 +116,94 @@ classdef BoxPanel < uix.Container
             
         end % get.FontName
         
-        function set.FontName( obj, value ) % TODO
+        function set.FontName( obj, value )
             
-            obj.TitleContainer.FontName = value;
+            % Check
+            assert( ischar( value ), 'uix:InvalidPropertyValue', ...
+                'Property ''FontName'' must be a string.' )
+            
+            % Set
+            titleLabel = obj.TitleLabel;
+            oldFont = titleLabel.getFont();
+            newFont = java.awt.Font( value, oldFont.getStyle(), oldFont.getSize2D() );
+            titleLabel.setFont( newFont );
             
             % Set as dirty
             obj.Dirty = true;
             
         end % set.FontName
         
-        function value = get.FontSize( obj ) % TODO
+        function value = get.FontSize( obj )
             
-            value = obj.TitleLabel.getFont().getSize2D();
+            pixels = obj.TitleLabel.getFont().getSize2D();
+            switch obj.FontUnits_
+                case 'inches'
+                    value = pixels / obj.ScreenPixelsPerInch;
+                case 'centimeters'
+                    value = pixels / obj.ScreenPixelsPerInch * 2.54;
+                case 'points'
+                    value = pixels * 72 / obj.ScreenPixelsPerInch;
+                case 'pixels'
+                    value = pixels;
+            end
             
         end % get.FontSize
         
         function set.FontSize( obj, value ) % TODO
             
-            obj.TitleContainer.FontSize = value;
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value >= 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontSize'' must be a non-negative scalar.' )
+            
+            % Set
+            switch obj.FontUnits_
+                case 'inches'
+                    pixels = value * obj.ScreenPixelsPerInch;
+                case 'centimeters'
+                    pixels = value * obj.ScreenPixelsPerInch / 2.54;
+                case 'points'
+                    pixels = value * obj.ScreenPixelsPerInch / 72;
+                case 'pixels'
+                    pixels = value;
+            end
+            titleLabel = obj.TitleLabel;
+            oldFont = titleLabel.getFont();
+            newFont = java.awt.Font( oldFont.getName(), oldFont.getStyle(), pixels );
+            titleLabel.setFont( newFont );
             
             % Set as dirty
             obj.Dirty = true;
             
         end % set.FontSize
         
-        function value = get.FontUnits( obj ) % TODO
+        function value = get.FontUnits( obj )
             
-            value = obj.TitleContainer.FontUnits;
+            value = obj.FontUnits_;
             
         end % get.FontUnits
         
         function set.FontUnits( obj, value ) % TODO
             
-            obj.TitleContainer.FontUnits = value;
+            % Check
+            assert( any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontUnits'' must be ''inches'', ''centimeters'', ''points'' or ''pixels''.' )
             
-            % Set as dirty
-            obj.Dirty = true;
+            % Set
+            obj.FontUnits_ = value;
             
         end % set.FontUnits
         
-        function value = get.FontWeight( obj ) % TODO
+        function value = get.FontWeight( obj )
             
-            value = obj.TitleContainer.FontWeight;
+            if obj.TitleLabel.getFont().isBold()
+                value = 'bold';
+            else
+                value = 'normal';
+            end
             
         end % get.FontWeight
         
@@ -218,7 +277,7 @@ classdef BoxPanel < uix.Container
             figure = ancestor( obj, 'figure' );
             bounds = hgconvertunits( figure, [0 0 1 1], 'normalized', ...
                 'pixels', obj );
-            fontHeight = 20;
+            fontHeight = obj.TitleLabel.getFont().getSize2D() / 72 * obj.ScreenPixelsPerInch;
             switch obj.BorderType_
                 case 'none'
                     borderSize = 0;
