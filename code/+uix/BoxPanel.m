@@ -330,80 +330,76 @@ classdef BoxPanel < uix.Container
             leftBorder = obj.LeftBorder;
             rightBorder = obj.RightBorder;
             
+            % Get positions
+            topPosition = topBorder.Position;
+            middlePosition = middleBorder.Position;
+            bottomPosition = bottomBorder.Position;
+            leftPosition = leftBorder.Position;
+            rightPosition = rightBorder.Position;
+            
             % Compute color data
             switch obj.BorderType_
                 case 'none'
-                    topBorderCData = zeros( [topBorder.Position(4), topBorder.Position(3), 3] );
-                    middleBorderCData = zeros( [middleBorder.Position(4), middleBorder.Position(3), 3] );
-                    bottomBorderCData = zeros( [bottomBorder.Position(4), bottomBorder.Position(3), 3] );
-                    leftBorderCData = zeros( [round( leftBorder.Position(4) ), leftBorder.Position(3), 3] );
-                    rightBorderCData = zeros( [round( rightBorder.Position(4) ), rightBorder.Position(3), 3] );
+                    topCData = zeros( [topPosition(4), topPosition(3)-1, 3] );
+                    middleCData = zeros( [middlePosition(4), middlePosition(3)-1, 3] );
+                    bottomCData = zeros( [bottomPosition(4), bottomPosition(3)-1, 3] );
+                    leftCData = zeros( [round( leftPosition(4) ), leftPosition(3)-1, 3] );
+                    rightCData = zeros( [round( rightPosition(4) ), rightPosition(3)-1, 3] );
                 case 'line'
-                    topBorderCData = repmat( highlightColor, [topBorder.Position(4), topBorder.Position(3)] );
-                    middleBorderCData = repmat( highlightColor, [middleBorder.Position(4), middleBorder.Position(3)] );
-                    bottomBorderCData = repmat( highlightColor, [bottomBorder.Position(4), bottomBorder.Position(3)] );
-                    leftBorderCData = repmat( highlightColor, [leftBorder.Position(4), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( highlightColor, [rightBorder.Position(4), rightBorder.Position(3)] );
+                    topCData = repmat( highlightColor, [topPosition(4), topPosition(3)-1] );
+                    middleCData = repmat( highlightColor, [middlePosition(4), middlePosition(3)-1] );
+                    bottomCData = repmat( highlightColor, [bottomPosition(4), bottomPosition(3)-1] );
+                    leftCData = repmat( highlightColor, [leftPosition(4), leftPosition(3)-1] );
+                    rightCData = repmat( highlightColor, [rightPosition(4), rightPosition(3)-1] );
                 case 'beveledin'
-                    topBorderCData = repmat( shadowColor, [topBorder.Position(4), topBorder.Position(3)] );
-                    middleBorderCData = repmat( shadowColor, [middleBorder.Position(4), middleBorder.Position(3)] );
-                    bottomBorderCData = repmat( highlightColor, [bottomBorder.Position(4), bottomBorder.Position(3)] );
-                    leftBorderCData = repmat( shadowColor, [leftBorder.Position(4), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( highlightColor, [rightBorder.Position(4), rightBorder.Position(3)] );
+                    topCData = repmat( shadowColor, [topPosition(4), topPosition(3)-1] );
+                    middleCData = repmat( shadowColor, [middlePosition(4), middlePosition(3)-1] );
+                    bottomCData = repmat( highlightColor, [bottomPosition(4), bottomPosition(3)-1] );
+                    leftCData = repmat( shadowColor, [leftPosition(4), leftPosition(3)-1] );
+                    rightCData = repmat( highlightColor, [rightPosition(4), rightPosition(3)-1] );
                 case 'beveledout'
-                    topBorderCData = repmat( highlightColor, [topBorder.Position(4), topBorder.Position(3)] );
-                    middleBorderCData = repmat( highlightColor, [middleBorder.Position(4), middleBorder.Position(3)] );
-                    bottomBorderCData = repmat( shadowColor, [bottomBorder.Position(4), bottomBorder.Position(3)] );
-                    leftBorderCData = repmat( highlightColor, [round( leftBorder.Position(4) ), leftBorder.Position(3)] );
-                    rightBorderCData = repmat( shadowColor, [round( rightBorder.Position(4) ), rightBorder.Position(3)] );
+                    topCData = repmat( highlightColor, [topPosition(4), topPosition(3)-1] );
+                    middleCData = repmat( highlightColor, [middlePosition(4), middlePosition(3)-1] );
+                    bottomCData = repmat( shadowColor, [bottomPosition(4), bottomPosition(3)-1] );
+                    leftCData = repmat( highlightColor, [round( leftPosition(4) ), leftPosition(3)-1] );
+                    rightCData = repmat( shadowColor, [round( rightPosition(4) ), rightPosition(3)-1] );
                 case 'etchedin'
-                    topBorderCData = [ ...
-                        repmat( shadowColor, [topBorder.Position(4)/2, topBorder.Position(3)] ); ...
-                        repmat( highlightColor, [topBorder.Position(4)/2, topBorder.Position(3)] )];
-                    middleBorderCData = [ ...
-                        repmat( shadowColor, [middleBorder.Position(4)/2, middleBorder.Position(3)] ); ...
-                        repmat( highlightColor, [middleBorder.Position(4)/2, middleBorder.Position(3)] )];
-                    bottomBorderCData = [ ...
-                        repmat( shadowColor, [bottomBorder.Position(4)/2, bottomBorder.Position(3)] ); ...
-                        repmat( highlightColor, [bottomBorder.Position(4)/2, bottomBorder.Position(3)] )];
-                    leftBorderCData = [ ...
-                        repmat( shadowColor, [leftBorder.Position(4), (leftBorder.Position(3)-1)/2] ), ...
-                        repmat( highlightColor, [leftBorder.Position(4), (leftBorder.Position(3)+1)/2] )];
-                    leftBorderCData(1:(leftBorder.Position(3)-1)/2,:,:) = ...
-                        repmat( shadowColor, [(leftBorder.Position(3)-1)/2, leftBorder.Position(3)] );
-                    rightBorderCData = [ ...
-                        repmat( shadowColor, [rightBorder.Position(4), (rightBorder.Position(3)-1)/2] ), ...
-                        repmat( highlightColor, [rightBorder.Position(4), (rightBorder.Position(3)+1)/2] )];
-                    rightBorderCData(end-(rightBorder.Position(3)-1)/2+1:end,:,:) = ...
-                        repmat( highlightColor, [(rightBorder.Position(3)-1)/2, rightBorder.Position(3)] );
+                    topCData = [repmat( shadowColor, [topPosition(4)/2, topPosition(3)-1] ); ...
+                        repmat( highlightColor, [topPosition(4)/2, topPosition(3)-1] )];
+                    middleCData = [repmat( shadowColor, [middlePosition(4)/2, middlePosition(3)-1] ); ...
+                        repmat( highlightColor, [middlePosition(4)/2, middlePosition(3)-1] )];
+                    bottomCData = [repmat( shadowColor, [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
+                        repmat( highlightColor, [bottomPosition(4)/2, bottomPosition(3)-1] )];
+                    leftCData = [repmat( shadowColor, [leftPosition(4), (leftPosition(3)-1)/2] ), ...
+                        repmat( highlightColor, [leftPosition(4), (leftPosition(3)-1)/2] )];
+                    rightCData = [repmat( shadowColor, [rightPosition(4), (rightPosition(3)-1)/2] ), ...
+                        repmat( highlightColor, [rightPosition(4), (rightPosition(3)-1)/2] )];
+                    leftCData(1:(leftPosition(3)-1)/2,:,:) = ...
+                        repmat( shadowColor, [(leftPosition(3)-1)/2, leftPosition(3)-1] );
+                    rightCData(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
+                        repmat( highlightColor, [(rightPosition(3)-1)/2, rightPosition(3)-1] );
                 case 'etchedout'
-                    topBorderCData = [ ...
-                        repmat( highlightColor, [topBorder.Position(4)/2, topBorder.Position(3)] ); ...
-                        repmat( shadowColor, [topBorder.Position(4)/2, topBorder.Position(3)] )];
-                    middleBorderCData = [ ...
-                        repmat( highlightColor, [middleBorder.Position(4)/2, middleBorder.Position(3)] ); ...
-                        repmat( shadowColor, [middleBorder.Position(4)/2, middleBorder.Position(3)] )];
-                    bottomBorderCData = [ ...
-                        repmat( highlightColor, [bottomBorder.Position(4)/2, bottomBorder.Position(3)] ); ...
-                        repmat( shadowColor, [bottomBorder.Position(4)/2, bottomBorder.Position(3)] )];
-                    leftBorderCData = [ ...
-                        repmat( highlightColor, [leftBorder.Position(4), (leftBorder.Position(3)-1)/2] ), ...
-                        repmat( shadowColor, [leftBorder.Position(4), (leftBorder.Position(3)+1)/2] )];
-                    leftBorderCData(1:(leftBorder.Position(3)-1)/2,:,:) = ...
-                        repmat( highlightColor, [(leftBorder.Position(3)-1)/2, leftBorder.Position(3)] );
-                    rightBorderCData = [ ...
-                        repmat( highlightColor, [rightBorder.Position(4), (rightBorder.Position(3)-1)/2] ), ...
-                        repmat( shadowColor, [rightBorder.Position(4), (rightBorder.Position(3)+1)/2] )];
-                    rightBorderCData(end-(rightBorder.Position(3)-1)/2+1:end,:,:) = ...
-                        repmat( shadowColor, [(rightBorder.Position(3)-1)/2, rightBorder.Position(3)] );
+                    topCData = [repmat( highlightColor, [topPosition(4)/2, topPosition(3)-1] ); ...
+                        repmat( shadowColor, [topPosition(4)/2, topPosition(3)-1] )];
+                    middleCData = [repmat( highlightColor, [middlePosition(4)/2, middlePosition(3)-1] ); ...
+                        repmat( shadowColor, [middlePosition(4)/2, middlePosition(3)-1] )];
+                    bottomCData = [repmat( highlightColor, [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
+                        repmat( shadowColor, [bottomPosition(4)/2, bottomPosition(3)-1] )];
+                    leftCData = [repmat( highlightColor, [leftPosition(4), (leftPosition(3)-1)/2] ), ...
+                        repmat( shadowColor, [leftPosition(4), (leftPosition(3)-1)/2] )];
+                    rightCData = [repmat( highlightColor, [rightPosition(4), (rightPosition(3)-1)/2] ), ...
+                        repmat( shadowColor, [rightPosition(4), (rightPosition(3)-1)/2] )];
+                    leftCData(1:(leftPosition(3)-1)/2,:,:) = ...
+                        repmat( highlightColor, [(leftPosition(3)-1)/2, leftPosition(3)-1] );
+                    rightCData(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
+                        repmat( shadowColor, [(rightPosition(3)-1)/2, rightPosition(3)-1] );
             end
-            
             % Paint borders
-            topBorder.CData = topBorderCData;
-            middleBorder.CData = middleBorderCData;
-            bottomBorder.CData = bottomBorderCData;
-            leftBorder.CData = leftBorderCData;
-            rightBorder.CData = rightBorderCData;
+            topBorder.CData = topCData;
+            middleBorder.CData = middleCData;
+            bottomBorder.CData = bottomCData;
+            leftBorder.CData = leftCData;
+            rightBorder.CData = rightCData;
             
         end % redrawBorders
         
