@@ -350,17 +350,21 @@ classdef BoxPanel < uix.Container
                     middleMask = false( [middlePosition(4)+1, middlePosition(3)-1] );
                     bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
                     leftMask = false( [leftPosition(4)+1, leftPosition(3)-1] );
+                    leftMask(end-leftPosition(3)+1:end-1,:) = ...
+                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 1 );
                     rightMask = true( [rightPosition(4)+1, rightPosition(3)-1] );
-                    
-%                     leftMask(end-(leftPosition(3)-1)+1:end,:) = ...
-%                         fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
-                    
+                    rightMask(1:leftPosition(3)-1,:) = ...
+                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 1 );
                 case 'beveledout'
                     topMask = true( [topPosition(4)+1, topPosition(3)-1] );
                     middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
                     bottomMask = false( [bottomPosition(4)+1, bottomPosition(3)-1] );
                     leftMask = true( [round( leftPosition(4)+1 ), leftPosition(3)-1] );
+                    leftMask(end-leftPosition(3)+1:end-1,:) = ...
+                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
                     rightMask = false( [round( rightPosition(4)+1 ), rightPosition(3)-1] );
+                    rightMask(1:leftPosition(3)-1,:) = ...
+                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
                 case 'etchedin'
                     topMask = [false( [topPosition(4)/2, topPosition(3)-1] ); ...
                         true( [topPosition(4)/2+1, topPosition(3)-1] )];
