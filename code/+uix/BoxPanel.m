@@ -268,15 +268,15 @@ classdef BoxPanel < uix.Container
                 1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
             topBorderPosition = [1 + borderSize, 1 + 2 * borderSize + ...
-                sum( ySizes ), xSizes, borderSize] + [-1 0 1 1];
+                sum( ySizes ), xSizes, borderSize] + [-1 0 1 0];
             middleBorderPosition = [1 + borderSize, 1 + borderSize + ...
-                ySizes(2), xSizes, borderSize] + [-1 0 1 1];
+                ySizes(2), xSizes, borderSize] + [-1 0 1 0];
             bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize] + ...
-                [-1 0 1 1];
+                [-1 0 1 0];
             leftBorderPosition = [1, 1, borderSize, 3 * borderSize + ...
-                sum( ySizes )] + [-1 0 1 1];
+                sum( ySizes )] + [-1 0 1 0];
             rightBorderPosition = [1 + borderSize + xSizes, 1, ...
-                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 1];
+                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 0];
             
             % Set decorations positions
             obj.Titlebar.Position = titlePosition;
@@ -334,33 +334,33 @@ classdef BoxPanel < uix.Container
             % Compute border masks
             switch obj.BorderType_
                 case 'none'
-                    topMask = true( [topPosition(4), topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
-                    leftMask = true( [round( leftPosition(4) ), leftPosition(3)-1] );
-                    rightMask = true( [round( rightPosition(4) ), rightPosition(3)-1] );
+                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
+                    leftMask = true( [round( leftPosition(4)+1 ), leftPosition(3)-1] );
+                    rightMask = true( [round( rightPosition(4)+1 ), rightPosition(3)-1] );
                 case 'line'
-                    topMask = true( [topPosition(4), topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
-                    leftMask = true( [leftPosition(4), leftPosition(3)-1] );
-                    rightMask = true( [rightPosition(4), rightPosition(3)-1] );
+                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
+                    leftMask = true( [leftPosition(4)+1, leftPosition(3)-1] );
+                    rightMask = true( [rightPosition(4)+1, rightPosition(3)-1] );
                 case 'beveledin'
-                    topMask = false( [topPosition(4), topPosition(3)-1] );
-                    middleMask = false( [middlePosition(4), middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
-                    leftMask = false( [leftPosition(4), leftPosition(3)-1] );
-                    rightMask = true( [rightPosition(4), rightPosition(3)-1] );
+                    topMask = false( [topPosition(4)+1, topPosition(3)-1] );
+                    middleMask = false( [middlePosition(4)+1, middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
+                    leftMask = false( [leftPosition(4)+1, leftPosition(3)-1] );
+                    rightMask = true( [rightPosition(4)+1, rightPosition(3)-1] );
                     
 %                     leftMask(end-(leftPosition(3)-1)+1:end,:) = ...
 %                         fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
                     
                 case 'beveledout'
-                    topMask = true( [topPosition(4), topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
-                    bottomMask = false( [bottomPosition(4), bottomPosition(3)-1] );
-                    leftMask = true( [round( leftPosition(4) ), leftPosition(3)-1] );
-                    rightMask = false( [round( rightPosition(4) ), rightPosition(3)-1] );
+                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
+                    bottomMask = false( [bottomPosition(4)+1, bottomPosition(3)-1] );
+                    leftMask = true( [round( leftPosition(4)+1 ), leftPosition(3)-1] );
+                    rightMask = false( [round( rightPosition(4)+1 ), rightPosition(3)-1] );
                 case 'etchedin'
                     topMask = [false( [topPosition(4)/2, topPosition(3)-1] ); ...
                         true( [topPosition(4)/2, topPosition(3)-1] )];
