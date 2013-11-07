@@ -35,19 +35,17 @@ classdef BoxPanel < uix.Container
             % Call superclass constructor
             obj@uix.Container()
             
-            % Create title
-            titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
-                'HorizontalAlignment', 'left' );
-            
-            % Create borders
+            % Create borders and title right-to-left, bottom-to-top
             rightBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            topBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+            bottomBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             middleBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            bottomBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
+            titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
+                'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
+                'HorizontalAlignment', 'left' );
+            topBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
             leftBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
@@ -270,15 +268,15 @@ classdef BoxPanel < uix.Container
                 1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
             topBorderPosition = [1 + borderSize, 1 + 2 * borderSize + ...
-                sum( ySizes ), xSizes, borderSize] + [-1 0 1 0];
+                sum( ySizes ), xSizes, borderSize] + [-1 0 1 1];
             middleBorderPosition = [1 + borderSize, 1 + borderSize + ...
-                ySizes(2), xSizes, borderSize] + [-1 0 1 0];
+                ySizes(2), xSizes, borderSize] + [-1 0 1 1];
             bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize] + ...
-                [-1 0 1 0];
+                [-1 0 1 1];
             leftBorderPosition = [1, 1, borderSize, 3 * borderSize + ...
-                sum( ySizes )] + [-1 0 1 0];
+                sum( ySizes )] + [-1 0 1 1];
             rightBorderPosition = [1 + borderSize + xSizes, 1, ...
-                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 0];
+                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 1];
             
             % Set decorations positions
             obj.Titlebar.Position = titlePosition;
@@ -319,10 +317,6 @@ classdef BoxPanel < uix.Container
         
         function redrawBorders( obj )
             
-            % Get colors
-            highlightColor = permute( obj.HighlightColor_, [3 1 2] );
-            shadowColor = permute( obj.ShadowColor_, [3 1 2] );
-            
             % Get borders
             topBorder = obj.TopBorder;
             middleBorder = obj.MiddleBorder;
@@ -330,76 +324,104 @@ classdef BoxPanel < uix.Container
             leftBorder = obj.LeftBorder;
             rightBorder = obj.RightBorder;
             
-            % Get positions
+            % Get border positions
             topPosition = topBorder.Position;
             middlePosition = middleBorder.Position;
             bottomPosition = bottomBorder.Position;
             leftPosition = leftBorder.Position;
             rightPosition = rightBorder.Position;
             
-            % Compute color data
+            % Compute border masks
             switch obj.BorderType_
                 case 'none'
-                    topCData = zeros( [topPosition(4), topPosition(3)-1, 3] );
-                    middleCData = zeros( [middlePosition(4), middlePosition(3)-1, 3] );
-                    bottomCData = zeros( [bottomPosition(4), bottomPosition(3)-1, 3] );
-                    leftCData = zeros( [round( leftPosition(4) ), leftPosition(3)-1, 3] );
-                    rightCData = zeros( [round( rightPosition(4) ), rightPosition(3)-1, 3] );
+                    topMask = true( [topPosition(4), topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
+                    leftMask = true( [round( leftPosition(4) ), leftPosition(3)-1] );
+                    rightMask = true( [round( rightPosition(4) ), rightPosition(3)-1] );
                 case 'line'
-                    topCData = repmat( highlightColor, [topPosition(4), topPosition(3)-1] );
-                    middleCData = repmat( highlightColor, [middlePosition(4), middlePosition(3)-1] );
-                    bottomCData = repmat( highlightColor, [bottomPosition(4), bottomPosition(3)-1] );
-                    leftCData = repmat( highlightColor, [leftPosition(4), leftPosition(3)-1] );
-                    rightCData = repmat( highlightColor, [rightPosition(4), rightPosition(3)-1] );
+                    topMask = true( [topPosition(4), topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
+                    leftMask = true( [leftPosition(4), leftPosition(3)-1] );
+                    rightMask = true( [rightPosition(4), rightPosition(3)-1] );
                 case 'beveledin'
-                    topCData = repmat( shadowColor, [topPosition(4), topPosition(3)-1] );
-                    middleCData = repmat( shadowColor, [middlePosition(4), middlePosition(3)-1] );
-                    bottomCData = repmat( highlightColor, [bottomPosition(4), bottomPosition(3)-1] );
-                    leftCData = repmat( shadowColor, [leftPosition(4), leftPosition(3)-1] );
-                    rightCData = repmat( highlightColor, [rightPosition(4), rightPosition(3)-1] );
+                    topMask = false( [topPosition(4), topPosition(3)-1] );
+                    middleMask = false( [middlePosition(4), middlePosition(3)-1] );
+                    bottomMask = true( [bottomPosition(4), bottomPosition(3)-1] );
+                    leftMask = false( [leftPosition(4), leftPosition(3)-1] );
+                    rightMask = true( [rightPosition(4), rightPosition(3)-1] );
+                    
+%                     leftMask(end-(leftPosition(3)-1)+1:end,:) = ...
+%                         fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
+                    
                 case 'beveledout'
-                    topCData = repmat( highlightColor, [topPosition(4), topPosition(3)-1] );
-                    middleCData = repmat( highlightColor, [middlePosition(4), middlePosition(3)-1] );
-                    bottomCData = repmat( shadowColor, [bottomPosition(4), bottomPosition(3)-1] );
-                    leftCData = repmat( highlightColor, [round( leftPosition(4) ), leftPosition(3)-1] );
-                    rightCData = repmat( shadowColor, [round( rightPosition(4) ), rightPosition(3)-1] );
+                    topMask = true( [topPosition(4), topPosition(3)-1] );
+                    middleMask = true( [middlePosition(4), middlePosition(3)-1] );
+                    bottomMask = false( [bottomPosition(4), bottomPosition(3)-1] );
+                    leftMask = true( [round( leftPosition(4) ), leftPosition(3)-1] );
+                    rightMask = false( [round( rightPosition(4) ), rightPosition(3)-1] );
                 case 'etchedin'
-                    topCData = [repmat( shadowColor, [topPosition(4)/2, topPosition(3)-1] ); ...
-                        repmat( highlightColor, [topPosition(4)/2, topPosition(3)-1] )];
-                    middleCData = [repmat( shadowColor, [middlePosition(4)/2, middlePosition(3)-1] ); ...
-                        repmat( highlightColor, [middlePosition(4)/2, middlePosition(3)-1] )];
-                    bottomCData = [repmat( shadowColor, [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
-                        repmat( highlightColor, [bottomPosition(4)/2, bottomPosition(3)-1] )];
-                    leftCData = [repmat( shadowColor, [leftPosition(4), (leftPosition(3)-1)/2] ), ...
-                        repmat( highlightColor, [leftPosition(4), (leftPosition(3)-1)/2] )];
-                    rightCData = [repmat( shadowColor, [rightPosition(4), (rightPosition(3)-1)/2] ), ...
-                        repmat( highlightColor, [rightPosition(4), (rightPosition(3)-1)/2] )];
-                    leftCData(1:(leftPosition(3)-1)/2,:,:) = ...
-                        repmat( shadowColor, [(leftPosition(3)-1)/2, leftPosition(3)-1] );
-                    rightCData(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
-                        repmat( highlightColor, [(rightPosition(3)-1)/2, rightPosition(3)-1] );
+                    topMask = [false( [topPosition(4)/2, topPosition(3)-1] ); ...
+                        true( [topPosition(4)/2, topPosition(3)-1] )];
+                    middleMask = [false( [middlePosition(4)/2, middlePosition(3)-1] ); ...
+                        true( [middlePosition(4)/2, middlePosition(3)-1] )];
+                    bottomMask = [false( [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
+                        true( [bottomPosition(4)/2, bottomPosition(3)-1] )];
+                    leftMask = [false( [leftPosition(4), (leftPosition(3)-1)/2] ), ...
+                        true( [leftPosition(4), (leftPosition(3)-1)/2] )];
+                    rightMask = [false( [rightPosition(4), (rightPosition(3)-1)/2] ), ...
+                        true( [rightPosition(4), (rightPosition(3)-1)/2] )];
+                    
+                    leftMask(1:(leftPosition(3)-1)/2,:,:) = ...
+                        false( [(leftPosition(3)-1)/2, leftPosition(3)-1] );
+                    rightMask(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
+                        true( [(rightPosition(3)-1)/2, rightPosition(3)-1] );
+                    
                 case 'etchedout'
-                    topCData = [repmat( highlightColor, [topPosition(4)/2, topPosition(3)-1] ); ...
-                        repmat( shadowColor, [topPosition(4)/2, topPosition(3)-1] )];
-                    middleCData = [repmat( highlightColor, [middlePosition(4)/2, middlePosition(3)-1] ); ...
-                        repmat( shadowColor, [middlePosition(4)/2, middlePosition(3)-1] )];
-                    bottomCData = [repmat( highlightColor, [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
-                        repmat( shadowColor, [bottomPosition(4)/2, bottomPosition(3)-1] )];
-                    leftCData = [repmat( highlightColor, [leftPosition(4), (leftPosition(3)-1)/2] ), ...
-                        repmat( shadowColor, [leftPosition(4), (leftPosition(3)-1)/2] )];
-                    rightCData = [repmat( highlightColor, [rightPosition(4), (rightPosition(3)-1)/2] ), ...
-                        repmat( shadowColor, [rightPosition(4), (rightPosition(3)-1)/2] )];
-                    leftCData(1:(leftPosition(3)-1)/2,:,:) = ...
-                        repmat( highlightColor, [(leftPosition(3)-1)/2, leftPosition(3)-1] );
-                    rightCData(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
-                        repmat( shadowColor, [(rightPosition(3)-1)/2, rightPosition(3)-1] );
+                    topMask = [true( [topPosition(4)/2, topPosition(3)-1] ); ...
+                        false( [topPosition(4)/2, topPosition(3)-1] )];
+                    middleMask = [true( [middlePosition(4)/2, middlePosition(3)-1] ); ...
+                        false( [middlePosition(4)/2, middlePosition(3)-1] )];
+                    bottomMask = [true( [bottomPosition(4)/2, bottomPosition(3)-1] ); ...
+                        false( [bottomPosition(4)/2, bottomPosition(3)-1] )];
+                    leftMask = [true( [leftPosition(4), (leftPosition(3)-1)/2] ), ...
+                        false( [leftPosition(4), (leftPosition(3)-1)/2] )];
+                    rightMask = [true( [rightPosition(4), (rightPosition(3)-1)/2] ), ...
+                        false( [rightPosition(4), (rightPosition(3)-1)/2] )];
+                    
+                    leftMask(1:(leftPosition(3)-1)/2,:,:) = ...
+                        true( [(leftPosition(3)-1)/2, leftPosition(3)-1] );
+                    rightMask(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
+                        false( [(rightPosition(3)-1)/2, rightPosition(3)-1] );
+                    
             end
+            
+            % Convert masks to color data
+            highlightColor = obj.HighlightColor_;
+            shadowColor = obj.ShadowColor_;
+            topCData = mask2cdata( topMask, highlightColor, shadowColor );
+            middleCData = mask2cdata( middleMask, highlightColor, shadowColor );
+            bottomCData = mask2cdata( bottomMask, highlightColor, shadowColor );
+            leftCData = mask2cdata( leftMask, highlightColor, shadowColor );
+            rightCData = mask2cdata( rightMask, highlightColor, shadowColor );
+            
             % Paint borders
             topBorder.CData = topCData;
             middleBorder.CData = middleCData;
             bottomBorder.CData = bottomCData;
             leftBorder.CData = leftCData;
             rightBorder.CData = rightCData;
+            
+            function c = mask2cdata( m, h, s )
+                
+                hh = repmat( permute( h, [3 1 2] ), size( m ) );
+                ss = repmat( permute( s, [3 1 2] ), size( m ) );
+                mm = repmat( m, [1 1 3] );
+                c = ss;
+                c(mm) = hh(mm);
+                
+            end % foobar
             
         end % redrawBorders
         
