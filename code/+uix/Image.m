@@ -15,6 +15,7 @@ classdef Image < hgsetget
     end
     
     properties( Dependent, Hidden )
+        Internal
         JData
     end
     
@@ -203,6 +204,18 @@ classdef Image < hgsetget
                 imageIcon = javax.swing.ImageIcon( bufferedImage );
                 obj.Label.setIcon( imageIcon )
             end
+            
+        end
+        
+        function value = get.Internal( obj )
+            
+            value = obj.Container.Internal;
+            
+        end
+        
+        function set.Internal( obj, value )
+            
+            obj.Container.Internal = value;
             
         end
         
