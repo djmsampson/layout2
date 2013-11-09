@@ -35,20 +35,20 @@ classdef BoxPanel < uix.Container
             % Call superclass constructor
             obj@uix.Container()
             
-            % Create borders and title right-to-left, bottom-to-top
-            rightBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            bottomBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            middleBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            % Create title and borders
             titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
                 'HorizontalAlignment', 'left' );
-            topBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
-            leftBorder = matlab.ui.control.StyleControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'checkbox', 'Units', 'pixels' );
+            topBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels' );
+            middleBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels' );
+            bottomBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels' );
+            leftBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels' );
+            rightBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels' );
             
             % Store properties
             obj.Titlebar = titlebar;
@@ -267,24 +267,23 @@ classdef BoxPanel < uix.Container
             contentsPosition = [1 + borderSize + padding, ...
                 1 + borderSize + padding, xSizes - 2 * padding, ...
                 ySizes(2) - 2 * padding];
-            topBorderPosition = [1 + borderSize, 1 + 2 * borderSize + ...
-                sum( ySizes ), xSizes, borderSize] + [-1 0 1 0];
-            middleBorderPosition = [1 + borderSize, 1 + borderSize + ...
-                ySizes(2), xSizes, borderSize] + [-1 0 1 0];
-            bottomBorderPosition = [1 + borderSize, 1, xSizes, borderSize] + ...
-                [-1 0 1 0];
-            leftBorderPosition = [1, 1, borderSize, 3 * borderSize + ...
-                sum( ySizes )] + [-1 0 1 0];
-            rightBorderPosition = [1 + borderSize + xSizes, 1, ...
-                borderSize, 3 * borderSize + sum( ySizes )] + [-1 0 1 0];
+            topPosition = [1 + borderSize, 1 + 2 * borderSize + ...
+                sum( ySizes ), xSizes, borderSize];
+            middlePosition = [1 + borderSize, 1 + borderSize + ...
+                ySizes(2), xSizes, borderSize];
+            bottomPosition = [1 + borderSize, 1, xSizes, borderSize];
+            leftPosition = [1, 1, borderSize, 3 * borderSize + ...
+                sum( ySizes )];
+            rightPosition = [1 + borderSize + xSizes, 1, ...
+                borderSize, 3 * borderSize + sum( ySizes )];
             
             % Set decorations positions
             obj.Titlebar.Position = titlePosition;
-            obj.TopBorder.Position = topBorderPosition;
-            obj.MiddleBorder.Position = middleBorderPosition;
-            obj.BottomBorder.Position = bottomBorderPosition;
-            obj.LeftBorder.Position = leftBorderPosition;
-            obj.RightBorder.Position = rightBorderPosition;
+            obj.TopBorder.Position = topPosition;
+            obj.MiddleBorder.Position = middlePosition;
+            obj.BottomBorder.Position = bottomPosition;
+            obj.LeftBorder.Position = leftPosition;
+            obj.RightBorder.Position = rightPosition;
             obj.redrawBorders()
             
             % Set positions and visibility
@@ -333,38 +332,32 @@ classdef BoxPanel < uix.Container
             
             % Compute border masks
             switch obj.BorderType_
-                case 'none'
-                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
-                    leftMask = true( [round( leftPosition(4)+1 ), leftPosition(3)-1] );
-                    rightMask = true( [round( rightPosition(4)+1 ), rightPosition(3)-1] );
-                case 'line'
-                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
-                    leftMask = true( [leftPosition(4)+1, leftPosition(3)-1] );
-                    rightMask = true( [rightPosition(4)+1, rightPosition(3)-1] );
+                case {'none','line'}
+                    topMask = true( topPosition([4 3]) );
+                    middleMask = true( middlePosition([4 3]) );
+                    bottomMask = true( bottomPosition([4 3]) );
+                    leftMask = true( leftPosition([4 3]) );
+                    rightMask = true( rightPosition([4 3]) );
                 case 'beveledin'
-                    topMask = false( [topPosition(4)+1, topPosition(3)-1] );
-                    middleMask = false( [middlePosition(4)+1, middlePosition(3)-1] );
-                    bottomMask = true( [bottomPosition(4)+1, bottomPosition(3)-1] );
-                    leftMask = false( [leftPosition(4)+1, leftPosition(3)-1] );
-                    leftMask(end-leftPosition(3)+1:end-1,:) = ...
-                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 1 );
-                    rightMask = true( [rightPosition(4)+1, rightPosition(3)-1] );
-                    rightMask(1:leftPosition(3)-1,:) = ...
-                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 1 );
+                    topMask = false( topPosition([4 3]) );
+                    middleMask = false( middlePosition([4 3]) );
+                    bottomMask = true( bottomPosition([4 3]) );
+                    leftMask = false( leftPosition([4 3]) );
+                    leftMask(end-leftPosition(3)+1:end,:) = ...
+                        fliplr( tril( ones( leftPosition(3) ) ) == 1 );
+                    rightMask = true( rightPosition([4 3]) );
+                    rightMask(1:leftPosition(3),:) = ...
+                        fliplr( tril( ones( leftPosition(3) ) ) == 1 );
                 case 'beveledout'
-                    topMask = true( [topPosition(4)+1, topPosition(3)-1] );
-                    middleMask = true( [middlePosition(4)+1, middlePosition(3)-1] );
-                    bottomMask = false( [bottomPosition(4)+1, bottomPosition(3)-1] );
-                    leftMask = true( [round( leftPosition(4)+1 ), leftPosition(3)-1] );
-                    leftMask(end-leftPosition(3)+1:end-1,:) = ...
-                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
-                    rightMask = false( [round( rightPosition(4)+1 ), rightPosition(3)-1] );
-                    rightMask(1:leftPosition(3)-1,:) = ...
-                        fliplr( tril( ones( leftPosition(3)-1 ) ) == 0 );
+                    topMask = true( topPosition([4 3]) );
+                    middleMask = true( middlePosition([4 3]) );
+                    bottomMask = false( bottomPosition([4 3]) );
+                    leftMask = true( leftPosition([4 3]) );
+                    leftMask(end-leftPosition(3)+1:end,:) = ...
+                        fliplr( tril( ones( leftPosition(3) ) ) == 0 );
+                    rightMask = false( rightPosition([4 3]) );
+                    rightMask(1:leftPosition(3),:) = ...
+                        fliplr( tril( ones( leftPosition(3) ) ) == 0 );
                 case 'etchedin'
                     topMask = [false( [topPosition(4)/2, topPosition(3)-1] ); ...
                         true( [topPosition(4)/2+1, topPosition(3)-1] )];
@@ -388,10 +381,10 @@ classdef BoxPanel < uix.Container
                         fliplr( tril( ones( (rightPosition(3)-1)/2 ) ) == 1 );
                     
                     
-%                     rightMask(end-(rightPosition(3)-1)/2:end-1,1:(rightPosition(3)-1)/2) = ...
-%                         fliplr( tril( ones( (rightPosition(3)-1)/2 ) ) == 1 );
-%                     rightMask(end-rightPosition(3)+1:end-(rightPosition(3)+1)/2,(rightPosition(3)-1)/2+1:end) = ...
-%                         fliplr( tril( ones( (rightPosition(3)-1)/2 ) ) == 0 );
+                    %                     rightMask(end-(rightPosition(3)-1)/2:end-1,1:(rightPosition(3)-1)/2) = ...
+                    %                         fliplr( tril( ones( (rightPosition(3)-1)/2 ) ) == 1 );
+                    %                     rightMask(end-rightPosition(3)+1:end-(rightPosition(3)+1)/2,(rightPosition(3)-1)/2+1:end) = ...
+                    %                         fliplr( tril( ones( (rightPosition(3)-1)/2 ) ) == 0 );
                     
                 case 'etchedout'
                     topMask = [true( [topPosition(4)/2, topPosition(3)-1] ); ...
@@ -411,10 +404,10 @@ classdef BoxPanel < uix.Container
                         false( [rightPosition(4)+1, (rightPosition(3)-1)/2] )];
                     rightMask(end-(rightPosition(3)-1)/2:end-1,:) = false;
                     
-%                     leftMask(1:(leftPosition(3)-1)/2,:,:) = ...
-%                         true( [(leftPosition(3)-1)/2, leftPosition(3)-1] );
-%                     rightMask(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
-%                         false( [(rightPosition(3)-1)/2, rightPosition(3)-1] );
+                    %                     leftMask(1:(leftPosition(3)-1)/2,:,:) = ...
+                    %                         true( [(leftPosition(3)-1)/2, leftPosition(3)-1] );
+                    %                     rightMask(end-(rightPosition(3)-1)/2+1:end,:,:) = ...
+                    %                         false( [(rightPosition(3)-1)/2, rightPosition(3)-1] );
                     
             end
             
