@@ -13,14 +13,12 @@ classdef BoxPanel < uix.Container
         HighlightColor
         ShadowColor
         TitleColor
-        
         CloseRequestFcn
         Docked
         DockFcn
         HelpFcn
         Minimized
         MinimizeFcn
-        
     end
     
     properties( Access = private )
@@ -126,7 +124,7 @@ classdef BoxPanel < uix.Container
             
             obj.BorderWidth_ = value;
             
-            % Set as dirty
+            % Mark as dirty
             obj.Dirty = true;
             
         end % set.BorderWidth
@@ -141,7 +139,7 @@ classdef BoxPanel < uix.Container
             
             obj.BorderType_ = value;
             
-            % Set as dirty
+            % Mark as dirty
             obj.Dirty = true;
             
         end % set.BorderType
@@ -237,8 +235,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.HighlightColor_ = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw borders
+            obj.redrawBorders()
             
         end % set.HighlightColor
         
@@ -253,8 +251,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.ShadowColor_ = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw borders
+            obj.redrawBorders()
             
         end % set.ShadowColor
         
@@ -268,7 +266,7 @@ classdef BoxPanel < uix.Container
             
             obj.Titlebar.String = value;
             
-            % Set as dirty
+            % Mark as dirty
             obj.Dirty = true;
             
         end % set.Title
@@ -282,6 +280,10 @@ classdef BoxPanel < uix.Container
         function set.TitleColor( obj, value )
             
             obj.Titlebar.BackgroundColor = value;
+            obj.HelpButton.BackgroundColor = value;
+            obj.CloseButton.BackgroundColor = value;
+            obj.DockButton.BackgroundColor = value;
+            obj.MinimizeButton.BackgroundColor = value;
             
         end % set.TitleColor
         
@@ -296,8 +298,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.CloseButton.Callback = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw buttons
+            obj.redrawButtons()
             
         end % set.CloseRequestFcn
         
@@ -312,8 +314,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.DockButton.Callback = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw buttons
+            obj.redrawButtons()
             
         end % set.DockFcn
         
@@ -328,8 +330,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.HelpButton.Callback = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw buttons
+            obj.redrawButtons()
             
         end % set.HelpFcn
         
@@ -344,8 +346,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.MinimizeButton.Callback = value;
             
-            % Mark as dirty
-            obj.Dirty = true;
+            % Redraw buttons
+            obj.redrawButtons()
             
         end % set.MinimizeFcn
         
@@ -451,7 +453,11 @@ classdef BoxPanel < uix.Container
             obj.BottomBorder.Position = bottomPosition;
             obj.LeftBorder.Position = leftPosition;
             obj.RightBorder.Position = rightPosition;
+            
+            % Redraw borders
             obj.redrawBorders()
+            
+            % Redraw buttons
             obj.redrawButtons()
             
             % Set positions and visibility
@@ -499,35 +505,34 @@ classdef BoxPanel < uix.Container
         
         function redrawButtons( obj )
             
-            return % TODO
-            
-            panelPosition = [1, bounds(4) - titleHeight - 3, ...
-                bounds(3), titleHeight + 4];
-            buttonHeight = 9;
-            buttonWidth = 10;
-            buttonX = bounds(3) - buttonWidth - 4;
-            buttonY = bounds(4) - titleHeight / 2 - buttonHeight / 2 - 1;
+            % Get button positions
+            titlebarPosition = obj.Titlebar.Position; % position
+            h = 9; % height
+            w = 10; % width
+            s = 4; % spacing
+            x = titlebarPosition(1) + titlebarPosition(3) - w - s; % x
+            y = titlebarPosition(2) + titlebarPosition(4)/2 - h/2; % y
             closeButtonEnabled = ~isempty( obj.CloseRequestFcn );
             if closeButtonEnabled
-                closePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
-                buttonX = buttonX - buttonWidth - 4;
+                closePosition = [x y w h];
+                x = x - w - s;
             end
             dockButtonEnabled = ~isempty( obj.DockFcn );
             if dockButtonEnabled
-                dockPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
-                buttonX = buttonX - buttonWidth - 4;
+                dockPosition = [x y w h];
+                x = x - w - s;
             end
             minimizeButtonEnabled = ~isempty( obj.MinimizeFcn );
             if minimizeButtonEnabled
-                minimizePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
-                buttonX = buttonX - buttonWidth - 4;
+                minimizePosition = [x y w h];
+                x = x - w - s;
             end
             helpButtonEnabled = ~isempty( obj.HelpFcn );
             if helpButtonEnabled
-                helpPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                helpPosition = [x y w h];
             end
             
-            % Set positions of visibility of buttons
+            % Paint buttons
             if closeButtonEnabled
                 obj.CloseButton.Position = closePosition;
                 obj.CloseButton.Visible = 'on';
