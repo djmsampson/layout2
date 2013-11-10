@@ -123,6 +123,12 @@ classdef BoxPanel < uix.Container
         
         function set.BorderWidth( obj, value )
             
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 1] ) && ...
+                value > 0, 'uix:InvalidPropertyValue', ...
+                'Property ''BorderWidth'' must be numeric and positive.' )
+            
+            % Set
             obj.BorderWidth_ = value;
             
             % Mark as dirty
@@ -138,6 +144,13 @@ classdef BoxPanel < uix.Container
         
         function set.BorderType( obj, value )
             
+            % Check
+            assert( ischar( value ) && ...
+                any( strcmp( value, {'none','line','beveledin','beveledout','etchedin','etchedout'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''BorderType'' must be ''none'', ''line'', ''beveledin'', ''beveledout'', ''etchedin'' or ''etchedout''.' )
+            
+            % Set
             obj.BorderType_ = value;
             
             % Mark as dirty
@@ -233,6 +246,12 @@ classdef BoxPanel < uix.Container
         
         function set.HighlightColor( obj, value )
             
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''HighlightColor'' must be an RGB triple.' )
+            
             % Set
             obj.HighlightColor_ = value;
             
@@ -248,6 +267,12 @@ classdef BoxPanel < uix.Container
         end % get.ShadowColor
         
         function set.ShadowColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''ShadowColor'' must be an RGB triple.' )
             
             % Set
             obj.ShadowColor_ = value;

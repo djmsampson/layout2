@@ -58,7 +58,7 @@ close all force;
 p = uiextras.BoxPanel('Title', 'My panel');
 
 % Now test changing it
-p.BorderType = 'EtchedOut';
+p.BorderType = 'etchedout';
 assertEqual( get(p, 'BorderType'), 'etchedout' );
 
 
