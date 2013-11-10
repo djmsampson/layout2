@@ -1,53 +1,54 @@
 classdef BoxPanel < uix.Container
     
     properties( Dependent )
-        Title
-        BorderWidth
-        BorderType
-        FontAngle
-        FontName
-        FontSize
-        FontUnits
-        FontWeight
-        ForegroundColor
-        HighlightColor
-        ShadowColor
-        TitleColor
-        CloseRequestFcn
-        Docked
-        DockFcn
-        HelpFcn
-        Minimized
-        MinimizeFcn
+        Title % title
+        BorderWidth % border width [pixels]
+        BorderType % border type [none|line|beveledin|beveledout|etchedin|etchedout]
+        FontAngle % font angle [normal|italic|oblique]
+        FontName % font name
+        FontSize % font size
+        FontUnits % font units
+        FontWeight % font weight [normal|bold]
+        ForegroundColor % title text color [RGB]
+        HighlightColor % border highlight color [RGB]
+        ShadowColor % border shadow color [RGB]
+        TitleColor % title background color [RGB]
+        CloseRequestFcn % close request callback
+        Docked % docked [true|false]
+        DockFcn % dock callback
+        HelpFcn % help callback
+        Minimized % minimized [true|false]
+        MinimizeFcn % minimize callback
     end
     
     properties( Access = private )
-        LocationObserver
-        Titlebar
-        TopBorder
-        MiddleBorder
-        BottomBorder
-        LeftBorder
-        RightBorder
-        BorderWidth_ = 0
-        BorderType_ = 'none'
-        HighlightColor_ = [1 1 1]
-        ShadowColor_ = [0.7 0.7 0.7]
-        HelpButton
-        CloseButton
-        DockButton
-        MinimizeButton
-        Docked_ = true
-        Minimized_ = false
+        LocationObserver % location observer
+        Titlebar % titlebar
+        TopBorder % border image
+        MiddleBorder % border image
+        BottomBorder % border image
+        LeftBorder % border image
+        RightBorder % border image
+        BorderWidth_ = 0 % backing for BorderWidth
+        BorderType_ = 'none' % backing for BorderType
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        HelpButton % title button
+        CloseButton % title button
+        DockButton % title button
+        MinimizeButton % title button
+        Docked_ = true % backing for Docked
+        Minimized_ = false % backing for Minimized
     end
     
     properties( Access = private, Constant )
-        ButtonCData = uix.BoxPanel.getButtonCData()
+        ButtonCData = uix.BoxPanel.getButtonCData() % button image data
     end
     
     methods
         
         function obj = BoxPanel( varargin )
+            %uix.BoxPanel  Box panel
             
             % Call superclass constructor
             obj@uix.Container()
@@ -412,6 +413,11 @@ classdef BoxPanel < uix.Container
     methods( Access = protected )
         
         function redraw( obj )
+            %redraw  Redraw
+            %
+            %  p.redraw() redraws the panel.
+            %
+            %  See also: redrawBorders, redrawButtons
             
             % Compute positions
             location = obj.LocationObserver.Location;
@@ -504,6 +510,9 @@ classdef BoxPanel < uix.Container
     methods
         
         function redrawButtons( obj )
+            %redrawButtons  Redraw buttons
+            %
+            %  p.redrawButtons() redraws the titlebar buttons.
             
             % Get button positions
             titlebarPosition = obj.Titlebar.Position; % position
@@ -561,6 +570,9 @@ classdef BoxPanel < uix.Container
         end % redrawButtons
         
         function redrawBorders( obj )
+            %redrawBorders  Redraw borders
+            %
+            %  p.redrawBorders() redraws the panel borders.
             
             % Get borders
             topBorder = obj.TopBorder;
@@ -678,6 +690,10 @@ classdef BoxPanel < uix.Container
     methods( Access = private, Static )
         
         function cData = getButtonCData()
+            %getButtonCData  Get button image data
+            %
+            %  c = uix.BoxPanel.getButtonCData() returns the image data for
+            %  box panel titlebar buttons.
             
             cData.Close = uix.loadIcon( 'panelClose.png' );
             cData.Dock = uix.loadIcon( 'panelDock.png' );
@@ -686,7 +702,7 @@ classdef BoxPanel < uix.Container
             cData.Minimize = uix.loadIcon( 'panelMinimize.png' );
             cData.Maximize = uix.loadIcon( 'panelMaximize.png' );
             
-        end % getButtonCData            
+        end % getButtonCData
         
     end % static helper methods
     
