@@ -1,34 +1,39 @@
 classdef Image < hgsetget
     
-    properties
-        Label
-        Container
+    properties( Access = private )
+        Label % javax.swing.JLabel
+        Container % container peer
     end
     
     properties( Dependent )
-        Parent
-        Units
-        Position
-        HorizontalAlignment
-        VerticalAlignment
-        CData
+        Parent % parent
+        Units % units [inches|centimeters|characters|normalized|points|pixels]
+        Position % position
+        HorizontalAlignment % horizontal alignment [left|center|right]
+        VerticalAlignment % vertical alignment [top|middle|bottom]
+        CData % RGB image data
     end
     
     properties( Dependent, Hidden )
-        Internal
-        JData
+        Internal % internal
+        JData % Java integer image data
     end
     
     methods
         
         function obj = Image( varargin )
+            %uix.Image  Image constructor
             
+            % Create label and container
             label = javax.swing.JLabel();
-            container = hgjavacomponent( 'Parent', [], 'JavaPeer', label, 'DeleteFcn', @obj.onDelete );
+            container = hgjavacomponent( 'Parent', [], ...
+                'JavaPeer', label, 'DeleteFcn', @obj.onDelete );
             
+            % Store properties
             obj.Label = label;
             obj.Container = container;
             
+            % Set properties
             if nargin > 0
                 uix.pvchk( varargin )
                 set( obj, varargin{:} )
@@ -44,37 +49,37 @@ classdef Image < hgsetget
             
             value = obj.Container.Parent;
             
-        end
+        end % get.Parent
         
         function set.Parent( obj, value )
             
             obj.Container.Parent = value;
             
-        end
+        end % set.Parent
         
         function value = get.Units( obj )
             
             value = obj.Container.Units;
             
-        end
+        end % get.Units
         
         function set.Units( obj, value )
             
             obj.Container.Units = value;
             
-        end
+        end % set.Units
         
         function value = get.Position( obj )
             
             value = obj.Container.Position;
             
-        end
+        end % get.Position
         
         function set.Position( obj, value )
             
             obj.Container.Position = value;
             
-        end
+        end % set.Position
         
         function value = get.HorizontalAlignment( obj )
             
@@ -89,7 +94,7 @@ classdef Image < hgsetget
                     value = 'right';
             end
             
-        end
+        end % get.HorizontalAlignment
         
         function set.HorizontalAlignment( obj, value )
             
@@ -109,7 +114,7 @@ classdef Image < hgsetget
             end
             obj.Label.setHorizontalAlignment( alignment )
             
-        end
+        end % set.HorizontalAlignment
         
         function value = get.VerticalAlignment( obj )
             
@@ -122,7 +127,7 @@ classdef Image < hgsetget
                     value = 'bottom';
             end
             
-        end
+        end % get.VerticalAlignment
         
         function set.VerticalAlignment( obj, value )
             
@@ -142,7 +147,7 @@ classdef Image < hgsetget
             end
             obj.Label.setVerticalAlignment( alignment )
             
-        end
+        end % set.VerticalAlignment
         
         function value = get.CData( obj )
             
@@ -152,12 +157,15 @@ classdef Image < hgsetget
             vC = uix.Image.int2rgb( vI );
             value = reshape( vC, [size( mI ) 3] );
             
-        end
+        end % get.CData
         
         function set.CData( obj, value )
             
             % Check
-            
+            assert( isnumeric( value ) && ndims( value ) == 3 && ...
+                size( value, 3 ) == 3 && all( value >= 0 ) && ...
+                all( value <= 1 ), 'uix.InvalidPropertyValue', ...
+                'Property ''CData'' must be an m-by-n-by-3 matrix of values between 0 and 1.' )
             
             % Set
             if isempty( value )
@@ -173,7 +181,8 @@ classdef Image < hgsetget
                 imageIcon = javax.swing.ImageIcon( bufferedImage );
                 obj.Label.setIcon( imageIcon )
             end
-        end
+            
+        end % set.CData
         
         function value = get.JData( obj )
             
@@ -189,10 +198,16 @@ classdef Image < hgsetget
                 value = transpose( reshape( vI, [width height] ) );
             end
             
-        end
+        end % get.JData
         
         function set.JData( obj, value )
             
+            % Check
+            assert( isa( value, 'int32' ) && ndims( value ) == 2, ...
+                'uix.InvalidPropertyValue', ...
+                'Property ''JData'' must be a matrix of type int32.' ) %#ok<ISMAT>
+            
+            % Set
             if isempty( value )
                 obj.Label.setIcon( [] )
             else
@@ -205,23 +220,23 @@ classdef Image < hgsetget
                 obj.Label.setIcon( imageIcon )
             end
             
-        end
+        end % set.JData
         
         function value = get.Internal( obj )
             
             value = obj.Container.Internal;
             
-        end
+        end % get.Internal
         
         function set.Internal( obj, value )
             
             obj.Container.Internal = value;
             
-        end
+        end % set.Internal
         
     end % accessors
     
-    methods
+    methods( Access = private )
         
         function onDelete( obj, ~, ~ )
             
@@ -234,6 +249,7 @@ classdef Image < hgsetget
     methods( Static )
         
         function int = rgb2int( rgb )
+            %rgb2int  Convert RGB in [0,1] to Java color integer
             
             int = bitshift( int32( 255 ), 24 ) + ...
                 bitshift( int32( 255*rgb(:,1) ), 16 ) + ...
@@ -243,6 +259,7 @@ classdef Image < hgsetget
         end
         
         function rgb = int2rgb( int )
+            %int2rgb  Convert Java color integer to RGB in [0,1]
             
             int = int - bitshift( int32( 255 ), 24 );
             r = bitshift( int, -16 );
