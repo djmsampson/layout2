@@ -16,6 +16,7 @@ classdef BoxPanel < uix.Container
     end
     
     properties( Access = private )
+        LocationObserver
         Titlebar
         TopBorder
         MiddleBorder
@@ -35,6 +36,9 @@ classdef BoxPanel < uix.Container
             % Call superclass constructor
             obj@uix.Container()
             
+            % Create location observer
+            locationObserver = uix.LocationObserver( obj );
+            
             % Create title and borders
             titlebar = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
@@ -51,6 +55,7 @@ classdef BoxPanel < uix.Container
                 'Units', 'pixels' );
             
             % Store properties
+            obj.LocationObserver = locationObserver;
             obj.Titlebar = titlebar;
             obj.TopBorder = topBorder;
             obj.MiddleBorder = middleBorder;
@@ -246,8 +251,9 @@ classdef BoxPanel < uix.Container
         function redraw( obj )
             
             % Compute positions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                [0 0 1 1], 'normalized', 'pixels', obj );
+            location = obj.LocationObserver.Location;
+            width = ceil( location(1) + location(3) ) - floor( location(1) );
+            height = ceil( location(2) + location(4) ) - floor( location(2) );
             titleHeight = obj.Titlebar.Extent(4);
             switch obj.BorderType_
                 case 'none'
@@ -258,9 +264,9 @@ classdef BoxPanel < uix.Container
                     borderSize = obj.BorderWidth_ * 2;
             end
             padding = obj.Padding_;
-            xSizes = max( [round( bounds(3) ) - 2 * borderSize, ...
+            xSizes = max( [width - 2 * borderSize, ...
                 1 + 2 * padding] );
-            ySizes = [titleHeight; max( [round( bounds(4) ) - ...
+            ySizes = [titleHeight; max( [height - ...
                 3 * borderSize - titleHeight, 1 + 2 * padding] )];
             titlePosition = [1 + borderSize, 1 + 2 * borderSize + ySizes(2), ...
                 xSizes, ySizes(1)];
@@ -309,6 +315,21 @@ classdef BoxPanel < uix.Container
             end
             
         end % redraw
+        
+        function reparent( obj, oldAncestors, newAncestors )
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the ancestors
+            %  a to the ancestors b.
+            
+            % Refresh location observer
+            locationObserver = uix.LocationObserver( [newAncestors; obj] );
+            obj.LocationObserver = locationObserver;
+            
+            % Call superclass method
+            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            
+        end % reparent
         
     end % template methods
     
@@ -376,7 +397,7 @@ classdef BoxPanel < uix.Container
                         true( [rightPosition(4), rightPosition(3)/2] )];
                     rightMask(end-rightPosition(3)/2+1:end,:) = true;
                     rightMask(rightPosition(3)/2+1:rightPosition(3),1:rightPosition(3)/2) = ...
-                        fliplr( tril( ones( rightPosition(3)/2 ) ) == 0 );                    
+                        fliplr( tril( ones( rightPosition(3)/2 ) ) == 0 );
                     rightMask(1:rightPosition(3)/2,rightPosition(3)/2+1:end) = ...
                         fliplr( tril( ones( rightPosition(3)/2 ) ) == 1 );
                 case 'etchedout'
@@ -397,36 +418,33 @@ classdef BoxPanel < uix.Container
                         false( [rightPosition(4), rightPosition(3)/2] )];
                     rightMask(end-rightPosition(3)/2+1:end,:) = false;
                     rightMask(rightPosition(3)/2+1:rightPosition(3),1:rightPosition(3)/2) = ...
-                        fliplr( tril( ones( rightPosition(3)/2 ) ) == 1 );                    
+                        fliplr( tril( ones( rightPosition(3)/2 ) ) == 1 );
                     rightMask(1:rightPosition(3)/2,rightPosition(3)/2+1:end) = ...
                         fliplr( tril( ones( rightPosition(3)/2 ) ) == 0 );
             end
             
             % Convert masks to color data
-            highlightColor = obj.HighlightColor_;
-            shadowColor = obj.ShadowColor_;
-            topCData = mask2cdata( topMask, highlightColor, shadowColor );
-            middleCData = mask2cdata( middleMask, highlightColor, shadowColor );
-            bottomCData = mask2cdata( bottomMask, highlightColor, shadowColor );
-            leftCData = mask2cdata( leftMask, highlightColor, shadowColor );
-            rightCData = mask2cdata( rightMask, highlightColor, shadowColor );
+            highlightColor = uix.Image.rgb2int( obj.HighlightColor_ );
+            shadowColor = uix.Image.rgb2int( obj.ShadowColor_ );
+            topJData = mask2jdata( topMask, highlightColor, shadowColor );
+            middleJData = mask2jdata( middleMask, highlightColor, shadowColor );
+            bottomJData = mask2jdata( bottomMask, highlightColor, shadowColor );
+            leftJData = mask2jdata( leftMask, highlightColor, shadowColor );
+            rightJData = mask2jdata( rightMask, highlightColor, shadowColor );
             
             % Paint borders
-            topBorder.CData = topCData;
-            middleBorder.CData = middleCData;
-            bottomBorder.CData = bottomCData;
-            leftBorder.CData = leftCData;
-            rightBorder.CData = rightCData;
+            topBorder.JData = topJData;
+            middleBorder.JData = middleJData;
+            bottomBorder.JData = bottomJData;
+            leftBorder.JData = leftJData;
+            rightBorder.JData = rightJData;
             
-            function c = mask2cdata( m, h, s )
+            function c = mask2jdata( m, h, s )
                 
-                hh = repmat( permute( h, [3 1 2] ), size( m ) );
-                ss = repmat( permute( s, [3 1 2] ), size( m ) );
-                mm = repmat( m, [1 1 3] );
-                c = ss;
-                c(mm) = hh(mm);
+                c = repmat( s, size( m ) );
+                c(m) = h;
                 
-            end % foobar
+            end % mask2jdata
             
         end % redrawBorders
         
