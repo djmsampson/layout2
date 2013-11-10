@@ -1,4 +1,4 @@
-classdef Panel < matlab.ui.container.Panel
+classdef Panel < uix.Panel
     %uiextras.Panel  Show one element inside a panel
     %
     %   obj = uiextras.Panel() creates a standard UIPANEL object but with
@@ -41,10 +41,10 @@ classdef Panel < matlab.ui.container.Panel
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'uiextras.Panel will be removed in a future release.  Please use matlab.ui.container.Panel instead.' )
+                'uiextras.Panel will be removed in a future release.  Please use uix.Panel instead.' )
             
             % Do
-            obj@matlab.ui.container.Panel( varargin{:} )
+            obj@uix.Panel( varargin{:} )
             
         end % constructor
         

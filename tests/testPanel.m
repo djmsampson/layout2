@@ -54,7 +54,7 @@ function testChildren()
 %testChildren  Test adding and removing children
 close all force;
 
-h = uiextras.Panel( 'Title', 'A panel' );
+h = uiextras.Panel( 'Parent', gcf(), 'Title', 'A panel' );
 assertEqual( isa( h, 'uiextras.Panel' ), true );
 
 u = [
@@ -62,20 +62,20 @@ u = [
     uicontrol( 'Parent', h, 'BackgroundColor', 'g' )
     uicontrol( 'Parent', h, 'BackgroundColor', 'b' )
     ];
-assertEqual( h.Children, u );
+assertEqual( h.Contents, u );
 
 delete( u(2) )
-assertEqual( h.Children, u([1,3]) );
+assertEqual( h.Contents, u([1,3]) );
 
 h.SelectedChild = 1;
 
-% Make sure the "selected" child is on-screen
-pos = get( u(1), 'Position' );
-assertEqual( all( pos(1:2) < [10 10] ), true );
+% Make sure the "selected" child is visible
+vis = get( u(3), 'Visible' );
+assertEqual( vis, 'on' );
 
-% Make sure the "hidden" child is off-screen
-pos = get( u(3), 'Position' );
-assertEqual( all( pos(1:2) > 2000 ), true );
+% Make sure the "hidden" child is invisible
+vis = get( u(1), 'Visible' );
+assertEqual( vis, 'off' );
 
 close all force;
 
