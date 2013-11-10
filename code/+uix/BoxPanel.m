@@ -13,6 +13,14 @@ classdef BoxPanel < uix.Container
         HighlightColor
         ShadowColor
         TitleColor
+        
+        CloseRequestFcn
+        Docked
+        DockFcn
+        HelpFcn
+        Minimized
+        MinimizeFcn
+        
     end
     
     properties( Access = private )
@@ -27,6 +35,16 @@ classdef BoxPanel < uix.Container
         BorderType_ = 'none'
         HighlightColor_ = [1 1 1]
         ShadowColor_ = [0.7 0.7 0.7]
+        HelpButton
+        CloseButton
+        DockButton
+        MinimizeButton
+        Docked_ = true
+        Minimized_ = false
+    end
+    
+    properties( Access = private, Constant )
+        ButtonCData = uix.BoxPanel.getButtonCData()
     end
     
     methods
@@ -54,6 +72,25 @@ classdef BoxPanel < uix.Container
             rightBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels' );
             
+            % Create buttons
+            cData = obj.ButtonCData;
+            closeButton = matlab.ui.control.StyleControl( ...
+                'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
+                'CData', cData.Close, 'Visible', 'off', ...
+                'TooltipString', 'Close this panel' );
+            dockButton = matlab.ui.control.StyleControl( ...
+                'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
+                'CData', cData.Undock, 'Visible', 'off', ...
+                'TooltipString', 'Undock this panel' );
+            helpButton = matlab.ui.control.StyleControl( ...
+                'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
+                'CData', cData.Help, 'Visible', 'off', ...
+                'TooltipString', 'Get help on this panel' );
+            minimizeButton = matlab.ui.control.StyleControl( ...
+                'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
+                'CData', cData.Minimize, 'Visible', 'off', ...
+                'TooltipString', 'Minimize this panel' );
+            
             % Store properties
             obj.LocationObserver = locationObserver;
             obj.Titlebar = titlebar;
@@ -62,6 +99,10 @@ classdef BoxPanel < uix.Container
             obj.BottomBorder = bottomBorder;
             obj.LeftBorder = leftBorder;
             obj.RightBorder = rightBorder;
+            obj.HelpButton = helpButton;
+            obj.CloseButton = closeButton;
+            obj.DockButton = dockButton;
+            obj.MinimizeButton = minimizeButton;
             
             % Set properties
             if nargin > 0
@@ -244,6 +285,126 @@ classdef BoxPanel < uix.Container
             
         end % set.TitleColor
         
+        function value = get.CloseRequestFcn( obj )
+            
+            value = obj.CloseButton.Callback;
+            
+        end % get.CloseRequestFcn
+        
+        function set.CloseRequestFcn( obj, value )
+            
+            % Set
+            obj.CloseButton.Callback = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.CloseRequestFcn
+        
+        function value = get.DockFcn( obj )
+            
+            value = obj.DockButton.Callback;
+            
+        end % get.DockFcn
+        
+        function set.DockFcn( obj, value )
+            
+            % Set
+            obj.DockButton.Callback = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.DockFcn
+        
+        function value = get.HelpFcn( obj )
+            
+            value = obj.HelpButton.Callback;
+            
+        end % get.HelpFcn
+        
+        function set.HelpFcn( obj, value )
+            
+            % Set
+            obj.HelpButton.Callback = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.HelpFcn
+        
+        function value = get.MinimizeFcn( obj )
+            
+            value = obj.MinimizeButton.Callback;
+            
+        end % get.MinimizeFcn
+        
+        function set.MinimizeFcn( obj, value )
+            
+            % Set
+            obj.MinimizeButton.Callback = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.MinimizeFcn
+        
+        function value = get.Docked( obj )
+            
+            value = obj.Docked_;
+            
+        end % get.Docked
+        
+        function set.Docked( obj, value )
+            
+            % Check
+            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''Docked'' must be true or false.' )
+            
+            % Set
+            obj.Docked_ = value;
+            
+            % Update button
+            dockButton = obj.DockButton;
+            if value
+                dockButton.CData = obj.ButtonCData.Undock;
+                dockButton.TooltipString = 'Undock this panel';
+            else
+                dockButton.CData = obj.ButtonCData.Dock;
+                dockButton.TooltipString = 'Dock this panel';
+            end
+            
+        end % set.Docked
+        
+        function value = get.Minimized( obj )
+            
+            value = obj.Minimized_;
+            
+        end % get.Minimized
+        
+        function set.Minimized( obj, value )
+            
+            % Check
+            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''Minimized'' must be true or false.' )
+            
+            % Set
+            obj.Minimized_ = value;
+            
+            % Update button
+            minimizeButton = obj.MinimizeButton;
+            if value
+                minimizeButton.CData = obj.ButtonCData.Maximize;
+                minimizeButton.TooltipString = 'Maximize this panel';
+            else
+                minimizeButton.CData = obj.ButtonCData.Minimize;
+                minimizeButton.TooltipString = 'Minimize this panel';
+            end
+            
+        end % set.Minimized
+        
     end % accessors
     
     methods( Access = protected )
@@ -291,6 +452,7 @@ classdef BoxPanel < uix.Container
             obj.LeftBorder.Position = leftPosition;
             obj.RightBorder.Position = rightPosition;
             obj.redrawBorders()
+            obj.redrawButtons()
             
             % Set positions and visibility
             children = obj.Contents_;
@@ -334,6 +496,64 @@ classdef BoxPanel < uix.Container
     end % template methods
     
     methods
+        
+        function redrawButtons( obj )
+            
+            return % TODO
+            
+            panelPosition = [1, bounds(4) - titleHeight - 3, ...
+                bounds(3), titleHeight + 4];
+            buttonHeight = 9;
+            buttonWidth = 10;
+            buttonX = bounds(3) - buttonWidth - 4;
+            buttonY = bounds(4) - titleHeight / 2 - buttonHeight / 2 - 1;
+            closeButtonEnabled = ~isempty( obj.CloseRequestFcn );
+            if closeButtonEnabled
+                closePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            dockButtonEnabled = ~isempty( obj.DockFcn );
+            if dockButtonEnabled
+                dockPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            minimizeButtonEnabled = ~isempty( obj.MinimizeFcn );
+            if minimizeButtonEnabled
+                minimizePosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+                buttonX = buttonX - buttonWidth - 4;
+            end
+            helpButtonEnabled = ~isempty( obj.HelpFcn );
+            if helpButtonEnabled
+                helpPosition = [buttonX, buttonY, buttonWidth, buttonHeight];
+            end
+            
+            % Set positions of visibility of buttons
+            if closeButtonEnabled
+                obj.CloseButton.Position = closePosition;
+                obj.CloseButton.Visible = 'on';
+            else
+                obj.CloseButton.Visible = 'off';
+            end
+            if dockButtonEnabled
+                obj.DockButton.Position = dockPosition;
+                obj.DockButton.Visible = 'on';
+            else
+                obj.DockButton.Visible = 'off';
+            end
+            if minimizeButtonEnabled
+                obj.MinimizeButton.Position = minimizePosition;
+                obj.MinimizeButton.Visible = 'on';
+            else
+                obj.MinimizeButton.Visible = 'off';
+            end
+            if helpButtonEnabled
+                obj.HelpButton.Position = helpPosition;
+                obj.HelpButton.Visible = 'on';
+            else
+                obj.HelpButton.Visible = 'off';
+            end
+            
+        end % redrawButtons
         
         function redrawBorders( obj )
             
@@ -449,5 +669,20 @@ classdef BoxPanel < uix.Container
         end % redrawBorders
         
     end % helper methods
+    
+    methods( Access = private, Static )
+        
+        function cData = getButtonCData()
+            
+            cData.Close = uix.loadIcon( 'panelClose.png' );
+            cData.Dock = uix.loadIcon( 'panelDock.png' );
+            cData.Undock = uix.loadIcon( 'panelUndock.png' );
+            cData.Help = uix.loadIcon( 'panelHelp.png' );
+            cData.Minimize = uix.loadIcon( 'panelMinimize.png' );
+            cData.Maximize = uix.loadIcon( 'panelMaximize.png' );
+            
+        end % getButtonCData            
+        
+    end % static helper methods
     
 end % classdef
