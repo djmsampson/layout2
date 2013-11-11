@@ -274,6 +274,9 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
         
         function onWindowStyleChange( obj, ~, eventData )
             
+            % Flush event queue
+            drawnow( 'expose' )
+            
             % Update
             obj.update( eventData.AffectedObject )
             
