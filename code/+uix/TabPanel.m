@@ -166,23 +166,23 @@ classdef TabPanel < uix.Container
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj ); % TODO
             location = bounds;
-            w = ceil( location(1) + location(3) ) - floor( location(1) );
-            h = ceil( location(2) + location(4) ) - floor( location(2) );
-            p = obj.Padding_;
+            w = ceil( location(1) + location(3) ) - floor( location(1) ); % width
+            h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
+            p = obj.Padding_; % padding
             tabs = obj.Tabs;
-            tH = obj.TabHeight_;
-            cH = max( [h - 2 * p - tH, 1] );
+            tH = obj.TabHeight_; % tab height
+            cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabLocation_
                 case 'top'
-                    cY = 1 + p;
-                    tY = cY + cH + 1;
+                    cY = 1 + p; % contents y
+                    tY = cY + cH + 1; % tab y
                 case 'bottom'
-                    tY = 1 + p;
-                    cY = tY + tH + 1;
+                    tY = 1 + p; % tab y
+                    cY = tY + tH + 1; % contents y
             end
-            cX = 1 + p;
-            cW = max( [w - 2 * p, 1] );
-            tW = obj.TabWidth_;
+            cX = 1 + p; % contents x
+            cW = max( [w - 2 * p, 1] ); % contents width
+            tW = obj.TabWidth_; % tab width
             for ii = 1:numel( tabs )
                 tab = tabs(ii);
                 tabPosition = [1 + (ii-1) * tW, tY, tW, tH];
