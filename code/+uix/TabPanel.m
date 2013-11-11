@@ -8,6 +8,7 @@ classdef TabPanel < uix.Container
     end
     
     properties( Access = protected )
+        LocationObserver % location observer
         Selection_ = 0 % backing for Selection
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
@@ -22,6 +23,12 @@ classdef TabPanel < uix.Container
             
             % Call superclass constructor
             obj@uix.Container()
+            
+            % Create location observer
+            locationObserver = uix.LocationObserver( obj );
+            
+            % Store properties
+            obj.LocationObserver = locationObserver;
             
             % Set properties
             if nargin > 0
@@ -163,9 +170,7 @@ classdef TabPanel < uix.Container
         function redraw( obj )
             
             % Compute positions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                [0 0 1 1], 'normalized', 'pixels', obj ); % TODO
-            location = bounds;
+            location = obj.LocationObserver.Location;
             w = ceil( location(1) + location(3) ) - floor( location(1) ); % width
             h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
             p = obj.Padding_; % padding
@@ -189,6 +194,9 @@ classdef TabPanel < uix.Container
                 tab.Position = tabPosition;
             end
             contentsPosition = [cX cY cW cH];
+            
+            % Redraw tabs
+            obj.redrawTabs()
             
             % Redraw contents
             children = obj.Contents_;
@@ -227,15 +235,13 @@ classdef TabPanel < uix.Container
             
             % Select new content
             if obj.Selection_ == 0
-                obj.Selection_ = n + 1;
+                obj.Selection_ = n+1;
             end
             
             % Update tab height
-            if n > 0
-                cTabExtents = get( obj.Tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
-            end
+            cTabExtents = get( obj.Tabs, {'Extent'} );
+            tabExtents = vertcat( cTabExtents{:} );
+            obj.TabHeight_ = max( tabExtents(:,4) );
             
             % Call superclass method
             addChild@uix.Container( obj, child )
@@ -253,15 +259,18 @@ classdef TabPanel < uix.Container
             obj.Tabs(index,:) = [];
             obj.TabListeners(index,:) = [];
             
-            % Adjust selection if required
-            selection = obj.Selection_;
-            n = numel( contents );
-            if index == 1 && selection == 1 && n > 1
-                % retain selection
-            elseif index <= selection
-                obj.Selection_ = selection - 1;
+            % Adjust selection
+            oldSelection = obj.Selection_;
+            enable = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
+            preSelection = find( enable(1:oldSelection-1), 1, 'last' );
+            postSelection = oldSelection - 1 + ...
+                find( enable(oldSelection:end), 1, 'first' );
+            if ~isempty( postSelection )
+                obj.Selection_ = postSelection;
+            elseif ~isempty( preSelection )
+                obj.Selection_ = preSelection;
             else
-                % retain selection
+                obj.Selection_ = 0;
             end
             
             % Call superclass method
@@ -288,9 +297,37 @@ classdef TabPanel < uix.Container
             
         end % reorder
         
+        function reparent( obj, oldAncestors, newAncestors )
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the ancestors
+            %  a to the ancestors b.
+            
+            % Refresh location observer
+            locationObserver = uix.LocationObserver( [newAncestors; obj] );
+            obj.LocationObserver = locationObserver;
+            
+            % Call superclass method
+            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            
+        end % reparent
+        
     end % template methods
     
-    methods
+    methods( Access = private )
+        
+        function redrawTabs( ~ )
+            %redrawTabs  Redraw tabs
+            %
+            %  p.redrawTabs() redraws the tabs.
+            
+            % TODO
+            
+        end % redrawTabs
+        
+    end % helper methods
+    
+    methods( Access = private )
         
         function onTabClick( obj, source, ~ )
             
