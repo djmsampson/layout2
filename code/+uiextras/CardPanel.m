@@ -51,7 +51,7 @@ classdef CardPanel < uix.CardPanel
         function value = get.SelectedChild( obj )
             
             % Warn
-            warning( 'uix:Deprecated', ...
+            warning( 'uiextras:Deprecated', ...
                 'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
             
             % Get

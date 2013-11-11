@@ -58,7 +58,7 @@ classdef HBox < uix.HBox
         function value = get.Sizes( obj )
             
             % Warn
-            warning( 'uix:Deprecated', ...
+            warning( 'uiextras:Deprecated', ...
                 'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get

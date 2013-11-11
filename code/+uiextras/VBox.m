@@ -58,7 +58,7 @@ classdef VBox < uix.VBox
         function value = get.Sizes( obj )
             
             % Warn
-            warning( 'uix:Deprecated', ...
+            warning( 'uiextras:Deprecated', ...
                 'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Get

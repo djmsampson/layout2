@@ -57,7 +57,7 @@ classdef Grid < uix.Grid
         function value = get.RowSizes( obj )
             
             % Warn
-            warning( 'uix:Deprecated', ...
+            warning( 'uiextras:Deprecated', ...
                 'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Get
