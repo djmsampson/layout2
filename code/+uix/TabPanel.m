@@ -66,6 +66,8 @@ classdef TabPanel < uix.Container
             else
                 assert( value >= 1 && value <= n, 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of children.' )
+                assert( strcmp( obj.Tabs(value).Enable, 'inactive' ), ...
+                    'uix:InvalidPropertyValue', 'Cannot select a disabled tab.' )
             end
             
             % Set
@@ -233,7 +235,7 @@ classdef TabPanel < uix.Container
             obj.Tabs(n+1,:) = tab;
             obj.TabListeners(n+1,:) = tabListener;
             
-            % Select new content
+            % If nothing was selected, select the new content
             if obj.Selection_ == 0
                 obj.Selection_ = n+1;
             end
