@@ -532,7 +532,7 @@ classdef BoxPanel < uix.Container
         
     end % template methods
     
-    methods
+    methods( Access = private )
         
         function redrawButtons( obj )
             %redrawButtons  Redraw buttons
