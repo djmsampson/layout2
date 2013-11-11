@@ -127,7 +127,7 @@ classdef CardPanel < uix.Container
             % Call superclass method
             removeChild@uix.Container( obj, child )
             
-        end % onChildRemoved
+        end % removeChild
         
         function reorder( obj, indices )
             %reorder  Reorder contents

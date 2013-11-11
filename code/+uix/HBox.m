@@ -139,7 +139,7 @@ classdef HBox < uix.Box
             % Call superclass method
             removeChild@uix.Box( obj, child )
             
-        end % onChildRemoved
+        end % removeChild
         
         function reorder( obj, indices )
             %reorder  Reorder contents

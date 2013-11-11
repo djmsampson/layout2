@@ -271,7 +271,7 @@ classdef Grid < uix.Box
             % Call superclass method
             removeChild@uix.Box( obj, child )
             
-        end % onChildRemoved
+        end % removeChild
         
     end % template methods
     

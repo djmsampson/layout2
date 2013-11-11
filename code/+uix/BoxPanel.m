@@ -491,7 +491,7 @@ classdef BoxPanel < uix.Container
             % Redraw buttons
             obj.redrawButtons()
             
-            % Set positions and visibility
+            % Redraw contents
             children = obj.Contents_;
             selection = numel( children );
             for ii = 1:numel( children )
