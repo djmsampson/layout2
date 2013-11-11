@@ -248,7 +248,7 @@ classdef TabPanel < uix.Container
             
         end % addChild
         
-        function removeChild( obj, child ) % TODO
+        function removeChild( obj, child )
             
             % Find index of removed child
             contents = obj.Contents_;
@@ -261,16 +261,28 @@ classdef TabPanel < uix.Container
             
             % Adjust selection
             oldSelection = obj.Selection_;
-            enable = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
-            preSelection = find( enable(1:oldSelection-1), 1, 'last' );
-            postSelection = oldSelection - 1 + ...
-                find( enable(oldSelection:end), 1, 'first' );
-            if ~isempty( postSelection )
-                obj.Selection_ = postSelection;
-            elseif ~isempty( preSelection )
-                obj.Selection_ = preSelection;
+            if oldSelection < index
+                % When a tab to the right of the selected tab is removed,
+                % the previous selection remains valid
+            elseif oldSelection > index
+                % When a tab to the left of the selected tab is removed,
+                % decrement the selection by 1
+                obj.Selection_ = oldSelection - 1;
             else
-                obj.Selection_ = 0;
+                % When the selected tab is removed, select the first
+                % enabled tab to the right, or failing that, the last
+                % enabled tab to the left, or failing that, nothing
+                enable = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
+                preSelection = find( enable(1:oldSelection-1), 1, 'last' );
+                postSelection = oldSelection - 1 + ...
+                    find( enable(oldSelection:end), 1, 'first' );
+                if ~isempty( postSelection )
+                    obj.Selection_ = postSelection;
+                elseif ~isempty( preSelection )
+                    obj.Selection_ = preSelection;
+                else
+                    obj.Selection_ = 0;
+                end
             end
             
             % Call superclass method
