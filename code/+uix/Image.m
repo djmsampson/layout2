@@ -9,6 +9,7 @@ classdef Image < hgsetget
         Parent % parent
         Units % units [inches|centimeters|characters|normalized|points|pixels]
         Position % position
+        Visible % visible [on|off]
         HorizontalAlignment % horizontal alignment [left|center|right]
         VerticalAlignment % vertical alignment [top|middle|bottom]
         CData % RGB image data
@@ -23,6 +24,11 @@ classdef Image < hgsetget
         
         function obj = Image( varargin )
             %uix.Image  Image constructor
+            %
+            %  im = uix.Image() constructs an image.
+            %
+            %  im = uix.Image(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Create label and container
             label = javax.swing.JLabel();
@@ -80,6 +86,18 @@ classdef Image < hgsetget
             obj.Container.Position = value;
             
         end % set.Position
+        
+        function value = get.Visible( obj )
+            
+            value = obj.Container.Visible;
+            
+        end % get.Visible
+        
+        function set.Visible( obj, value )
+            
+            obj.Container.Visible = value;
+            
+        end % set.Visible
         
         function value = get.HorizontalAlignment( obj )
             
@@ -256,7 +274,7 @@ classdef Image < hgsetget
                 bitshift( int32( 255*rgb(:,2) ), 8 ) + ...
                 bitshift( int32( 255*rgb(:,3) ), 0 );
             
-        end
+        end % rgb2int
         
         function rgb = int2rgb( int )
             %int2rgb  Convert Java color integer to RGB in [0,1]
@@ -267,7 +285,7 @@ classdef Image < hgsetget
             b = int - bitshift( r, 16 ) - bitshift( g, 8 );
             rgb = double( [r g b] ) / 255;
             
-        end
+        end % int2rgb
         
     end % static methods
     
