@@ -864,8 +864,9 @@ classdef TabPanel < uix.Container
         function mask = getDividerMask()
             %getDividerMask  Get divider image data
             %
-            %  m = uix.BoxPanel.getDividerMask() returns the image mask
-            %  for tab panel dividers.
+            %  m = uix.BoxPanel.getDividerMask() returns the image masks
+            %  for tab panel dividers.  Mask entries are 0 (shadow), 1
+            %  (background), 2 (tint) and 3 (highlight).
             
             mask.EF = sum( uix.loadIcon( 'tab_NoEdge_NotSelected.png' ), 3 );
             mask.ET = sum( uix.loadIcon( 'tab_NoEdge_Selected.png' ), 3 );
