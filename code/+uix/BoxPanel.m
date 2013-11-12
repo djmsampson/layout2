@@ -435,6 +435,9 @@ classdef BoxPanel < uix.Container
                 minimizeButton.TooltipString = 'Minimize this panel';
             end
             
+            % Mark as dirty
+            obj.Dirty = true;
+            
         end % set.Minimized
         
     end % accessors
@@ -457,6 +460,7 @@ classdef BoxPanel < uix.Container
                 titleHeight = obj.Titlebar.Extent(4);
                 obj.TitleHeight = titleHeight; % store
             end
+            minimized = obj.Minimized_;
             switch obj.BorderType_
                 case 'none'
                     borderSize = 0;
@@ -504,7 +508,7 @@ classdef BoxPanel < uix.Container
             selection = numel( children );
             for ii = 1:numel( children )
                 child = children(ii);
-                if ii == selection
+                if ii == selection && ~minimized
                     child.Visible = 'on';
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
