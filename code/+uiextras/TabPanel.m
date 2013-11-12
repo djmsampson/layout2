@@ -25,13 +25,20 @@ classdef TabPanel < uix.TabPanel
     %   $Revision: 373 $
     %   $Date: 2011-07-14 13:24:10 +0100 (Thu, 14 Jul 2011) $
     
+    properties( Hidden, Access = public )
+        Callback = '' % deprecated
+    end
+    
     properties( Hidden, Access = public, Dependent )
-        Callback % deprecated
         SelectedChild % deprecated
         TabEnable % deprecated
         TabNames % deprecated
         TabPosition % deprecated
         TabSize % deprecated
+    end
+    
+    properties( Access = private )
+        SelectionChangeListener % listener
     end
     
     methods
@@ -44,6 +51,13 @@ classdef TabPanel < uix.TabPanel
             
             % Do
             obj@uix.TabPanel( varargin{:} )
+            
+            % Create observers and listeners
+            selectionChangeListener = event.listener( obj, ...
+                'SelectionChange', @obj.onSelectionChange );
+            
+            % Store properties
+            obj.SelectionChangeListener = selectionChangeListener;
             
         end % constructor
         
@@ -58,7 +72,7 @@ classdef TabPanel < uix.TabPanel
                 'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
             
             % Get
-            value = obj.SelectionChangeCallback;
+            value = obj.Callback;
             
         end % get.Callback
         
@@ -68,8 +82,24 @@ classdef TabPanel < uix.TabPanel
             warning( 'uiextras:Deprecated', ...
                 'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
             
+            % Check
+            if ischar( value ) % string
+                % OK
+            elseif isa( value, 'function_handle' ) && ...
+                    isequal( size( value ), [1 1] ) % function handle
+                % OK
+            elseif iscell( value ) && ndims( value ) == 2 && ...
+                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
+                    isa( value{1}, 'function_handle' ) && ...
+                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                % OK
+            else
+                error( 'uiextras:InvalidPropertyValue', ...
+                    'Property ''Callback'' must be a valid callback.' )
+            end
+            
             % Set
-            obj.SelectionChangeCallback = value;
+            obj.Callback = value;
             
         end % set.Callback
         
@@ -184,5 +214,55 @@ classdef TabPanel < uix.TabPanel
         end % set.TabSize
         
     end % accessors
+    
+    methods( Access = private )
+        
+        function redrawTabs( obj )
+            %redrawTabs  Redraw tabs
+            %
+            %  p.redrawTabs() redraws the tabs.
+            
+            selection = obj.Selection_;
+            tabs = obj.Tabs;
+            backgroundColor = obj.BackgroundColor;
+            for ii = 1:numel( tabs )
+                tab = tabs(ii);
+                if ii == selection
+                    tab.BackgroundColor = backgroundColor;
+                else
+                    tab.BackgroundColor = 0.9 * backgroundColor;
+                end
+            end
+            
+            % TODO
+            
+        end % redrawTabs
+        
+    end % helper methods
+    
+    methods( Access = private )
+        
+        function onSelectionChange( obj, source, eventData )
+            
+            % Create legacy event data structure
+            oldEventData = struct( 'Source', eventData.Source, ...
+                'PreviousChild', eventData.OldValue, ...
+                'SelectedChild', eventData.NewValue );
+            
+            % Call callback
+            callback = obj.Callback;
+            if ischar( callback ) && isequal( callback, '' )
+                % do nothing
+            elseif ischar( callback )
+                feval( callback, source, oldEventData )
+            elseif isa( callback, 'function_handle' )
+                callback( source, oldEventData )
+            elseif iscell( callback )
+                feval( callback{1}, source, oldEventData, callback{2:end} )
+            end
+            
+        end % onSelectionChange
+        
+    end % event handlers
     
 end % classdef
