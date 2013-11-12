@@ -305,17 +305,18 @@ classdef TabPanel < uix.Container
                 % When the selected tab is removed, select the first
                 % enabled tab to the right, or failing that, the last
                 % enabled tab to the left, or failing that, nothing
-                enable = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
-                preSelection = find( enable(1:oldSelection-1), 1, 'last' );
+                tf = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
+                preSelection = find( tf(1:oldSelection-1), 1, 'last' );
                 postSelection = oldSelection - 1 + ...
-                    find( enable(oldSelection:end), 1, 'first' );
+                    find( tf(oldSelection:end), 1, 'first' );
                 if ~isempty( postSelection )
-                    obj.Selection_ = postSelection;
+                    newSelection = postSelection;
                 elseif ~isempty( preSelection )
-                    obj.Selection_ = preSelection;
+                    newSelection = preSelection;
                 else
-                    obj.Selection_ = 0;
+                    newSelection = 0;
                 end
+                obj.Selection_ = newSelection;
             end
             
             % Call superclass method
