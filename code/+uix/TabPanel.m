@@ -1,6 +1,7 @@
 classdef TabPanel < uix.Container
     
     properties( Access = public, Dependent, AbortSet )
+        FontName % font name
         FontSize % font size
         Selection % selected contents
         TabEnable % tab enable states
@@ -9,7 +10,8 @@ classdef TabPanel < uix.Container
         TabWidth % tab width
     end
     
-    properties( Access = protected )
+    properties( Access = private )
+        FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
         LocationObserver % location observer
         Selection_ = 0 % backing for Selection
@@ -18,6 +20,10 @@ classdef TabPanel < uix.Container
         TabLocation_ = 'top' % backing for TabPosition
         TabHeight_ = 0 % cache of tab height
         TabWidth_ = 50 % backing for TabWidth
+    end
+    
+    properties( Access = private, Constant )
+        FontNames = listfonts() % all available font names
     end
     
     methods
@@ -44,6 +50,42 @@ classdef TabPanel < uix.Container
     end % structors
     
     methods
+        
+        function value = get.FontName( obj )
+            
+            value = obj.FontName_;
+            
+        end % get.FontName
+        
+        function set.FontName( obj, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, obj.FontNames ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontName'' must be a valid font name.' )
+            
+            % Set
+            obj.FontName_ = value;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.FontName = value;
+            end
+            
+            % Update tab height
+            if n ~= 0
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                obj.TabHeight_ = max( tabExtents(:,4) );
+            end
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontName
         
         function value = get.FontSize( obj )
             
@@ -324,7 +366,8 @@ classdef TabPanel < uix.Container
             % Create new tab
             tab = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
-                'Units', 'pixels', 'FontSize', obj.FontSize_ );
+                'Units', 'pixels', 'FontName', obj.FontName_, ...
+                'FontSize', obj.FontSize_ );
             tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClick );
             n = numel( obj.Tabs );
             obj.Tabs(n+1,:) = tab;
