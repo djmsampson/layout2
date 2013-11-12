@@ -592,10 +592,10 @@ classdef TabPanel < uix.Container
             switch obj.TabLocation_
                 case 'top'
                     cY = 1 + p; % contents y
-                    tY = cY + cH + 1; % tab y
+                    tY = cY + cH + p; % tab y
                 case 'bottom'
                     tY = 1; % tab y
-                    cY = tY + tH + p + 1; % contents y
+                    cY = tY + tH + p; % contents y
             end
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
