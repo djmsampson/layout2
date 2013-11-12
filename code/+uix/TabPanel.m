@@ -10,6 +10,13 @@ classdef TabPanel < uix.Container
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         Selection % selected contents
+    end
+    
+    properties
+        SelectionChangeCallback = '' % selection change callback
+    end
+    
+    properties( Access = public, Dependent, AbortSet )
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom]
         TabTitles % tab titles
@@ -37,6 +44,10 @@ classdef TabPanel < uix.Container
     
     properties( Access = private, Constant )
         FontNames = listfonts() % all available font names
+    end
+    
+    events( NotifyAccess = private )
+        SelectionChange
     end
     
     methods

@@ -26,6 +26,7 @@ classdef TabPanel < uix.TabPanel
     %   $Date: 2011-07-14 13:24:10 +0100 (Thu, 14 Jul 2011) $
     
     properties( Hidden, Access = public, Dependent )
+        Callback % deprecated
         SelectedChild % deprecated
         TabEnable % deprecated
         TabNames % deprecated
@@ -49,6 +50,28 @@ classdef TabPanel < uix.TabPanel
     end % structors
     
     methods
+        
+        function value = get.Callback( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
+            
+            % Get
+            value = obj.SelectionChangeCallback;
+            
+        end % get.Callback
+        
+        function set.Callback( obj, value )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
+            
+            % Set
+            obj.SelectionChangeCallback = value;
+            
+        end % set.Callback
         
         function value = get.SelectedChild( obj )
             
