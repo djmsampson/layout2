@@ -40,6 +40,7 @@ classdef TabPanel < uix.Container
         TabWidth_ = 50 % backing for TabWidth
         LocationObserver % location observer
         BackgroundColorListener % listener
+        SelectionChangeListener % listener
     end
     
     properties( Access = private, Constant )
@@ -62,10 +63,13 @@ classdef TabPanel < uix.Container
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChange );
+            selectionChangeListener = event.listener( obj, ...
+                'SelectionChange', @obj.onSelectionChange );
             
             % Store properties
             obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
+            obj.SelectionChangeListener = selectionChangeListener;
             
             % Set properties
             if nargin > 0
@@ -349,6 +353,29 @@ classdef TabPanel < uix.Container
             
         end % get.Selection
         
+        function set.SelectionChangeCallback( obj, value )
+            
+            % Check
+            if ischar( value ) % string
+                % OK
+            elseif isa( value, 'function_handle' ) && ...
+                    isequal( size( value ), [1 1] ) % function handle
+                % OK
+            elseif iscell( value ) && ndims( value ) == 2 && ...
+                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
+                    isa( value{1}, 'function_handle' ) && ...
+                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                % OK
+            else
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''SelectionChangeCallback'' must be a valid callback.' )
+            end
+            
+            % Set
+            obj.SelectionChangeCallback = value;
+            
+        end % set.SelectionChangeCallback
+        
         function set.Selection( obj, value ) % TODO
             
             % Check
@@ -372,13 +399,16 @@ classdef TabPanel < uix.Container
             end
             
             % Set
-            obj.Selection_ = value;
+            oldSelection = obj.Selection_;
+            newSelection = value;
+            obj.Selection_ = newSelection;
             
             % Mark as dirty
             obj.Dirty = true;
             
             % Notify selection change
-            obj.notifySelectionChange()
+            obj.notify( 'SelectionChange', ...
+                uix.SelectionEvent( oldSelection, newSelection ) )
             
         end % set.Selection
         
@@ -443,8 +473,6 @@ classdef TabPanel < uix.Container
                 obj.Selection_ = newSelection;
                 % Mark as dirty
                 obj.Dirty = true;
-                % Notify selection change
-                obj.notifySelectionChange()
             elseif ~tf(oldSelection)
                 % When the tab that was selected is disabled, select the
                 % first enabled tab to the right, or failing that, the last
@@ -462,11 +490,16 @@ classdef TabPanel < uix.Container
                 obj.Selection_ = newSelection;
                 % Mark as dirty
                 obj.Dirty = true;
-                % Notify selection change
-                obj.notifySelectionChange()
             else
                 % When the tab that was selected is enabled, the previous
                 % selection remains valid
+                newSelection = oldSelection;
+            end
+            
+            % Notify selection change
+            if oldSelection ~= newSelection
+                obj.notify( 'SelectionChange', ...
+                    uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
         end % set.TabEnables
@@ -625,11 +658,12 @@ classdef TabPanel < uix.Container
             obj.TabListeners(n+1,:) = tabListener;
             
             % If nothing was selected, select the new content
-            if obj.Selection_ == 0
-                obj.Selection_ = n + 1;
-                selectionChange = true;
+            oldSelection = obj.Selection_;
+            if oldSelection == 0
+                newSelection = n + 1;
+                obj.Selection_ = newSelection;
             else
-                selectionChange = false;
+                newSelection = oldSelection;
             end
             
             % Update tab height
@@ -641,8 +675,9 @@ classdef TabPanel < uix.Container
             addChild@uix.Container( obj, child )
             
             % Notify selection change
-            if selectionChange
-                obj.notifySelectionChange()
+            if oldSelection ~= newSelection
+                obj.notify( 'SelectionChange', ...
+                    uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
         end % addChild
@@ -663,12 +698,11 @@ classdef TabPanel < uix.Container
             if oldSelection < index
                 % When a tab to the right of the selected tab is removed,
                 % the previous selection remains valid
-                selectionChange = false;
             elseif oldSelection > index
                 % When a tab to the left of the selected tab is removed,
                 % decrement the selection by 1
-                obj.Selection_ = oldSelection - 1;
-                selectionChange = false;
+                newSelection = oldSelection - 1;
+                obj.Selection_ = newSelection;
             else
                 % When the selected tab is removed, select the first
                 % enabled tab to the right, or failing that, the last
@@ -685,15 +719,15 @@ classdef TabPanel < uix.Container
                     newSelection = 0;
                 end
                 obj.Selection_ = newSelection;
-                selectionChange = true;
             end
             
             % Call superclass method
             removeChild@uix.Container( obj, child )
             
             % Notify selection change
-            if selectionChange
-                obj.notifySelectionChange()
+            if oldSelection == index
+                obj.notify( 'SelectionChange', ...
+                    uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
         end % removeChild
@@ -757,16 +791,6 @@ classdef TabPanel < uix.Container
             
         end % redrawTabs
         
-        function notifySelectionChange( obj )
-            
-            % Call callback
-            % TODO
-            
-            % Raise event
-            notify( obj, 'SelectionChange' )
-            
-        end % notifySelectionChange
-        
     end % helper methods
     
     methods( Access = private )
@@ -783,7 +807,8 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
             % Notify selection change
-            obj.notifySelectionChange()
+            obj.notify( 'SelectionChange', ...
+                uix.SelectionEvent( oldSelection, newSelection ) )
             
         end % onTabClick
         
@@ -792,6 +817,15 @@ classdef TabPanel < uix.Container
             obj.redrawTabs()
             
         end % onBackgroundColorChange
+        
+        function onSelectionChange( obj, source, eventData )
+            
+            % Call callback
+            callback = obj.SelectionChangeCallback;
+            
+            disp CallCallback!
+            
+        end % onSelectionChange
         
     end % event handlers
     
