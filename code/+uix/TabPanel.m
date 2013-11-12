@@ -106,6 +106,37 @@ classdef TabPanel < uix.Container
                 tabListeners(ii).Enabled = tf(ii);
             end
             
+            % Update selection
+            oldSelection = obj.Selection_;
+            if oldSelection == 0
+                % When no tab was selected, select the last enabled tab
+                newSelection = find( tf, 1, 'last' );
+                if isempty( newSelection )
+                    newSelection = 0;
+                end
+                obj.Selection_ = newSelection;
+                obj.Dirty = true;
+            elseif ~tf(oldSelection)
+                % When the tab that was selected is disabled, select the
+                % first enabled tab to the right, or failing that, the last
+                % enabled tab to the left, or failing that, nothing
+                preSelection = find( tf(1:oldSelection-1), 1, 'last' );
+                postSelection = oldSelection + ...
+                    find( tf(oldSelection+1:end), 1, 'first' );
+                if ~isempty( postSelection )
+                    newSelection = postSelection;
+                elseif ~isempty( preSelection )
+                    newSelection = preSelection;
+                else
+                    newSelection = 0;
+                end
+                obj.Selection_ = newSelection;
+                obj.Dirty = true;
+            else
+                % When the tab that was selected is enabled, the previous
+                % selection remains valid
+            end
+            
         end % set.TabEnable
         
         function value = get.TabLocation( obj )
