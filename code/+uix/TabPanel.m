@@ -46,6 +46,7 @@ classdef TabPanel < uix.Container
     
     properties( Access = private, Constant )
         FontNames = listfonts() % all available font names
+        DividerCData = uix.TabPanel.getDividerCData() % divider image data
     end
     
     events( NotifyAccess = private )
@@ -595,7 +596,7 @@ classdef TabPanel < uix.Container
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
             tW = obj.TabWidth_; % tab width
-            dW = 10; % tab divider width
+            dW = 8; % tab divider width
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
             end
@@ -779,10 +780,24 @@ classdef TabPanel < uix.Container
             
             % Repaint dividers
             tabDividers = obj.TabDividers;
-            for ii = 1:numel( tabDividers )
+            selection = obj.Selection_;
+            n = numel( tabDividers );
+            dividerNames = repmat( 'F', [n 2] ); % initialize
+            if n > 0
+                dividerNames(1,1) = 'E'; % end
+                dividerNames(end,2) = 'E'; % end
+            end
+            if selection ~= 0
+                dividerNames(selection,2) = 'T'; % selected
+                dividerNames(selection+1,1) = 'T'; % selected
+            end
+            for ii = 1:n
                 tabDivider = tabDividers(ii);
-                tabDividerPosition = tabDivider.Position;
-                cData = rand( [tabDividerPosition([4 3]) 3] );
+                cData = obj.DividerCData.( dividerNames(ii,:) );
+                switch obj.TabLocation_
+                    case 'bottom'
+                        cData = cData(end:-1:1,:,:);
+                end
                 tabDivider.CData = cData;
             end
             
@@ -832,5 +847,25 @@ classdef TabPanel < uix.Container
         end % onSelectionChange
         
     end % event handlers
+    
+    methods( Access = private, Static )
+        
+        function cData = getDividerCData()
+            %getDividerCData  Get divider image data
+            %
+            %  c = uix.BoxPanel.getDividerCData() returns the image data
+            %  for tab panel dividers.
+            
+            cData.EF = uix.loadIcon( 'tab_NoEdge_NotSelected.png' );
+            cData.ET = uix.loadIcon( 'tab_NoEdge_Selected.png' );
+            cData.FE = uix.loadIcon( 'tab_NotSelected_NoEdge.png' );
+            cData.FF = uix.loadIcon( 'tab_NotSelected_NotSelected.png' );
+            cData.FT = uix.loadIcon( 'tab_NotSelected_Selected.png' );
+            cData.TE = uix.loadIcon( 'tab_Selected_NoEdge.png' );
+            cData.TF = uix.loadIcon( 'tab_Selected_NotSelected.png' );
+            
+        end % getDividerCData
+        
+    end % static helper methods
     
 end % classdef
