@@ -1,8 +1,11 @@
 classdef TabPanel < uix.Container
     
     properties( Access = public, Dependent, AbortSet )
+        FontAngle % font angle
         FontName % font name
         FontSize % font size
+        FontWeight % font weight
+        FontUnits % font weight
         Selection % selected contents
         TabEnable % tab enable states
         TabLocation % tab location [top|bottom]
@@ -11,8 +14,11 @@ classdef TabPanel < uix.Container
     end
     
     properties( Access = private )
+        FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
         FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
+        FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
+        FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
         LocationObserver % location observer
         Selection_ = 0 % backing for Selection
         Tabs = gobjects( [0 1] ) % tabs
@@ -50,6 +56,42 @@ classdef TabPanel < uix.Container
     end % structors
     
     methods
+        
+        function value = get.FontAngle( obj )
+            
+            value = obj.FontAngle_;
+            
+        end % get.FontAngle
+        
+        function set.FontAngle( obj, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'normal','italic','oblique'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontAngle'' must be ''normal'', ''italic'' or ''oblique''.' )
+            
+            % Set
+            obj.FontAngle_ = value;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.FontAngle = value;
+            end
+            
+            % Update tab height
+            if n ~= 0
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                obj.TabHeight_ = max( tabExtents(:,4) );
+            end
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontAngle
         
         function value = get.FontName( obj )
             
@@ -124,6 +166,42 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
         end % set.FontSize
+        
+        function value = get.FontWeight( obj )
+            
+            value = obj.FontWeight_;
+            
+        end % get.FontWeight
+        
+        function set.FontWeight( obj, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'normal','bold'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontWeight'' must be ''normal'' or ''bold''.' )
+            
+            % Set
+            obj.FontWeight_ = value;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.FontWeight = value;
+            end
+            
+            % Update tab height
+            if n ~= 0
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                obj.TabHeight_ = max( tabExtents(:,4) );
+            end
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontWeight
         
         function value = get.Selection( obj )
             
@@ -366,8 +444,9 @@ classdef TabPanel < uix.Container
             % Create new tab
             tab = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
-                'Units', 'pixels', 'FontName', obj.FontName_, ...
-                'FontSize', obj.FontSize_ );
+                'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
+                'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
+                'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_ );
             tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClick );
             n = numel( obj.Tabs );
             obj.Tabs(n+1,:) = tab;
