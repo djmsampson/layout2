@@ -203,6 +203,75 @@ classdef TabPanel < uix.Container
             
         end % set.FontWeight
         
+        function value = get.FontUnits( obj )
+            
+            value = obj.FontUnits_;
+            
+        end % get.FontUnits
+        
+        function set.FontUnits( obj, value )
+            
+            % Check
+            assert( ischar( value ) && ...
+                any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontUnits'' must be ''inches'', ''centimeters'', ''points'' or ''pixels''.' )
+            
+            % Compute size in new units
+            oldUnits = obj.FontUnits_;
+            oldSize = obj.FontSize_;
+            newUnits = value;
+            newSize = oldSize * convert( oldUnits ) / convert( newUnits );
+            
+            % Set size and units
+            obj.FontSize_ = newSize;
+            obj.FontUnits_ = newUnits;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.FontUnits = newUnits;
+            end
+            
+            % Update tab height
+            if n ~= 0
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                obj.TabHeight_ = max( tabExtents(:,4) );
+            end
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+            function factor = convert( units )
+                %convert  Compute conversion factor to points
+                %
+                %  f = convert(u) computes the conversion factor from units
+                %  u to points.  For example, convert('inches') since 1
+                %  inch equals 72 points.
+                
+                persistent SCREEN_PIXELS_PER_INCH
+                if isequal( SCREEN_PIXELS_PER_INCH, [] ) % uninitialized
+                    SCREEN_PIXELS_PER_INCH = get( 0, 'ScreenPixelsPerInch' );
+                end
+                
+                switch units
+                    case 'inches'
+                        factor = 72;
+                    case 'centimeters'
+                        factor = 72 / 2.54;
+                    case 'points'
+                        factor = 1;
+                    case 'pixels'
+                        factor = 72 / SCREEN_PIXELS_PER_INCH;
+                end
+                
+            end % convert
+            
+        end % set.FontUnits
+        
         function value = get.Selection( obj )
             
             value = obj.Selection_;
