@@ -10,9 +10,9 @@ classdef TabPanel < uix.Container
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         Selection % selected contents
-        TabEnable % tab enable states
+        TabEnables % tab enable states
         TabLocation % tab location [top|bottom]
-        TabNames % tab names
+        TabTitles % tab titles
         TabWidth % tab width
     end
     
@@ -390,14 +390,14 @@ classdef TabPanel < uix.Container
             
         end % set.ShadowColor
         
-        function value = get.TabEnable( obj )
+        function value = get.TabEnables( obj )
             
             value = get( obj.Tabs, {'Enable'} );
             value(strcmp( value, 'inactive' )) = {'on'};
             
-        end % get.TabEnable
+        end % get.TabEnables
         
-        function set.TabEnable( obj, value )
+        function set.TabEnables( obj, value )
             
             % Retrieve tabs
             tabs = obj.Tabs;
@@ -408,7 +408,7 @@ classdef TabPanel < uix.Container
                 isequal( size( value ), size( tabs ) ) && ...
                 all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabEnable'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
+                'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
             
             % Set
             tf = strcmp( value, 'on' );
@@ -449,7 +449,7 @@ classdef TabPanel < uix.Container
                 % selection remains valid
             end
             
-        end % set.TabEnable
+        end % set.TabEnables
         
         function value = get.TabLocation( obj )
             
@@ -473,13 +473,13 @@ classdef TabPanel < uix.Container
             
         end % set.TabLocation
         
-        function value = get.TabNames( obj )
+        function value = get.TabTitles( obj )
             
             value = get( obj.Tabs, {'String'} );
             
-        end % get.TabNames
+        end % get.TabTitles
         
-        function set.TabNames( obj, value )
+        function set.TabTitles( obj, value )
             
             % Retrieve tabs
             tabs = obj.Tabs;
@@ -488,7 +488,7 @@ classdef TabPanel < uix.Container
             assert( iscellstr( value ) && ...
                 isequal( size( value ), size( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabNames'' should be a cell array of strings, one per tab.' )
+                'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
             
             % Set
             n = numel( tabs );
@@ -506,7 +506,7 @@ classdef TabPanel < uix.Container
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.TabNames
+        end % set.TabTitles
         
         function value = get.TabWidth( obj )
             
