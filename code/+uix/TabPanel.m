@@ -1,6 +1,7 @@
 classdef TabPanel < uix.Container
     
     properties( Access = public, Dependent, AbortSet )
+        FontSize % font size
         Selection % selected contents
         TabEnable % tab enable states
         TabLocation % tab location [top|bottom]
@@ -9,6 +10,7 @@ classdef TabPanel < uix.Container
     end
     
     properties( Access = protected )
+        FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
         LocationObserver % location observer
         Selection_ = 0 % backing for Selection
         Tabs = gobjects( [0 1] ) % tabs
@@ -42,6 +44,44 @@ classdef TabPanel < uix.Container
     end % structors
     
     methods
+        
+        function value = get.FontSize( obj )
+            
+            value = obj.FontSize_;
+            
+        end % get.FontSize
+        
+        function set.FontSize( obj, value )
+            
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value > 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontSize'' must be a positive scalar.' )
+            
+            % Set
+            obj.FontSize_ = value;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.FontSize = value;
+            end
+            
+            % Update tab height
+            if n ~= 0
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                obj.TabHeight_ = max( tabExtents(:,4) );
+            end
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.FontSize
         
         function value = get.Selection( obj )
             
@@ -284,7 +324,7 @@ classdef TabPanel < uix.Container
             % Create new tab
             tab = matlab.ui.control.StyleControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
-                'Units', 'pixels' );
+                'Units', 'pixels', 'FontSize', obj.FontSize_ );
             tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClick );
             n = numel( obj.Tabs );
             obj.Tabs(n+1,:) = tab;
