@@ -377,6 +377,9 @@ classdef TabPanel < uix.Container
             % Mark as dirty
             obj.Dirty = true;
             
+            % Notify selection change
+            obj.notifySelectionChange()
+            
         end % set.Selection
         
         function value = get.ShadowColor( obj )
@@ -438,7 +441,10 @@ classdef TabPanel < uix.Container
                     newSelection = 0;
                 end
                 obj.Selection_ = newSelection;
+                % Mark as dirty
                 obj.Dirty = true;
+                % Notify selection change
+                obj.notifySelectionChange()
             elseif ~tf(oldSelection)
                 % When the tab that was selected is disabled, select the
                 % first enabled tab to the right, or failing that, the last
@@ -454,7 +460,10 @@ classdef TabPanel < uix.Container
                     newSelection = 0;
                 end
                 obj.Selection_ = newSelection;
+                % Mark as dirty
                 obj.Dirty = true;
+                % Notify selection change
+                obj.notifySelectionChange()
             else
                 % When the tab that was selected is enabled, the previous
                 % selection remains valid
@@ -617,7 +626,10 @@ classdef TabPanel < uix.Container
             
             % If nothing was selected, select the new content
             if obj.Selection_ == 0
-                obj.Selection_ = n+1;
+                obj.Selection_ = n + 1;
+                selectionChange = true;
+            else
+                selectionChange = false;
             end
             
             % Update tab height
@@ -627,6 +639,11 @@ classdef TabPanel < uix.Container
             
             % Call superclass method
             addChild@uix.Container( obj, child )
+            
+            % Notify selection change
+            if selectionChange
+                obj.notifySelectionChange()
+            end
             
         end % addChild
         
@@ -646,10 +663,12 @@ classdef TabPanel < uix.Container
             if oldSelection < index
                 % When a tab to the right of the selected tab is removed,
                 % the previous selection remains valid
+                selectionChange = false;
             elseif oldSelection > index
                 % When a tab to the left of the selected tab is removed,
                 % decrement the selection by 1
                 obj.Selection_ = oldSelection - 1;
+                selectionChange = false;
             else
                 % When the selected tab is removed, select the first
                 % enabled tab to the right, or failing that, the last
@@ -666,10 +685,16 @@ classdef TabPanel < uix.Container
                     newSelection = 0;
                 end
                 obj.Selection_ = newSelection;
+                selectionChange = true;
             end
             
             % Call superclass method
             removeChild@uix.Container( obj, child )
+            
+            % Notify selection change
+            if selectionChange
+                obj.notifySelectionChange()
+            end
             
         end % removeChild
         
@@ -732,6 +757,16 @@ classdef TabPanel < uix.Container
             
         end % redrawTabs
         
+        function notifySelectionChange( obj )
+            
+            % Call callback
+            % TODO
+            
+            % Raise event
+            notify( obj, 'SelectionChange' )
+            
+        end % notifySelectionChange
+        
     end % helper methods
     
     methods( Access = private )
@@ -739,11 +774,16 @@ classdef TabPanel < uix.Container
         function onTabClick( obj, source, ~ )
             
             % Update selection
-            index = find( source == obj.Tabs );
-            obj.Selection_ = index;
+            oldSelection = obj.Selection_;
+            newSelection = find( source == obj.Tabs );
+            if oldSelection == newSelection, return, end % abort set
+            obj.Selection_ = newSelection;
             
             % Mark as dirty
             obj.Dirty = true;
+            
+            % Notify selection change
+            obj.notifySelectionChange()
             
         end % onTabClick
         
