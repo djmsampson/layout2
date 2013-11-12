@@ -45,7 +45,7 @@ function testContents()
 %testContents  Test adding and removing children
 close all force;
 
-h = uiextras.CardPanel( 'Parent', figure );
+h = uiextras.CardPanel( 'Parent', figure() );
 assertEqual( isa( h, 'uiextras.CardPanel' ), true );
 
 u = [
