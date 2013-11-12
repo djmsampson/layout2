@@ -36,7 +36,7 @@ classdef TabPanel < uix.Container
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
-        TabHeight = 0 % cache of tab height
+        TabHeight = -1 % cache of tab height (-1 denotes stale cache)
         TabWidth_ = 50 % backing for TabWidth
         LocationObserver % location observer
         BackgroundColorListener % listener
@@ -107,14 +107,8 @@ classdef TabPanel < uix.Container
                 tab.FontAngle = value;
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.FontAngle
@@ -143,14 +137,8 @@ classdef TabPanel < uix.Container
                 tab.FontName = value;
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.FontName
@@ -181,14 +169,8 @@ classdef TabPanel < uix.Container
                 tab.FontSize = value;
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.FontSize
@@ -217,14 +199,8 @@ classdef TabPanel < uix.Container
                 tab.FontWeight = value;
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.FontWeight
@@ -261,14 +237,8 @@ classdef TabPanel < uix.Container
                 tab.FontUnits = newUnits;
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
             function factor = convert( units )
@@ -549,14 +519,8 @@ classdef TabPanel < uix.Container
                 tabs(ii).String = value{ii};
             end
             
-            % Update tab height
-            if n ~= 0
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight = max( tabExtents(:,4) );
-            end
-            
             % Mark as dirty
+            obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.TabTitles
@@ -597,6 +561,12 @@ classdef TabPanel < uix.Container
             p = obj.Padding_; % padding
             tabs = obj.Tabs;
             tH = obj.TabHeight; % tab height
+            if tH == -1 % cache stale, refresh
+                cTabExtents = get( tabs, {'Extent'} );
+                tabExtents = vertcat( cTabExtents{:} );
+                tH = max( tabExtents(:,4) );
+                obj.TabHeight = tH; % store
+            end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabLocation_
                 case 'top'
@@ -666,10 +636,8 @@ classdef TabPanel < uix.Container
                 newSelection = oldSelection;
             end
             
-            % Update tab height
-            cTabExtents = get( obj.Tabs, {'Extent'} );
-            tabExtents = vertcat( cTabExtents{:} );
-            obj.TabHeight = max( tabExtents(:,4) );
+            % Mark as dirty
+            obj.TabHeight = -1;
             
             % Call superclass method
             addChild@uix.Container( obj, child )
