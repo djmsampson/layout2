@@ -33,6 +33,7 @@ classdef BoxPanel < uix.Container
         BorderType_ = 'none' % backing for BorderType
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        TitleHeight = -1 % cache of title height (-1 denotes stale cache)
         HelpButton % title button
         CloseButton % title button
         DockButton % title button
@@ -182,6 +183,7 @@ classdef BoxPanel < uix.Container
             obj.Titlebar.FontName = value;
             
             % Mark as dirty
+            obj.TitleHeight = -1;
             obj.Dirty = true;
             
         end % set.FontName
@@ -198,6 +200,7 @@ classdef BoxPanel < uix.Container
             obj.Titlebar.FontSize = value;
             
             % Mark as dirty
+            obj.TitleHeight = -1;
             obj.Dirty = true;
             
         end % set.FontSize
@@ -293,6 +296,7 @@ classdef BoxPanel < uix.Container
             obj.Titlebar.String = value;
             
             % Mark as dirty
+            obj.TitleHeight = -1;
             obj.Dirty = true;
             
         end % set.Title
@@ -448,7 +452,11 @@ classdef BoxPanel < uix.Container
             location = obj.LocationObserver.Location;
             width = ceil( location(1) + location(3) ) - floor( location(1) );
             height = ceil( location(2) + location(4) ) - floor( location(2) );
-            titleHeight = obj.Titlebar.Extent(4);
+            titleHeight = obj.TitleHeight;
+            if titleHeight == -1 % cache stale, refresh
+                titleHeight = obj.Titlebar.Extent(4);
+                obj.TitleHeight = titleHeight; % store
+            end
             switch obj.BorderType_
                 case 'none'
                     borderSize = 0;
