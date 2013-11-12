@@ -794,11 +794,17 @@ classdef TabPanel < uix.Container
             for ii = 1:n
                 tabDivider = tabDividers(ii);
                 cData = obj.DividerCData.( dividerNames(ii,:) );
+                mask = sum( cData, 3 );
+                jData = zeros( size( mask ), 'int32' );
+                jData(mask==0) = uix.Image.rgb2int( obj.ShadowColor );
+                jData(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
+                jData(mask==2) = uix.Image.rgb2int( 0.9 * obj.BackgroundColor );
+                jData(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
                 switch obj.TabLocation_
                     case 'bottom'
-                        cData = cData(end:-1:1,:,:);
+                        jData = flipud( jData );
                 end
-                tabDivider.CData = cData;
+                tabDivider.JData = jData;
             end
             
         end % redrawTabs
