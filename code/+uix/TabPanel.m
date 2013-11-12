@@ -46,7 +46,10 @@ classdef TabPanel < uix.Container
     
     properties( Access = private, Constant )
         FontNames = listfonts() % all available font names
-        DividerCData = uix.TabPanel.getDividerCData() % divider image data
+        DividerMask = uix.TabPanel.getDividerMask() % divider image data
+        DividerWidth = 8 % divider width
+        DividerHeight = 8 % minimum divider height
+        Tint = 0.85 % tint factor for unselected tabs
     end
     
     events( NotifyAccess = private )
@@ -582,6 +585,7 @@ classdef TabPanel < uix.Container
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
                 tH = max( tabExtents(:,4) );
+                tH = max( [tH obj.DividerHeight] ); % apply minimum
                 obj.TabHeight = tH; % store
             end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
@@ -596,7 +600,7 @@ classdef TabPanel < uix.Container
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
             tW = obj.TabWidth_; % tab width
-            dW = 8; % tab divider width
+            dW = obj.DividerWidth; % tab divider width
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
             end
@@ -774,13 +778,12 @@ classdef TabPanel < uix.Container
                 if ii == selection
                     tab.BackgroundColor = backgroundColor;
                 else
-                    tab.BackgroundColor = 0.9 * backgroundColor;
+                    tab.BackgroundColor = obj.Tint * backgroundColor;
                 end
             end
             
             % Repaint dividers
             tabDividers = obj.TabDividers;
-            selection = obj.Selection_;
             n = numel( tabDividers );
             dividerNames = repmat( 'F', [n 2] ); % initialize
             if n > 0
@@ -793,13 +796,15 @@ classdef TabPanel < uix.Container
             end
             for ii = 1:n
                 tabDivider = tabDividers(ii);
-                cData = obj.DividerCData.( dividerNames(ii,:) );
-                mask = sum( cData, 3 );
-                jData = zeros( size( mask ), 'int32' );
-                jData(mask==0) = uix.Image.rgb2int( obj.ShadowColor );
-                jData(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
-                jData(mask==2) = uix.Image.rgb2int( 0.9 * obj.BackgroundColor );
-                jData(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
+                mask = obj.DividerMask.( dividerNames(ii,:) );
+                jMask = zeros( size( mask ), 'int32' ); % initialize
+                jMask(mask==0) = uix.Image.rgb2int( obj.ShadowColor );
+                jMask(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
+                jMask(mask==2) = uix.Image.rgb2int( obj.Tint * obj.BackgroundColor );
+                jMask(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
+                jData = repmat( jMask(5,:), [tabDivider.Position(4) 1] );
+                jData(1:4,:) = jMask(1:4,:);
+                jData(end-3:end,:) = jMask(end-3:end,:);
                 switch obj.TabLocation_
                     case 'bottom'
                         jData = flipud( jData );
@@ -856,21 +861,21 @@ classdef TabPanel < uix.Container
     
     methods( Access = private, Static )
         
-        function cData = getDividerCData()
-            %getDividerCData  Get divider image data
+        function mask = getDividerMask()
+            %getDividerMask  Get divider image data
             %
-            %  c = uix.BoxPanel.getDividerCData() returns the image data
+            %  m = uix.BoxPanel.getDividerMask() returns the image mask
             %  for tab panel dividers.
             
-            cData.EF = uix.loadIcon( 'tab_NoEdge_NotSelected.png' );
-            cData.ET = uix.loadIcon( 'tab_NoEdge_Selected.png' );
-            cData.FE = uix.loadIcon( 'tab_NotSelected_NoEdge.png' );
-            cData.FF = uix.loadIcon( 'tab_NotSelected_NotSelected.png' );
-            cData.FT = uix.loadIcon( 'tab_NotSelected_Selected.png' );
-            cData.TE = uix.loadIcon( 'tab_Selected_NoEdge.png' );
-            cData.TF = uix.loadIcon( 'tab_Selected_NotSelected.png' );
+            mask.EF = sum( uix.loadIcon( 'tab_NoEdge_NotSelected.png' ), 3 );
+            mask.ET = sum( uix.loadIcon( 'tab_NoEdge_Selected.png' ), 3 );
+            mask.FE = sum( uix.loadIcon( 'tab_NotSelected_NoEdge.png' ), 3 );
+            mask.FF = sum( uix.loadIcon( 'tab_NotSelected_NotSelected.png' ), 3 );
+            mask.FT = sum( uix.loadIcon( 'tab_NotSelected_Selected.png' ), 3 );
+            mask.TE = sum( uix.loadIcon( 'tab_Selected_NoEdge.png' ), 3 );
+            mask.TF = sum( uix.loadIcon( 'tab_Selected_NotSelected.png' ), 3 );
             
-        end % getDividerCData
+        end % getDividerMask
         
     end % static helper methods
     
