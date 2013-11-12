@@ -560,8 +560,9 @@ classdef TabPanel < uix.Container
             h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
             p = obj.Padding_; % padding
             tabs = obj.Tabs;
+            n = numel( tabs );
             tH = obj.TabHeight; % tab height
-            if tH == -1 % cache stale, refresh
+            if n > 0 && tH == -1 % cache stale, refresh
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
                 tH = max( tabExtents(:,4) );
