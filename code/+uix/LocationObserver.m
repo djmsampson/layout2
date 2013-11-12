@@ -211,7 +211,19 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
                 %  pixels p of the figure panel container c.
                 
                 screenSize = ROOT.ScreenSize;
-                jLocation = jFigurePanelContainer.getLocationOnScreen();
+                r = 0; % number of failed calls to getLocationOnScreen
+                while true
+                    try
+                        jLocation = jFigurePanelContainer.getLocationOnScreen();
+                        break
+                    catch e
+                        pause( 0.01 ) % pause briefly
+                        r = r + 1; % increment counter
+                        if r > 10 % maximum number of retries exceeded
+                            e.rethrow()
+                        end
+                    end
+                end
                 x = jLocation.getX();
                 y = jLocation.getY();
                 w = jFigurePanelContainer.getWidth();
@@ -273,9 +285,6 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
         end % onSizeChange
         
         function onWindowStyleChange( obj, ~, eventData )
-            
-            % Flush event queue
-            drawnow( 'expose' )
             
             % Update
             obj.update( eventData.AffectedObject )
