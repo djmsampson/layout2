@@ -6,6 +6,9 @@ classdef TabPanel < uix.Container
         FontSize % font size
         FontWeight % font weight
         FontUnits % font weight
+        ForegroundColor % tab text color [RGB]
+        HighlightColor % border highlight color [RGB]
+        ShadowColor % border shadow color [RGB]
         Selection % selected contents
         TabEnable % tab enable states
         TabLocation % tab location [top|bottom]
@@ -19,13 +22,17 @@ classdef TabPanel < uix.Container
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
         FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
         FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
-        LocationObserver % location observer
+        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
         Selection_ = 0 % backing for Selection
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
         TabHeight_ = 0 % cache of tab height
         TabWidth_ = 50 % backing for TabWidth
+        LocationObserver % location observer
+        BackgroundColorListener % listener
     end
     
     properties( Access = private, Constant )
@@ -39,11 +46,15 @@ classdef TabPanel < uix.Container
             % Call superclass constructor
             obj@uix.Container()
             
-            % Create location observer
+            % Create observers and listeners
             locationObserver = uix.LocationObserver( obj );
+            backgroundColorListener = event.proplistener( obj, ...
+                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+                @obj.onBackgroundColorChange );
             
             % Store properties
             obj.LocationObserver = locationObserver;
+            obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
             if nargin > 0
@@ -272,6 +283,55 @@ classdef TabPanel < uix.Container
             
         end % set.FontUnits
         
+        function value = get.ForegroundColor( obj )
+            
+            value = obj.ForegroundColor_;
+            
+        end % get.ForegroundColor
+        
+        function set.ForegroundColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''ForegroundColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.ForegroundColor_ = value;
+            
+            % Update existing tabs
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tab = tabs(ii);
+                tab.ForegroundColor = value;
+            end
+            
+        end % set.ForegroundColor
+        
+        function value = get.HighlightColor( obj )
+            
+            value = obj.HighlightColor_;
+            
+        end % get.HighlightColor
+        
+        function set.HighlightColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''HighlightColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.HighlightColor_ = value;
+            
+            % Redraw tabs
+            obj.redrawTabs()
+            
+        end % set.HighlightColor
+        
         function value = get.Selection( obj )
             
             value = obj.Selection_;
@@ -307,6 +367,28 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
         end % set.Selection
+        
+        function value = get.ShadowColor( obj )
+            
+            value = obj.ShadowColor_;
+            
+        end % get.ShadowColor
+        
+        function set.ShadowColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''ShadowColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.ShadowColor_ = value;
+            
+            % Redraw tabs
+            obj.redrawTabs()
+            
+        end % set.ShadowColor
         
         function value = get.TabEnable( obj )
             
@@ -515,7 +597,8 @@ classdef TabPanel < uix.Container
                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
                 'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
                 'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
-                'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_ );
+                'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_, ...
+                'ForegroundColor', obj.ForegroundColor_ );
             tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClick );
             n = numel( obj.Tabs );
             obj.Tabs(n+1,:) = tab;
@@ -617,10 +700,22 @@ classdef TabPanel < uix.Container
     
     methods( Access = private )
         
-        function redrawTabs( ~ )
+        function redrawTabs( obj )
             %redrawTabs  Redraw tabs
             %
             %  p.redrawTabs() redraws the tabs.
+            
+            selection = obj.Selection_;
+            tabs = obj.Tabs;
+            backgroundColor = obj.BackgroundColor;
+            for ii = 1:numel( tabs )
+                tab = tabs(ii);
+                if ii == selection
+                    tab.BackgroundColor = backgroundColor;
+                else
+                    tab.BackgroundColor = 0.9 * backgroundColor;
+                end
+            end
             
             % TODO
             
@@ -640,6 +735,12 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
         end % onTabClick
+        
+        function onBackgroundColorChange( obj, ~, ~ )
+            
+            obj.redrawTabs()
+            
+        end % onBackgroundColorChange
         
     end % event handlers
     
