@@ -38,6 +38,7 @@ classdef TabPanel < uix.Container
         TabLocation_ = 'top' % backing for TabPosition
         TabHeight = -1 % cache of tab height (-1 denotes stale cache)
         TabWidth_ = 50 % backing for TabWidth
+        TabDividers = uix.Image.empty( [0 1] ) % tab dividers
         LocationObserver % location observer
         BackgroundColorListener % listener
         SelectionChangeListener % listener
@@ -554,13 +555,27 @@ classdef TabPanel < uix.Container
         
         function redraw( obj )
             
+            % Create or destroy tab dividers
+            tabs = obj.Tabs;
+            n = numel( tabs ); % number of tabs
+            u = numel( obj.TabDividers ); % current number of dividers
+            v = sign( n ) * ( n + 1 ); % required number of dividers
+            if u < v % create
+                for ii = u+1:v
+                    divider = uix.Image( 'Internal', true, ...
+                        'Parent', obj, 'Units', 'pixels' );
+                    obj.TabDividers(ii,:) = divider;
+                end
+            elseif u > v % destroy
+                delete( obj.TabDividers(v+1:u,:) )
+                obj.TabDividers(v+1:u,:) = [];
+            end
+            
             % Compute positions
             location = obj.LocationObserver.Location;
             w = ceil( location(1) + location(3) ) - floor( location(1) ); % width
             h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
             p = obj.Padding_; % padding
-            tabs = obj.Tabs;
-            n = numel( tabs );
             tH = obj.TabHeight; % tab height
             if n > 0 && tH == -1 % cache stale, refresh
                 cTabExtents = get( tabs, {'Extent'} );
@@ -580,10 +595,13 @@ classdef TabPanel < uix.Container
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
             tW = obj.TabWidth_; % tab width
-            for ii = 1:numel( tabs )
-                tab = tabs(ii);
-                tabPosition = [1 + (ii-1) * tW, tY, tW, tH];
-                tab.Position = tabPosition;
+            dW = 10; % tab divider width
+            for ii = 1:n
+                tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
+            end
+            tabDividers = obj.TabDividers;
+            for ii = 1:v
+                tabDividers(ii).Position = [1 + (ii-1) * tW + (ii-1) * dW, tY, dW, tH];
             end
             contentsPosition = [cX cY cW cH];
             
@@ -744,7 +762,10 @@ classdef TabPanel < uix.Container
             %
             %  p.redrawTabs() redraws the tabs.
             
+            % Get relevant properties
             selection = obj.Selection_;
+            
+            % Repaint tabs
             tabs = obj.Tabs;
             backgroundColor = obj.BackgroundColor;
             for ii = 1:numel( tabs )
@@ -756,7 +777,14 @@ classdef TabPanel < uix.Container
                 end
             end
             
-            % TODO
+            % Repaint dividers
+            tabDividers = obj.TabDividers;
+            for ii = 1:numel( tabDividers )
+                tabDivider = tabDividers(ii);
+                tabDividerPosition = tabDivider.Position;
+                cData = rand( [tabDividerPosition([4 3]) 3] );
+                tabDivider.CData = cData;
+            end
             
         end % redrawTabs
         
