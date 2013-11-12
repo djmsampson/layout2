@@ -36,7 +36,7 @@ classdef TabPanel < uix.Container
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
-        TabHeight_ = 0 % cache of tab height
+        TabHeight = 0 % cache of tab height
         TabWidth_ = 50 % backing for TabWidth
         LocationObserver % location observer
         BackgroundColorListener % listener
@@ -111,7 +111,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -147,7 +147,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -185,7 +185,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -221,7 +221,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -265,7 +265,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -553,7 +553,7 @@ classdef TabPanel < uix.Container
             if n ~= 0
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
-                obj.TabHeight_ = max( tabExtents(:,4) );
+                obj.TabHeight = max( tabExtents(:,4) );
             end
             
             % Mark as dirty
@@ -596,7 +596,7 @@ classdef TabPanel < uix.Container
             h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
             p = obj.Padding_; % padding
             tabs = obj.Tabs;
-            tH = obj.TabHeight_; % tab height
+            tH = obj.TabHeight; % tab height
             cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabLocation_
                 case 'top'
@@ -669,7 +669,7 @@ classdef TabPanel < uix.Container
             % Update tab height
             cTabExtents = get( obj.Tabs, {'Extent'} );
             tabExtents = vertcat( cTabExtents{:} );
-            obj.TabHeight_ = max( tabExtents(:,4) );
+            obj.TabHeight = max( tabExtents(:,4) );
             
             % Call superclass method
             addChild@uix.Container( obj, child )
