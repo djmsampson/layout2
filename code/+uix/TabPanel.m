@@ -5,6 +5,7 @@ classdef TabPanel < uix.Container
         TabEnable % tab enable states
         TabLocation % tab location [top|bottom]
         TabNames % tab names
+        TabWidth % tab width
     end
     
     properties( Access = protected )
@@ -195,6 +196,29 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
         end % set.TabNames
+        
+        function value = get.TabWidth( obj )
+            
+            value = obj.TabWidth_;
+            
+        end % get.TabWidth
+        
+        function set.TabWidth( obj, value )
+            
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value > 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabWidth'' must be a positive scalar.' )
+            
+            % Set
+            obj.TabWidth_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.TabWidth
         
     end % accessors
     
