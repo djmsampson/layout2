@@ -52,7 +52,7 @@ classdef TabPanel < uix.TabPanel
             % Do
             obj@uix.TabPanel( varargin{:} )
             
-            % Create observers and listeners
+            % Create listeners
             selectionChangeListener = event.listener( obj, ...
                 'SelectionChange', @obj.onSelectionChange );
             
@@ -214,31 +214,6 @@ classdef TabPanel < uix.TabPanel
         end % set.TabSize
         
     end % accessors
-    
-    methods( Access = private )
-        
-        function redrawTabs( obj )
-            %redrawTabs  Redraw tabs
-            %
-            %  p.redrawTabs() redraws the tabs.
-            
-            selection = obj.Selection_;
-            tabs = obj.Tabs;
-            backgroundColor = obj.BackgroundColor;
-            for ii = 1:numel( tabs )
-                tab = tabs(ii);
-                if ii == selection
-                    tab.BackgroundColor = backgroundColor;
-                else
-                    tab.BackgroundColor = 0.9 * backgroundColor;
-                end
-            end
-            
-            % TODO
-            
-        end % redrawTabs
-        
-    end % helper methods
     
     methods( Access = private )
         
