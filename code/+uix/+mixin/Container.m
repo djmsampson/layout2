@@ -345,8 +345,8 @@ classdef Container < handle
             obj.Contents_(end+1,:) = child;
             
             % Add to enables
-            contentsEnable = obj.ContentsEnable_;
-            if strcmp( contentsEnable, 'on' )
+            contentsEnable = obj.ContentsEnableObserver.ContentsEnable;
+            if contentsEnable
                 obj.Enables{end+1,:} = 'unset';
             elseif isa( child, 'matlab.ui.control.StyleControl' )
                 obj.Enables{end+1,:} = child.Enable;
@@ -364,7 +364,7 @@ classdef Container < handle
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
-            if strcmp( contentsEnable, 'off' ) && ...
+            if ~contentsEnable && ...
                     isa( child, 'matlab.ui.control.StyleControl' )
                 obj.EnableListeners{end+1,:} = ...
                     event.proplistener( child, ...

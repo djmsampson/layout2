@@ -78,11 +78,11 @@ close all force;
 
 function testHierarchyEnable2()
 %testHierarchyEnable2  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable','off');
-h = uiextras.HBox( 'Parent', v, 'Enable', 'on');
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'off' );
+h = uiextras.HBox( 'Parent', v, 'ContentsEnable', 'on' );
 b = uicontrol('Parent',h,'String','Button 1');
-assertEqual( get(v,'Enable'), 'off' );
-assertEqual( get(h,'Enable'), 'off' );
+assertEqual( get(v,'ContentsEnable'), 'off' );
+assertEqual( get(h,'ContentsEnable'), 'on' );
 assertEqual( get(b,'Enable'), 'off' );
  
 close all force;
