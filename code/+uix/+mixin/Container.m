@@ -254,7 +254,22 @@ classdef Container < handle
         
         function onContentsEnableChange( obj, ~, ~ )
             
-            disp ContentsEnableChange!
+            c = obj.Contents_;
+            tf = arrayfun( @(x)isa(x,'matlab.ui.control.StyleControl'), c );
+            if obj.ContentsEnableObserver.ContentsEnable % restore enable state
+                oldEnables = obj.Enables;
+                for ii = 1:numel( c )
+                    if tf(ii)
+                        c(ii).Enable = oldEnables{ii};
+                    end
+                end
+                obj.Enables = repmat( {'unset'}, size( c ) );
+            else % snapshot enable state and disable
+                enables = repmat( {'unset'}, size( c  ) );
+                enables(tf) = get( c(tf), {'Enable'} );
+                obj.Enables = enables;
+                set( c(tf), 'Enable', 'off' )
+            end
             
         end % onContentsEnableChange
         
