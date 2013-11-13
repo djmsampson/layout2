@@ -4,17 +4,8 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
         Contents
     end
     
-    properties( Access = public, AbortSet )
-        Enable = 'on'
-    end
-    
-    properties( Access = public, Dependent, AbortSet )
-        Padding % space around contents, in pixels
-    end
-    
     properties( Access = protected )
         Contents_ = gobjects( [0 1] ) % backing for Contents
-        Padding_ = 0 % backing for Padding
     end
     
     properties( Dependent, Access = protected )
@@ -73,42 +64,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             value = obj.Contents_;
             
         end % get.Contents
-        
-        function set.Enable( ~, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on';'off'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Enable'' must be ''on'' or ''off''.' )
-            
-            % Warn
-            warning( 'uix:Unimplemented', ...
-                'Property ''Enable'' is not implemented.' )
-            
-        end % set.Enable
-        
-        function value = get.Padding( obj )
-            
-            value = obj.Padding_;
-            
-        end % get.Padding
-        
-        function set.Padding( obj, value )
-            
-            % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value >= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Padding'' must be a non-negative scalar.' )
-            
-            % Set
-            obj.Padding_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.Padding
         
         function value = get.Dirty( obj )
             
@@ -189,7 +144,7 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
         function onChildRemoved( obj, ~, eventData )
             
             % Do nothing if container is being deleted
-            % if strcmp( obj.BeingDeleted, 'on' ), return, end
+            if strcmp( obj.BeingDeleted, 'on' ), return, end
             
             % Call template method
             obj.removeChild( eventData.Child )
