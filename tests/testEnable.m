@@ -49,9 +49,9 @@ function testHeirarchyEnable1()
 %testSimpleEnable1  Test enabling behavior for heirarchies of layouts
 close all force;
 h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
-box1 = uiextras.BoxPanel( 'Parent', h, 'Title', 'Panel 1', 'Enable', 'off' );
-control1 = uicontrol('Parent',box1,'String','Button 1','Enable','on');
-box2 = uiextras.BoxPanel( 'Parent', h, 'Title', 'Panel 2', 'Enable', 'on' );
+box1 = uiextras.BoxPanel('Parent',h,'Title','Panel 1','Enable','off');
+control1 = uicontrol('Parent',box1,'String','Button 1');
+box2 = uiextras.BoxPanel('Parent',h,'Title','Panel 2','Enable','on');
 control2 = uicontrol('Parent',box2,'String','Button 1','Enable','off');
 
 % Check that the right things are initially enabled
@@ -80,7 +80,7 @@ function testHeirarchyEnable2()
 %testSimpleEnable2  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable','off');
 h = uiextras.HBox( 'Parent', v, 'Enable', 'on');
-b = uicontrol( 'Parent', h, 'String', 'Button 1', 'Enable', 'on' );
+b = uicontrol('Parent',h,'String','Button 1');
 assertEqual( get(v,'Enable'), 'off' );
 assertEqual( get(h,'Enable'), 'off' );
 assertEqual( get(b,'Enable'), 'off' );
