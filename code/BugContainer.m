@@ -1,4 +1,4 @@
-classdef Vanilla < matlab.ui.container.internal.UIContainer
+classdef BugContainer < matlab.ui.container.internal.UIContainer
     
     properties( Dependent, GetAccess = public, SetAccess = private )
         Contents
@@ -15,7 +15,7 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
     
     methods
         
-        function obj = Vanilla()
+        function obj = BugContainer()
             
             % Call superclass constructor
             obj@matlab.ui.container.internal.UIContainer()
