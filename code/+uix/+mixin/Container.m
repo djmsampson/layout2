@@ -29,6 +29,11 @@ classdef Container < handle
         OldAncestors % old state
         VisibilityObserver % observer
         VisibilityListener % listeners
+        ContentsEnableObserver % observer
+        ContentsEnableListener % listener
+        OldContentsEnable % old state
+        Enables = cell( [0 1] ) % old states
+        EnableListeners = cell( [0 1] ) % listeners
         ChildObserver % observer
         ChildAddedListener % listener
         ChildRemovedListener % listener
@@ -54,6 +59,10 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( obj );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
+            contentsEnableObserver = uix.ContentsEnableObserver( obj );
+            contentsEnableListener = event.listener( ...
+                contentsEnableObserver, 'ContentsEnableChange', ...
+                @obj.onContentsEnableChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -67,6 +76,8 @@ classdef Container < handle
             obj.AncestryListeners = ancestryListeners;
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
+            obj.ContentsEnableObserver = contentsEnableObserver;
+            obj.ContentsEnableListener = contentsEnableListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -170,6 +181,13 @@ classdef Container < handle
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
+            % Retrieve enable from observer
+            contentsEnableObserver = obj.ContentsEnableObserver;
+            oldContentsEnable = contentsEnableObserver.ContentsEnable;
+            
+            % Store enable in cache
+            obj.OldContentsEnable = oldContentsEnable;
+            
             % Call template method
             obj.unparent( oldAncestors )
             
@@ -188,13 +206,29 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
+            contentsEnableObserver = uix.ContentsEnableObserver( [newAncestors; obj] );
+            contentsEnableListener = event.listener( contentsEnableObserver, ...
+                'ContentsEnableChange', @obj.onContentsEnableChange );
             
             % Store observers and listeners
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
+            obj.ContentsEnableObserver = contentsEnableObserver;
+            obj.ContentsEnableListener = contentsEnableListener;
             
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
+            
+            % Retrieve old enable from cache
+            oldContentsEnable = obj.OldContentsEnable;
+            
+            % Retrieve new enable from observer
+            newContentsEnable = contentsEnableObserver.ContentsEnable;
+            
+            % Force enable change if required
+            if oldContentsEnable ~= newContentsEnable
+                obj.onContentsEnableChange()
+            end
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -202,8 +236,9 @@ classdef Container < handle
                 obj.Dirty_ = false;
             end
             
-            % Reset cache
+            % Reset caches
             obj.OldAncestors = [];
+            obj.OldContentsEnable = [];
             
         end % onAncestryPostChange
         
@@ -216,6 +251,12 @@ classdef Container < handle
             end
             
         end % onVisibilityChange
+        
+        function onContentsEnableChange( obj, ~, ~ )
+            
+            disp ContentsEnableChange!
+            
+        end % onContentsEnableChange
         
         function onChildAdded( obj, ~, eventData )
             
