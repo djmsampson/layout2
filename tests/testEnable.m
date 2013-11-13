@@ -111,44 +111,44 @@ close all force;
 
 function testHierarchyEnable6()
 %testHierarchyEnable6  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
-h = uiextras.HBox('Parent',v,'Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'on' );
+h = uiextras.HBox( 'Parent', v, 'ContentsEnable', 'on' );
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
-assertEqual( get(v,'Enable'), 'on' );
-assertEqual( get(h,'Enable'), 'on' );
+assertEqual( get(v,'ContentsEnable'), 'on' );
+assertEqual( get(h,'ContentsEnable'), 'on' );
 assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
 function testHierarchyEnable7()
 %testHierarchyEnable7  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
-h = uiextras.HBox('Parent',v,'Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'on' );
+h = uiextras.HBox('Parent',v,'ContentsEnable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
-assertEqual( get(v,'Enable'), 'on' );
-assertEqual( get(h,'Enable'), 'on' );
+assertEqual( get(v,'ContentsEnable'), 'on' );
+assertEqual( get(h,'ContentsEnable'), 'on' );
 assertEqual( get(b,'Enable'), 'on' );
 
 close all force;
 
 function testHierarchyEnable8()
 %testHierarchyEnable8  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
-h = uiextras.HBox('Parent',v,'Enable','off');
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'on' );
+h = uiextras.HBox('Parent',v,'ContentsEnable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
-assertEqual( get(v,'Enable'), 'on' );
-assertEqual( get(h,'Enable'), 'off' );
+assertEqual( get(v,'ContentsEnable'), 'on' );
+assertEqual( get(h,'ContentsEnable'), 'off' );
 assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
 function testHierarchyEnable9()
 %testHierarchyEnable9  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
-h = uiextras.BoxPanel('Parent',v,'Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'off' );
+h = uiextras.BoxPanel('Parent',v,'ContentsEnable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
-assertEqual( get(v,'Enable'), 'off' );
-assertEqual( get(h,'Enable'), 'off' );
+assertEqual( get(v,'ContentsEnable'), 'off' );
+assertEqual( get(h,'ContentsEnable'), 'on' );
 assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
