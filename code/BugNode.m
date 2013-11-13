@@ -1,4 +1,4 @@
-classdef( Hidden ) BugNode < dynamicprops
+classdef BugNode < handle
     
     properties( SetAccess = private )
         Object % object

@@ -1,4 +1,4 @@
-classdef( Hidden ) BugChildObserver < handle
+classdef BugChildObserver < handle
     
     properties( Hidden )
         Root % root node
