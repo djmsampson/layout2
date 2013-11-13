@@ -13,7 +13,7 @@ classdef( Hidden ) BugChildObserver < handle
         function obj = BugChildObserver( oRoot )
             
             % Create root node
-            nRoot = uix.Node( oRoot );
+            nRoot = BugNode( oRoot );
             childAddedListener = event.listener( oRoot, 'ObjectChildAdded', @(~,e)obj.addChild(nRoot,e.Child) );
             childAddedListener.Recursive = true;
             nRoot.addListener( childAddedListener );
@@ -36,7 +36,7 @@ classdef( Hidden ) BugChildObserver < handle
         function addChild( obj, nParent, oChild )
             
             % Create child node
-            nChild = uix.Node( oChild );
+            nChild = BugNode( oChild );
             nParent.addChild( nChild )
             if ishghandle( oChild )
                 notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
