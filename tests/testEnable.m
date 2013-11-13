@@ -86,7 +86,6 @@ assertEqual( get(h,'ContentsEnable'), 'on' );
 assertEqual( get(b,'Enable'), 'off' );
  
 close all force;
-
  
 function testHierarchyEnable3()
 %testHierarchyEnable3  Test enabling behavior for uicontrols
@@ -101,11 +100,11 @@ close all force;
 
 function testHierarchyEnable5()
 %testHierarchyEnable5  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
-h = uiextras.HBox('Parent',v,'Enable','off');
-b = uicontrol('Parent',h,'String','Button 1','Enable','off');
-assertEqual( get(v,'Enable'), 'on' );
-assertEqual( get(h,'Enable'), 'off' );
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable', 'on' );
+h = uiextras.HBox( 'Parent', v, 'ContentsEnable', 'off' );
+b = uicontrol('Parent',h,'String','Button 1');
+assertEqual( get(v,'ContentsEnable'), 'on' );
+assertEqual( get(h,'ContentsEnable'), 'off' );
 assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
