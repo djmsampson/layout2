@@ -2,7 +2,7 @@ classdef( Hidden ) BugNode < dynamicprops
     
     properties( SetAccess = private )
         Object % object
-        Children = uix.BugNode.empty( [0 1] ) % children
+        Children = BugNode.empty( [0 1] ) % children
     end
     
     properties( Access = private )
