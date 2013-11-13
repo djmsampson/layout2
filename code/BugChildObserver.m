@@ -1,6 +1,6 @@
 classdef BugChildObserver < handle
     
-    properties( Hidden )
+    properties
         Root % root node
     end
     
