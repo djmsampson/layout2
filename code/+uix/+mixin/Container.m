@@ -31,7 +31,8 @@ classdef Container < handle
         VisibilityListener % listeners
         EnableObserver % observer
         EnableListener % listener
-        OldEnables = cell( [0 1] ) % old state
+        OldEnable % old state
+        Enables = cell( [0 1] ) % old state
         ChildObserver % observer
         ChildAddedListener % listener
         ChildRemovedListener % listener
@@ -178,6 +179,13 @@ classdef Container < handle
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
+            % Retrieve enable from observer
+            enableObserver = obj.EnableObserver;
+            oldEnable = enableObserver.Enable;
+            
+            % Store enable in cache
+            obj.OldEnable = oldEnable;
+            
             % Call template method
             obj.unparent( oldAncestors )
             
@@ -192,8 +200,33 @@ classdef Container < handle
             ancestryObserver = obj.AncestryObserver;
             newAncestors = ancestryObserver.Ancestors;
             
+            % Refresh observers and listeners
+            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
+            enableObserver = uix.EnableObserver( [newAncestors; obj] );
+            enableListener = event.listener( enableObserver, ...
+                'EnableChange', @obj.onEnableChange );
+            
+            % Store observers and listeners
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
+            obj.EnableObserver = enableObserver;
+            obj.EnableListener = enableListener;
+            
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
+            
+            % Retrieve old enable from cache
+            oldEnable = obj.OldEnable;
+            
+            % Retrieve new enable from observer
+            newEnable = enableObserver.Enable;
+            
+            % Force enable change if required
+            if oldEnable ~= newEnable
+                obj.onEnableChange()
+            end
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -201,8 +234,9 @@ classdef Container < handle
                 obj.Dirty_ = false;
             end
             
-            % Reset cache
+            % Reset caches
             obj.OldAncestors = [];
+            obj.OldEnable = [];
             
         end % onAncestryPostChange
         
@@ -221,17 +255,17 @@ classdef Container < handle
             c = obj.Contents_;
             tf = arrayfun( @(x)isa(x,'matlab.ui.control.StyleControl'), c );
             if obj.EnableObserver.Enable % restore enable state
-                oldEnables = obj.OldEnables;
+                oldEnables = obj.Enables;
                 for ii = 1:numel( c )
                     if tf(ii)
                         c(ii).Enable = oldEnables{ii};
                     end
                 end
-                obj.OldEnables = repmat( {'unset'}, size( c ) );
+                obj.Enables = repmat( {'unset'}, size( c ) );
             else % snapshot enable state and disable
                 enables = repmat( {'unset'}, size( c  ) );
                 enables(tf) = get( c(tf), {'Enable'} );
-                obj.OldEnables = enables;
+                obj.Enables = enables;
                 set( c(tf), 'Enable', 'off' )
             end
             
@@ -285,11 +319,11 @@ classdef Container < handle
             
             % Add to enables
             if obj.Enable_
-                obj.OldEnables{end+1,:} = 'unset';
+                obj.Enables{end+1,:} = 'unset';
             elseif isa( child, 'matlab.ui.control.StyleControl' )
-                obj.OldEnables{end+1,:} = child.Enable;
+                obj.Enables{end+1,:} = child.Enable;
             else
-                obj.OldEnables{end+1,:} = 'unset';
+                obj.Enables{end+1,:} = 'unset';
             end
             
             % Add listeners
@@ -315,7 +349,7 @@ classdef Container < handle
             obj.Contents_(tf,:) = [];
             
             % Remove from enables
-            obj.OldEnables(tf,:) = [];
+            obj.Enables(tf,:) = [];
             
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
@@ -338,20 +372,6 @@ classdef Container < handle
             %
             %  c.reparent(a,b) reparents the container c from the ancestors
             %  a to the ancestors b.
-            
-            % Refresh observers and listeners
-            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
-            visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChange );
-            enableObserver = uix.EnableObserver( [newAncestors; obj] );
-            enableListener = event.listener( enableObserver, ...
-                'EnableChange', @obj.onEnableChange );
-            
-            % Store observers and listeners
-            obj.VisibilityObserver = visibilityObserver;
-            obj.VisibilityListener = visibilityListener;
-            obj.EnableObserver = enableObserver;
-            obj.EnableListener = enableListener;
             
         end % reparent
         
