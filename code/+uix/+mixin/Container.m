@@ -273,6 +273,12 @@ classdef Container < handle
             
         end % onContentsEnableChange
         
+        function onEnableChange( obj, source, eventData )
+            
+            disp onEnableChange
+            
+        end % onEnableChange
+        
         function onChildAdded( obj, ~, eventData )
             
             % Call template method
@@ -319,6 +325,17 @@ classdef Container < handle
             % Add to contents
             obj.Contents_(end+1,:) = child;
             
+            % Add to enables
+            contentsEnable = obj.ContentsEnable_;
+            if strcmp( contentsEnable, 'on' )
+                obj.Enables{end+1,:} = 'unset';
+            elseif isa( child, 'matlab.ui.control.StyleControl' )
+                obj.Enables{end+1,:} = child.Enable;
+                child.Enable = 'off';
+            else
+                obj.Enables{end+1,:} = 'unset';
+            end
+            
             % Add listeners
             if isa( child, 'matlab.graphics.axis.Axes' )
                 obj.ActivePositionPropertyListeners{end+1,:} = ...
@@ -327,6 +344,14 @@ classdef Container < handle
                     'PostSet', @obj.onActivePositionPropertyChange );
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
+            end
+            if isa( child, 'matlab.ui.control.StyleControl' )
+                obj.EnableListeners{end+1,:} = ...
+                    event.proplistener( child, ...
+                    findprop( child, 'Enable' ), 'PostSet', ...
+                    @obj.onEnableChange );
+            else
+                obj.EnableListeners{end+1,:} = [];
             end
             
             % Mark as dirty
@@ -341,8 +366,12 @@ classdef Container < handle
             tf = contents == child;
             obj.Contents_(tf,:) = [];
             
+            % Remove from enables
+            obj.Enables(tf,:) = [];
+            
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
+            obj.EnableListeners(tf,:) = [];
             
             % Mark as dirty
             obj.Dirty = true;
@@ -377,6 +406,7 @@ classdef Container < handle
             % Reorder listeners
             obj.ActivePositionPropertyListeners = ...
                 obj.ActivePositionPropertyListeners(indices,:);
+            obj.EnableListeners = obj.EnableListeners(indices,:);
             
             % Mark as dirty
             obj.Dirty = true;
