@@ -9,9 +9,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
     end
     
     properties( Access = private )
-        AncestryObserver
-        AncestryListeners
-        OldAncestors
         ChildObserver
         ChildAddedListener
         ChildRemovedListener
@@ -25,12 +22,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             obj@matlab.ui.container.internal.UIContainer()
             
             % Create observers and listeners
-            ancestryObserver = uix.AncestryObserver( obj );
-            ancestryListeners = [ ...
-                event.listener( ancestryObserver, ...
-                'AncestryPreChange', @obj.onAncestryPreChange ); ...
-                event.listener( ancestryObserver, ...
-                'AncestryPostChange', @obj.onAncestryPostChange )];
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -38,8 +29,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
                 childObserver, 'ChildRemoved', @obj.onChildRemoved );
             
             % Store observers and listeners
-            obj.AncestryObserver = ancestryObserver;
-            obj.AncestryListeners = ancestryListeners;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -59,31 +48,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
     end % accessors
     
     methods( Access = private, Sealed )
-        
-        function onAncestryPreChange( obj, ~, ~ )
-            
-            % Retrieve ancestors from observer
-            ancestryObserver = obj.AncestryObserver;
-            oldAncestors = ancestryObserver.Ancestors;
-            
-            % Store ancestors in cache
-            obj.OldAncestors = oldAncestors;
-            
-        end % onAncestryPreChange
-        
-        function onAncestryPostChange( obj, ~, ~ )
-            
-            % Retrieve old ancestors from cache
-            oldAncestors = obj.OldAncestors;
-            
-            % Retrieve new ancestors from observer
-            ancestryObserver = obj.AncestryObserver;
-            newAncestors = ancestryObserver.Ancestors;
-            
-            % Reset cache
-            obj.OldAncestors = [];
-            
-        end % onAncestryPostChange
         
         function onChildAdded( obj, ~, eventData )
             
