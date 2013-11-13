@@ -45,8 +45,8 @@ assertEqual( get( controls(4), 'Enable' ), 'on' );
 
 close all force;
 
-function testHeirarchyEnable1()
-%testSimpleEnable1  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable1()
+%testHierarchyEnable1  Test enabling behavior for heirarchies of layouts
 close all force;
 h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
 box1 = uiextras.BoxPanel('Parent',h,'Title','Panel 1','Enable','off');
@@ -76,8 +76,8 @@ assertEqual( get( control2, 'Enable' ), 'off' );
 
 close all force;
 
-function testHeirarchyEnable2()
-%testSimpleEnable2  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable2()
+%testHierarchyEnable2  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable','off');
 h = uiextras.HBox( 'Parent', v, 'Enable', 'on');
 b = uicontrol('Parent',h,'String','Button 1');
@@ -88,8 +88,8 @@ assertEqual( get(b,'Enable'), 'off' );
 close all force;
 
  
-function testHeirarchyEnable3()
-%testSimpleEnable3  Test enabling behavior for uicontrols
+function testHierarchyEnable3()
+%testHierarchyEnable3  Test enabling behavior for uicontrols
 v = uiextras.VBox( 'Parent', figure(), 'Enable','off' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
@@ -99,8 +99,8 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHeirarchyEnable4()
-%testSimpleEnable4  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable4()
+%testHierarchyEnable4  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
@@ -110,8 +110,8 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHeirarchyEnable5()
-%testSimpleEnable5  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable5()
+%testHierarchyEnable5  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
@@ -121,8 +121,8 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHeirarchyEnable6()
-%testSimpleEnable6  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable6()
+%testHierarchyEnable6  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
@@ -132,8 +132,8 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHeirarchyEnable7()
-%testSimpleEnable7  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable7()
+%testHierarchyEnable7  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
@@ -143,8 +143,8 @@ assertEqual( get(b,'Enable'), 'on' );
 
 close all force;
 
-function testHeirarchyEnable8()
-%testSimpleEnable8  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable8()
+%testHierarchyEnable8  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
@@ -154,8 +154,8 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHeirarchyEnable9()
-%testSimpleEnable9  Test enabling behavior for heirarchies of layouts
+function testHierarchyEnable9()
+%testHierarchyEnable9  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
 h = uiextras.BoxPanel('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
