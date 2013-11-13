@@ -1,11 +1,11 @@
 classdef Container < handle
     
     properties( Dependent, Access = public )
-        Contents
+        Contents % contents in layout order
     end
     
-    properties( Access = public, AbortSet )
-        Enable = 'on'
+    properties( Dependent, Access = public, AbortSet, SetObservable )
+        Enable % enable or disable the contents
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -18,26 +18,35 @@ classdef Container < handle
     end
     
     properties( Dependent, Access = protected )
-        Dirty
+        Dirty % needs redraw
     end
     
     properties( Access = private )
-        Dirty_ = false
-        AncestryObserver
-        AncestryListeners
-        OldAncestors
-        VisibilityObserver
-        VisibilityListener
-        ChildObserver
-        ChildAddedListener
-        ChildRemovedListener
-        SizeChangeListener
-        ActivePositionPropertyListeners = cell( [0 1] )
+        Dirty_ = false % backing for Dirty
+        Enable_ = 'on' % backing for Enable
+        AncestryObserver % observer
+        AncestryListeners % listeners
+        OldAncestors % old state
+        VisibilityObserver % observer
+        VisibilityListener % listeners
+        EnableObserver % observer
+        EnableListener % listener
+        OldEnable % old state
+        Enables = cell( [0 1] ) % old state
+        ChildObserver % observer
+        ChildAddedListener % listener
+        ChildRemovedListener % listener
+        SizeChangeListener % listener
+        ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
     
     methods
         
         function obj = Container()
+            %uix.mixin.Container  Initialize
+            %
+            %  uix.mixin.Container() initializes the container during
+            %  construction.
             
             % Create observers and listeners
             ancestryObserver = uix.AncestryObserver( obj );
@@ -49,6 +58,9 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( obj );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
+            enableObserver = uix.EnableObserver( obj );
+            enableListener = event.listener( enableObserver, ...
+                'EnableChange', @obj.onEnableChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -62,6 +74,8 @@ classdef Container < handle
             obj.AncestryListeners = ancestryListeners;
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
+            obj.EnableObserver = enableObserver;
+            obj.EnableListener = enableListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -93,16 +107,21 @@ classdef Container < handle
             
         end % set.Contents
         
-        function set.Enable( ~, value )
+        function value = get.Enable( obj )
+            
+            value = obj.Enable_;
+            
+        end % get.Enable
+        
+        function set.Enable( obj, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on';'off'} ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
-            % Warn
-            warning( 'uix:Unimplemented', ...
-                'Property ''Enable'' is not implemented.' )
+            % Set
+            obj.Enable_ = value;
             
         end % set.Enable
         
@@ -160,6 +179,13 @@ classdef Container < handle
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
+            % Retrieve enable from observer
+            enableObserver = obj.EnableObserver;
+            oldEnable = enableObserver.Enable;
+            
+            % Store enable in cache
+            obj.OldEnable = oldEnable;
+            
             % Call template method
             obj.unparent( oldAncestors )
             
@@ -174,8 +200,33 @@ classdef Container < handle
             ancestryObserver = obj.AncestryObserver;
             newAncestors = ancestryObserver.Ancestors;
             
+            % Refresh observers and listeners
+            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
+            visibilityListener = event.listener( visibilityObserver, ...
+                'VisibilityChange', @obj.onVisibilityChange );
+            enableObserver = uix.EnableObserver( [newAncestors; obj] );
+            enableListener = event.listener( enableObserver, ...
+                'EnableChange', @obj.onEnableChange );
+            
+            % Store observers and listeners
+            obj.VisibilityObserver = visibilityObserver;
+            obj.VisibilityListener = visibilityListener;
+            obj.EnableObserver = enableObserver;
+            obj.EnableListener = enableListener;
+            
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
+            
+            % Retrieve old enable from cache
+            oldEnable = obj.OldEnable;
+            
+            % Retrieve new enable from observer
+            newEnable = enableObserver.Enable;
+            
+            % Force enable change if required
+            if oldEnable ~= newEnable
+                obj.onEnableChange()
+            end
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -183,8 +234,9 @@ classdef Container < handle
                 obj.Dirty_ = false;
             end
             
-            % Reset cache
+            % Reset caches
             obj.OldAncestors = [];
+            obj.OldEnable = [];
             
         end % onAncestryPostChange
         
@@ -197,6 +249,27 @@ classdef Container < handle
             end
             
         end % onVisibilityChange
+        
+        function onEnableChange( obj, ~, ~ )
+            
+            c = obj.Contents_;
+            tf = arrayfun( @(x)isa(x,'matlab.ui.control.StyleControl'), c );
+            if obj.EnableObserver.Enable % restore enable state
+                oldEnables = obj.Enables;
+                for ii = 1:numel( c )
+                    if tf(ii)
+                        c(ii).Enable = oldEnables{ii};
+                    end
+                end
+                obj.Enables = repmat( {'unset'}, size( c ) );
+            else % snapshot enable state and disable
+                enables = repmat( {'unset'}, size( c  ) );
+                enables(tf) = get( c(tf), {'Enable'} );
+                obj.Enables = enables;
+                set( c(tf), 'Enable', 'off' )
+            end
+            
+        end % onEnableChange
         
         function onChildAdded( obj, ~, eventData )
             
@@ -242,7 +315,18 @@ classdef Container < handle
         function addChild( obj, child )
             
             % Add to contents
-            obj.Contents_(end+1,1) = child;
+            obj.Contents_(end+1,:) = child;
+            
+            % Add to enables
+            enable = obj.Enable_;
+            if strcmp( enable, 'on' )
+                obj.Enables{end+1,:} = 'unset';
+            elseif isa( child, 'matlab.ui.control.StyleControl' )
+                obj.Enables{end+1,:} = child.Enable;
+                child.Enable = 'off';
+            else
+                obj.Enables{end+1,:} = 'unset';
+            end
             
             % Add listeners
             if isa( child, 'matlab.graphics.axis.Axes' )
@@ -266,6 +350,9 @@ classdef Container < handle
             tf = contents == child;
             obj.Contents_(tf,:) = [];
             
+            % Remove from enables
+            obj.Enables(tf,:) = [];
+            
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
             
@@ -282,20 +369,11 @@ classdef Container < handle
             
         end % unparent
         
-        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSL>
+        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
             %reparent  Reparent container
             %
             %  c.reparent(a,b) reparents the container c from the ancestors
             %  a to the ancestors b.
-            
-            % Refresh visibility observer and listener
-            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
-            visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChange );
-            
-            % Store observer and listener
-            obj.VisibilityObserver = visibilityObserver;
-            obj.VisibilityListener = visibilityListener;
             
         end % reparent
         
