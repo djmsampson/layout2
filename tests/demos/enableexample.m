@@ -24,7 +24,7 @@ uicontrol( 'Parent', box, 'String', 'Button 5', 'Enable', 'off' );
 uicontrol( 'Parent', box, 'String', 'Button 6' );
 
 %% Try disabling the panel
-set( panel, 'Enable', 'off' );
+set( panel, 'ContentsEnable', 'off' );
 
 %% Try enabling the panel
-set( panel, 'Enable', 'on' );
+set( panel, 'ContentsEnable', 'on' );
