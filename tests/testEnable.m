@@ -20,7 +20,7 @@ initTestSuite();
 function testSimpleEnable()
 %ttestSimpleEnable  Test enabling behavior for uicontrols
 close all force;
-h = uiextras.HBox( 'Enable', 'on' );
+h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
 controls = [
     uicontrol('Parent',h,'String','Button 1','Enable','on')
     axes('Parent',h)
@@ -48,7 +48,7 @@ close all force;
 function testHeirarchyEnable1()
 %testSimpleEnable1  Test enabling behavior for heirarchies of layouts
 close all force;
-h = uiextras.HBox( 'Enable', 'on' );
+h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
 box1 = uiextras.BoxPanel( 'Parent', h, 'Title', 'Panel 1', 'Enable', 'off' );
 control1 = uicontrol('Parent',box1,'String','Button 1','Enable','on');
 box2 = uiextras.BoxPanel( 'Parent', h, 'Title', 'Panel 2', 'Enable', 'on' );
@@ -78,9 +78,9 @@ close all force;
 
 function testHeirarchyEnable2()
 %testSimpleEnable2  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','off');
-h = uiextras.HBox('Parent',v,'Enable','on');
-b = uicontrol('Parent',h,'String','Button 1','Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'Enable','off');
+h = uiextras.HBox( 'Parent', v, 'Enable', 'on');
+b = uicontrol( 'Parent', h, 'String', 'Button 1', 'Enable', 'on' );
 assertEqual( get(v,'Enable'), 'off' );
 assertEqual( get(h,'Enable'), 'off' );
 assertEqual( get(b,'Enable'), 'off' );
@@ -90,7 +90,7 @@ close all force;
  
 function testHeirarchyEnable3()
 %testSimpleEnable3  Test enabling behavior for uicontrols
-v = uiextras.VBox('Enable','off');
+v = uiextras.VBox( 'Parent', figure(), 'Enable','off' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
 assertEqual( get(v,'Enable'), 'off' );
@@ -101,7 +101,7 @@ close all force;
 
 function testHeirarchyEnable4()
 %testSimpleEnable4  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','off');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
 assertEqual( get(v,'Enable'), 'off' );
@@ -112,7 +112,7 @@ close all force;
 
 function testHeirarchyEnable5()
 %testSimpleEnable5  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
 assertEqual( get(v,'Enable'), 'on' );
@@ -123,7 +123,7 @@ close all force;
 
 function testHeirarchyEnable6()
 %testSimpleEnable6  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
 assertEqual( get(v,'Enable'), 'on' );
@@ -134,7 +134,7 @@ close all force;
 
 function testHeirarchyEnable7()
 %testSimpleEnable7  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
 assertEqual( get(v,'Enable'), 'on' );
@@ -145,7 +145,7 @@ close all force;
 
 function testHeirarchyEnable8()
 %testSimpleEnable8  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','on');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
 h = uiextras.HBox('Parent',v,'Enable','off');
 b = uicontrol('Parent',h,'String','Button 1','Enable','on');
 assertEqual( get(v,'Enable'), 'on' );
@@ -156,7 +156,7 @@ close all force;
 
 function testHeirarchyEnable9()
 %testSimpleEnable9  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox('Enable','off');
+v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
 h = uiextras.BoxPanel('Parent',v,'Enable','on');
 b = uicontrol('Parent',h,'String','Button 1','Enable','off');
 assertEqual( get(v,'Enable'), 'off' );
