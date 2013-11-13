@@ -15,7 +15,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
         ChildObserver
         ChildAddedListener
         ChildRemovedListener
-        SizeChangeListener
     end
     
     methods
@@ -37,8 +36,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
                 childObserver, 'ChildAdded', @obj.onChildAdded );
             childRemovedListener = event.listener( ...
                 childObserver, 'ChildRemoved', @obj.onChildRemoved );
-            sizeChangeListener = event.listener( ...
-                obj, 'SizeChange', @obj.onSizeChange );
             
             % Store observers and listeners
             obj.AncestryObserver = ancestryObserver;
@@ -46,7 +43,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
-            obj.SizeChangeListener = sizeChangeListener;
             
         end % constructor
         
@@ -105,10 +101,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             obj.removeChild( eventData.Child )
             
         end % onChildRemoved
-        
-        function onSizeChange( obj, ~, ~ )
-            
-        end % onSizeChange
         
     end % event handlers
     
