@@ -188,15 +188,10 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
-            enableObserver = uix.EnableObserver( [newAncestors; obj] );
-            enableListener = event.listener( enableObserver, ...
-                'EnableChange', @obj.onEnableChange );
             
             % Store observers and listeners
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
-            obj.EnableObserver = enableObserver;
-            obj.EnableListener = enableListener;
             
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
