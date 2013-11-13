@@ -256,6 +256,7 @@ classdef Container < handle
             
             c = obj.Contents_;
             tf = arrayfun( @(x)isa(x,'matlab.ui.control.StyleControl'), c );
+            obj.EnableListeners = cell( size( c ) ); % reset listeners
             if obj.ContentsEnableObserver.ContentsEnable % restore enable state
                 oldEnables = obj.Enables;
                 for ii = 1:numel( c )
@@ -269,13 +270,31 @@ classdef Container < handle
                 enables(tf) = get( c(tf), {'Enable'} );
                 obj.Enables = enables;
                 set( c(tf), 'Enable', 'off' )
+                for ii = 1:numel( c )
+                    if tf(ii)
+                        obj.EnableListeners{ii} = event.proplistener( ...
+                            c(ii), findprop( c(ii), 'Enable' ), ...
+                            'PostSet', @obj.onEnableChange );
+                    end
+                end
             end
             
         end % onContentsEnableChange
         
-        function onEnableChange( obj, source, eventData )
+        function onEnableChange( obj, ~, eventData )
             
-            disp onEnableChange
+            % Warn
+            warning( 'uix:InvalidOperation', ...
+                'Cannot change property ''Enable'' of controls in a container with property ''ContentsEnable'' set to ''off''.' )
+            
+            % Undo change
+            c = obj.Contents_(obj.Contents_==eventData.AffectedObject);
+            switch c.Enable
+                case 'on'
+                    c.Enable = 'off';
+                case 'off'
+                    c.Enable = 'on';
+            end
             
         end % onEnableChange
         
@@ -345,7 +364,8 @@ classdef Container < handle
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
-            if isa( child, 'matlab.ui.control.StyleControl' )
+            if strcmp( contentsEnable, 'off' ) && ...
+                    isa( child, 'matlab.ui.control.StyleControl' )
                 obj.EnableListeners{end+1,:} = ...
                     event.proplistener( child, ...
                     findprop( child, 'Enable' ), 'PostSet', ...
