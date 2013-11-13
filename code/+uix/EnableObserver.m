@@ -18,6 +18,9 @@ classdef ( Hidden, Sealed ) EnableObserver < handle
         
         function obj = EnableObserver( in )
             
+            persistent ROOT
+            if isequal( ROOT, [] ), ROOT = groot(); end
+            
             % Handle inputs
             if isscalar( in )
                 subject = in;
