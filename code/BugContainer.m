@@ -21,7 +21,7 @@ classdef BugContainer < matlab.ui.container.internal.UIContainer
             obj@matlab.ui.container.internal.UIContainer()
             
             % Create observers and listeners
-            childObserver = MyChildObserver( obj );
+            childObserver = BugChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
             
