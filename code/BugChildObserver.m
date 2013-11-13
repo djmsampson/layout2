@@ -45,14 +45,6 @@ classdef BugChildObserver < handle
                 nChild.addListener( event.listener( oChild, 'ObjectChildAdded', @(~,e)obj.addChild(nChild,e.Child) ) );
             end
             
-            % Add grandchildren
-            if ~ishghandle( oChild )
-                oGrandchildren = hgGetTrueChildren( oChild );
-                for ii = 1:numel( oGrandchildren )
-                    obj.addChild( nChild, oGrandchildren(ii) )
-                end
-            end
-            
         end % addChild
         
     end % public methods
