@@ -5,7 +5,7 @@ classdef Container < handle
     end
     
     properties( Dependent, Access = public, AbortSet, SetObservable )
-        Enable % enable or disable the contents
+        ContentsEnable % enable or disable the contents
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -23,7 +23,7 @@ classdef Container < handle
     
     properties( Access = private )
         Dirty_ = false % backing for Dirty
-        Enable_ = 'on' % backing for Enable
+        ContentsEnable_ = 'on' % backing for ContentsEnable
         AncestryObserver % observer
         AncestryListeners % listeners
         OldAncestors % old state
@@ -98,23 +98,23 @@ classdef Container < handle
             
         end % set.Contents
         
-        function value = get.Enable( obj )
+        function value = get.ContentsEnable( obj )
             
-            value = obj.Enable_;
+            value = obj.ContentsEnable_;
             
-        end % get.Enable
+        end % get.ContentsEnable
         
-        function set.Enable( obj, value )
+        function set.ContentsEnable( obj, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on';'off'} ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''Enable'' must be ''on'' or ''off''.' )
+                'Property ''ContentsEnable'' must be ''on'' or ''off''.' )
             
             % Set
-            obj.Enable_ = value;
+            obj.ContentsEnable_ = value;
             
-        end % set.Enable
+        end % set.ContentsEnable
         
         function value = get.Padding( obj )
             
