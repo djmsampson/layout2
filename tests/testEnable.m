@@ -90,11 +90,11 @@ close all force;
  
 function testHierarchyEnable3()
 %testHierarchyEnable3  Test enabling behavior for uicontrols
-v = uiextras.VBox( 'Parent', figure(), 'Enable','off' );
-h = uiextras.HBox('Parent',v,'Enable','off');
-b = uicontrol('Parent',h,'String','Button 1','Enable','on');
-assertEqual( get(v,'Enable'), 'off' );
-assertEqual( get(h,'Enable'), 'off' );
+v = uiextras.VBox( 'Parent', figure(), 'ContentsEnable','off' );
+h = uiextras.HBox( 'Parent', v, 'ContentsEnable', 'off' );
+b = uicontrol('Parent',h,'String','Button 1');
+assertEqual( get(v,'ContentsEnable'), 'off' );
+assertEqual( get(h,'ContentsEnable'), 'off' );
 assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
