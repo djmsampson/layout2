@@ -8,12 +8,7 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
         Contents_ = gobjects( [0 1] ) % backing for Contents
     end
     
-    properties( Dependent, Access = protected )
-        Dirty
-    end
-    
     properties( Access = private )
-        Dirty_ = false
         AncestryObserver
         AncestryListeners
         OldAncestors
@@ -65,24 +60,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             
         end % get.Contents
         
-        function value = get.Dirty( obj )
-            
-            value = obj.Dirty_;
-            
-        end % get.Dirty
-        
-        function set.Dirty( obj, value )
-            
-            if value
-                if obj.isDrawable() % drawable
-                    obj.redraw() % redraw now
-                else % not drawable
-                    obj.Dirty_ = true; % flag for future redraw
-                end
-            end
-            
-        end % set.Dirty
-        
     end % accessors
     
     methods( Access = private, Sealed )
@@ -96,9 +73,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
-            % Call template method
-            obj.unparent( oldAncestors )
-            
         end % onAncestryPreChange
         
         function onAncestryPostChange( obj, ~, ~ )
@@ -110,29 +84,10 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             ancestryObserver = obj.AncestryObserver;
             newAncestors = ancestryObserver.Ancestors;
             
-            % Call template method
-            obj.reparent( oldAncestors, newAncestors )
-            
-            % Redraw if possible and if dirty
-            if obj.Dirty_ && obj.isDrawable()
-                obj.redraw()
-                obj.Dirty_ = false;
-            end
-            
             % Reset cache
             obj.OldAncestors = [];
             
         end % onAncestryPostChange
-        
-        function onVisibilityChange( obj, ~, ~ )
-            
-            % Redraw if possible and if dirty
-            if obj.Dirty_ && obj.isDrawable()
-                obj.redraw()
-                obj.Dirty_ = false;
-            end
-            
-        end % onVisibilityChange
         
         function onChildAdded( obj, ~, eventData )
             
@@ -153,17 +108,7 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
         
         function onSizeChange( obj, ~, ~ )
             
-            % Mark as dirty
-            obj.Dirty = true;
-            
         end % onSizeChange
-        
-        function onActivePositionPropertyChange( obj, ~, ~ )
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % onActivePositionPropertyChange
         
     end % event handlers
     
@@ -174,19 +119,6 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             % Add to contents
             obj.Contents_(end+1,1) = child;
             
-%             % Add listeners
-%             if isa( child, 'matlab.graphics.axis.Axes' )
-%                 obj.ActivePositionPropertyListeners{end+1,:} = ...
-%                     event.proplistener( child, ...
-%                     findprop( child, 'ActivePositionProperty' ), ...
-%                     'PostSet', @obj.onActivePositionPropertyChange );
-%             else
-%                 obj.ActivePositionPropertyListeners{end+1,:} = [];
-%             end
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
         end % addChild
         
         function removeChild( obj, child )
@@ -196,55 +128,11 @@ classdef Vanilla < matlab.ui.container.internal.UIContainer
             tf = contents == child;
             obj.Contents_(tf,:) = [];
             
-%             % Remove listeners
-%             obj.ActivePositionPropertyListeners(tf,:) = [];
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
         end % removeChild
-        
-        function unparent( obj, oldAncestors ) %#ok<INUSD>
-            %unparent  Unparent container
-            %
-            %  c.unparent(a) unparents the container c from the ancestors
-            %  a.
-            
-        end % unparent
-        
-        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSL>
-            %reparent  Reparent container
-            %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
-            
-%             % Refresh visibility observer and listener
-%             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
-%             visibilityListener = event.listener( visibilityObserver, ...
-%                 'VisibilityChange', @obj.onVisibilityChange );
-%             
-%             % Store observer and listener
-%             obj.VisibilityObserver = visibilityObserver;
-%             obj.VisibilityListener = visibilityListener;
-            
-        end % reparent
         
         function redraw( obj )
             
         end % redraw
-        
-        function tf = isDrawable( obj )
-            %isDrawable  Test for drawability
-            %
-            %  c.isDrawable() is true if the container c is drawable, and
-            %  false otherwise.  To be drawable, a container must be rooted
-            %  and visible.
-            
-            ancestors = obj.AncestryObserver.Ancestors;
-            tf = ~isempty( ancestors ) && ...
-                isa( ancestors(1), 'matlab.ui.Figure' );
-            
-        end % isDrawable
         
     end % template methods
     
