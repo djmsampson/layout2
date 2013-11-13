@@ -18,9 +18,6 @@ classdef ( Hidden, Sealed ) EnableObserver < handle
         
         function obj = EnableObserver( in )
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             % Handle inputs
             if isscalar( in )
                 subject = in;
@@ -50,9 +47,6 @@ classdef ( Hidden, Sealed ) EnableObserver < handle
             % Store subject, ancestors
             obj.Subject = subject;
             obj.Ancestors = ancestors;
-            
-            % Stop early for unrooted subjects
-            if ~isequal( ancestry(1).Parent, ROOT ), return, end
             
             % Force update
             obj.update()
