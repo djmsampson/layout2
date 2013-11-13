@@ -20,7 +20,7 @@ initTestSuite();
 function testSimpleEnable()
 %ttestSimpleEnable  Test enabling behavior for uicontrols
 close all force;
-h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
+h = uiextras.HBox( 'Parent', figure(), 'ContentsEnable', 'on' );
 controls = [
     uicontrol('Parent',h,'String','Button 1','Enable','on')
     axes('Parent',h)
@@ -32,12 +32,12 @@ assertEqual( get( controls(1), 'Enable' ), 'on' );
 assertEqual( get( controls(3), 'Enable' ), 'off' );
 assertEqual( get( controls(4), 'Enable' ), 'on' );
  
-set(h,'Enable','off');
+set(h,'ContentsEnable','off');
 assertEqual( get( controls(1), 'Enable' ), 'off' );
 assertEqual( get( controls(3), 'Enable' ), 'off' );
 assertEqual( get( controls(4), 'Enable' ), 'off' );
  
-set(h,'Enable','on');
+set(h,'ContentsEnable','on');
 % Make sure that anything previously disabled is still disabled
 assertEqual( get( controls(1), 'Enable' ), 'on' );
 assertEqual( get( controls(3), 'Enable' ), 'off' );
