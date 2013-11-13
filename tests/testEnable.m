@@ -99,17 +99,6 @@ assertEqual( get(b,'Enable'), 'off' );
 
 close all force;
 
-function testHierarchyEnable4()
-%testHierarchyEnable4  Test enabling behavior for heirarchies of layouts
-v = uiextras.VBox( 'Parent', figure(), 'Enable', 'off' );
-h = uiextras.HBox('Parent',v,'Enable','off');
-b = uicontrol('Parent',h,'String','Button 1','Enable','off');
-assertEqual( get(v,'Enable'), 'off' );
-assertEqual( get(h,'Enable'), 'off' );
-assertEqual( get(b,'Enable'), 'off' );
-
-close all force;
-
 function testHierarchyEnable5()
 %testHierarchyEnable5  Test enabling behavior for heirarchies of layouts
 v = uiextras.VBox( 'Parent', figure(), 'Enable', 'on' );
