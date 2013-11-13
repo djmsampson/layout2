@@ -48,29 +48,29 @@ close all force;
 function testHierarchyEnable1()
 %testHierarchyEnable1  Test enabling behavior for heirarchies of layouts
 close all force;
-h = uiextras.HBox( 'Parent', figure(), 'Enable', 'on' );
-box1 = uiextras.BoxPanel('Parent',h,'Title','Panel 1','Enable','off');
+h = uiextras.HBox( 'Parent', figure(), 'ContentsEnable', 'on' );
+box1 = uiextras.BoxPanel('Parent',h,'Title','Panel 1','ContentsEnable','off');
 control1 = uicontrol('Parent',box1,'String','Button 1');
-box2 = uiextras.BoxPanel('Parent',h,'Title','Panel 2','Enable','on');
+box2 = uiextras.BoxPanel('Parent',h,'Title','Panel 2','ContentsEnable','on');
 control2 = uicontrol('Parent',box2,'String','Button 1','Enable','off');
 
 % Check that the right things are initially enabled
-assertEqual( get( box1, 'Enable' ), 'off' );
-assertEqual( get( box2, 'Enable' ), 'on' );
+assertEqual( get( box1, 'ContentsEnable' ), 'off' );
+assertEqual( get( box2, 'ContentsEnable' ), 'on' );
 assertEqual( get( control1, 'Enable' ), 'off' );
 assertEqual( get( control2, 'Enable' ), 'off' );
 
-set(h,'Enable','off');
+set(h,'ContentsEnable','off');
 % Test that everything is initially off
-assertEqual( get( box1, 'Enable' ), 'off' );
-assertEqual( get( box2, 'Enable' ), 'off' );
+assertEqual( get( box1, 'ContentsEnable' ), 'off' );
+assertEqual( get( box2, 'ContentsEnable' ), 'on' );
 assertEqual( get( control1, 'Enable' ), 'off' );
 assertEqual( get( control2, 'Enable' ), 'off' );
  
-set(h,'Enable','on');
+set(h,'ContentsEnable','on');
 % Check that the right things are now enabled
-assertEqual( get( box1, 'Enable' ), 'off' );
-assertEqual( get( box2, 'Enable' ), 'on' );
+assertEqual( get( box1, 'ContentsEnable' ), 'off' );
+assertEqual( get( box2, 'ContentsEnable' ), 'on' );
 assertEqual( get( control1, 'Enable' ), 'off' );
 assertEqual( get( control2, 'Enable' ), 'off' );
 
