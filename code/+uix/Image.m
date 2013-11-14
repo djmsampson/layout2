@@ -47,6 +47,16 @@ classdef Image < hgsetget
             
         end % constructor
         
+        function delete( obj )
+            
+            container = obj.Container;
+            if ishghandle( container ) && strcmp( container.BeingDeleted, 'off' )
+                delete( container )
+                assert( ~ishandle( obj.Label ) )
+            end
+            
+        end % destructor
+        
     end % structors
     
     methods
