@@ -52,7 +52,6 @@ classdef Image < hgsetget
             container = obj.Container;
             if ishghandle( container ) && strcmp( container.BeingDeleted, 'off' )
                 delete( container )
-                assert( ~ishandle( obj.Label ) )
             end
             
         end % destructor
