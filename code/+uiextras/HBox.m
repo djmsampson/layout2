@@ -34,6 +34,7 @@ classdef HBox < uix.HBox
     %   $Revision: 374 $ $Date: 2012-12-20 09:18:15 +0000 (Thu, 20 Dec 2012) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         Sizes % deprecated
         MinimumSizes % deprecated
     end
@@ -54,6 +55,30 @@ classdef HBox < uix.HBox
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.Sizes( obj )
             

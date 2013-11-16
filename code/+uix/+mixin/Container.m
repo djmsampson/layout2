@@ -4,10 +4,6 @@ classdef Container < handle
         Contents % contents in layout order
     end
     
-    properties( Dependent, Access = public, AbortSet, SetObservable )
-        ContentsEnable % enable or disable the contents
-    end
-    
     properties( Access = public, Dependent, AbortSet )
         Padding % space around contents, in pixels
     end
@@ -23,17 +19,11 @@ classdef Container < handle
     
     properties( Access = private )
         Dirty_ = false % backing for Dirty
-        ContentsEnable_ = 'on' % backing for ContentsEnable
         AncestryObserver % observer
         AncestryListeners % listeners
         OldAncestors % old state
         VisibilityObserver % observer
         VisibilityListener % listeners
-        ContentsEnableObserver % observer
-        ContentsEnableListener % listener
-        OldContentsEnable % old state
-        Enables = cell( [0 1] ) % old states
-        EnableListeners = cell( [0 1] ) % listeners
         ChildObserver % observer
         ChildAddedListener % listener
         ChildRemovedListener % listener
@@ -59,10 +49,6 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( obj );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
-            contentsEnableObserver = uix.ContentsEnableObserver( obj );
-            contentsEnableListener = event.listener( ...
-                contentsEnableObserver, 'ContentsEnableChange', ...
-                @obj.onContentsEnableChange );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -76,8 +62,6 @@ classdef Container < handle
             obj.AncestryListeners = ancestryListeners;
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
-            obj.ContentsEnableObserver = contentsEnableObserver;
-            obj.ContentsEnableListener = contentsEnableListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -108,24 +92,6 @@ classdef Container < handle
             obj.reorder( indices )
             
         end % set.Contents
-        
-        function value = get.ContentsEnable( obj )
-            
-            value = obj.ContentsEnable_;
-            
-        end % get.ContentsEnable
-        
-        function set.ContentsEnable( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on';'off'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''ContentsEnable'' must be ''on'' or ''off''.' )
-            
-            % Set
-            obj.ContentsEnable_ = value;
-            
-        end % set.ContentsEnable
         
         function value = get.Padding( obj )
             
@@ -181,13 +147,6 @@ classdef Container < handle
             % Store ancestors in cache
             obj.OldAncestors = oldAncestors;
             
-            % Retrieve enable from observer
-            contentsEnableObserver = obj.ContentsEnableObserver;
-            oldContentsEnable = contentsEnableObserver.ContentsEnable;
-            
-            % Store enable in cache
-            obj.OldContentsEnable = oldContentsEnable;
-            
             % Call template method
             obj.unparent( oldAncestors )
             
@@ -206,29 +165,13 @@ classdef Container < handle
             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
             visibilityListener = event.listener( visibilityObserver, ...
                 'VisibilityChange', @obj.onVisibilityChange );
-            contentsEnableObserver = uix.ContentsEnableObserver( [newAncestors; obj] );
-            contentsEnableListener = event.listener( contentsEnableObserver, ...
-                'ContentsEnableChange', @obj.onContentsEnableChange );
             
             % Store observers and listeners
             obj.VisibilityObserver = visibilityObserver;
             obj.VisibilityListener = visibilityListener;
-            obj.ContentsEnableObserver = contentsEnableObserver;
-            obj.ContentsEnableListener = contentsEnableListener;
             
             % Call template method
             obj.reparent( oldAncestors, newAncestors )
-            
-            % Retrieve old enable from cache
-            oldContentsEnable = obj.OldContentsEnable;
-            
-            % Retrieve new enable from observer
-            newContentsEnable = contentsEnableObserver.ContentsEnable;
-            
-            % Force enable change if required
-            if oldContentsEnable ~= newContentsEnable
-                obj.onContentsEnableChange()
-            end
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -238,7 +181,6 @@ classdef Container < handle
             
             % Reset caches
             obj.OldAncestors = [];
-            obj.OldContentsEnable = [];
             
         end % onAncestryPostChange
         
@@ -251,52 +193,6 @@ classdef Container < handle
             end
             
         end % onVisibilityChange
-        
-        function onContentsEnableChange( obj, ~, ~ )
-            
-            c = obj.Contents_;
-            tf = arrayfun( @(x)isa(x,'matlab.ui.control.StyleControl'), c );
-            obj.EnableListeners = cell( size( c ) ); % reset listeners
-            if obj.ContentsEnableObserver.ContentsEnable % restore enable state
-                oldEnables = obj.Enables;
-                for ii = 1:numel( c )
-                    if tf(ii)
-                        c(ii).Enable = oldEnables{ii};
-                    end
-                end
-                obj.Enables = repmat( {'unset'}, size( c ) );
-            else % snapshot enable state and disable
-                enables = repmat( {'unset'}, size( c  ) );
-                enables(tf) = get( c(tf), {'Enable'} );
-                obj.Enables = enables;
-                set( c(tf), 'Enable', 'off' )
-                for ii = 1:numel( c )
-                    if tf(ii)
-                        obj.EnableListeners{ii} = event.proplistener( ...
-                            c(ii), findprop( c(ii), 'Enable' ), ...
-                            'PostSet', @obj.onEnableChange );
-                    end
-                end
-            end
-            
-        end % onContentsEnableChange
-        
-        function onEnableChange( obj, ~, eventData )
-            
-            % Warn
-            warning( 'uix:InvalidOperation', ...
-                'Cannot change property ''Enable'' of controls in a container with property ''ContentsEnable'' set to ''off''.' )
-            
-            % Undo change
-            c = obj.Contents_(obj.Contents_==eventData.AffectedObject);
-            switch c.Enable
-                case 'on'
-                    c.Enable = 'off';
-                case 'off'
-                    c.Enable = 'on';
-            end
-            
-        end % onEnableChange
         
         function onChildAdded( obj, ~, eventData )
             
@@ -344,17 +240,6 @@ classdef Container < handle
             % Add to contents
             obj.Contents_(end+1,:) = child;
             
-            % Add to enables
-            contentsEnable = obj.ContentsEnableObserver.ContentsEnable;
-            if contentsEnable
-                obj.Enables{end+1,:} = 'unset';
-            elseif isa( child, 'matlab.ui.control.StyleControl' )
-                obj.Enables{end+1,:} = child.Enable;
-                child.Enable = 'off';
-            else
-                obj.Enables{end+1,:} = 'unset';
-            end
-            
             % Add listeners
             if isa( child, 'matlab.graphics.axis.Axes' )
                 obj.ActivePositionPropertyListeners{end+1,:} = ...
@@ -363,15 +248,6 @@ classdef Container < handle
                     'PostSet', @obj.onActivePositionPropertyChange );
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
-            end
-            if ~contentsEnable && ...
-                    isa( child, 'matlab.ui.control.StyleControl' )
-                obj.EnableListeners{end+1,:} = ...
-                    event.proplistener( child, ...
-                    findprop( child, 'Enable' ), 'PostSet', ...
-                    @obj.onEnableChange );
-            else
-                obj.EnableListeners{end+1,:} = [];
             end
             
             % Mark as dirty
@@ -386,12 +262,8 @@ classdef Container < handle
             tf = contents == child;
             obj.Contents_(tf,:) = [];
             
-            % Remove from enables
-            obj.Enables(tf,:) = [];
-            
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
-            obj.EnableListeners(tf,:) = [];
             
             % Mark as dirty
             obj.Dirty = true;
@@ -426,7 +298,6 @@ classdef Container < handle
             % Reorder listeners
             obj.ActivePositionPropertyListeners = ...
                 obj.ActivePositionPropertyListeners(indices,:);
-            obj.EnableListeners = obj.EnableListeners(indices,:);
             
             % Mark as dirty
             obj.Dirty = true;

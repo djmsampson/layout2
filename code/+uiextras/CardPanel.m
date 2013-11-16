@@ -28,6 +28,7 @@ classdef CardPanel < uix.CardPanel
     %   $Revision: 380 $ $Date: 2013-02-27 10:29:08 +0000 (Wed, 27 Feb 2013) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         SelectedChild % deprecated
     end
     
@@ -47,6 +48,30 @@ classdef CardPanel < uix.CardPanel
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.SelectedChild( obj )
             

@@ -36,8 +36,9 @@ classdef GridFlex < uix.GridFlex
     %   $Revision: 366 $ $Date: 2011-02-10 15:48:11 +0000 (Thu, 10 Feb 2011) $
     
     properties( Hidden, Access = public, Dependent )
-        RowSizes % deprecated
+        Enable % deprecated
         ColumnSizes % deprecated
+        RowSizes % deprecated
         ShowMarkings % deprecated
     end
     
@@ -58,27 +59,29 @@ classdef GridFlex < uix.GridFlex
     
     methods
         
-        function value = get.RowSizes( obj )
+        function value = get.Enable( ~ )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
+                'Property ''Enable'' will be removed in a future release.' )
             
-            % Get
-            value = transpose( obj.Widths );
+            % Return
+            value = 'on';
             
-        end % get.RowSizes
+        end % get.Enable
         
-        function set.RowSizes( obj, value )
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
+                'Property ''Enable'' will be removed in a future release.' )
             
-            % Set
-            obj.Widths = transpose( value );
-            
-        end % set.RowSizes
+        end % set.Enable
         
         function value = get.ColumnSizes( obj )
             
@@ -101,6 +104,28 @@ classdef GridFlex < uix.GridFlex
             obj.Widths = transpose( value );
             
         end % set.ColumnSizes
+        
+        function value = get.RowSizes( obj )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
+            
+            % Get
+            value = transpose( obj.Widths );
+            
+        end % get.RowSizes
+        
+        function set.RowSizes( obj, value )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
+            
+            % Set
+            obj.Widths = transpose( value );
+            
+        end % set.RowSizes
         
         function value = get.ShowMarkings( obj )
             

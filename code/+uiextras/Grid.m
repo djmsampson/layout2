@@ -33,6 +33,7 @@ classdef Grid < uix.Grid
     %   $Revision: 367 $ $Date: 2011-02-10 16:25:22 +0000 (Thu, 10 Feb 2011) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         RowSizes % deprecated
         ColumnSizes % deprecated
     end
@@ -53,6 +54,30 @@ classdef Grid < uix.Grid
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.RowSizes( obj )
             

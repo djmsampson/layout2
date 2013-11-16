@@ -28,6 +28,7 @@ classdef VBoxFlex < uix.VBoxFlex
     %   $Revision: 366 $ $Date: 2011-02-10 15:48:11 +0000 (Thu, 10 Feb 2011) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         Sizes % deprecated
         MinimumSizes % deprecated
         ShowMarkings % deprecated
@@ -49,6 +50,30 @@ classdef VBoxFlex < uix.VBoxFlex
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.Sizes( obj )
             

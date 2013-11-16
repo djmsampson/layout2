@@ -35,6 +35,7 @@ classdef BoxPanel < uix.BoxPanel
     %   $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         IsDocked % deprecated
         IsMinimized % deprecated
         SelectedChild % deprecated
@@ -56,6 +57,30 @@ classdef BoxPanel < uix.BoxPanel
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.IsDocked( obj )
             

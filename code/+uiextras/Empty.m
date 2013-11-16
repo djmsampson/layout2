@@ -21,7 +21,7 @@ function obj = Empty( varargin )
 
 % Warn
 warning( 'uiextras:Deprecated', ...
-    'uiextras.Empty will be removed in a future release.  Please use uicontainer instead.' )
+    'uiextras.Empty will be removed in a future release.' )
 
 % Do
 obj = matlab.ui.container.internal.UIContainer( varargin{:} );

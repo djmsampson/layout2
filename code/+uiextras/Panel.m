@@ -32,6 +32,7 @@ classdef Panel < uix.Panel
     %   $Revision: 373 $ $Date: 2011-07-14 13:24:10 +0100 (Thu, 14 Jul 2011) $
     
     properties( Hidden, Access = public, Dependent )
+        Enable % deprecated
         SelectedChild % deprecated
     end
     
@@ -51,6 +52,30 @@ classdef Panel < uix.Panel
     end % structors
     
     methods
+        
+        function value = get.Enable( ~ )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+            % Return
+            value = 'on';
+            
+        end % get.Enable
+        
+        function set.Enable( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''Enable'' must be ''on'' or ''off''.' )
+            
+            % Warn
+            warning( 'uiextras:Deprecated', ...
+                'Property ''Enable'' will be removed in a future release.' )
+            
+        end % set.Enable
         
         function value = get.SelectedChild( obj )
             
