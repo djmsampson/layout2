@@ -16,7 +16,7 @@
 %   uixvbuttonbox - arrange buttons vertically in a single column
 %
 % Grids
-%   uixgrid       - arrange elements in a two dimensional grid
+%   uixgrid       - arrange elements in a two-dimensional grid
 %   uixgridflex   - arrange elements in a two-dimensional grid with draggable dividers
 %
 % Installation
@@ -26,5 +26,5 @@
 % See also
 %   <a href="readme.txt">Release notes</a>
 
-%   Copyright 2009-2013 The MathWorks, Inc.
-%   $Revision: 380 $ $Date: 2013-02-27 10:29:08 +0000 (Wed, 27 Feb 2013) $
+%  Copyright 2009-2013 The MathWorks, Inc.
+%  $Revision: 380 $ $Date: 2013-02-27 10:29:08 +0000 (Wed, 27 Feb 2013) $
