@@ -10,7 +10,6 @@ function uninstall()
 
 root = fileparts( mfilename( 'fullpath' ) ); % this directory
 rmpath( root )
-rmpath( fullfile( root, 'layout' ) )
 savepath()
 
 end % uninstall

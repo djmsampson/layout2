@@ -10,7 +10,6 @@ function install()
 
 root = fileparts( mfilename( 'fullpath' ) ); % this directory
 addpath( root )
-addpath( fullfile( root, 'layout' ) )
 savepath()
 
 end % install
