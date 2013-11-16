@@ -50,8 +50,13 @@ classdef TabPanel < uix.TabPanel
             warning( 'uiextras:Deprecated', ...
                 'uiextras.TabPanel will be removed in a future release.  Please use uix.TabPanel instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.TabPanel( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
             % Create listeners
             selectionChangeListener = event.listener( obj, ...

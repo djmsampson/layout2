@@ -50,8 +50,13 @@ classdef GridFlex < uix.GridFlex
             warning( 'uiextras:Deprecated', ...
                 'uiextras.GridFlex will be removed in a future release.  Please use uix.GridFlex instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.GridFlex( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

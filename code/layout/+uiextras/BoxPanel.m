@@ -49,8 +49,13 @@ classdef BoxPanel < uix.BoxPanel
             warning( 'uiextras:Deprecated', ...
                 'uiextras.BoxPanel will be removed in a future release.  Please use uix.BoxPanel instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.BoxPanel( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

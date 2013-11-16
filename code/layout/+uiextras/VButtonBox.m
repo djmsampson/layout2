@@ -35,8 +35,13 @@ classdef VButtonBox < uix.VButtonBox
             warning( 'uiextras:Deprecated', ...
                 'uiextras.HButtonBox will be removed in a future release.  Please use uix.HButtonBox instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.VButtonBox( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

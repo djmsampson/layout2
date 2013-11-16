@@ -42,8 +42,13 @@ classdef VBoxFlex < uix.VBoxFlex
             warning( 'uiextras:Deprecated', ...
                 'uiextras.VBoxFlex will be removed in a future release.  Please use uix.VBoxFlex instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.VBoxFlex( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

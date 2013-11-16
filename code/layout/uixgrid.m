@@ -8,7 +8,7 @@ obj = uix.Grid( varargin{:} );
 
 % Auto-parent
 if ~ismember( 'Parent', varargin(1:2:end) )
-    obj.Parent = gcf;
+    obj.Parent = gcf();
 end
 
 end % uixgrid

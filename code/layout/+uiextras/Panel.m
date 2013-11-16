@@ -44,7 +44,12 @@ classdef Panel < uix.Panel
             warning( 'uiextras:Deprecated', ...
                 'uiextras.Panel will be removed in a future release.  Please use uix.Panel instead.' )
             
-            % Do
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
+            
+            % Call uix constructor
             obj@uix.Panel( varargin{:} )
             
         end % constructor

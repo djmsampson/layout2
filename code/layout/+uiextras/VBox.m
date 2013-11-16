@@ -47,8 +47,13 @@ classdef VBox < uix.VBox
             warning( 'uiextras:Deprecated', ...
                 'uiextras.VBox will be removed in a future release.  Please use uix.VBox instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.VBox( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

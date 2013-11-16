@@ -40,8 +40,13 @@ classdef CardPanel < uix.CardPanel
             warning( 'uiextras:Deprecated', ...
                 'uiextras.CardPanel will be removed in a future release.  Please use uix.CardPanel instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.CardPanel( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         

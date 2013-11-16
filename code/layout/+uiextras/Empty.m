@@ -23,7 +23,7 @@ function obj = Empty( varargin )
 warning( 'uiextras:Deprecated', ...
     'uiextras.Empty will be removed in a future release.' )
 
-% Do
-obj = matlab.ui.container.internal.UIContainer( varargin{:} );
+% Call uix constructor
+obj = matlab.ui.control.StyleControl( varargin{:}, 'Visible', 'off' );
 
 end % uiextras.Empty

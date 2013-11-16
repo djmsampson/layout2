@@ -42,8 +42,13 @@ classdef HBoxFlex < uix.HBoxFlex
             warning( 'uiextras:Deprecated', ...
                 'uiextras.HBoxFlex will be removed in a future release.  Please use uix.HBoxFlex instead.' )
             
-            % Do
+            % Call uix constructor
             obj@uix.HBoxFlex( varargin{:} )
+            
+            % Auto-parent
+            if ~ismember( 'Parent', varargin(1:2:end) )
+                obj.Parent = gcf();
+            end
             
         end % constructor
         
