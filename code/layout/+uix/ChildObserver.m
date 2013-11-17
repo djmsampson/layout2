@@ -1,10 +1,11 @@
-classdef( Hidden ) ChildObserver < handle
+classdef ( Hidden, Sealed ) ChildObserver < handle
     %uix.ChildObserver  Child observer
     %
     %  co = uix.ChildObserver(o) creates a child observer for the graphics
-    %  object o.  A child observer raises events ChildAdded and
-    %  ChildRemoved when objects are respectively added to and removed from
-    %  the property Children of o.
+    %  object o.  A child observer raises events when objects are added to
+    %  and removed from the property Children of o.
+    %
+    %  See also: uix.AncestryObserver, uix.Node
     
     %  Copyright 2009-2013 The MathWorks, Inc.
     %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
@@ -13,7 +14,7 @@ classdef( Hidden ) ChildObserver < handle
         Root % root node
     end
     
-    events( NotifyAccess = protected )
+    events( NotifyAccess = private )
         ChildAdded % child added
         ChildRemoved % child removed
     end
@@ -24,9 +25,9 @@ classdef( Hidden ) ChildObserver < handle
             %uix.ChildObserver  Child observer
             %
             %  co = uix.ChildObserver(o) creates a child observer for the
-            %  graphics object o.  A child observer raises events
-            %  ChildAdded and ChildRemoved when objects are respectively
-            %  added to and removed from the property Children of o.
+            %  graphics object o.  A child observer raises events when
+            %  objects are added to and removed from the property Children
+            %  of o.
             
             % Check
             assert( ishghandle( oRoot ) && ...
@@ -61,7 +62,7 @@ classdef( Hidden ) ChildObserver < handle
         
     end % structors
     
-    methods
+    methods( Access = private )
         
         function addChild( obj, nParent, oChild )
             %addChild  Add child object to parent node
@@ -143,10 +144,6 @@ classdef( Hidden ) ChildObserver < handle
             end % notifyChildRemoved
             
         end % removeChild
-        
-    end % public methods
-    
-    methods( Access = protected )
         
         function postSetInternal( obj, n )
             %postSetInternal  Perform property PostSet tasks

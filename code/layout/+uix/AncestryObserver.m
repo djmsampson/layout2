@@ -1,22 +1,45 @@
 classdef ( Hidden, Sealed ) AncestryObserver < handle
+    %uix.AncestryObserver  Ancestry observer
+    %
+    %  o = uix.AncestryObserver(s) creates an ancestry observer for the
+    %  subject s.
+    %
+    %  o = uix.LocationObserver(a) creates an ancestry observer for the
+    %  figure-to-subject ancestry a.
+    %
+    %  An ancestry observer provides ongoing access to the ancestry of a
+    %  subject, and raises events before and after a parent of the subject
+    %  or one of its ancestors changes.
+    %
+    %  See also: uix.ChildObserver
+
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( GetAccess = public, SetAccess = private )
-        Subject
-        Ancestors
+        Subject % subject
+        Ancestors % ancestors, from figure to subject
     end
     
     properties( Access = private )
-        ParentListeners
+        ParentListeners % listeners
     end
     
     events( NotifyAccess = private )
-        AncestryPreChange
-        AncestryPostChange
+        AncestryPreChange % ancestry will change
+        AncestryPostChange % ancestry did change
     end
     
     methods
         
         function obj = AncestryObserver( subject )
+            %uix.AncestryObserver  Ancestry observer
+            %
+            %  o = uix.AncestryObserver(s) creates an ancestry observer for
+            %  the subject s.
+            %
+            %  o = uix.LocationObserver(a) creates an ancestry observer for
+            %  the figure-to-subject ancestry a.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -41,6 +64,11 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
     methods( Access = private )
         
         function update( obj )
+            %update  Update ancestry observer
+            %
+            %  o.update() updates the state of the ancestry observer by
+            %  identifying the ancestors and creating listeners to the
+            %  subject and ancestors.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -74,6 +102,7 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
     methods
         
         function onPreChange( obj, ~, ~ )
+            %onPreChange  Event handler
             
             % Raise event
             notify( obj, 'AncestryPreChange' )
@@ -81,6 +110,7 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
         end % onPreChange
         
         function onPostChange( obj, ~, ~ )
+            %onPostChange  Event handler
             
             % Update
             obj.update()

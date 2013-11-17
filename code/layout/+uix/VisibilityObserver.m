@@ -1,22 +1,53 @@
 classdef ( Hidden, Sealed ) VisibilityObserver < handle
+    %uix.VisibilityObserver  Visibility observer
+    %
+    %  o = uix.VisibilityObserver(s) creates a visibility observer for the
+    %  subject s.
+    %
+    %  o = uix.VisibilityObserver(a) creates a visibility observer for the
+    %  figure-to-subject ancestry a.
+    %
+    %  A visibility observer raises an event when the subject visibility
+    %  changes.  To be visible, the subject must be rooted and the Visible
+    %  property of the subject and all of its ancestors must be 'on'.
+    %
+    %  A visibility observer assumes a fixed ancestry.  Use an ancestry
+    %  observer to monitor changes to ancestry, and create a new visibility
+    %  observer when ancestry changes.
+    %
+    %  See also: uix.AncestryObserver
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( SetAccess = private )
-        Subject
-        Visible = false
+        Subject % subject
+        Visible = false % state
     end
     
     properties( Access = private )
-        Ancestors
-        VisibleListeners = event.listener.empty( [0 1] )
+        Ancestors % ancestors, from figure to subject
+        VisibleListeners = event.listener.empty( [0 1] ) % listeners
     end
     
     events( NotifyAccess = private )
-        VisibilityChange
+        VisibilityChange % visibility change
     end
     
     methods
         
         function obj = VisibilityObserver( in )
+            %uix.VisibilityObserver  Visibility observer
+            %
+            %  o = uix.VisibilityObserver(s) creates a visibility observer
+            %  for the subject s.
+            %
+            %  o = uix.VisibilityObserver(a) creates a visibility observer
+            %  for the figure-to-subject ancestry a.
+            %
+            %  A visibility observer assumes a fixed ancestry.  Use an
+            %  ancestry observer to monitor changes to ancestry, and create
+            %  a new visibility observer when ancestry changes.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
@@ -77,10 +108,13 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
     methods( Access = private )
         
         function update( obj )
+            %update  Update visibility observer
+            %
+            %  o.update() updates the state of the visibility observer.
             
             % Identify new value
             ancestry = [obj.Ancestors; obj.Subject];
-            visibles = get( ancestry, 'Visible' );
+            visibles = get( ancestry, {'Visible'} );
             newVisible = all( strcmp( visibles, 'on' ) );
             
             % Store new value
@@ -93,12 +127,21 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
     methods( Access = private )
         
         function onVisibleChange( obj, ~, ~ )
+            %onVisibleChange  Event handler
+            
+            % Capture old state
+            oldVisible = obj.Visible;
             
             % Update
             obj.update()
             
+            % Capture new state
+            newVisible = obj.Visible;
+            
             % Raise event
-            notify( obj, 'VisibilityChange' )
+            if oldVisible ~= newVisible
+                notify( obj, 'VisibilityChange' )
+            end
             
         end % onVisibleChange
         

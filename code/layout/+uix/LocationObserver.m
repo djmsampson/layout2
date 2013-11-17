@@ -1,4 +1,26 @@
 classdef ( Hidden, Sealed ) LocationObserver < handle
+    %uix.LocationObserver  Location observer
+    %
+    %  o = uix.LocationObserver(s) creates a location observer for the
+    %  subject s.
+    %
+    %  o = uix.LocationObserver(a) creates a location observer for the
+    %  figure-to-subject ancestry a.
+    %
+    %  A location observer provides ongoing access to the location on
+    %  screen of a subject, and raises an event when the location of the
+    %  subject changes.  Location changes are caused by changes to the
+    %  Position of the subject or any of its ancestors, or docking or
+    %  undocking the parent window.
+    %
+    %  A location observer assumes a fixed ancestry.  Use an ancestry
+    %  observer to monitor changes to ancestry, and create a new location
+    %  observer when ancestry changes.
+    %
+    %  See also: uix.AncestryObserver
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( SetAccess = private )
         Subject % observer subject
