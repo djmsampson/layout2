@@ -1,7 +1,8 @@
 function install()
 %install  Install GUI Layout Toolbox
 %
-%  install() installs GUI Layout Toolbox.
+%  install() installs GUI Layout Toolbox by adding its files to the saved
+%  path.
 %
 %  See also: uninstall
 

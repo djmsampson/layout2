@@ -6,7 +6,7 @@ function folder = layoutRoot()
 %
 %   Examples:
 %   >> folder = layoutRoot()
-%   folder = 'C:\tools\layouts2'
+%   folder = 'C:\tools\layouts2\layout'
 %
 %   See also: layoutVersion
 

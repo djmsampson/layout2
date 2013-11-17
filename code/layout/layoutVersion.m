@@ -17,11 +17,22 @@ function [version, versionDate] = layoutVersion()
 %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
 
 % Issue warning
-warning( 'uiextras:Deprecated', 'layoutVersion will be removed in a future release.  Please use ver(''layout'') instead.' )
+warning( 'uiextras:Deprecated', '%s  %s', ...
+    'layoutVersion will be removed in a future release.', ...
+    'Please use ver(''layout'') instead.' )
 
 % Return information from ver
 v = ver( 'layout' );
-version = v.Version;
-versionDate = datestr( datenum( v.Date, 'dd-mmm-yyyy' ), 'yyyy-mm-dd' );
+switch numel( v )
+    case 0
+        error( 'uix:UnknownError', 'Cannot find GUI Layout Toolbox.' )
+    case 1
+        version = v.Version;
+        versionDate = datestr( datenum( v.Date, 'dd-mmm-yyyy' ), 'yyyy-mm-dd' );
+    otherwise
+        error( 'uix:UnknownError', '%s  %s', ...
+            'Multiple versions of GUI Layout Toolbox are installed.', ...
+            'Please uninstall versions that are not in use.' )
+end
 
 end % layoutVersion

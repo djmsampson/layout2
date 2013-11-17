@@ -1,5 +1,12 @@
 function obj = uixvbuttonbox( varargin )
 %uixvbuttonbox  Arrange buttons vertically in a single column
+%
+%  b = uixvbuttonbox() creates a button box in the current figure.
+%
+%  b = uixvbuttonbox(p1,v1,p2,v2,...) creates a button box and sets
+%  specified property p1 to value v1, etc.
+%
+%  See also: uixvbox, uixvboxflex, uixhbuttonbox
 
 %  Copyright 2009-2013 The MathWorks, Inc.
 %  $Revision: 380 $ $Date: 2013-02-27 10:29:08 +0000 (Wed, 27 Feb 2013) $

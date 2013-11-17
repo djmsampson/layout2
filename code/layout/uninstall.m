@@ -1,7 +1,8 @@
 function uninstall()
 %uninstall  Uninstall GUI Layout Toolbox
 %
-%  uninstall() uninstalls GUI Layout Toolbox.
+%  uninstall() uninstalls GUI Layout Toolbox by removing its files from the
+%  saved path.
 %
 %  See also: install
 
