@@ -1,4 +1,14 @@
 classdef Container < handle
+    %uix.mixin.Container  Container mixin
+    %
+    %  uix.mixin.Container is a mixin class used by uix.Container and
+    %  uix.Panel to provide various properties and template methods.
+    %
+    %  c@uix.mixin.Container() initializes the container c during
+    %  construction.
+
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Dependent, Access = public )
         Contents % contents in layout order
@@ -36,7 +46,7 @@ classdef Container < handle
         function obj = Container()
             %uix.mixin.Container  Initialize
             %
-            %  uix.mixin.Container() initializes the container during
+            %  c@uix.mixin.Container() initializes the container c during
             %  construction.
             
             % Create observers and listeners
@@ -139,6 +149,7 @@ classdef Container < handle
     methods( Access = private, Sealed )
         
         function onAncestryPreChange( obj, ~, ~ )
+            %onAncestryPreChange  Event handler
             
             % Retrieve ancestors from observer
             ancestryObserver = obj.AncestryObserver;
@@ -153,6 +164,7 @@ classdef Container < handle
         end % onAncestryPreChange
         
         function onAncestryPostChange( obj, ~, ~ )
+            %onAncestryPostChange  Event handler
             
             % Retrieve old ancestors from cache
             oldAncestors = obj.OldAncestors;
@@ -185,6 +197,7 @@ classdef Container < handle
         end % onAncestryPostChange
         
         function onVisibilityChange( obj, ~, ~ )
+            %onVisibilityChange  Event handler
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -195,6 +208,7 @@ classdef Container < handle
         end % onVisibilityChange
         
         function onChildAdded( obj, ~, eventData )
+            %onChildAdded  Event handler
             
             % Call template method
             obj.addChild( eventData.Child )
@@ -202,6 +216,7 @@ classdef Container < handle
         end % onChildAdded
         
         function onChildRemoved( obj, ~, eventData )
+            %onChildRemoved  Event handler
             
             % Do nothing if container is being deleted
             if strcmp( obj.BeingDeleted, 'on' ), return, end
@@ -212,6 +227,7 @@ classdef Container < handle
         end % onChildRemoved
         
         function onSizeChange( obj, ~, ~ )
+            %onSizeChange  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
@@ -219,6 +235,7 @@ classdef Container < handle
         end % onSizeChange
         
         function onActivePositionPropertyChange( obj, ~, ~ )
+            %onActivePositionPropertyChange  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
@@ -236,6 +253,9 @@ classdef Container < handle
     methods( Access = protected )
         
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
             
             % Add to contents
             obj.Contents_(end+1,:) = child;
@@ -256,6 +276,9 @@ classdef Container < handle
         end % addChild
         
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
             
             % Remove from contents
             contents = obj.Contents_;
