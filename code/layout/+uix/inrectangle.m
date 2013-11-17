@@ -10,6 +10,11 @@ function [tf, loc] = inrectangle( xy, xywh )
 %  [tf,loc] = uix.inrectangle(xy,xywh) also returns an index loc
 %  corresponding to the rectangle that the point is in.  If tf is false
 %  then loc is 0.
+%
+%  See also: inpolygon
+
+%  Copyright 2009-2013 The MathWorks, Inc.
+%  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
 
 if isempty( xywh )
     yn = true( size( xywh ) );

@@ -5,6 +5,9 @@ function a = ancestors( h )
 %  bottom.  For rooted objects, the highest level ancestor returned is the
 %  figure, not the root.
 
+%  Copyright 2009-2013 The MathWorks, Inc.
+%  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
+
 % Find ancestors
 a = gobjects( [0 1] ); %  initialize
 p = h.Parent;

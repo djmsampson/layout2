@@ -1,4 +1,17 @@
 function pvchk( pv )
+%uix.pvchk  Check parameter value pairs
+%
+%  uix.pvcvk(pv) checks the cell array of parameter value pairs pv.  An
+%  error is issued if:
+%  * The number of parameters does not match the number of values
+%  * Any parameter is not a string
+%  * Any parameter is repeated
+%
+%  This function is typically used from class constructors,
+%  uix.pvchk(varargin).
+
+%  Copyright 2009-2013 The MathWorks, Inc.
+%  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
 
 if rem( numel( pv ), 2 ) ~= 0
     MException( 'uix:InvalidArgument' ).throwAsCaller()
