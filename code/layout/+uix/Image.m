@@ -31,7 +31,7 @@ classdef Image < hgsetget
             %  v1, etc.
             
             % Create label and container
-            label = javax.swing.JLabel();
+            label = javaObjectEDT( 'javax.swing.JLabel' );
             container = hgjavacomponent( 'Parent', [], ...
                 'JavaPeer', label, 'DeleteFcn', @obj.onDelete );
             
