@@ -1,27 +1,42 @@
 classdef Divider < hgsetget
+    %uix.Divider  Draggable divider
+    %
+    %  d = uix.Divider() creates a divider.
+    %
+    %  d = uix.Divider(p1,v1,p2,v2,...) creates a divider and sets
+    %  specified property p1 to value v1, etc.
+    
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
     properties( Dependent )
-        Parent
-        Units
-        Position
-        Visible
+        Parent % parent
+        Units % units [inches|centimeters|characters|normalized|points|pixels]
+        Position % position
+        Visible % visible [on|off]
     end
     
     properties( AbortSet, SetObservable )
-        Color = get( 0, 'DefaultUicontrolBackgroundColor' )
-        Orientation = 'vertical'
-        Markings = 'on'
+        Color = get( 0, 'DefaultUicontrolBackgroundColor' ) % color
+        Orientation = 'vertical' % orientation [vertical|horizontal]
+        Markings = 'on' % markings [on|off]
     end
     
     properties( Access = private )
-        Control
-        PropertyListeners
-        SizeChangeListener
+        Control % uicontrol
+        PropertyListeners % listeners
+        SizeChangeListener % listener
     end
     
     methods
         
         function obj = Divider( varargin )
+            %uix.Divider  Draggable divider
+            %
+            %  d = uix.Divider() creates a divider.
+            %
+            %  d = uix.Divider(p1,v1,p2,v2,...) creates a dividerand sets
+            %  specified property p1 to value v1, etc.
             
             % Create control
             control = matlab.ui.control.StyleControl( ...
@@ -60,6 +75,7 @@ classdef Divider < hgsetget
         end % constructor
         
         function delete( obj )
+            %delete  Destructor
             
             control = obj.Control;
             if ishghandle( control ) && ~strcmp( control, 'BeingDeleted' )
@@ -104,7 +120,6 @@ classdef Divider < hgsetget
         
         function set.Position( obj, value )
             
-            % Set
             obj.Control.Position = value;
             
         end % set.Position
@@ -149,7 +164,10 @@ classdef Divider < hgsetget
         function set.Markings( obj, value )
             
             % Check
-            assert( ischar( value ) && ismember( value, {'on','off'} ) )
+            assert( ischar( value ) && ...
+                any( strcmp( value, {'on','off'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''Markings'' must be ''on'' or ''off''.' )
             
             % Set
             obj.Markings = value;
@@ -161,6 +179,7 @@ classdef Divider < hgsetget
     methods
         
         function onDeleted( obj, ~, ~ )
+            %onDeleted  Event handler
             
             % Call destructor
             obj.delete()
@@ -168,6 +187,7 @@ classdef Divider < hgsetget
         end % onDeleted
         
         function onSizeChange( obj, ~, ~ )
+            %onSizeChange  Event handler
             
             % Update
             obj.update()
@@ -175,6 +195,7 @@ classdef Divider < hgsetget
         end % onSizeChange
         
         function onColorChange( obj, ~, ~ )
+            %onColorChange  Event handler
             
             % Update
             obj.update()
@@ -182,6 +203,7 @@ classdef Divider < hgsetget
         end % onColorChange
         
         function onOrientationChange( obj, ~, ~ )
+            %onOrientationChange  Event handler
             
             % Update
             obj.update()
@@ -189,19 +211,21 @@ classdef Divider < hgsetget
         end % onOrientationChange
         
         function onMarkingsChange( obj, ~, ~ )
+            %onMarkingsChange  Event handler
             
             % Update
             obj.update()
             
         end % onMarkingsChange
         
-        
-        
     end % event handlers
     
     methods( Access = private )
         
         function update( obj )
+            %update  Update divider
+            %
+            %  d.update() updates the divider markings.
             
             control = obj.Control;
             position = control.Position;
