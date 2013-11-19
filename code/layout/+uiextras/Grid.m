@@ -102,7 +102,7 @@ classdef Grid < uix.Grid
                 'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
-            obj.Widths = transpose( value );
+            obj.Widths = value;
             
         end % set.RowSizes
         
@@ -124,7 +124,7 @@ classdef Grid < uix.Grid
                 'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get
-            obj.Widths = transpose( value );
+            obj.Widths = value;
             
         end % set.ColumnSizes
         

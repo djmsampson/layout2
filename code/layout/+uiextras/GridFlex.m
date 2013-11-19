@@ -106,7 +106,7 @@ classdef GridFlex < uix.GridFlex
                 'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get
-            obj.Widths = transpose( value );
+            obj.Widths = value;
             
         end % set.ColumnSizes
         
@@ -128,7 +128,7 @@ classdef GridFlex < uix.GridFlex
                 'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
-            obj.Widths = transpose( value );
+            obj.Widths = value;
             
         end % set.RowSizes
         

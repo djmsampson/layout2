@@ -173,7 +173,7 @@ classdef TabPanel < uix.TabPanel
                 'Property ''TabEnable'' will be removed in a future release.  Please use ''TabEnables'' instead.' )
             
             % Set
-            obj.TabEnables = transpose( value );
+            obj.TabEnables = value;
             
         end % set.TabEnable
         
@@ -195,7 +195,7 @@ classdef TabPanel < uix.TabPanel
                 'Property ''TabNames'' will be removed in a future release.  Please use ''TabTitles'' instead.' )
             
             % Set
-            obj.TabTitles = transpose( value );
+            obj.TabTitles = value;
             
         end % set.TabNames
         

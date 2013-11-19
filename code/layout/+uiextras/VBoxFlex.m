@@ -98,7 +98,7 @@ classdef VBoxFlex < uix.VBoxFlex
                 'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
-            obj.Heights = transpose( value );
+            obj.Heights = value;
             
         end % set.Sizes
         
@@ -120,7 +120,7 @@ classdef VBoxFlex < uix.VBoxFlex
                 'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
             
             % Get
-            obj.MinimumHeights = transpose( value );
+            obj.MinimumHeights = value;
             
         end % set.MinimumSizes
         

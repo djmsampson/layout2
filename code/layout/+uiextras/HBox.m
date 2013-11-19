@@ -103,7 +103,7 @@ classdef HBox < uix.HBox
                 'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Set
-            obj.Widths = transpose( value );
+            obj.Widths = value;
             
         end % set.Sizes
         
@@ -125,7 +125,7 @@ classdef HBox < uix.HBox
                 'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
             
             % Get
-            obj.MinimumWidths = transpose( value );
+            obj.MinimumWidths = value;
             
         end % set.MinimumSizes
         
