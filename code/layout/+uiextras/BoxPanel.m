@@ -45,9 +45,9 @@ classdef BoxPanel < uix.BoxPanel
         
         function obj = BoxPanel( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.BoxPanel will be removed in a future release.  Please use uix.BoxPanel instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.BoxPanel will be removed in a future release.  Please use uix.BoxPanel instead.' )
             
             % Call uix constructor
             obj@uix.BoxPanel( varargin{:} )

@@ -40,9 +40,9 @@ classdef Panel < uix.Panel
         
         function obj = Panel( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.Panel will be removed in a future release.  Please use uix.Panel instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.Panel will be removed in a future release.  Please use uix.Panel instead.' )
             
             % Call uix constructor
             obj@uix.Panel( varargin{:} )

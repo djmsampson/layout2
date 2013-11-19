@@ -46,9 +46,9 @@ classdef GridFlex < uix.GridFlex
         
         function obj = GridFlex( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.GridFlex will be removed in a future release.  Please use uix.GridFlex instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.GridFlex will be removed in a future release.  Please use uix.GridFlex instead.' )
             
             % Call uix constructor
             obj@uix.GridFlex( varargin{:} )

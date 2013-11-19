@@ -43,9 +43,9 @@ classdef VBox < uix.VBox
         
         function obj = VBox( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.VBox will be removed in a future release.  Please use uix.VBox instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.VBox will be removed in a future release.  Please use uix.VBox instead.' )
             
             % Call uix constructor
             obj@uix.VBox( varargin{:} )

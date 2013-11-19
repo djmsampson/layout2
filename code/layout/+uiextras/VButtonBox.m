@@ -31,9 +31,9 @@ classdef VButtonBox < uix.VButtonBox
         function obj = VButtonBox( varargin )
             %uiextras.VButtonBox  Create a new horizontal button box
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.HButtonBox will be removed in a future release.  Please use uix.HButtonBox instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.HButtonBox will be removed in a future release.  Please use uix.HButtonBox instead.' )
             
             % Call uix constructor
             obj@uix.VButtonBox( varargin{:} )

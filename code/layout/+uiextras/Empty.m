@@ -19,9 +19,9 @@ function obj = Empty( varargin )
 %   Copyright 2009-2013 The MathWorks, Inc.
 %   $Revision: 287 $ $Date: 2010-07-14 12:21:33 +0100 (Wed, 14 Jul 2010) $
 
-% Warn
-warning( 'uiextras:Deprecated', ...
-    'uiextras.Empty will be removed in a future release.' )
+% TODO Warn
+% warning( 'uiextras:Deprecated', ...
+%     'uiextras.Empty will be removed in a future release.' )
 
 % Call uix constructor
 obj = matlab.ui.control.StyleControl( varargin{:}, 'Visible', 'off' );

@@ -46,9 +46,9 @@ classdef TabPanel < uix.TabPanel
         
         function obj = TabPanel( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.TabPanel will be removed in a future release.  Please use uix.TabPanel instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.TabPanel will be removed in a future release.  Please use uix.TabPanel instead.' )
             
             % Call uix constructor
             obj@uix.TabPanel( varargin{:} )

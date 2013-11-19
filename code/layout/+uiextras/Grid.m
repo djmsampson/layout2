@@ -42,9 +42,9 @@ classdef Grid < uix.Grid
         
         function obj = Grid( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.Grid will be removed in a future release.  Please use uix.Grid instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.Grid will be removed in a future release.  Please use uix.Grid instead.' )
             
             % Call uix constructor
             obj@uix.Grid( varargin{:} )

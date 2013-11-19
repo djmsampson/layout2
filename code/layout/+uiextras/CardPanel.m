@@ -36,9 +36,9 @@ classdef CardPanel < uix.CardPanel
         
         function obj = CardPanel( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.CardPanel will be removed in a future release.  Please use uix.CardPanel instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.CardPanel will be removed in a future release.  Please use uix.CardPanel instead.' )
             
             % Call uix constructor
             obj@uix.CardPanel( varargin{:} )

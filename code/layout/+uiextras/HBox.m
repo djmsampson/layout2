@@ -43,9 +43,9 @@ classdef HBox < uix.HBox
         
         function obj = HBox( varargin )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'uiextras.HBox will be removed in a future release.  Please use uix.HBox instead.' )
+            % TODO Warn
+            % warning( 'uiextras:Deprecated', ...
+            %     'uiextras.HBox will be removed in a future release.  Please use uix.HBox instead.' )
             
             % Call uix constructor
             obj@uix.HBox( varargin{:} )
