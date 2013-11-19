@@ -6,7 +6,7 @@ classdef Container < handle
     %
     %  c@uix.mixin.Container() initializes the container c during
     %  construction.
-
+    
     %  Copyright 2009-2013 The MathWorks, Inc.
     %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
     
@@ -90,6 +90,11 @@ classdef Container < handle
         end % get.Contents
         
         function set.Contents( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Check
             [tf, indices] = ismember( value, obj.Contents_ );
