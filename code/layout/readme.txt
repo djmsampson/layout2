@@ -132,6 +132,7 @@ apart from exceptions listed above.
   - Added support for row values for contents companion properties in uix
   - Modified uix.Image to construct JLabel on EDT
   - Added HandleVisibility awareness to uix.ChildObserver
+  - Suppressed constructor warnings in uiextras
 
 2.0.1  Initial beta version (16 November 2013)
 
