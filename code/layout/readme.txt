@@ -1,4 +1,7 @@
-1.  Background
+                        === GUI LAYOUT TOOLBOX ===
+
+
+1.  BACKGROUND
 
 GUI Layout Toolbox provides tools to create sophisticated MATLAB graphical 
 user interfaces that resize gracefully.  The classes supplied can be used 
@@ -13,20 +16,22 @@ in combination to produce virtually any user interface layout.
 GUI Layout Toolbox version 2.x provides support for Graphics version 2, the 
 upcoming MATLAB graphics system.
 
-The current version is 2.0.1.  This is a beta version that is feature 
+The current version is 2.0.2.  This is a beta version that is feature 
 complete but may contain bugs and performance issues.
 
 The developers expect to continue to provide bug fixes for GUI Layout 
 Toolbox version 1.
 
-2.  Abbreviations
+
+2.  ABBREVIATIONS
 
 * HG1: Graphics version 1, the legacy MATLAB graphics system
 * HG2: Graphics version 2, the upcoming MATLAB graphics system
 * GLT1: GUI Layout Toolbox version 1, supporting HG1
 * GLT2: GUI Layout Toolbox version 2, supporting HG2
 
-3.  Installation
+
+3.  INSTALLATION
 
 GLT2 supports MATLAB R2013b onwards with HG2.  To start MATLAB with HG2, 
 use the command line switch -hgVersion 2.
@@ -38,7 +43,8 @@ the GLT2 entry.
 GLT1 and GLT2 should not be used simultaneously.  GLT1 can be uninstalled 
 by running its 'uninstall' function.
 
-4.  Changes in version 2, including incompatibilities
+
+4.  CHANGES IN VERSION 2, INCLUDING INCOMPATIBILITIES
 
 4.1  Package name
 
@@ -97,7 +103,9 @@ function, to create objects with standard settings.
 
 GLT1 provided a mechanism to enable and disable container contents using 
 the property 'Enable'.  This feature has been removed from GLT2.  Users 
-should enable and disable controls directly.
+should enable and disable controls directly rather than via containers.
+
+See related discussion at: http://goo.gl/j0KmTR
 
 4.6  Other property name changes
 
@@ -117,11 +125,18 @@ package 'uiextras' provides support for legacy property values.
 GLT2 documentation is in preparation.  GLT1 documentation is largely valid, 
 apart from exceptions listed above.
 
-5.  Release history
+
+5.  RELEASE HISTORY
+
+2.0.2  Minor changes (19 November 2013)
+  - Added support for row values for contents companion properties in uix
+  - Modified uix.Image to construct JLabel on EDT
+  - Added HandleVisibility awareness to uix.ChildObserver
 
 2.0.1  Initial beta version (16 November 2013)
 
-6.  Feedback
+
+6.  FEEDBACK
 
 * Email: david.sampson@mathworks.co.uk
 * Gecko: Component "Consulting Projects", subcomponent "GUI Layout Toolbox"
