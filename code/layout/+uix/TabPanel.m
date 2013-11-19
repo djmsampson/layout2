@@ -418,6 +418,11 @@ classdef TabPanel < uix.Container
         
         function set.TabEnables( obj, value )
             
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
             % Retrieve tabs
             tabs = obj.Tabs;
             tabListeners = obj.TabListeners;
@@ -508,6 +513,11 @@ classdef TabPanel < uix.Container
         end % get.TabTitles
         
         function set.TabTitles( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Retrieve tabs
             tabs = obj.Tabs;

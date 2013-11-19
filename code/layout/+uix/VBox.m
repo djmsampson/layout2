@@ -37,6 +37,11 @@ classdef VBox < uix.Box
         
         function set.Heights( obj, value )
             
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Heights'' must be of type double.' )
@@ -62,6 +67,11 @@ classdef VBox < uix.Box
         end % get.MinimumHeights
         
         function set.MinimumHeights( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...

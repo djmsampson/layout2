@@ -41,6 +41,11 @@ classdef Grid < uix.Box
         
         function set.Widths( obj, value )
             
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Widths'' must be of type double.' )
@@ -92,6 +97,11 @@ classdef Grid < uix.Box
         
         function set.MinimumWidths( obj, value )
             
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''MinimumWidths'' must be of type double.' )
@@ -117,6 +127,11 @@ classdef Grid < uix.Box
         end % get.Heights
         
         function set.Heights( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
@@ -165,6 +180,11 @@ classdef Grid < uix.Box
         end % get.MinimumHeights
         
         function set.MinimumHeights( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...

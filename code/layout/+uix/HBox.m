@@ -37,6 +37,11 @@ classdef HBox < uix.Box
         
         function set.Widths( obj, value )
             
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''Widths'' must be of type double.' )
@@ -62,6 +67,11 @@ classdef HBox < uix.Box
         end % get.MinimumWidths
         
         function set.MinimumWidths( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
             
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
