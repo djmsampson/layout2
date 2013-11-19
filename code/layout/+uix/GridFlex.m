@@ -25,8 +25,9 @@ classdef GridFlex < uix.Grid
             
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
-                'Orientation', 'vertical', 'Markings', 'on', ...
-                'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
+                'Orientation', 'vertical', ...
+                'BackgroundColor', obj.BackgroundColor * 0.75, ...
+                'Visible', 'off' );
             
             % Create observers and listeners
             locationObserver = uix.LocationObserver( obj );
@@ -246,17 +247,25 @@ classdef GridFlex < uix.Grid
         
         function onBackgroundColorChange( obj, ~, ~ )
             
-            color = obj.BackgroundColor;
+            backgroundColor = obj.BackgroundColor;
+            highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
+            shadowColor = max( [backgroundColor * 0.75; 0 0 0] );
             rowDividers = obj.RowDividers;
             for ii = 1:numel( rowDividers )
-                rowDividers(ii).Color = color;
+                rowDivider = rowDividers(ii);
+                rowDivider.BackgroundColor = backgroundColor;
+                rowDivider.HighlightColor = highlightColor;
+                rowDivider.ShadowColor = shadowColor;
             end
             columnDividers = obj.ColumnDividers;
             for jj = 1:numel( columnDividers )
-                columnDividers(jj).Color = color;
+                columnDivider = columnDividers(jj);
+                columnDivider.BackgroundColor = backgroundColor;
+                columnDivider.HighlightColor = highlightColor;
+                columnDivider.ShadowColor = shadowColor;
             end
             frontDivider = obj.FrontDivider;
-            frontDivider.Color = color * 0.75;
+            frontDivider.BackgroundColor = shadowColor;
             
         end % onBackgroundColorChange
         
@@ -278,8 +287,8 @@ classdef GridFlex < uix.Grid
             if b < c % create
                 for ii = b+1:c
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'vertical', 'Markings', 'on', ...
-                        'Color', obj.BackgroundColor );
+                        'Orientation', 'vertical', ...
+                        'BackgroundColor', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = columnDivider;
                 end
                 % Bring front divider to the front
@@ -298,8 +307,8 @@ classdef GridFlex < uix.Grid
             if q < r % create
                 for ii = q+1:r
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'horizontal', 'Markings', 'on', ...
-                        'Color', obj.BackgroundColor );
+                        'Orientation', 'horizontal', ...
+                        'BackgroundColor', obj.BackgroundColor );
                     obj.RowDividers(ii,:) = columnDivider;
                 end
                 % Bring front divider to the front
@@ -324,32 +333,40 @@ classdef GridFlex < uix.Grid
             padding = obj.Padding_;
             spacing = obj.Spacing_;
             
-            % Position row dividers
-            xPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
-            xPositions = repmat( xPositions, [r 1] );
-            ySizes = uix.calcPixelSizes( bounds(4), heights, ...
+            % Compute row divider positions
+            xRowPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
+            xRowPositions = repmat( xRowPositions, [r 1] );
+            yRowSizes = uix.calcPixelSizes( bounds(4), heights, ...
                 minimumHeights, padding, spacing );
-            yPositions = [bounds(4) - cumsum( ySizes(1:r,:) ) - padding - ...
+            yRowPositions = [bounds(4) - cumsum( yRowSizes(1:r,:) ) - padding - ...
                 spacing * transpose( 1:r ) + 1, repmat( spacing, [r 1] )];
-            positions = [xPositions(:,1), yPositions(:,1), ...
-                xPositions(:,2), yPositions(:,2)];
+            rowPositions = [xRowPositions(:,1), yRowPositions(:,1), ...
+                xRowPositions(:,2), yRowPositions(:,2)];
+            
+            % Compute column divider positions
+            xColumnSizes = uix.calcPixelSizes( bounds(3), widths, ...
+                minimumWidths, padding, spacing );
+            xColumnPositions = [cumsum( xColumnSizes(1:c,:) ) + padding + ...
+                spacing * transpose( 0:c-1 ) + 1, repmat( spacing, [c 1] )];
+            yColumnPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
+            yColumnPositions = repmat( yColumnPositions, [c 1] );
+            columnPositions = [xColumnPositions(:,1), yColumnPositions(:,1), ...
+                xColumnPositions(:,2), yColumnPositions(:,2)];
+            
+            % Position row dividers
             for ii = 1:r
                 rowDivider = obj.RowDividers(ii);
-                rowDivider.Position = positions(ii,:);
+                rowDivider.Position = rowPositions(ii,:);
+                rowDivider.Markings = cumsum( xColumnSizes ) + ...
+                    spacing * transpose( 0:c ) - xColumnSizes / 2;
             end
             
             % Position column dividers
-            xSizes = uix.calcPixelSizes( bounds(3), widths, ...
-                minimumWidths, padding, spacing );
-            xPositions = [cumsum( xSizes(1:c,:) ) + padding + ...
-                spacing * transpose( 0:c-1 ) + 1, repmat( spacing, [c 1] )];
-            yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, [c 1] );
-            positions = [xPositions(:,1), yPositions(:,1), ...
-                xPositions(:,2), yPositions(:,2)];
             for ii = 1:c
                 columnDivider = obj.ColumnDividers(ii);
-                columnDivider.Position = positions(ii,:);
+                columnDivider.Position = columnPositions(ii,:);
+                columnDivider.Markings = cumsum( yRowSizes ) + ...
+                    spacing * transpose( 0:r ) - yRowSizes / 2;
             end
             
             % Update pointer

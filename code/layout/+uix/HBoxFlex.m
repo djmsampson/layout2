@@ -24,8 +24,9 @@ classdef HBoxFlex < uix.HBox
             
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
-                'Orientation', 'vertical', 'Markings', 'on', ...
-                'Color', obj.BackgroundColor * 0.75, 'Visible', 'off' );
+                'Orientation', 'vertical', ...
+                'BackgroundColor', obj.BackgroundColor * 0.75, ...
+                'Visible', 'off' );
             
             % Create observers and listeners
             locationObserver = uix.LocationObserver( obj );
@@ -179,13 +180,18 @@ classdef HBoxFlex < uix.HBox
         
         function onBackgroundColorChange( obj, ~, ~ )
             
-            color = obj.BackgroundColor;
-            dividers = obj.ColumnDividers;
-            for ii = 1:numel( dividers )
-                dividers(ii).Color = color;
+            backgroundColor = obj.BackgroundColor;
+            highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
+            shadowColor = max( [backgroundColor * 0.75; 0 0 0] );
+            columnDividers = obj.ColumnDividers;
+            for jj = 1:numel( columnDividers )
+                columnDivider = columnDividers(jj);
+                columnDivider.BackgroundColor = backgroundColor;
+                columnDivider.HighlightColor = highlightColor;
+                columnDivider.ShadowColor = shadowColor;
             end
             frontDivider = obj.FrontDivider;
-            frontDivider.Color = color * 0.75;
+            frontDivider.BackgroundColor = shadowColor;
             
         end % onBackgroundColorChange
         
@@ -207,8 +213,8 @@ classdef HBoxFlex < uix.HBox
             if b < c % create
                 for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'vertical', 'Markings', 'on', ...
-                        'Color', obj.BackgroundColor );
+                        'Orientation', 'vertical', ...
+                        'BackgroundColor', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = divider;
                 end
                 % Bring front divider to the front
@@ -231,18 +237,21 @@ classdef HBoxFlex < uix.HBox
             padding = obj.Padding_;
             spacing = obj.Spacing_;
             
-            % Position column dividers
-            xSizes = uix.calcPixelSizes( bounds(3), widths, ...
+            % Compute column divider positions
+            xColumnSizes = uix.calcPixelSizes( bounds(3), widths, ...
                 minimumWidths, padding, spacing );
-            xPositions = [cumsum( xSizes(1:c,:) ) + padding + ...
+            xColumnPositions = [cumsum( xColumnSizes(1:c,:) ) + padding + ...
                 spacing * transpose( 0:c-1 ) + 1, repmat( spacing, [c 1] )];
-            yPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
-            yPositions = repmat( yPositions, [c 1] );
-            positions = [xPositions(:,1), yPositions(:,1), ...
-                xPositions(:,2), yPositions(:,2)];
+            yColumnPositions = [padding + 1, max( bounds(4) - 2 * padding, 1 )];
+            yColumnPositions = repmat( yColumnPositions, [c 1] );
+            columnPositions = [xColumnPositions(:,1), yColumnPositions(:,1), ...
+                xColumnPositions(:,2), yColumnPositions(:,2)];
+            
+            % Position column dividers
             for ii = 1:c
                 columnDivider = obj.ColumnDividers(ii);
-                columnDivider.Position = positions(ii,:);
+                columnDivider.Position = columnPositions(ii,:);
+                columnDivider.Markings = columnPositions(ii,4)/2;
             end
             
             % Update pointer

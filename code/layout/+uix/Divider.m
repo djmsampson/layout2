@@ -14,17 +14,23 @@ classdef Divider < hgsetget
         Units % units [inches|centimeters|characters|normalized|points|pixels]
         Position % position
         Visible % visible [on|off]
+        BackgroundColor % background color [RGB]
+        HighlightColor % border highlight color [RGB]
+        ShadowColor % border shadow color [RGB]
+        Orientation % orientation [vertical|horizontal]
+        Markings % markings [pixels]
     end
     
     properties( AbortSet, SetObservable )
-        Color = get( 0, 'DefaultUicontrolBackgroundColor' ) % color
-        Orientation = 'vertical' % orientation [vertical|horizontal]
-        Markings = 'on' % markings [on|off]
     end
     
     properties( Access = private )
         Control % uicontrol
-        PropertyListeners % listeners
+        BackgroundColor_ = get( 0, 'DefaultUicontrolBackgroundColor' ) % backing for BackgroundColor
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        Orientation_ = 'vertical' % backing for Orientation
+        Markings_ = zeros( [0 1] ) % backing for Markings
         SizeChangeListener % listener
     end
     
@@ -54,23 +60,12 @@ classdef Divider < hgsetget
             % Force update
             obj.update()
             
-            % Create listeners
+            % Create listener
             sizeChangeListener = event.listener( control, 'SizeChange', ...
                 @obj.onSizeChange );
-            colorListener = event.proplistener( obj, ...
-                findprop( obj, 'Color' ), 'PostSet', ...
-                @obj.onColorChange );
-            orientationListener = event.proplistener( obj, ...
-                findprop( obj, 'Orientation' ), 'PostSet', ...
-                @obj.onOrientationChange );
-            markingsListener = event.proplistener( obj, ...
-                findprop( obj, 'Markings' ), 'PostSet', ...
-                @obj.onMarkingsChange );
             
-            % Store listeners
+            % Store listener
             obj.SizeChangeListener = sizeChangeListener;
-            obj.PropertyListeners = [colorListener; ...
-                orientationListener; markingsListener];
             
         end % constructor
         
@@ -136,19 +131,78 @@ classdef Divider < hgsetget
             
         end % set.Visible
         
-        function set.Color( obj, value )
+        function value = get.BackgroundColor( obj )
+            
+            value = obj.BackgroundColor_;
+            
+        end % get.BackgroundColor
+        
+        function set.BackgroundColor( obj, value )
             
             % Check
             assert( isa( value, 'double' ) && ...
                 isequal( size( value ), [1 3] ) && ...
                 all( value >= 0 ) && all( value <= 1 ), ...
                 'uix:InvalidArgument', ...
-                'Property ''Color'' must be a valid colorspec.' )
+                'Property ''BackgroundColor'' must be a valid colorspec.' )
             
             % Set
-            obj.Color = value;
+            obj.BackgroundColor_ = value;
             
-        end
+            % Update
+            obj.update()
+            
+        end % set.BackgroundColor
+        
+        function value = get.HighlightColor( obj )
+            
+            value = obj.HighlightColor_;
+            
+        end % get.HighlightColor
+        
+        function set.HighlightColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''HighlightColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.HighlightColor_ = value;
+            
+            % Update
+            obj.update()
+            
+        end % set.HighlightColor
+        
+        function value = get.ShadowColor( obj )
+            
+            value = obj.ShadowColor_;
+            
+        end % get.ShadowColor
+        
+        function set.ShadowColor( obj, value )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''ShadowColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.ShadowColor_ = value;
+            
+            % Update
+            obj.update()
+            
+        end % set.ShadowColor
+        
+        function value = get.Orientation( obj )
+            
+            value = obj.Orientation_;
+            
+        end % get.Orientation
         
         function set.Orientation( obj, value )
             
@@ -157,20 +211,33 @@ classdef Divider < hgsetget
                 {'horizontal','vertical'} ) )
             
             % Set
-            obj.Orientation = value;
+            obj.Orientation_ = value;
+            
+            % Update
+            obj.update()
             
         end % set.Orientation
+        
+        function value = get.Markings( obj )
+            
+            value = obj.Markings_;
+            
+        end % get.Markings
         
         function set.Markings( obj, value )
             
             % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'on','off'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Markings'' must be ''on'' or ''off''.' )
+            assert( isa( value, 'double' ) && ndims( value ) == 2 && ...
+                size( value, 2 ) == 1 && all( isreal( value ) ) && ...
+                all( ~isinf( value ) ) && all( ~isnan( value ) ) && ...
+                all( value > 0 ), 'uix:InvalidPropertyValue', ...
+                'Property ''Markings'' must be a vector of positive values.' )
             
             % Set
-            obj.Markings = value;
+            obj.Markings_ = value;
+            
+            % Update
+            obj.update()
             
         end % set.Markings
         
@@ -194,30 +261,6 @@ classdef Divider < hgsetget
             
         end % onSizeChange
         
-        function onColorChange( obj, ~, ~ )
-            %onColorChange  Event handler
-            
-            % Update
-            obj.update()
-            
-        end % onColorChange
-        
-        function onOrientationChange( obj, ~, ~ )
-            %onOrientationChange  Event handler
-            
-            % Update
-            obj.update()
-            
-        end % onOrientationChange
-        
-        function onMarkingsChange( obj, ~, ~ )
-            %onMarkingsChange  Event handler
-            
-            % Update
-            obj.update()
-            
-        end % onMarkingsChange
-        
     end % event handlers
     
     methods( Access = private )
@@ -227,13 +270,52 @@ classdef Divider < hgsetget
             %
             %  d.update() updates the divider markings.
             
+            % Get properties
             control = obj.Control;
             position = control.Position;
-            color = obj.Color;
-            control.ForegroundColor = color;
-            control.BackgroundColor = color;
-            control.CData = repmat( reshape( color, [1 1 3] ), ...
-                floor( position([4 3]) ) - [1 1] );
+            backgroundColor = obj.BackgroundColor;
+            highlightColor = obj.HighlightColor;
+            shadowColor = obj.ShadowColor;
+            orientation = obj.Orientation;
+            markings = obj.Markings;
+            
+            % Assemble mask
+            mask = zeros( floor( position([4 3]) ) - [1 1] ); % initialize
+            switch orientation
+                case 'vertical'
+                    markings(markings < 4) = [];
+                    markings(markings > position(4)-6) = [];
+                    for ii = 1:numel( markings )
+                        marking = markings(ii);
+                        mask(floor( marking ) + [-3 0 3],1:end-1) = 1;
+                        mask(floor( marking ) + [-2 1 4],1:end-1) = 2;
+                    end
+                case 'horizontal'
+                    markings(markings < 4) = [];
+                    markings(markings > position(3)-6) = [];
+                    for ii = 1:numel( markings )
+                        marking = markings(ii);
+                        mask(2:end,floor( marking ) + [-3 0 3]) = 1;
+                        mask(2:end,floor( marking ) + [-2 1 4]) = 2;
+                    end
+            end
+            
+            % Assemble color data
+            cData1 = repmat( backgroundColor(1), size( mask ) );
+            cData1(mask==1) = highlightColor(1);
+            cData1(mask==2) = shadowColor(1);
+            cData2 = repmat( backgroundColor(2), size( mask ) );
+            cData2(mask==1) = highlightColor(2);
+            cData2(mask==2) = shadowColor(2);
+            cData3 = repmat( backgroundColor(3), size( mask ) );
+            cData3(mask==1) = highlightColor(3);
+            cData3(mask==2) = shadowColor(3);
+            cData = cat( 3, cData1, cData2, cData3 );
+            
+            % Set properties
+            control.ForegroundColor = backgroundColor;
+            control.BackgroundColor = backgroundColor;
+            control.CData = cData;
             
         end % update
         
