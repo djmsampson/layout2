@@ -125,6 +125,15 @@ package 'uiextras' provides support for legacy property values.
 GLT2 documentation is in preparation.  GLT1 documentation is largely valid, 
 apart from exceptions listed above.
 
+4.9  Warnings
+
+A number of warnings are provided:
+* uiextras:Deprecated: Feature will be removed in a future release
+* uix:Unimplemented: GLT1 feature not implemented in GLT2
+* uix:InvalidState: Internal error handled by workaround
+
+These can be disabled via warning( 'off', id ).
+
 
 5.  RELEASE HISTORY
 
