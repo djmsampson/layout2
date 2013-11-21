@@ -139,6 +139,7 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 2.0.3  Minor changes (25 November 2013)
   - Improved appearance of flexible dividers
+  - Modified default tab titles to match GLT1 behavior
   - Added support for row values for property 'Contents'
   - Fixed bugs in uiextras.Grid accessors for property 'Heights'
 
