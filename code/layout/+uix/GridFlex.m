@@ -87,6 +87,8 @@ classdef GridFlex < uix.Grid
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
             frontDivider.Orientation = divider.Orientation;
+            frontDivider.Parent = [];
+            frontDivider.Parent = obj;
             divider.Visible = 'off';
             frontDivider.Visible = 'on';
             
@@ -293,8 +295,6 @@ classdef GridFlex < uix.Grid
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
-                frontDivider.Parent = [];
-                frontDivider.Parent = obj;
             elseif b > c % destroy
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )

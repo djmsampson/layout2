@@ -76,6 +76,8 @@ classdef HBoxFlex < uix.HBox
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
             divider.Visible = 'off';
+            frontDivider.Parent = [];
+            frontDivider.Parent = obj;
             frontDivider.Visible = 'on';
             
         end % onMousePress
@@ -219,8 +221,6 @@ classdef HBoxFlex < uix.HBox
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
-                frontDivider.Parent = [];
-                frontDivider.Parent = obj;
             elseif b > c % destroy
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )

@@ -76,6 +76,8 @@ classdef VBoxFlex < uix.VBox
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
             divider.Visible = 'off';
+            frontDivider.Parent = [];
+            frontDivider.Parent = obj;
             frontDivider.Visible = 'on';
             
         end % onMousePress
@@ -223,8 +225,6 @@ classdef VBoxFlex < uix.VBox
                 end
                 % Bring front divider to the front
                 frontDivider = obj.FrontDivider;
-                frontDivider.Parent = [];
-                frontDivider.Parent = obj;
             elseif q > r % destroy
                 % Destroy dividers
                 delete( obj.RowDividers(r+1:q,:) )
