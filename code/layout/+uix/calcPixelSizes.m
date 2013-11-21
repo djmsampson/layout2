@@ -1,5 +1,5 @@
 function pSizes = calcPixelSizes( pTotal, mSizes, pMinimumSizes, pPadding, pSpacing )
-%calcPixelSizes  Calculate child positions in pixels
+%calcPixelSizes  Calculate child sizes in pixels
 %
 %  pSizes = uix.calcPixelSizes(total,mSizes,minSizes,padding,spacing)
 %  computes child sizes (in pixels) given total available size (in pixels),
