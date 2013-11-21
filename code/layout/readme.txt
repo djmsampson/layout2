@@ -16,7 +16,7 @@ in combination to produce virtually any user interface layout.
 GUI Layout Toolbox version 2.x provides support for Graphics version 2, the 
 upcoming MATLAB graphics system.
 
-The current version is 2.0.2.  This is a beta version that is feature 
+The current version is 2.0.3.  This is a beta version that is feature 
 complete but may contain bugs and performance issues.
 
 The developers expect to continue to provide bug fixes for GUI Layout 
@@ -132,10 +132,15 @@ A number of warnings are provided:
 * uix:Unimplemented: GLT1 feature not implemented in GLT2
 * uix:InvalidState: Internal error handled by workaround
 
-These can be disabled via warning( 'off', id ).
+These can be disabled via warning( 'off', id ), where id is the identifier.
 
 
 5.  RELEASE HISTORY
+
+2.0.3  Minor changes (25 November 2013)
+  - Improved appearance of flexible dividers
+  - Added support for row values for property 'Contents'
+  - Fixed bugs in uiextras.Grid accessors for property 'Heights'
 
 2.0.2  Minor changes (19 November 2013)
   - Added support for row values for contents companion properties in uix
