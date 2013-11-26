@@ -8,7 +8,7 @@ classdef ButtonBox < uix.Box
     
     properties( Access = protected )
         ButtonSize_ = [60 20]
-        HorizontalAlignment_ = 'left'
+        HorizontalAlignment_ = 'center'
         VerticalAlignment_ = 'middle'
     end
     

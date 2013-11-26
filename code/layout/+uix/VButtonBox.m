@@ -28,7 +28,12 @@ classdef VButtonBox < uix.ButtonBox
             padding = obj.Padding_;
             spacing = obj.Spacing_;
             r = numel( obj.Contents_ );
-            xSizes = repmat( buttonSize(1), [r 1] );
+            if 2 * padding + buttonSize(1) > bounds(3)
+                xSizes = repmat( uix.calcPixelSizes( bounds(3), -1, 1, ...
+                    padding, spacing ), [r 1] ); % shrink to fit
+            else
+                xSizes = repmat( buttonSize(1), [r 1] );
+            end
             switch obj.HorizontalAlignment
                 case 'left'
                     xPositions = [repmat( padding, [r 1] ) + 1, xSizes];
@@ -37,7 +42,12 @@ classdef VButtonBox < uix.ButtonBox
                 case 'right'
                     xPositions = [bounds(3) - xSizes - padding + 1, xSizes];
             end
-            ySizes = repmat( buttonSize(2), [r 1] );
+            if 2 * padding + (r-1) * spacing + r * buttonSize(2) > bounds(4)
+                ySizes = uix.calcPixelSizes( bounds(4), -ones( [r 1] ), ...
+                    ones( [r 1] ), padding, spacing ); % shrink to fit
+            else
+                ySizes = repmat( buttonSize(2), [r 1] );
+            end
             switch obj.VerticalAlignment
                 case 'top'
                     yPositions = [bounds(4) - padding - cumsum( ySizes ) - ...
