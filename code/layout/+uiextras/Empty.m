@@ -17,7 +17,7 @@ function obj = Empty( varargin )
 %   >> uicontrol( 'Parent', box, 'Background', 'b' )
 
 %   Copyright 2009-2013 The MathWorks, Inc.
-%   $Revision: 287 $ $Date: 2010-07-14 12:21:33 +0100 (Wed, 14 Jul 2010) $
+%   $Revision$ $Date$
 
 % TODO Warn
 % warning( 'uiextras:Deprecated', ...

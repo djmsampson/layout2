@@ -30,7 +30,7 @@ classdef Grid < uix.Grid
     %   See also: uiextras.GridFlex
     
     %   Copyright 2009-2013 The MathWorks, Inc.
-    %   $Revision: 367 $ $Date: 2011-02-10 16:25:22 +0000 (Thu, 10 Feb 2011) $
+    %   $Revision$ $Date$
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated

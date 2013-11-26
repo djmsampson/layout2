@@ -14,7 +14,7 @@ function [tf, loc] = inrectangle( xy, xywh )
 %  See also: inpolygon
 
 %  Copyright 2009-2013 The MathWorks, Inc.
-%  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
+%  $Revision$ $Date$
 
 if isempty( xywh )
     yn = true( size( xywh ) );

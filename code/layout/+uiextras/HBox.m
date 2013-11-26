@@ -31,7 +31,7 @@ classdef HBox < uix.HBox
     %             uiextras.Grid
     
     %   Copyright 2009-2013 The MathWorks, Inc.
-    %   $Revision: 374 $ $Date: 2012-12-20 09:18:15 +0000 (Thu, 20 Dec 2012) $
+    %   $Revision$ $Date$
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated

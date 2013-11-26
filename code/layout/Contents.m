@@ -27,4 +27,4 @@
 %   <a href="readme.txt">Release notes</a>
 
 %  Copyright 2009-2013 The MathWorks, Inc.
-%  $Revision: 380 $ $Date: 2013-02-27 10:29:08 +0000 (Wed, 27 Feb 2013) $
+%  $Revision$ $Date$

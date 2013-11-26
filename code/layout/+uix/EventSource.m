@@ -10,7 +10,7 @@ classdef ( Hidden, Sealed ) EventSource < handle
     %  raised on the wrong object.
     
     %  Copyright 2009-2013 The MathWorks, Inc.
-    %  $Revision: 383 $ $Date: 2013-04-29 11:44:48 +0100 (Mon, 29 Apr 2013) $
+    %  $Revision$ $Date$
     
     properties( Access = private )
         Listeners = event.listener.empty( [0 1] ) % listeners
