@@ -137,9 +137,11 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 5.  RELEASE HISTORY
 
-2.0.3  Minor changes (25 November 2013)
+2.0.3  Minor changes (27 November 2013)
   - Improved appearance of flexible dividers
   - Modified default tab titles to match GLT1 behavior
+  - Modified button resize behavior to shrink-to-fit in button boxes
+  - Modified default button box horizontal alignment to 'center'
   - Added support for row values for property 'Contents'
   - Fixed bugs in uiextras.Grid accessors for property 'Heights'
 
