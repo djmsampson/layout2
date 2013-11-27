@@ -15,7 +15,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     %  Copyright 2009-2013 The MathWorks, Inc.
     %  $Revision$ $Date$
     
-    properties( Hidden ) % TODO change Access to private
+    properties( Access = private )
         Root % root node
     end
     
