@@ -120,12 +120,20 @@ GLT2 contents companion properties are now of the same size as 'Contents',
 i.e., column vectors.  In GLT1, these properties were row vectors.  The 
 package 'uiextras' provides support for legacy property values.
 
-4.8  Documentation
+4.8  Tab selection behavior
+
+In GLT1, after adding a tab to a tab panel, the new tab is selected.
+
+In GLT2, the original selection is preserved, except if the tab panel was 
+empty, in which case the new tab is selected.  This is consistent with the 
+behavior of matlab.ui.container.TabGroup.
+
+4.9  Documentation
 
 GLT2 documentation is in preparation.  GLT1 documentation is largely valid, 
 apart from exceptions listed above.
 
-4.9  Warnings
+4.10  Warnings
 
 A number of warnings are provided:
 * uiextras:Deprecated: Feature will be removed in a future release
