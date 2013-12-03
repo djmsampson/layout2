@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration target="target.mlapps" target-name="Package App" name="GUI Layout Toolbox 2" location="C:\Projects\tools\layouts2\code" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox 2.prj" build-checksum="2426628908">
+    <param.appname>GUI Layout Toolbox 2</param.appname>
+    <param.authnamewatermark>David Sampson</param.authnamewatermark>
+    <param.email>david.sampson@mathworks.co.uk</param.email>
+    <param.company>MathWorks</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary>Create sophisticated MATLAB graphical user interfaces that resize gracefully</param.summary>
+    <param.description>GUI Layout Toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.  The classes supplied can be used in combination to produce virtually any user interface layout.
+
+&lt;ul&gt;
+&lt;li&gt;Arrange MATLAB user-interface components horizontally, vertically or in grids&lt;/li&gt;
+&lt;li&gt;Mix fixed size and variable size elements&lt;/li&gt;
+&lt;li&gt;Resize elements by dragging dividers&lt;/li&gt;
+&lt;li&gt;Use panels and tabs for switching interface pages&lt;/li&gt;
+&lt;/ul&gt;
+
+GUI Layout Toolbox version 2.x provides support for Graphics version 2, the 
+upcoming MATLAB graphics system.</param.description>
+    <param.screenshot />
+    <param.version>2.0.3</param.version>
+    <param.products.name>
+      <item>MATLAB</item>
+    </param.products.name>
+    <param.products.id>
+      <item>1</item>
+    </param.products.id>
+    <param.products.version>
+      <item>8.2</item>
+    </param.products.version>
+    <param.platforms />
+    <param.output>${PROJECT_ROOT}\GUI Layout Toolbox 2.mlappinstall</param.output>
+    <param.guid>5c1f1cd5-7358-4e99-8299-0e3a2735ac63</param.guid>
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.screenshot />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\layoutapp.m</file>
+    </fileset.main>
+    <fileset.depfun />
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\layout\+uiextras\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\CardPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\Empty.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\get.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\Grid.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\GridFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\HBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\HBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\HButtonBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\Panel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\set.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\TabPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\unset.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\VBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\VBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uiextras\VButtonBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\+mixin\Container.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\ancestors.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\AncestryObserver.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Box.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\ButtonBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\calcPixelSizes.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\CardPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\ChildEvent.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\ChildObserver.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Container.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Divider.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\EventSource.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Grid.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\GridFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\HBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\HBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\HButtonBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Image.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\inrectangle.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\loadIcon.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\LocationObserver.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Node.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Panel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\pvchk.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelClose.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelDock.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelHelp.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelMaximize.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelMinimize.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\panelUndock.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_NoEdge_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_NoEdge_Selected.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_NotSelected_NoEdge.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_NotSelected_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_NotSelected_Selected.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_Selected_NoEdge.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\Resources\tab_Selected_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\layout\+uix\SelectionEvent.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\TabPanel.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\VBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\VBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\VButtonBox.m</file>
+      <file>${PROJECT_ROOT}\layout\+uix\VisibilityObserver.m</file>
+      <file>${PROJECT_ROOT}\layout\Contents.m</file>
+      <file>${PROJECT_ROOT}\layout\install.m</file>
+      <file>${PROJECT_ROOT}\layout\layoutRoot.m</file>
+      <file>${PROJECT_ROOT}\layout\layoutVersion.m</file>
+      <file>${PROJECT_ROOT}\layout\readme.txt</file>
+      <file>${PROJECT_ROOT}\layout\uixboxpanel.m</file>
+      <file>${PROJECT_ROOT}\layout\uixcardpanel.m</file>
+      <file>${PROJECT_ROOT}\layout\uixgrid.m</file>
+      <file>${PROJECT_ROOT}\layout\uixgridflex.m</file>
+      <file>${PROJECT_ROOT}\layout\uixhbox.m</file>
+      <file>${PROJECT_ROOT}\layout\uixhboxflex.m</file>
+      <file>${PROJECT_ROOT}\layout\uixhbuttonbox.m</file>
+      <file>${PROJECT_ROOT}\layout\uixpanel.m</file>
+      <file>${PROJECT_ROOT}\layout\uixtabpanel.m</file>
+      <file>${PROJECT_ROOT}\layout\uixvbox.m</file>
+      <file>${PROJECT_ROOT}\layout\uixvboxflex.m</file>
+      <file>${PROJECT_ROOT}\layout\uixvbuttonbox.m</file>
+      <file>${PROJECT_ROOT}\layout\uninstall.m</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file name="GUI Layout Toolbox 2.mlappinstall" location="C:\Projects\tools\layouts2\code" optional="false">C:\Projects\tools\layouts2\code\GUI Layout Toolbox 2.mlappinstall</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2013b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
+
