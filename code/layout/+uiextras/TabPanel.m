@@ -25,8 +25,12 @@ classdef TabPanel < uix.TabPanel
     %   $Revision$
     %   $Date$
     
-    properties( Hidden, Access = public )
-        Callback = '' % deprecated
+    properties( Hidden, Access = public, Dependent )
+        Callback % deprecated
+    end
+    
+    properties( Access = private )
+        Callback_ = '' % backing for Callback
     end
     
     properties( Hidden, Access = public, Dependent )
@@ -102,7 +106,7 @@ classdef TabPanel < uix.TabPanel
                 'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
             
             % Get
-            value = obj.Callback;
+            value = obj.Callback_;
             
         end % get.Callback
         
@@ -129,7 +133,7 @@ classdef TabPanel < uix.TabPanel
             end
             
             % Set
-            obj.Callback = value;
+            obj.Callback_ = value;
             
         end % set.Callback
         
@@ -255,7 +259,7 @@ classdef TabPanel < uix.TabPanel
                 'SelectedChild', eventData.NewValue );
             
             % Call callback
-            callback = obj.Callback;
+            callback = obj.Callback_;
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
             elseif ischar( callback )
