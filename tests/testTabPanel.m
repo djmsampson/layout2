@@ -78,3 +78,16 @@ assertEqual( u(1).Visible, 'on' )
 assertEqual( u(3).Visible, 'off' )
 
 close all force;
+
+
+function testLayoutInTab()
+%testLayoutInTab  Test layout in tab
+close all force;
+
+h = uiextras.TabPanel( 'Parent', figure(), 'FontSize', 14 );
+assertEqual( isa( h, 'uiextras.TabPanel' ), true );
+
+b = uiextras.HBox( 'Parent', h );
+assertEqual( h.Contents, b );
+
+close all force;
