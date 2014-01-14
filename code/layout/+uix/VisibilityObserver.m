@@ -114,7 +114,15 @@ classdef ( Hidden, Sealed ) VisibilityObserver < handle
             
             % Identify new value
             ancestry = [obj.Ancestors; obj.Subject];
-            visibles = get( ancestry, {'Visible'} );
+            visibles = cell( size( ancestry ) ); % preallocate
+            for ii = 1:numel( ancestry )
+                ancestor = ancestry(ii);
+                if isprop( ancestor, 'Visible' )
+                    visibles{ii} = ancestor.Visible;
+                else
+                    visibles{ii} = 'on';
+                end
+            end
             newVisible = all( strcmp( visibles, 'on' ) );
             
             % Store new value
