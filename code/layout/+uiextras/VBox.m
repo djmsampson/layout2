@@ -35,17 +35,13 @@ classdef VBox < uix.VBox
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        Sizes % deprecated
-        MinimumSizes % deprecated
+        Sizes
+        MinimumSizes
     end
     
     methods
         
         function obj = VBox( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.VBox will be removed in a future release.  Please use uix.VBox instead.' )
             
             % Call uix constructor
             obj@uix.VBox( varargin{:} )
@@ -87,20 +83,12 @@ classdef VBox < uix.VBox
         
         function value = get.Sizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
-            
             % Get
             value = transpose( obj.Heights );
             
         end % get.Sizes
         
         function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
             obj.Heights = value;
@@ -109,20 +97,12 @@ classdef VBox < uix.VBox
         
         function value = get.MinimumSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
-            
             % Get
             value = transpose( obj.MinimumHeights );
             
         end % get.MinimumSizes
         
         function set.MinimumSizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
             
             % Get
             obj.MinimumHeights = value;

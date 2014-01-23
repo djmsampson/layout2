@@ -37,18 +37,14 @@ classdef GridFlex < uix.GridFlex
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        ColumnSizes % deprecated
-        RowSizes % deprecated
+        ColumnSizes
+        RowSizes
         ShowMarkings % deprecated
     end
     
     methods
         
         function obj = GridFlex( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.GridFlex will be removed in a future release.  Please use uix.GridFlex instead.' )
             
             % Call uix constructor
             obj@uix.GridFlex( varargin{:} )
@@ -90,20 +86,12 @@ classdef GridFlex < uix.GridFlex
         
         function value = get.ColumnSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
-            
             % Get
             value = transpose( obj.Widths );
             
         end % get.ColumnSizes
         
         function set.ColumnSizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get
             obj.Widths = value;
@@ -112,10 +100,6 @@ classdef GridFlex < uix.GridFlex
         
         function value = get.RowSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
-            
             % Get
             value = transpose( obj.Widths );
             
@@ -123,27 +107,28 @@ classdef GridFlex < uix.GridFlex
         
         function set.RowSizes( obj, value )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
-            
             % Set
             obj.Widths = value;
             
         end % set.RowSizes
         
-        function value = get.ShowMarkings( obj )
+        function value = get.ShowMarkings( ~ )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
-            % Get
-            value = 'off';
+            % Return
+            value = 'on';
             
         end % get.ShowMarkings
         
-        function set.ShowMarkings( ~, ~ )
+        function set.ShowMarkings( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
             
             % Warn
             warning( 'uiextras:Deprecated', ...

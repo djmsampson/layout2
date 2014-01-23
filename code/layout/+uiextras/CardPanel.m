@@ -29,16 +29,12 @@ classdef CardPanel < uix.CardPanel
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        SelectedChild % deprecated
+        SelectedChild
     end
     
     methods
         
         function obj = CardPanel( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.CardPanel will be removed in a future release.  Please use uix.CardPanel instead.' )
             
             % Call uix constructor
             obj@uix.CardPanel( varargin{:} )
@@ -80,20 +76,12 @@ classdef CardPanel < uix.CardPanel
         
         function value = get.SelectedChild( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
-            
             % Get
             value = obj.Selection;
             
         end % get.SelectedChild
         
         function set.SelectedChild( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
             
             % Set
             obj.Selection = value;

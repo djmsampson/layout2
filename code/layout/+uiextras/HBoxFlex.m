@@ -29,18 +29,14 @@ classdef HBoxFlex < uix.HBoxFlex
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        Sizes % deprecated
-        MinimumSizes % deprecated
+        Sizes
+        MinimumSizes
         ShowMarkings % deprecated
     end
     
     methods
         
         function obj = HBoxFlex( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.HBoxFlex will be removed in a future release.  Please use uix.HBoxFlex instead.' )
             
             % Call uix constructor
             obj@uix.HBoxFlex( varargin{:} )
@@ -82,20 +78,12 @@ classdef HBoxFlex < uix.HBoxFlex
         
         function value = get.Sizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
-            
             % Get
             value = transpose( obj.Widths );
             
         end % get.Sizes
         
         function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Set
             obj.Widths = value;
@@ -104,10 +92,6 @@ classdef HBoxFlex < uix.HBoxFlex
         
         function value = get.MinimumSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
-            
             % Get
             value = transpose( obj.MinimumWidths );
             
@@ -115,27 +99,28 @@ classdef HBoxFlex < uix.HBoxFlex
         
         function set.MinimumSizes( obj, value )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
-            
             % Get
             obj.MinimumWidths = value;
             
         end % set.MinimumSizes
         
-        function value = get.ShowMarkings( obj )
+        function value = get.ShowMarkings( ~ )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
-            % Get
-            value = 'off';
+            % Return
+            value = 'on';
             
         end % get.ShowMarkings
         
-        function set.ShowMarkings( ~, ~ )
+        function set.ShowMarkings( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
             
             % Warn
             warning( 'uiextras:Deprecated', ...

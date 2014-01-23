@@ -26,7 +26,7 @@ classdef TabPanel < uix.TabPanel
     %   $Date$
     
     properties( Hidden, Access = public, Dependent )
-        Callback % deprecated
+        Callback
     end
     
     properties( Access = private )
@@ -35,11 +35,11 @@ classdef TabPanel < uix.TabPanel
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        SelectedChild % deprecated
-        TabEnable % deprecated
-        TabNames % deprecated
-        TabPosition % deprecated
-        TabSize % deprecated
+        SelectedChild
+        TabEnable
+        TabNames
+        TabPosition
+        TabSize
     end
     
     properties( Access = private )
@@ -49,10 +49,6 @@ classdef TabPanel < uix.TabPanel
     methods
         
         function obj = TabPanel( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.TabPanel will be removed in a future release.  Please use uix.TabPanel instead.' )
             
             % Call uix constructor
             obj@uix.TabPanel( varargin{:} )
@@ -101,20 +97,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.Callback( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
-            
             % Get
             value = obj.Callback_;
             
         end % get.Callback
         
         function set.Callback( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Callback'' will be removed in a future release.  Please use ''SelectionChangeCallback'' instead.' )
             
             % Check
             if ischar( value ) % string
@@ -139,20 +127,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.SelectedChild( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
-            
             % Get
             value = obj.Selection;
             
         end % get.SelectedChild
         
         function set.SelectedChild( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''SelectedChild'' will be removed in a future release.  Please use ''Selection'' instead.' )
             
             % Set
             obj.Selection = value;
@@ -161,20 +141,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.TabEnable( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabEnable'' will be removed in a future release.  Please use ''TabEnables'' instead.' )
-            
             % Get
             value = transpose( obj.TabEnables );
             
         end % get.TabEnable
         
         function set.TabEnable( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabEnable'' will be removed in a future release.  Please use ''TabEnables'' instead.' )
             
             % Set
             obj.TabEnables = value;
@@ -183,20 +155,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.TabNames( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabNames'' will be removed in a future release.  Please use ''TabTitles'' instead.' )
-            
             % Get
             value = transpose( obj.TabTitles );
             
         end % get.TabNames
         
         function set.TabNames( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabNames'' will be removed in a future release.  Please use ''TabTitles'' instead.' )
             
             % Set
             obj.TabTitles = value;
@@ -205,20 +169,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.TabPosition( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabPosition'' will be removed in a future release.  Please use ''TabLocation'' instead.' )
-            
             % Get
             value = obj.TabLocation;
             
         end % get.TabPosition
         
         function set.TabPosition( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabPosition'' will be removed in a future release.  Please use ''TabLocation'' instead.' )
             
             % Set
             obj.TabLocation = value;
@@ -227,20 +183,12 @@ classdef TabPanel < uix.TabPanel
         
         function value = get.TabSize( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabSize'' will be removed in a future release.  Please use ''TabWidth'' instead.' )
-            
             % Get
             value = obj.TabWidth;
             
         end % get.TabSize
         
         function set.TabSize( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''TabSize'' will be removed in a future release.  Please use ''TabWidth'' instead.' )
             
             % Set
             obj.TabWidth = value;

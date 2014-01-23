@@ -33,16 +33,12 @@ classdef Panel < uix.Panel
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        SelectedChild % deprecated
+        SelectedChild
     end
     
     methods
         
         function obj = Panel( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.Panel will be removed in a future release.  Please use uix.Panel instead.' )
             
             % Call uix constructor
             obj@uix.Panel( varargin{:} )

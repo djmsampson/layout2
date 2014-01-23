@@ -35,17 +35,13 @@ classdef HBox < uix.HBox
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        Sizes % deprecated
-        MinimumSizes % deprecated
+        Sizes
+        MinimumSizes
     end
     
     methods
         
         function obj = HBox( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.HBox will be removed in a future release.  Please use uix.HBox instead.' )
             
             % Call uix constructor
             obj@uix.HBox( varargin{:} )
@@ -87,20 +83,12 @@ classdef HBox < uix.HBox
         
         function value = get.Sizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
-            
             % Get
             value = transpose( obj.Widths );
             
         end % get.Sizes
         
         function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Set
             obj.Widths = value;
@@ -109,20 +97,12 @@ classdef HBox < uix.HBox
         
         function value = get.MinimumSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
-            
             % Get
             value = transpose( obj.MinimumWidths );
             
         end % get.MinimumSizes
         
         function set.MinimumSizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumWidths'' instead.' )
             
             % Get
             obj.MinimumWidths = value;

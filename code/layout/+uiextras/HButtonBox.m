@@ -31,10 +31,6 @@ classdef HButtonBox < uix.HButtonBox
         function obj = HButtonBox( varargin )
             %uiextras.HButtonBox  Create a new horizontal button box
             
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.HButtonBox will be removed in a future release.  Please use uix.HButtonBox instead.' )
-            
             % Call uix constructor
             obj@uix.HButtonBox( varargin{:} )
             

@@ -29,18 +29,14 @@ classdef VBoxFlex < uix.VBoxFlex
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        Sizes % deprecated
-        MinimumSizes % deprecated
+        Sizes
+        MinimumSizes
         ShowMarkings % deprecated
     end
     
     methods
         
         function obj = VBoxFlex( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.VBoxFlex will be removed in a future release.  Please use uix.VBoxFlex instead.' )
             
             % Call uix constructor
             obj@uix.VBoxFlex( varargin{:} )
@@ -82,20 +78,12 @@ classdef VBoxFlex < uix.VBoxFlex
         
         function value = get.Sizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
-            
             % Get
             value = transpose( obj.Heights );
             
         end % get.Sizes
         
         function set.Sizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''Sizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
             obj.Heights = value;
@@ -104,10 +92,6 @@ classdef VBoxFlex < uix.VBoxFlex
         
         function value = get.MinimumSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
-            
             % Get
             value = transpose( obj.MinimumHeights );
             
@@ -115,27 +99,28 @@ classdef VBoxFlex < uix.VBoxFlex
         
         function set.MinimumSizes( obj, value )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''MinimumSizes'' will be removed in a future release.  Please use ''MinimumHeights'' instead.' )
-            
             % Get
             obj.MinimumHeights = value;
             
         end % set.MinimumSizes
         
-        function value = get.ShowMarkings( obj )
+        function value = get.ShowMarkings( ~ )
             
             % Warn
             warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
-            % Get
-            value = 'off';
+            % Return
+            value = 'on';
             
         end % get.ShowMarkings
         
-        function set.ShowMarkings( ~, ~ )
+        function set.ShowMarkings( ~, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uiextras:InvalidPropertyValue', ...
+                'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
             
             % Warn
             warning( 'uiextras:Deprecated', ...

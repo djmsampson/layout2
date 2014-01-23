@@ -36,18 +36,14 @@ classdef BoxPanel < uix.BoxPanel
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        IsDocked % deprecated
-        IsMinimized % deprecated
+        IsDocked
+        IsMinimized
         SelectedChild % deprecated
     end
     
     methods
         
         function obj = BoxPanel( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.BoxPanel will be removed in a future release.  Please use uix.BoxPanel instead.' )
             
             % Call uix constructor
             obj@uix.BoxPanel( varargin{:} )
@@ -89,20 +85,12 @@ classdef BoxPanel < uix.BoxPanel
         
         function value = get.IsDocked( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' will be removed in a future release.  Please use ''Docked'' instead.' )
-            
             % Get
             value = obj.Docked;
             
         end % get.IsDocked
         
         function set.IsDocked( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''IsDocked'' will be removed in a future release.  Please use ''Docked'' instead.' )
             
             % Get
             obj.Docked = value;
@@ -111,20 +99,12 @@ classdef BoxPanel < uix.BoxPanel
         
         function value = get.IsMinimized( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' will be removed in a future release.  Please use ''Minimized'' instead.' )
-            
             % Get
             value = obj.Minimized;
             
         end % get.IsMinimized
         
         function set.IsMinimized( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''IsMinimized'' will be removed in a future release.  Please use ''Minimized'' instead.' )
             
             % Get
             obj.Minimized = value;

@@ -34,17 +34,13 @@ classdef Grid < uix.Grid
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        RowSizes % deprecated
-        ColumnSizes % deprecated
+        RowSizes
+        ColumnSizes
     end
     
     methods
         
         function obj = Grid( varargin )
-            
-            % TODO Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'uiextras.Grid will be removed in a future release.  Please use uix.Grid instead.' )
             
             % Call uix constructor
             obj@uix.Grid( varargin{:} )
@@ -86,20 +82,12 @@ classdef Grid < uix.Grid
         
         function value = get.RowSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
-            
             % Get
             value = transpose( obj.Heights );
             
         end % get.RowSizes
         
         function set.RowSizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''RowSizes'' will be removed in a future release.  Please use ''Heights'' instead.' )
             
             % Set
             obj.Heights = value;
@@ -108,20 +96,12 @@ classdef Grid < uix.Grid
         
         function value = get.ColumnSizes( obj )
             
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
-            
             % Get
             value = transpose( obj.Widths );
             
         end % get.ColumnSizes
         
         function set.ColumnSizes( obj, value )
-            
-            % Warn
-            warning( 'uiextras:Deprecated', ...
-                'Property ''ColumnSizes'' will be removed in a future release.  Please use ''Widths'' instead.' )
             
             % Get
             obj.Widths = value;
