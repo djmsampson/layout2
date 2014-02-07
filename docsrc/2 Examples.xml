@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE xsl:stylesheet [
+  <!ENTITY nl "&#10;">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY sq "&#x25A1;">
+  ]>
+
+<doc name="Examples" 
+     type="Examples"
+     briefdescription="A list of the examples that are provided in the documentation">
+    
+     <p>The following examples are provided as part of this documentation. Click
+     the name of any example to go to the corresponding page.</p>
+         
+     <h4>Basics</h4>
+     <dl>
+         <dt><ref link="HierarchyExample"><b>Layout hierarchy</b></ref></dt>
+         <dd>Using layouts inside layouts to produce more complex designs</dd>
+     </dl>
+         
+     <h4>Using axes</h4>
+     <dl>
+         <dt><ref link="AxesExample"><b>Positioning axes</b></ref></dt>
+         <dd>Using the different axes position properties.</dd>
+     </dl>
+         
+     <h4>Using panels</h4>
+     <dl>
+         <dt><ref link="PanelHelp"><b>Context help</b></ref></dt>
+         <dd>Adding context-sensitive help using panels.</dd>
+         
+         <dt><ref link="PanelMinimize"><b>Minimize and maximize</b></ref></dt>
+         <dd>Creating a user interface with panels that can be minimized and
+         maximized.</dd>
+         
+         <dt><ref link="PanelDock"><b>Dock and undock</b></ref></dt>
+         <dd>Creating a user interface with panels that can be undocked into
+         separate windows.</dd>
+     </dl>
+     
+     <h4>Enable and Visible</h4>
+      <dl>
+         <dt><ref link="EnableExample"><b>Enabling/Disabling a layout</b></ref></dt>
+         <dd>Using the "Enable" property to enable or disable groups of buttons</dd>
+      
+         <dt><ref link="VisibleExample"><b>Showing/Hiding a layout</b></ref></dt>
+         <dd>Using the "Visible" property to show or hide groups of buttons</dd>
+      </dl>
+       
+     <h4>Applications</h4>
+      <dl>
+         <dt><ref link="ExampleApp"><b>Building a complete application</b></ref></dt>
+         <dd>Using layouts together to produce a complete application</dd>
+     </dl>
+       
+</doc>

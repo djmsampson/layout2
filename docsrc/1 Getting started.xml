@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE xsl:stylesheet [
+  <!ENTITY nl "&#10;">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY sq "&#x25A1;">
+  ]>
+
+<doc name="Getting Started" 
+     type="GettingStarted"
+     briefdescription="Introductory notes and installation instructions">
+    <para>
+        This chapter gives an overview of this package, including its purpose,
+how to install it and any known issues at the time of release.
+    </para>
+
+
+<!-- ****************************************************************** -->
+
+  <section name="What is the GUI Layout Toolbox?" staticref="about">
+    <keywords>About</keywords>
+<P>
+The GUI Layout Toolbox provides a package of MATLAB objects that allow for complex
+arrangement of graphical user interface elements within a figure window. The
+main capabilities provided are:
+<UL>
+  <LI>Automatic element arrangement horizontally, vertically or in grids</LI>
+  <LI>Ability to specify fixed sizes or resizing weights for each element</LI>
+  <LI>Ability to "nest" layouts to produce virtually any element arrangement</LI>
+  <LI>Divider bars for user-resizing of elements</LI>
+</UL>
+</P>
+<P>
+These element arrangement capabilities are designed to match those found as
+standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
+</P>
+    <P>
+        Note that this is the second version of this toolbox, designed to 
+        work with MATLAB releases R2014b and later. For earlier MATLAB releases
+        use the first version.
+    </P>
+</section>
+
+
+<!-- ****************************************************************** -->
+
+<section name="Release Notes" staticref="releasenotes">
+    <para>
+        The GUI Layout Toolbox version numbers take the form <code>major.minor.iter</code>. The
+        current version you have installed can be checked by typing <matlabfcn>ver</matlabfcn>
+        at the MATLAB command prompt.
+    </para>
+    
+    
+    <inlinesubsection name="Version 2.0.4">
+        Minor changes (7 February 2014)
+        <ul>
+            <li>Added documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Version 2.0.3">
+        Minor changes (27 November 2013)
+        <ul>
+            <li>Improved appearance of flexible dividers</li>
+            <li>Modified default tab titles to match GLT1 behavior</li>
+            <li>Modified button resize behavior to shrink-to-fit in button boxes</li>
+            <li>Modified default button box horizontal alignment to 'center'</li>
+            <li>Added support for row values for property 'Contents'</li>
+            <li>Fixed bugs in uiextras.Grid accessors for property 'Heights'</li>
+        </ul>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Version 2.0.2">
+        Minor changes (19 November 2013)
+        <ul>
+            <li>Added support for row values for contents companion properties in uix</li>
+            <li>Modified uix.Image to construct JLabel on EDT</li>
+            <li>Added HandleVisibility awareness to uix.ChildObserver</li>
+            <li>Suppressed constructor warnings in uiextras</li>
+        </ul>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Version 2.0.1">
+        Initial beta version (16 November 2013)
+    </inlinesubsection> 
+    
+</section>
+
+
+<!-- ****************************************************************** -->
+  
+<section name="Installation"> 
+    <keywords>Uninstall</keywords>
+    <para>
+        To use this toolbox it must be added to the MATLAB path. Scripts are provided
+        to do this in two ways:
+    </para>
+    <para>
+        <b>From MATLAB:</b>
+        <OL>
+            <LI><b>From MATLAB:</b> from the folder containing the toolbox, run the "install.m" function</LI>
+            <LI><b>From Windows Explorer:</b> from the folder containing the toolbox, double-click the "install.bat" icon</LI>
+        </OL>
+    </para>
+    <para>
+        To uninstall (i.e. remove it from the path), run the function 'uninstall' in MATLAB, also found in the toolbox folder.
+    </para>
+</section>
+
+<!-- ****************************************************************** -->
+  
+<section name="Support"> 
+    <keywords>Help</keywords>
+    <p>
+        This toolbox is not a MathWorks supported product. However, if you
+        have problems, suggestions or other comments, please contact the
+        authors:
+    </p>
+    <ul>
+        <li><a href="mailto:david.sampson@mathworks.co.uk">David Sampson</a></li>
+        <li><a href="mailto:ben.tordoff@mathworks.co.uk">Ben Tordoff</a></li>
+    </ul>
+    <p>If you like this toolbox, help others to find it by leaving a rating
+        and comment on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/?????">MATLAB Central File Exchange</a>.
+    </p>
+</section>
+
+<!-- ****************************************************************** -->
+  
+<section name="Acknowledgements"> 
+    <p>
+        This toolbox has been evolving for several years and is based on the work of many engineering consultants
+        at MathWorks, including (but not limited to):
+    </p>
+    <ul>
+        <li>Ben Tordoff</li>
+        <li>David Sampson</li>
+        <li>Paul Kerr-Delworth</li>
+        <li>Malcolm Wood</li>
+        <li>Brad Phelan</li>
+    </ul>
+    <p>Many thanks to those who have shared their code and expertise over the years.</p>
+</section>
+<!-- ****************************************************************** -->
+  
+</doc>
