@@ -13,7 +13,7 @@ classdef TabPanel < uix.Container
     end
     
     properties
-        SelectionChangeCallback = '' % selection change callback
+        SelectionChangedCallback = '' % selection change callback
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -41,7 +41,7 @@ classdef TabPanel < uix.Container
         TabDividers = uix.Image.empty( [0 1] ) % tab dividers
         LocationObserver % location observer
         BackgroundColorListener % listener
-        SelectionChangeListener % listener
+        SelectionChangedListener % listener
     end
     
     properties( Access = private, Constant )
@@ -53,7 +53,7 @@ classdef TabPanel < uix.Container
     end
     
     events( NotifyAccess = private )
-        SelectionChange
+        SelectionChanged
     end
     
     methods
@@ -68,13 +68,13 @@ classdef TabPanel < uix.Container
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChange );
-            selectionChangeListener = event.listener( obj, ...
-                'SelectionChange', @obj.onSelectionChange );
+            selectionChangedListener = event.listener( obj, ...
+                'SelectionChanged', @obj.onSelectionChanged );
             
             % Store properties
             obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
-            obj.SelectionChangeListener = selectionChangeListener;
+            obj.SelectionChangedListener = selectionChangedListener;
             
             % Set properties
             if nargin > 0
@@ -328,7 +328,7 @@ classdef TabPanel < uix.Container
             
         end % get.Selection
         
-        function set.SelectionChangeCallback( obj, value )
+        function set.SelectionChangedCallback( obj, value )
             
             % Check
             if ischar( value ) % string
@@ -343,13 +343,13 @@ classdef TabPanel < uix.Container
                 % OK
             else
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''SelectionChangeCallback'' must be a valid callback.' )
+                    'Property ''SelectionChangedCallback'' must be a valid callback.' )
             end
             
             % Set
-            obj.SelectionChangeCallback = value;
+            obj.SelectionChangedCallback = value;
             
-        end % set.SelectionChangeCallback
+        end % set.SelectionChangedCallback
         
         function set.Selection( obj, value ) % TODO
             
@@ -382,7 +382,7 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
             % Notify selection change
-            obj.notify( 'SelectionChange', ...
+            obj.notify( 'SelectionChanged', ...
                 uix.SelectionEvent( oldSelection, newSelection ) )
             
         end % set.Selection
@@ -478,7 +478,7 @@ classdef TabPanel < uix.Container
             
             % Notify selection change
             if oldSelection ~= newSelection
-                obj.notify( 'SelectionChange', ...
+                obj.notify( 'SelectionChanged', ...
                     uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
@@ -651,7 +651,7 @@ classdef TabPanel < uix.Container
             
             % Create new tab
             n = numel( obj.Tabs );
-            tab = matlab.ui.control.StyleControl( 'Internal', true, ...
+            tab = matlab.ui.control.UIControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
                 'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
                 'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
@@ -679,7 +679,7 @@ classdef TabPanel < uix.Container
             
             % Notify selection change
             if oldSelection ~= newSelection
-                obj.notify( 'SelectionChange', ...
+                obj.notify( 'SelectionChanged', ...
                     uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
@@ -729,7 +729,7 @@ classdef TabPanel < uix.Container
             
             % Notify selection change
             if oldSelection == index
-                obj.notify( 'SelectionChange', ...
+                obj.notify( 'SelectionChanged', ...
                     uix.SelectionEvent( oldSelection, newSelection ) )
             end
             
@@ -841,7 +841,7 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
             % Notify selection change
-            obj.notify( 'SelectionChange', ...
+            obj.notify( 'SelectionChanged', ...
                 uix.SelectionEvent( oldSelection, newSelection ) )
             
         end % onTabClick
@@ -852,10 +852,10 @@ classdef TabPanel < uix.Container
             
         end % onBackgroundColorChange
         
-        function onSelectionChange( obj, source, eventData )
+        function onSelectionChanged( obj, source, eventData )
             
             % Call callback
-            callback = obj.SelectionChangeCallback;
+            callback = obj.SelectionChangedCallback;
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
             elseif ischar( callback )
@@ -866,7 +866,7 @@ classdef TabPanel < uix.Container
                 feval( callback{1}, source, eventData, callback{2:end} )
             end
             
-        end % onSelectionChange
+        end % onSelectionChanged
         
     end % event handlers
     

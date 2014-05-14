@@ -43,7 +43,7 @@ classdef TabPanel < uix.TabPanel
     end
     
     properties( Access = private )
-        SelectionChangeListener % listener
+        SelectionChangedListener % listener
     end
     
     methods
@@ -59,11 +59,11 @@ classdef TabPanel < uix.TabPanel
             end
             
             % Create listeners
-            selectionChangeListener = event.listener( obj, ...
-                'SelectionChange', @obj.onSelectionChange );
+            selectionChangedListener = event.listener( obj, ...
+                'SelectionChanged', @obj.onSelectionChanged );
             
             % Store properties
-            obj.SelectionChangeListener = selectionChangeListener;
+            obj.SelectionChangedListener = selectionChangedListener;
             
         end % constructor
         
@@ -199,7 +199,7 @@ classdef TabPanel < uix.TabPanel
     
     methods( Access = private )
         
-        function onSelectionChange( obj, source, eventData )
+        function onSelectionChanged( obj, source, eventData )
             
             % Create legacy event data structure
             oldEventData = struct( 'Source', eventData.Source, ...
@@ -218,7 +218,7 @@ classdef TabPanel < uix.TabPanel
                 feval( callback{1}, source, oldEventData, callback{2:end} )
             end
             
-        end % onSelectionChange
+        end % onSelectionChanged
         
     end % event handlers
     

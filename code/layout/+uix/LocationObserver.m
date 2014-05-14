@@ -39,7 +39,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     end
     
     events( NotifyAccess = private )
-        LocationChange
+        LocationChanged
     end
     
     methods
@@ -119,14 +119,14 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             % Create listeners
             locationListeners = event.listener.empty( [0 1] );
             sizeListeners = event.listener.empty( [0 1] );
-            cbLocationChange = @obj.onLocationChange;
-            cbSizeChange = @obj.onSizeChange;
+            cbLocationChanged = @obj.onLocationChanged;
+            cbSizeChanged = @obj.onSizeChanged;
             for ii = 1:numel( ancestry )
                 ancestor = ancestry(ii);
                 locationListeners(ii,:) = event.listener( ancestor, ...
-                    'LocationChange', cbLocationChange );
+                    'LocationChanged', cbLocationChanged );
                 sizeListeners(ii,:) = event.listener( ancestor, ...
-                    'SizeChange', cbSizeChange );
+                    'SizeChanged', cbSizeChanged );
             end
             windowStyleListener = event.proplistener( figure, ...
                 findprop( figure, 'WindowStyle' ), 'PostSet', ...
@@ -224,7 +224,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
             obj.Location = location;
             
             % Raise event
-            notify( obj, 'LocationChange' )
+            notify( obj, 'LocationChanged' )
             
             function p = getFigurePixelPosition( jFigurePanelContainer )
                 %getFigurePixelPosition  Get figure position in pixels
@@ -292,19 +292,19 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     
     methods( Access = private )
         
-        function onLocationChange( obj, source, ~ )
+        function onLocationChanged( obj, source, ~ )
             
             % Update
             obj.update( source )
             
-        end % onLocationChange
+        end % onLocationChanged
         
-        function onSizeChange( obj, source, ~ )
+        function onSizeChanged( obj, source, ~ )
             
             % Update
             obj.update( source )
             
-        end % onSizeChange
+        end % onSizeChanged
         
         function onWindowStyleChange( obj, ~, eventData )
             

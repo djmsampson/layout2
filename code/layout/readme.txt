@@ -13,10 +13,10 @@ in combination to produce virtually any user interface layout.
 * Resize elements by dragging dividers
 * Use panels and tabs for switching interface pages
 
-GUI Layout Toolbox version 2.x provides support for Graphics version 2, the 
-upcoming MATLAB graphics system.
+GUI Layout Toolbox version 2.x provides support for MATLAB Graphics version
+2.
 
-The current version is 2.0.3.  This is a beta version that is feature 
+The current version is 2.0.5.  This is a beta version that is feature 
 complete but may contain bugs and performance issues.
 
 The developers expect to continue to provide bug fixes for GUI Layout 
@@ -32,9 +32,6 @@ Toolbox version 1.
 
 
 3.  INSTALLATION
-
-GLT2 supports MATLAB R2013b onwards with HG2.  To start MATLAB with HG2, 
-use the command line switch -hgVersion 2.
 
 GLT2 can be installed by running its 'install' function.  To verify correct 
 installation, type 'ver layout' at the MATLAB command line, and check for 
@@ -144,6 +141,11 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 
 5.  RELEASE HISTORY
+
+2.0.5  Minor changes (15 May 2014)
+  - Updated to use new class and event names
+
+2.0.4  Minor changes (18 January 2014)
 
 2.0.3  Minor changes (27 November 2013)
   - Improved appearance of flexible dividers

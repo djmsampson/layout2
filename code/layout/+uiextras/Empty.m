@@ -24,6 +24,6 @@ function obj = Empty( varargin )
 %     'uiextras.Empty will be removed in a future release.' )
 
 % Call uix constructor
-obj = matlab.ui.control.StyleControl( varargin{:}, 'Visible', 'off' );
+obj = matlab.ui.control.UIControl( varargin{:}, 'Visible', 'off' );
 
 end % uiextras.Empty

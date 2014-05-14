@@ -31,7 +31,7 @@ classdef Divider < hgsetget
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
         Orientation_ = 'vertical' % backing for Orientation
         Markings_ = zeros( [0 1] ) % backing for Markings
-        SizeChangeListener % listener
+        SizeChangedListener % listener
     end
     
     methods
@@ -45,7 +45,7 @@ classdef Divider < hgsetget
             %  specified property p1 to value v1, etc.
             
             % Create control
-            control = matlab.ui.control.StyleControl( ...
+            control = matlab.ui.control.UIControl( ...
                 'Style', 'checkbox', 'Internal', true, ...
                 'Enable', 'inactive', 'DeleteFcn', @obj.onDeleted );
             
@@ -61,11 +61,11 @@ classdef Divider < hgsetget
             obj.update()
             
             % Create listener
-            sizeChangeListener = event.listener( control, 'SizeChange', ...
-                @obj.onSizeChange );
+            sizeChangedListener = event.listener( control, 'SizeChanged', ...
+                @obj.onSizeChanged );
             
             % Store listener
-            obj.SizeChangeListener = sizeChangeListener;
+            obj.SizeChangedListener = sizeChangedListener;
             
         end % constructor
         
@@ -253,13 +253,13 @@ classdef Divider < hgsetget
             
         end % onDeleted
         
-        function onSizeChange( obj, ~, ~ )
-            %onSizeChange  Event handler
+        function onSizeChanged( obj, ~, ~ )
+            %onSizeChanged  Event handler
             
             % Update
             obj.update()
             
-        end % onSizeChange
+        end % onSizeChanged
         
     end % event handlers
     

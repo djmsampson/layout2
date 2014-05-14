@@ -37,7 +37,7 @@ classdef Container < handle
         ChildObserver % observer
         ChildAddedListener % listener
         ChildRemovedListener % listener
-        SizeChangeListener % listener
+        SizeChangedListener % listener
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
     
@@ -64,8 +64,8 @@ classdef Container < handle
                 childObserver, 'ChildAdded', @obj.onChildAdded );
             childRemovedListener = event.listener( ...
                 childObserver, 'ChildRemoved', @obj.onChildRemoved );
-            sizeChangeListener = event.listener( ...
-                obj, 'SizeChange', @obj.onSizeChange );
+            sizeChangedListener = event.listener( ...
+                obj, 'SizeChanged', @obj.onSizeChanged );
             
             % Store observers and listeners
             obj.AncestryObserver = ancestryObserver;
@@ -75,7 +75,7 @@ classdef Container < handle
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
-            obj.SizeChangeListener = sizeChangeListener;
+            obj.SizeChangedListener = sizeChangedListener;
             
         end % constructor
         
@@ -231,13 +231,13 @@ classdef Container < handle
             
         end % onChildRemoved
         
-        function onSizeChange( obj, ~, ~ )
-            %onSizeChange  Event handler
+        function onSizeChanged( obj, ~, ~ )
+            %onSizeChanged  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % onSizeChange
+        end % onSizeChanged
         
         function onActivePositionPropertyChange( obj, ~, ~ )
             %onActivePositionPropertyChange  Event handler
