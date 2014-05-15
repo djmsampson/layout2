@@ -21,7 +21,7 @@ initTestSuite();
 function testDefaultConstructor()
 %testDefaultConstructor  Test constructing the widget with no arguments
 close all force;
-assertEqual( isa( uiextras.Empty(), 'matlab.ui.control.StyleControl' ), true );
+assertEqual( isa( uiextras.Empty(), 'matlab.ui.control.UIControl' ), true );
 close all force;
 
 
@@ -34,7 +34,7 @@ args = {
     'Visible',         'on'
     }';
     
-assertEqual( isa( uiextras.Empty( args{:} ), 'matlab.ui.control.StyleControl' ), true );
+assertEqual( isa( uiextras.Empty( args{:} ), 'matlab.ui.control.UIControl' ), true );
 close all force;
 
 
