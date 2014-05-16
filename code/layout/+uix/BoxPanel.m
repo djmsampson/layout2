@@ -29,8 +29,8 @@ classdef BoxPanel < uix.Container
         BottomBorder % border image
         LeftBorder % border image
         RightBorder % border image
-        BorderWidth_ = 0 % backing for BorderWidth
-        BorderType_ = 'none' % backing for BorderType
+        BorderWidth_ = 1 % backing for BorderWidth
+        BorderType_ = 'etchedout' % backing for BorderType
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
         TitleHeight = -1 % cache of title height (-1 denotes stale cache)
@@ -56,11 +56,15 @@ classdef BoxPanel < uix.Container
             
             % Create location observer
             locationObserver = uix.LocationObserver( obj );
+            defaultTitleColor = [0.05 0.25 0.5];
+            defaultForegroundColor = [1 1 1];
             
             % Create title and borders
             titlebar = matlab.ui.control.UIControl( 'Internal', true, ...
                 'Parent', obj, 'Style', 'text', 'Units', 'pixels', ...
-                'HorizontalAlignment', 'left' );
+                'HorizontalAlignment', 'left', ...
+                'ForegroundColor', defaultForegroundColor, ...
+                'BackgroundColor', defaultTitleColor);
             topBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels' );
             middleBorder = uix.Image( 'Internal', true, 'Parent', obj, ...
@@ -77,18 +81,22 @@ classdef BoxPanel < uix.Container
             closeButton = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
                 'CData', cData.Close, 'Visible', 'off', ...
+                'BackgroundColor', defaultTitleColor, ...
                 'TooltipString', 'Close this panel' );
             dockButton = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
                 'CData', cData.Undock, 'Visible', 'off', ...
+                'BackgroundColor', defaultTitleColor, ...
                 'TooltipString', 'Undock this panel' );
             helpButton = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
                 'CData', cData.Help, 'Visible', 'off', ...
+                'BackgroundColor', defaultTitleColor, ...
                 'TooltipString', 'Get help on this panel' );
             minimizeButton = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
                 'CData', cData.Minimize, 'Visible', 'off', ...
+                'BackgroundColor', defaultTitleColor, ...
                 'TooltipString', 'Minimize this panel' );
             
             % Store properties
@@ -103,6 +111,7 @@ classdef BoxPanel < uix.Container
             obj.CloseButton = closeButton;
             obj.DockButton = dockButton;
             obj.MinimizeButton = minimizeButton;
+            recolorButtons( obj )
             
             % Set properties
             if nargin > 0
@@ -238,6 +247,7 @@ classdef BoxPanel < uix.Container
         function set.ForegroundColor( obj, value )
             
             obj.Titlebar.ForegroundColor = value;
+            recolorButtons( obj )
             
         end % set.ForegroundColor
         
@@ -314,7 +324,7 @@ classdef BoxPanel < uix.Container
             obj.CloseButton.BackgroundColor = value;
             obj.DockButton.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
-            
+                        
         end % set.TitleColor
         
         function value = get.CloseRequestFcn( obj )
@@ -457,7 +467,8 @@ classdef BoxPanel < uix.Container
             height = ceil( location(2) + location(4) ) - floor( location(2) );
             titleHeight = obj.TitleHeight;
             if titleHeight == -1 % cache stale, refresh
-                titleHeight = obj.Titlebar.Extent(4);
+                titleAdjust = 3; % Dirty hack - extent seems to be a bit bigger than required for one line of text
+                titleHeight = obj.Titlebar.Extent(4) - titleAdjust; 
                 obj.TitleHeight = titleHeight; % store
             end
             minimized = obj.Minimized_;
@@ -744,6 +755,28 @@ classdef BoxPanel < uix.Container
             end % mask2jdata
             
         end % redrawBorders
+        
+        function recolorButtons( obj )
+            % Update the icon colors to match the foreground color
+            col = obj.ForegroundColor;
+            cData = obj.ButtonCData;
+            flds = fieldnames(cData);
+            for ii=1:numel(flds)
+                data = cData.(flds{ii});
+                idx = find((data(:,:,1) == 0) & (data(:,:,2) == 0) & (data(:,:,3) == 0));
+                pixelsPerChannel = size(data,1)*size(data,2);
+                data(idx) = col(1);
+                data(idx+pixelsPerChannel) = col(2);
+                data(idx+2*pixelsPerChannel) = col(3);
+                cData.(flds{ii}) = data;
+            end
+            
+            % Now update the uicontrols
+            obj.CloseButton.CData = cData.Close;
+            obj.HelpButton.CData = cData.Help;
+            obj.DockButton.CData = cData.Dock;
+            obj.MinimizeButton.CData = cData.Minimize;
+        end
         
     end % helper methods
     
