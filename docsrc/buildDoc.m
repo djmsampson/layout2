@@ -21,6 +21,8 @@ verStr = v.Version;
 % Create a short name without the toolbox suffix
 name = v.Name(1:end-8);
 
+fprintf('Building documentation for %s v%s...\n', name, verStr)
+
 % Work out where to put it
 srcDir = fileparts( mfilename('fullpath') );
 layoutDir = layoutRoot;
