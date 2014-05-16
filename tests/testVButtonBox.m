@@ -41,6 +41,12 @@ args = {
     }';
     
 assertEqual( isa( uiextras.VButtonBox( args{:} ), 'uiextras.VButtonBox' ), true );
+
+% g1020336: check that the default alignment is correct
+b = uiextras.VButtonBox();
+assertEqual( b.HorizontalAlignment , 'center' );
+assertEqual( b.VerticalAlignment , 'middle' );
+
 close all force;
 
 
