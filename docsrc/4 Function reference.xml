@@ -610,11 +610,6 @@
                          <description>is the object in the process of being deleted.</description>
                      </property>
                      <property>
-                         <name>Callback</name>
-                         <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the selected tab is changed. The event-data supplied has fields <code>PreviousChild</code> and <code>SelectedChild</code> giving the previously selected and newly selected tab indices.</description>
-                     </property>
-                     <property>
                          <name>Children</name>
                          <value>handle array</value>
                          <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
@@ -698,6 +693,11 @@
                          <name>SelectedChild</name>
                          <value>positive integer or empty</value>
                          <description>Which child is visible.</description>
+                     </property>
+                     <property>
+                         <name>SelectionChangeCallback</name>
+                         <value><matlabfcn>function_handle</matlabfcn></value>
+                         <description>Function to call when the selected tab is changed. The event-data supplied has fields <code>OldValue</code> and <code>NewValue</code> giving the previously selected and newly selected tab indices.</description>
                      </property>
                      <property>
                          <name>TabSize</name>
