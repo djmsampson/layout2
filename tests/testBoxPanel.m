@@ -47,6 +47,12 @@ args = {
     }';
     
 assertEqual( isa( uiextras.BoxPanel( args{:} ), 'uiextras.BoxPanel' ), true );
+
+% g1053522: Test that repeating arguments is allowed and that the final
+% value is used
+b = uiextras.BoxPanel('Title', '1', 'Title', '2', 'Title', '3');
+assertEqual( b.Title, '3' );
+
 close all force;
 
 
