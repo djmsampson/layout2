@@ -58,7 +58,7 @@ classdef Container < handle
                 'AncestryPostChange', @obj.onAncestryPostChange )];
             visibilityObserver = uix.VisibilityObserver( obj );
             visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChange );
+                'VisibilityChange', @obj.onVisibilityChanged );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -181,7 +181,7 @@ classdef Container < handle
             % Refresh observers and listeners
             visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
             visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChange );
+                'VisibilityChange', @obj.onVisibilityChanged );
             
             % Store observers and listeners
             obj.VisibilityObserver = visibilityObserver;
@@ -201,8 +201,8 @@ classdef Container < handle
             
         end % onAncestryPostChange
         
-        function onVisibilityChange( obj, ~, ~ )
-            %onVisibilityChange  Event handler
+        function onVisibilityChanged( obj, ~, ~ )
+            %onVisibilityChanged  Event handler
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -210,7 +210,7 @@ classdef Container < handle
                 obj.Dirty_ = false;
             end
             
-        end % onVisibilityChange
+        end % onVisibilityChanged
         
         function onChildAdded( obj, ~, eventData )
             %onChildAdded  Event handler
@@ -239,13 +239,13 @@ classdef Container < handle
             
         end % onSizeChanged
         
-        function onActivePositionPropertyChange( obj, ~, ~ )
-            %onActivePositionPropertyChange  Event handler
+        function onActivePositionPropertyChanged( obj, ~, ~ )
+            %onActivePositionPropertyChanged  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % onActivePositionPropertyChange
+        end % onActivePositionPropertyChanged
         
     end % event handlers
     
@@ -270,7 +270,7 @@ classdef Container < handle
                 obj.ActivePositionPropertyListeners{end+1,:} = ...
                     event.proplistener( child, ...
                     findprop( child, 'ActivePositionProperty' ), ...
-                    'PostSet', @obj.onActivePositionPropertyChange );
+                    'PostSet', @obj.onActivePositionPropertyChanged );
             else
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
