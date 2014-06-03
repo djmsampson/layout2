@@ -481,7 +481,7 @@ iCaptureFigure( f, 'CombineBoxes' )
         drawnow();
         pos1 = get( figh, 'Position' );
         pos = get( figh, 'OuterPosition' );
-        pos(1:2) = pos(1:2) - pos1(1:2) + [1 1];
+        pos(1:2) = pos(1:2) - pos1(1:2); % + [1 1];
         fr = getframe( figh, pos );
         imwrite( fr.cdata, fullfile( 'Images', [filename,'.png'] ) );
     end
