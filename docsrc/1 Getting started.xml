@@ -51,7 +51,14 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
     </para>
     
     
-    <inlinesubsection name="Version 2.0.4">
+    <inlinesubsection name="Version 2.0.5">
+        Minor changes (14 May 2014)
+        <ul>
+            <li>Updated default styles and colours for BoxPanel for a different, more modern, look</li>
+        </ul>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Version 2.0.5">
         Minor changes (7 February 2014)
         <ul>
             <li>Added documentation</li>

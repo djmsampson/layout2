@@ -60,9 +60,6 @@ displayEndOfDemoMessage('')
             'Toolbar', 'none', ...
             'HandleVisibility', 'off' );
         
-        % Set default panel color
-        uix.set( gui.Window, 'DefaultBoxPanelTitleColor', [0.7 1.0 0.7] );
-        
         % + File menu
         gui.FileMenu = uimenu( gui.Window, 'Label', 'File' );
         uimenu( gui.FileMenu, 'Label', 'Exit', 'Callback', @onExit );

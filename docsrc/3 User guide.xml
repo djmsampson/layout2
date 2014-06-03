@@ -143,7 +143,7 @@ layout = <fcnref>uix.HBox</fcnref>( 'Parent', f );
                 
             <subsubsection name="Minimum sizes">
                 <p>Many of the multi-element layouts also provide a <code>MinimumWidths</code>
-                    or <code>MinimuHeights</code>
+                    or <code>MinimumHeights</code>
                     property to prevent an element becoming too small. This is measured in
                     pixels and defaults to one pixel. If the specified minimum sizes cannot fit
                 within the available space then all element sizes are reduced to fit.</p>
