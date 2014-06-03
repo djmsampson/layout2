@@ -40,10 +40,11 @@ classdef BoxPanel < uix.Container
         MinimizeButton % title button
         Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
+        ColorButtonCData % Button images with colors applied
     end
     
     properties( Access = private, Constant )
-        ButtonCData = uix.BoxPanel.getButtonCData() % button image data
+        RawButtonCData = uix.BoxPanel.getButtonCData() % button image data
     end
     
     methods
@@ -77,7 +78,7 @@ classdef BoxPanel < uix.Container
                 'Units', 'pixels' );
             
             % Create buttons
-            cData = obj.ButtonCData;
+            cData = obj.RawButtonCData;
             closeButton = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, 'Style', 'checkbox', ...
                 'CData', cData.Close, 'Visible', 'off', ...
@@ -410,10 +411,10 @@ classdef BoxPanel < uix.Container
             % Update button
             dockButton = obj.DockButton;
             if value
-                dockButton.CData = obj.ButtonCData.Undock;
+                dockButton.CData = obj.ColorButtonCData.Undock;
                 dockButton.TooltipString = 'Undock this panel';
             else
-                dockButton.CData = obj.ButtonCData.Dock;
+                dockButton.CData = obj.ColorButtonCData.Dock;
                 dockButton.TooltipString = 'Dock this panel';
             end
             
@@ -438,10 +439,10 @@ classdef BoxPanel < uix.Container
             % Update button
             minimizeButton = obj.MinimizeButton;
             if value
-                minimizeButton.CData = obj.ButtonCData.Maximize;
+                minimizeButton.CData = obj.ColorButtonCData.Maximize;
                 minimizeButton.TooltipString = 'Maximize this panel';
             else
-                minimizeButton.CData = obj.ButtonCData.Minimize;
+                minimizeButton.CData = obj.ColorButtonCData.Minimize;
                 minimizeButton.TooltipString = 'Minimize this panel';
             end
             
@@ -771,10 +772,10 @@ classdef BoxPanel < uix.Container
             %  p.recolorButtons() recolors the panel buttons.
             
             % Update the icon colors to match the foreground color
-            cData = obj.ButtonCData;
-            flds = fieldnames(cData);
+            obj.ColorButtonCData = obj.RawButtonCData;
+            flds = fieldnames(obj.ColorButtonCData);
             for ii=1:numel(flds)
-                data = cData.(flds{ii});
+                data = obj.ColorButtonCData.(flds{ii});
                 
                 % Recolor black to the foreground colour
                 data = iRecolor(data, [0 0 0], obj.ForegroundColor);
@@ -782,14 +783,22 @@ classdef BoxPanel < uix.Container
                 midTone = 0.5*obj.ForegroundColor + 0.5*obj.TitleColor;
                 data = iRecolor(data, [1 0 0], midTone);
                 
-                cData.(flds{ii}) = data;
+                obj.ColorButtonCData.(flds{ii}) = data;
             end
             
             % Now update the uicontrols
-            obj.CloseButton.CData = cData.Close;
-            obj.HelpButton.CData = cData.Help;
-            obj.DockButton.CData = cData.Dock;
-            obj.MinimizeButton.CData = cData.Minimize;
+            obj.CloseButton.CData = obj.ColorButtonCData.Close;
+            obj.HelpButton.CData = obj.ColorButtonCData.Help;
+            if obj.Docked
+                obj.DockButton.CData = obj.ColorButtonCData.Undock;
+            else
+                obj.DockButton.CData = obj.ColorButtonCData.Dock;
+            end
+            if obj.Minimized
+                obj.MinimizeButton.CData = obj.ColorButtonCData.Maximize;
+            else
+                obj.MinimizeButton.CData = obj.ColorButtonCData.Minimize;
+            end
             
             function im = iRecolor(im, oldCol, newCol)
                 idx = find((im(:,:,1) == oldCol(1)) & (im(:,:,2) == oldCol(2)) & (im(:,:,3) == oldCol(3)));
