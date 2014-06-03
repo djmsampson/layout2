@@ -84,7 +84,16 @@ classdef CardPanel < uix.Container
                     child.Visible = 'on';
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.( child.ActivePositionProperty ) = position;
+                        switch child.ActivePositionProperty
+                            case 'position'
+                                child.Position = contentsPosition;
+                            case 'outerposition'
+                                child.OuterPosition = contentsPosition;
+                            otherwise
+                                error( 'uix:InvalidState', ...
+                                    'Unknown value ''%s'' for property ''ActivePositionProperty'' of %s.', ...
+                                    child.ActivePositionProperty, class( child ) )
+                        end
                         child.ContentsVisible = 'on';
                     else
                         child.Position = position;
