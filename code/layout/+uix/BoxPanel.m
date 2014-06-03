@@ -771,16 +771,17 @@ classdef BoxPanel < uix.Container
             %  p.recolorButtons() recolors the panel buttons.
             
             % Update the icon colors to match the foreground color
-            col = obj.ForegroundColor;
             cData = obj.ButtonCData;
             flds = fieldnames(cData);
             for ii=1:numel(flds)
                 data = cData.(flds{ii});
-                idx = find((data(:,:,1) == 0) & (data(:,:,2) == 0) & (data(:,:,3) == 0));
-                pixelsPerChannel = size(data,1)*size(data,2);
-                data(idx) = col(1);
-                data(idx+pixelsPerChannel) = col(2);
-                data(idx+2*pixelsPerChannel) = col(3);
+                
+                % Recolor black to the foreground colour
+                data = iRecolor(data, [0 0 0], obj.ForegroundColor);
+                % Recolor red to a mid-tone
+                midTone = 0.5*obj.ForegroundColor + 0.5*obj.TitleColor;
+                data = iRecolor(data, [1 0 0], midTone);
+                
                 cData.(flds{ii}) = data;
             end
             
@@ -789,6 +790,14 @@ classdef BoxPanel < uix.Container
             obj.HelpButton.CData = cData.Help;
             obj.DockButton.CData = cData.Dock;
             obj.MinimizeButton.CData = cData.Minimize;
+            
+            function im = iRecolor(im, oldCol, newCol)
+                idx = find((im(:,:,1) == oldCol(1)) & (im(:,:,2) == oldCol(2)) & (im(:,:,3) == oldCol(3)));
+                pixelsPerChannel = size(data,1)*size(data,2);
+                im(idx) = newCol(1);
+                im(idx+pixelsPerChannel) = newCol(2);
+                im(idx+2*pixelsPerChannel) = newCol(3);
+            end % iRecolor
             
         end % recolorButtons
         
