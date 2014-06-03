@@ -75,7 +75,7 @@ classdef TabPanel < uix.TabPanel
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''Enable'' will be removed in a future release.' )
+            %     'Property ''Enable'' will be removed in a future release.' )
             
             % Return
             value = 'on';
@@ -91,7 +91,7 @@ classdef TabPanel < uix.TabPanel
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''Enable'' will be removed in a future release.' )
+            %     'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable
         

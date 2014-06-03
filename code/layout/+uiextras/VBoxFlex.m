@@ -56,7 +56,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''Enable'' will be removed in a future release.' )
+            %     'Property ''Enable'' will be removed in a future release.' )
             
             % Return
             value = 'on';
@@ -72,7 +72,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''Enable'' will be removed in a future release.' )
+            %     'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable
         
@@ -108,7 +108,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''ShowMarkings'' will be removed in a future release.' )
+            %     'Property ''ShowMarkings'' will be removed in a future release.' )
             
             % Return
             value = 'on';
@@ -124,7 +124,7 @@ classdef VBoxFlex < uix.VBoxFlex
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
-                'Property ''ShowMarkings'' will be removed in a future release.' )
+            %     'Property ''ShowMarkings'' will be removed in a future release.' )
             
         end % set.ShowMarkings
         
