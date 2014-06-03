@@ -189,7 +189,7 @@
 <!--&gt;&gt; -->b = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, p, <string>'Spacing'</string>, 5, <string>'Padding'</string>, 5  );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( 'Style', 'listbox', <string>'Parent'</string>, b, <string>'String'</string>, {<string>'Item 1'</string>,<string>'Item 2'</string>} );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> );
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [100 -1] );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Widths'</string>, [100 -1] );</code>         
                      <result>
                          <center><img src="Images/Panel2.png"/></center>
                      </result>
@@ -543,7 +543,7 @@
 <!--&gt;&gt; -->b = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, p, <string>'Spacing'</string>, 5, <string>'Padding'</string>, 5  );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( 'Style', 'listbox', <string>'Parent'</string>, b, <string>'String'</string>, {'Item 1','Item 2'} );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> );
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [100 -1] );
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Widths'</string>, [100 -1] );
 <!--&gt;&gt; -->p.FontSize = 12;
 <!--&gt;&gt; -->p.FontWeight = 'bold';
 <!--&gt;&gt; -->p.HelpFcn = @(x,y) disp('Help me!');</code>         
@@ -835,9 +835,9 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      <property>
-                         <name>MinimumSizes</name>
+                         <name>MinimumWidths</name>
                          <value>double vector</value>
-                         <description>The minimum size in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>The minimum width in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -853,11 +853,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>Sizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -884,6 +879,11 @@
                          <value>[ on | off ]</value>
                          <description>Is the object visible on screen.</description>
                      </property>
+                     <property>
+                         <name>Widths</name>
+                         <value>double vector</value>
+                         <description>The width of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                     </property>
                  </propertytable>                 
              
              <examples>
@@ -893,7 +893,7 @@
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'r'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'g'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [-1 100 -2], <string>'Spacing'</string>, 5 );</code>
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Widths'</string>, [-1 100 -2], <string>'Spacing'</string>, 5 );</code>
                      <result>
                          <center><img src="Images/HBox.png"/></center>
                      </result>
@@ -905,7 +905,7 @@
 <!--&gt;&gt; -->b2 = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, b1, <string>'Padding'</string>, 5, <string>'Spacing'</string>, 5 );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b2, <string>'String'</string>, <string>'Button1'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b2, <string>'String'</string>, <string>'Button2'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b1, <string>'Sizes'</string>, [30 -1] );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b1, <string>'Widths'</string>, [30 -1] );</code>         
                      <result>
                          <center><img src="Images/CombineBoxes.png"/></center>
                      </result>
@@ -982,9 +982,14 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      <property>
-                         <name>MinimumSizes</name>
+                         <name>Heights</name>
                          <value>double vector</value>
-                         <description>The minimum size in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>The height of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                     </property>
+                     <property>
+                         <name>MinimumHeights</name>
+                         <value>double vector</value>
+                         <description>The minimum height in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1000,11 +1005,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>Sizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1040,7 +1040,7 @@
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'r'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'g'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [-1 100 -2], <string>'Spacing'</string>, 5 );</code>
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Heights'</string>, [-1 100 -2], <string>'Spacing'</string>, 5 );</code>
                      <result>
                          <center><img src="Images/VBox.png"/></center>
                      </result>
@@ -1052,7 +1052,7 @@
 <!--&gt;&gt; -->b2 = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, b1, <string>'Padding'</string>, 5, <string>'Spacing'</string>, 5 );
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b2, <string>'String'</string>, <string>'Button1'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b2, <string>'String'</string>, <string>'Button2'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b1, <string>'Sizes'</string>, [30 -1] );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b1, <string>'Heights'</string>, [30 -1] );</code>         
                      <result>
                          <center><img src="Images/CombineBoxes.png"/></center>
                      </result>
@@ -1132,9 +1132,9 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      <property>
-                         <name>MinimumSizes</name>
+                         <name>MinimumWidths</name>
                          <value>double vector</value>
-                         <description>The minimum size in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>The minimum width in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1155,11 +1155,6 @@
                          <name>ShowMarkings</name>
                          <value>[ on | off ]</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
-                     </property>
-                     <property>
-                         <name>Sizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1186,6 +1181,11 @@
                          <value>[ on | off ]</value>
                          <description>Is the object visible on screen.</description>
                      </property>
+                     <property>
+                         <name>Widths</name>
+                         <value>double vector</value>
+                         <description>The width of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                     </property>
                  </propertytable>                 
              
              <examples>
@@ -1196,7 +1196,7 @@
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'g'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'y'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [-1 100 -2 -1], <string>'Spacing'</string>, 5 );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Widths'</string>, [-1 100 -2 -1], <string>'Spacing'</string>, 5 );</code>         
                      <result>
                          <center><img src="Images/HBoxFlex.png"/></center>
                      </result>
@@ -1273,9 +1273,14 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      <property>
-                         <name>MinimumSizes</name>
+                         <name>Heights</name>
                          <value>double vector</value>
-                         <description>The minimum size in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>The height of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                     </property>
+                     <property>
+                         <name>MinimumHeights</name>
+                         <value>double vector</value>
+                         <description>The minimum height in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1296,11 +1301,6 @@
                          <name>ShowMarkings</name>
                          <value>[ on | off ]</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
-                     </property>
-                     <property>
-                         <name>Sizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1338,7 +1338,7 @@
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'b'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'g'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, b, <string>'Background'</string>, <string>'y'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Sizes'</string>, [-1 100 -2 -1], <string>'Spacing'</string>, 5 );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( b, <string>'Heights'</string>, [-1 100 -2 -1], <string>'Spacing'</string>, 5 );</code>         
                      <result>
                          <center><img src="Images/VBoxFlex.png"/></center>
                      </result>
@@ -1668,7 +1668,7 @@
                  </function></dt>
                  <dd>creates a new new grid layout with all properties set to defaults. The number of rows and
                  columns to use is determined from the number of elements in the
-                 RowSizes and ColumnSizes properties respectively. Child elements are
+                 Heights and Widths properties respectively. Child elements are
                  arranged down column one first, then column two etc. If there are insufficient
                  columns then a new one is added.
              The output is a new layout object that can be used as the parent for other user-interface components.</dd>
@@ -1713,6 +1713,11 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      <property>
+                         <name>Heights</name>
+                         <value>double vector</value>
+                         <description>The height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                     </property>
+                     <property>
                          <name>Padding</name>
                          <value>positive integer</value>
                          <description>Number of pixels of extra space around the outside of the layout.</description>
@@ -1726,16 +1731,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>RowSizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
-                     </property>
-                     <property>
-                         <name>ColumnSizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1762,6 +1757,11 @@
                          <value>[ on | off ]</value>
                          <description>Is the object visible on screen.</description>
                      </property>
+                     <property>
+                         <name>Widths</name>
+                         <value>double vector</value>
+                         <description>The width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                     </property>
                  </propertytable>                 
              
              <examples>
@@ -1774,7 +1774,7 @@
 <!--&gt;&gt; --><fcnref>uix.Empty</fcnref>( <string>'Parent'</string>, g )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, g, <string>'Background'</string>, <string>'c'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, g, <string>'Background'</string>, <string>'y'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( g, <string>'ColumnSizes'</string>, [-1 100 -2], <string>'RowSizes'</string>, [-1 100] );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( g, <string>'Widths'</string>, [-1 100 -2], <string>'Heights'</string>, [-1 100] );</code>         
                      <result>
                          <center><img src="Images/Grid.png"/></center>
                      </result>
@@ -1806,7 +1806,7 @@
                  </function></dt>
                  <dd>creates a new new grid layout with draggable dividers between elements. The number of rows and
                  columns to use is determined from the number of elements in the
-                 RowSizes and ColumnSizes properties respectively. Child elements are
+                 Heights and Widths properties respectively. Child elements are
                  arranged down column one first, then column two etc. If there are insufficient
                  columns then a new one is added.
              The output is a new layout object that can be used as the parent for other user-interface components.</dd>
@@ -1841,11 +1841,6 @@
                          <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
                      </property>
                      <property>
-                         <name>ColumnSizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
-                     </property>
-                     <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
@@ -1854,6 +1849,11 @@
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
+                     </property>
+                     <property>
+                         <name>Heights</name>
+                         <value>double vector</value>
+                         <description>The height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1869,11 +1869,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>RowSizes</name>
-                         <value>double vector</value>
-                         <description>The size of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                      <property>
                          <name>ShowMarkings</name>
@@ -1905,6 +1900,11 @@
                          <value>[ on | off ]</value>
                          <description>Is the object visible on screen.</description>
                      </property>
+                     <property>
+                         <name>Widths</name>
+                         <value>double vector</value>
+                         <description>The width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                     </property>
                  </propertytable>                 
              
              <examples>
@@ -1917,7 +1917,7 @@
 <!--&gt;&gt; --><fcnref>uix.Empty</fcnref>( <string>'Parent'</string>, g )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, g, <string>'Background'</string>, <string>'c'</string> )
 <!--&gt;&gt; --><matlabfcn>uicontrol</matlabfcn>( <string>'Parent'</string>, g, <string>'Background'</string>, <string>'y'</string> )
-<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( g, <string>'ColumnSizes'</string>, [-1 100 -2], <string>'RowSizes'</string>, [-1 -2] );</code>         
+<!--&gt;&gt; --><matlabfcn>set</matlabfcn>( g, <string>'Widths'</string>, [-1 100 -2], <string>'Heights'</string>, [-1 -2] );</code>         
                      <result>
                          <center><img src="Images/GridFlex.png"/></center>
                      </result>
