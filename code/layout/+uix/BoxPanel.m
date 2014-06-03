@@ -111,7 +111,7 @@ classdef BoxPanel < uix.Container
             obj.CloseButton = closeButton;
             obj.DockButton = dockButton;
             obj.MinimizeButton = minimizeButton;
-            recolorButtons( obj )
+            obj.recolorButtons()
             
             % Set properties
             if nargin > 0
@@ -247,7 +247,7 @@ classdef BoxPanel < uix.Container
         function set.ForegroundColor( obj, value )
             
             obj.Titlebar.ForegroundColor = value;
-            recolorButtons( obj )
+            obj.recolorButtons()
             
         end % set.ForegroundColor
         
@@ -324,7 +324,7 @@ classdef BoxPanel < uix.Container
             obj.CloseButton.BackgroundColor = value;
             obj.DockButton.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
-                        
+            
         end % set.TitleColor
         
         function value = get.CloseRequestFcn( obj )
@@ -468,7 +468,7 @@ classdef BoxPanel < uix.Container
             titleHeight = obj.TitleHeight;
             if titleHeight == -1 % cache stale, refresh
                 titleAdjust = 3; % Dirty hack - extent seems to be a bit bigger than required for one line of text
-                titleHeight = obj.Titlebar.Extent(4) - titleAdjust; 
+                titleHeight = obj.Titlebar.Extent(4) - titleAdjust;
                 obj.TitleHeight = titleHeight; % store
             end
             minimized = obj.Minimized_;
@@ -766,6 +766,10 @@ classdef BoxPanel < uix.Container
         end % redrawBorders
         
         function recolorButtons( obj )
+            %recolorButtons  Recolor buttons
+            %
+            %  p.recolorButtons() recolors the panel buttons.
+            
             % Update the icon colors to match the foreground color
             col = obj.ForegroundColor;
             cData = obj.ButtonCData;
@@ -785,7 +789,8 @@ classdef BoxPanel < uix.Container
             obj.HelpButton.CData = cData.Help;
             obj.DockButton.CData = cData.Dock;
             obj.MinimizeButton.CData = cData.Minimize;
-        end
+            
+        end % recolorButtons
         
     end % helper methods
     
