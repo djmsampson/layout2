@@ -59,7 +59,7 @@ classdef Grid < uix.Grid
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -75,7 +75,7 @@ classdef Grid < uix.Grid
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable

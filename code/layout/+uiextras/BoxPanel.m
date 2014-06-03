@@ -62,7 +62,7 @@ classdef BoxPanel < uix.BoxPanel
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -78,7 +78,7 @@ classdef BoxPanel < uix.BoxPanel
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable
@@ -114,7 +114,7 @@ classdef BoxPanel < uix.BoxPanel
         function value = get.SelectedChild( obj )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''SelectedChild'' will be removed in a future release.' )
             
             % Get
@@ -129,7 +129,7 @@ classdef BoxPanel < uix.BoxPanel
         function set.SelectedChild( ~, ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''SelectedChild'' will be removed in a future release.' )
             
         end % set.SelectedChild

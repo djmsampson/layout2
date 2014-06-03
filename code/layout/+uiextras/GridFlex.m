@@ -63,7 +63,7 @@ classdef GridFlex < uix.GridFlex
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -79,7 +79,7 @@ classdef GridFlex < uix.GridFlex
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable
@@ -115,7 +115,7 @@ classdef GridFlex < uix.GridFlex
         function value = get.ShowMarkings( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
             % Return
@@ -131,7 +131,7 @@ classdef GridFlex < uix.GridFlex
                 'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
         end % set.ShowMarkings

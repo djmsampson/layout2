@@ -60,7 +60,7 @@ classdef VBox < uix.VBox
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -76,7 +76,7 @@ classdef VBox < uix.VBox
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable

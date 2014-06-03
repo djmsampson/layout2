@@ -53,7 +53,7 @@ classdef CardPanel < uix.CardPanel
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -69,7 +69,7 @@ classdef CardPanel < uix.CardPanel
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable

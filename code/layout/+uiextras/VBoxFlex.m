@@ -55,7 +55,7 @@ classdef VBoxFlex < uix.VBoxFlex
         function value = get.Enable( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
             % Return
@@ -71,7 +71,7 @@ classdef VBoxFlex < uix.VBoxFlex
                 'Property ''Enable'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''Enable'' will be removed in a future release.' )
             
         end % set.Enable
@@ -107,7 +107,7 @@ classdef VBoxFlex < uix.VBoxFlex
         function value = get.ShowMarkings( ~ )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
             % Return
@@ -123,7 +123,7 @@ classdef VBoxFlex < uix.VBoxFlex
                 'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
             
             % Warn
-            warning( 'uiextras:Deprecated', ...
+            % warning( 'uiextras:Deprecated', ...
                 'Property ''ShowMarkings'' will be removed in a future release.' )
             
         end % set.ShowMarkings

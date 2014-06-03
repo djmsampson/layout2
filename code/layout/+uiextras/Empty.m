@@ -19,7 +19,7 @@ function obj = Empty( varargin )
 %   Copyright 2009-2013 The MathWorks, Inc.
 %   $Revision$ $Date$
 
-% TODO Warn
+% Warn
 % warning( 'uiextras:Deprecated', ...
 %     'uiextras.Empty will be removed in a future release.' )
 
