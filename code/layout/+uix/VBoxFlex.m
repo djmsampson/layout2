@@ -13,11 +13,6 @@ classdef VBoxFlex < uix.VBox
         Pointer = 'unset'
         OldPointer = 0
         BackgroundColorListener
-        Markings_ = 'on' % backing for Markings
-    end
-    
-    properties( Dependent = true )
-        Markings
     end
     
     methods
@@ -53,34 +48,6 @@ classdef VBoxFlex < uix.VBox
         end % constructor
         
     end % structors
-    
-    methods
-        
-        function value = get.Markings( obj )
-            
-            value = obj.Markings_;
-            
-        end % get.Markings
-        
-        function set.Markings( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
-                'uiextras:InvalidPropertyValue', ...
-                'Property ''Enable'' must be ''on'' or ''off''.' )
-            
-            % Apply
-            rowDividers = obj.RowDividers;
-            for ii = 1:numel( rowDividers )
-                rowDividers(ii).Visible = value;
-            end
-            
-            % Set
-            obj.Markings_ = value;
-            
-        end % set.Markings
-        
-    end % accessors
     
     methods( Access = protected )
         
@@ -253,8 +220,7 @@ classdef VBoxFlex < uix.VBox
                 for ii = q+1:r
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'horizontal', ...
-                        'BackgroundColor', obj.BackgroundColor, ...
-                        'Visible', obj.Markings_ );
+                        'BackgroundColor', obj.BackgroundColor );
                     obj.RowDividers(ii,:) = divider;
                 end
                 % Bring front divider to the front

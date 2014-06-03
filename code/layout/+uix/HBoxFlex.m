@@ -13,11 +13,6 @@ classdef HBoxFlex < uix.HBox
         Pointer = 'unset'
         OldPointer = 0
         BackgroundColorListener
-        Markings_ = 'on' % backing for Markings
-    end
-    
-    properties( Dependent = true )
-        Markings
     end
     
     methods
@@ -53,34 +48,6 @@ classdef HBoxFlex < uix.HBox
         end % constructor
         
     end % structors
-    
-    methods
-        
-        function value = get.Markings( obj )
-            
-            value = obj.Markings_;
-            
-        end % get.Markings
-        
-        function set.Markings( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
-                'uiextras:InvalidPropertyValue', ...
-                'Property ''Enable'' must be ''on'' or ''off''.' )
-            
-            % Apply
-            columnDividers = obj.ColumnDividers;
-            for ii = 1:numel( columnDividers )
-                columnDividers(ii).Visible = value;
-            end
-            
-            % Set
-            obj.Markings_ = value;
-            
-        end % set.Markings
-        
-    end % accessors
     
     methods( Access = protected )
         
@@ -158,7 +125,7 @@ classdef HBoxFlex < uix.HBox
             
             % Deactivate divider
             obj.FrontDivider.Visible = 'off';
-            divider.Visible = obj.Markings_;
+            divider.Visible = 'on';
             
             % Reset state at button down
             obj.ActiveDivider = 0;
@@ -249,10 +216,11 @@ classdef HBoxFlex < uix.HBox
                 for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...
                         'Orientation', 'vertical', ...
-                        'BackgroundColor', obj.BackgroundColor, ...
-                        'Visible', obj.Markings_ );
+                        'BackgroundColor', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = divider;
                 end
+                % Bring front divider to the front
+                frontDivider = obj.FrontDivider;
             elseif b > c % destroy
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )
