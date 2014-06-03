@@ -142,7 +142,7 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 5.  RELEASE HISTORY
 
-2.0.5  Minor changes (15 May 2014)
+2.0.5  Minor changes (3 June 2014)
   - Updated to use new class and event names
 
 2.0.4  Minor changes (18 January 2014)
