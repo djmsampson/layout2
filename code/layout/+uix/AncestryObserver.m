@@ -37,9 +37,6 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
             %
             %  o = uix.AncestryObserver(s) creates an ancestry observer for
             %  the subject s.
-            %
-            %  o = uix.LocationObserver(a) creates an ancestry observer for
-            %  the figure-to-subject ancestry a.
             
             persistent ROOT
             if isequal( ROOT, [] ), ROOT = groot(); end
