@@ -142,6 +142,10 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 5.  RELEASE HISTORY
 
+2.0.6  Minor changes (13 August 2014)
+  - Added missing uix.Empty
+  - Removed internal class uix.EventSource
+
 2.0.5  Minor changes (3 June 2014)
   - Updated to use new class and event names
 

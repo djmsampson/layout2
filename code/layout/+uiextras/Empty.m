@@ -19,11 +19,12 @@ function obj = Empty( varargin )
 %   Copyright 2009-2013 The MathWorks, Inc.
 %   $Revision$ $Date$
 
-% Warn
-% warning( 'uiextras:Deprecated', ...
-%     'uiextras.Empty will be removed in a future release.' )
+% Call uix construction function
+obj = uix.Empty( varargin{:} );
 
-% Call uix constructor
-obj = matlab.ui.control.UIControl( varargin{:}, 'Visible', 'off' );
+% Auto-parent
+if ~ismember( 'Parent', varargin(1:2:end) )
+    obj.Parent = gcf();
+end
 
 end % uiextras.Empty
