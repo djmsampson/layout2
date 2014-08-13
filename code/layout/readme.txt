@@ -148,8 +148,10 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 2.0.5  Minor changes (3 June 2014)
   - Updated to use new class and event names
+  - Updated default styles and colours for BoxPanel for a different, more 
+    modern, look
 
-2.0.4  Minor changes (18 January 2014)
+2.0.4  Added documentation (18 January 2014)
 
 2.0.3  Minor changes (27 November 2013)
   - Improved appearance of flexible dividers
