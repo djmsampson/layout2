@@ -1,0 +1,84 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="2574473511" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>GUI Layout Toolbox</param.appname>
+    <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
+    <param.email>gui-layout@mathworks.com</param.email>
+    <param.company>MathWorks</param.company>
+    <param.summary>This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.</param.summary>
+    <param.description>&lt;p&gt;The classes supplied can be used in combination to produce virtually any user interface layout.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Arrange MATLAB user-interface components horizontally, vertically or in grids&lt;/li&gt;
+  &lt;li&gt;Ability to mix fixed size and variable size elements&lt;/li&gt;
+  &lt;li&gt;Dynamic resizing of elements by dragging dividers&lt;/li&gt;
+  &lt;li&gt;Use panels and tabs for switching interface pages&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the Consulting Services group at MathWorks.&lt;/p&gt;</param.description>
+    <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
+    <param.version>2.0.7</param.version>
+    <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
+    <param.products.name>
+      <item>MATLAB</item>
+    </param.products.name>
+    <param.products.id>
+      <item>1</item>
+    </param.products.id>
+    <param.products.version>
+      <item>8.4</item>
+    </param.products.version>
+    <param.platforms />
+    <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
+    <param.exclude.filters>*.prj
+install.m
+uninstall.m</param.exclude.filters>
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples/&gt;</param.examples>
+    <param.demosxml />
+    <param.apps />
+    <param.docs>${PROJECT_ROOT}\layoutdoc\info.xml</param.docs>
+    <unset>
+      <param.company />
+      <param.output />
+      <param.platforms />
+      <param.demosxml />
+      <param.apps />
+    </unset>
+    <fileset.rootdir>
+      <file>C:\Projects\tools\layouts2\code</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}\glt.png</file>
+      <file>${PROJECT_ROOT}\layout</file>
+      <file>${PROJECT_ROOT}\layoutdoc</file>
+      <file>${PROJECT_ROOT}\license.txt</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>${MATLAB_ROOT}\toolbox\local\pathdef.m</file>
+      <file>${MATLAB_ROOT}\toolbox\local\userpath.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox.mltbx" optional="false">C:\Projects\tools\layouts2\code\GUI Layout Toolbox.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2014b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
