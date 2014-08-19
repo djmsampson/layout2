@@ -121,10 +121,10 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
         GUI Layout Toolbox is packaged as a MATLAB Toolbox File (.mltbx).
     </para>
     <para>
-        To install, open the file within MATLAB or launch the file from your system file browser.
+        To install, open the file from within MATLAB or from the system file browser.
     </para>
     <para>
-        To uninstall, go to Add-Ons &gt; Manage Custom Toolboxes in the MATLAB desktop.
+        To uninstall, go to to Add-Ons > Manage Custom Toolboxes within MATLAB.
     </para>
 </section>
 

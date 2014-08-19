@@ -16,7 +16,7 @@ in combination to produce virtually any user interface layout.
 GUI Layout Toolbox version 2.x provides support for MATLAB Graphics version
 2.
 
-The current version is 2.0.5.  This is a beta version that is feature 
+The current version is 2.0.7.  This is a beta version that is feature 
 complete but may contain bugs and performance issues.
 
 The developers expect to continue to provide bug fixes for GUI Layout 
@@ -33,12 +33,11 @@ Toolbox version 1.
 
 3.  INSTALLATION
 
-GLT2 can be installed by running its 'install' function.  To verify correct 
-installation, type 'ver layout' at the MATLAB command line, and check for 
-the GLT2 entry.
+GLT2 is provided as a MATLAB toolbox file (.mltbx).  To install, launch the 
+file from within MATLAB or from the system file browser.  To uninstall, go 
+to Add-Ons > Manage Custom Toolboxes within MATLAB.
 
-GLT1 and GLT2 should not be used simultaneously.  GLT1 can be uninstalled 
-by running its 'uninstall' function.
+GLT1 and GLT2 should not be used simultaneously.
 
 
 4.  CHANGES IN VERSION 2, INCLUDING INCOMPATIBILITIES
@@ -142,18 +141,22 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 5.  RELEASE HISTORY
 
-2.0.6  Minor changes (13 August 2014)
+2.0.7 (19 August 2014)
+  - Packaged as a MATLAB toolbox file (.mltbx)
+
+2.0.6 (13 August 2014)
   - Added missing uix.Empty
   - Removed internal class uix.EventSource
 
-2.0.5  Minor changes (3 June 2014)
+2.0.5 (3 June 2014)
   - Updated to use new class and event names
   - Updated default styles and colours for BoxPanel for a different, more 
     modern, look
 
-2.0.4  Added documentation (18 January 2014)
+2.0.4 (18 January 2014)
+  - Added documentation
 
-2.0.3  Minor changes (27 November 2013)
+2.0.3 (27 November 2013)
   - Improved appearance of flexible dividers
   - Modified default tab titles to match GLT1 behavior
   - Modified button resize behavior to shrink-to-fit in button boxes
@@ -161,13 +164,14 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
   - Added support for row values for property 'Contents'
   - Fixed bugs in uiextras.Grid accessors for property 'Heights'
 
-2.0.2  Minor changes (19 November 2013)
+2.0.2 (19 November 2013)
   - Added support for row values for contents companion properties in uix
   - Modified uix.Image to construct JLabel on EDT
   - Added HandleVisibility awareness to uix.ChildObserver
   - Suppressed constructor warnings in uiextras
 
-2.0.1  Initial beta version (16 November 2013)
+2.0.1 (16 November 2013)
+  - Initial beta version
 
 
 6.  FEEDBACK
