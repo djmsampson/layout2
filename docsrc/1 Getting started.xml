@@ -51,23 +51,38 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
     </para>
     
     
+    <inlinesubsection name="Version 2.0.7">
+        Released 19 August 2014
+        <ul>
+            <li>Packaged as a MATLAB Toolbox (.mltbx)</li>
+        </ul>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Version 2.0.6">
+        Released 13 August 2014
+        <ul>
+            <li>Added missing uix.Empty</li>
+            <li>Removed internal class uix.EventSource</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.0.5">
-        Minor changes (14 May 2014)
+        Released 3 June 2014
         <ul>
             <li>Updated class and event names</li>
             <li>Updated default styles and colours for BoxPanel for a different, more modern, look</li>
         </ul>
     </inlinesubsection> 
     
-    <inlinesubsection name="Version 2.0.5">
-        Minor changes (7 February 2014)
+    <inlinesubsection name="Version 2.0.4">
+        Released 7 February 2014
         <ul>
             <li>Added documentation</li>
         </ul>
     </inlinesubsection> 
     
     <inlinesubsection name="Version 2.0.3">
-        Minor changes (27 November 2013)
+        Released 27 November 2013
         <ul>
             <li>Improved appearance of flexible dividers</li>
             <li>Modified default tab titles to match GLT1 behavior</li>
@@ -79,7 +94,7 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
     </inlinesubsection> 
     
     <inlinesubsection name="Version 2.0.2">
-        Minor changes (19 November 2013)
+        Released 19 November 2013
         <ul>
             <li>Added support for row values for contents companion properties in uix</li>
             <li>Modified uix.Image to construct JLabel on EDT</li>
@@ -89,7 +104,10 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
     </inlinesubsection> 
     
     <inlinesubsection name="Version 2.0.1">
-        Initial beta version (16 November 2013)
+        Released 16 November 2013
+        <ul>
+            <li>Initial beta version</li>
+        </ul>
     </inlinesubsection> 
     
 </section>
@@ -129,7 +147,7 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
         <li><a href="mailto:ben.tordoff@mathworks.co.uk">Ben Tordoff</a></li>
     </ul>
     <p>If you like this toolbox, help others to find it by leaving a rating
-        and comment on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/?????">MATLAB Central File Exchange</a>.
+        and comment on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/27758-gui-layout-toolbox">MATLAB Central File Exchange</a>.
     </p>
 </section>
 
