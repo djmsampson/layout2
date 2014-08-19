@@ -2020,43 +2020,6 @@
         </subsection>
 
         <subsection
-            name="layoutVersion" 
-            description="Get the toolbox version number and date"
-            staticref="layoutVersion">
-                 <keywords>Version</keywords>
-                 <keywords>Date</keywords>
-            <p>Get the toolbox version number and date</p>
-                        <dl>
-                 <dt><function>
-                         <name>layoutVersion</name>
-                         <outputarg>V</outputarg>
-                 </function></dt>
-                 <dd>returns the version number as a string.</dd>
-                 
-                 <dt><function>
-                         <name>layoutVersion</name>
-                         <outputarg>V</outputarg>
-                         <outputarg>D</outputarg>
-                 </function></dt>
-                 <dd>returns both the version string and the date of creation (format is ISO8601, i.e. YYYY-MM-DD)</dd>
-                 
-             </dl>
-             
-             <examples>
-                 <example>
-                     <code>[v,d] = <fcnref>layoutVersion</fcnref>()</code>
-                     <result><code>v = <string>'1.0'</string><br/>d = <string>'2010-05-28'</string></code></result>
-                 </example>
-             </examples>
-             <seealso>
-                 <item>
-                     <name>layoutRoot</name>
-                     <desc>returns the folder containing the GUI layout toolbox</desc>
-                 </item>
-             </seealso>
-        </subsection>
-
-        <subsection
             name="layoutRoot" 
             description="Return the folder containing the GUI layout toolbox"
             staticref="layoutRoot">
@@ -2069,7 +2032,7 @@
                          <name>layoutRoot</name>
                          <outputarg>folder</outputarg>
                  </function></dt>
-                 <dd>returns the full path to the folder containing the GUI layout toolbox.</dd>
+                 <dd>returns the full path to the folder containing the GUI Layout Toolbox.</dd>
                  
              </dl>
              
@@ -2079,95 +2042,6 @@
                      <result><code>folder = <string>'C:\Temp\LayoutToolbox1.0'</string></code></result>
                  </example>
              </examples>
-             <seealso>
-                 <item>
-                     <name>layoutVersion</name>
-                     <desc>for getting the toolbox version number and date</desc>
-                 </item>
-             </seealso>
-        </subsection>
-
-
-        <subsection
-            name="uix.set" 
-            description="Store a default property value in a parent object"
-            staticref="uix.set">
-                 <keywords>Default</keywords>
-                 <keywords>Property</keywords>
-            <p>Store a default property value in a parent object</p>
-                        <dl>
-                 <dt><function>
-                         <name>uix.set</name>
-                         <inputarg>hObj</inputarg>
-                         <inputarg>propName</inputarg>
-                         <inputarg>propValue</inputarg>
-                 </function></dt>
-                 <dd>stores a default property
-value in the object hObj such that children created inside it of the
-correct class will use the specified value (<inputarg>propValue</inputarg>) for
-the specified property by default. The property name should take the
-form "DefaultClassProperty", for example to set the default "TitleColor"
-for the class "uix.BoxPanel", use "DefaultBoxPanelTitleColor".
-Note that using the special object handle 0 sets the default for all
-new figures.</dd>
-                 
-             </dl>
-             
-             <examples>
-                 <example>
-                     <code><fcnref>uix.set</fcnref>( <matlabfcn>gcf</matlabfcn>(), <string>'DefaultBoxPanelTitleColor'</string>, <string>'g'</string> )</code>
-                 </example>
-                 <example>
-                     <code><fcnref>uix.set</fcnref>( 0, <string>'DefaultHBoxPadding'</string>, 5 )</code>
-                 </example>
-             </examples>
-             <seealso>
-                 <item>
-                     <name>uix.get</name>
-                     <desc>for retrieving a default property value from a parent object</desc>
-                 </item>
-             </seealso>
-        </subsection>
-
-
-
-        <subsection
-            name="uix.get" 
-            description="Retrieve a default property value from a parent object"
-            staticref="uix.get">
-                 <keywords>Default</keywords>
-                 <keywords>Property</keywords>
-            <p>Retrieve a default property value from a parent object</p>
-                        <dl>
-                 <dt><function>
-                         <name>uix.get</name>
-                         <inputarg>hObj</inputarg>
-                         <inputarg>propName</inputarg>
-                         <outputarg>propValue</outputarg>
-                 </function></dt>
-                 <dd>retrieves a default property
-value from the object hObj. Note that the hObj must be a valid graphics
-container object such as a uipanel, figure or the special flag 0 (the
-overall environment). The property name should take the form
-"DefaultClassProperty", for example to get the default "TitleColor" for
-the class "uix.BoxPanel", use "DefaultBoxPanelTitleColor".If no
-default has been set for the specified property an error is thrown.</dd>                 
-             </dl>
-             
-             <examples>
-                 <example>
-                     <code>p = <fcnref>uix.get</fcnref>( <matlabfcn>gcf</matlabfcn>(), <string>'DefaultBoxPanelTitleColor'</string> )</code>
-                 </example>
-                 <example>
-                     <code>p = <fcnref>uix.get</fcnref>( 0, <string>'DefaultHBoxPadding'</string> )</code>
-                 </example>
-             </examples>
-             <seealso>
-                 <item>
-                     <name>uix.set</name>
-                     <desc>for setting a default property value in a parent object</desc>
-                 </item>
-             </seealso>
         </subsection>
 
     </inlinesection>
