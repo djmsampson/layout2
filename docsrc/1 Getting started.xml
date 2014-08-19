@@ -118,18 +118,13 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
 <section name="Installation"> 
     <keywords>Uninstall</keywords>
     <para>
-        To use this toolbox it must be added to the MATLAB path. Scripts are provided
-        to do this in two ways:
+        GUI Layout Toolbox is packaged as a MATLAB Toolbox File (.mltbx).
     </para>
     <para>
-        <b>From MATLAB:</b>
-        <OL>
-            <LI><b>From MATLAB:</b> from the folder containing the toolbox, run the "install.m" function</LI>
-            <LI><b>From Windows Explorer:</b> from the folder containing the toolbox, double-click the "install.bat" icon</LI>
-        </OL>
+        To install, open the file within MATLAB or launch the file from your system file browser.
     </para>
     <para>
-        To uninstall (i.e. remove it from the path), run the function 'uninstall' in MATLAB, also found in the toolbox folder.
+        To uninstall, go to Add-Ons &gt; Manage Custom Toolboxes in the MATLAB desktop.
     </para>
 </section>
 
