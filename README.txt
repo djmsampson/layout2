@@ -41,6 +41,6 @@ Tests
 -----
 The TESTS folder contains xUnit tests for the GUI Layout Toolbox. It requires MATLAB xUnit to be installed. To run:
 
->> buildDoc
+>> runtests
 
-Note that the GUI Layout Toolbox must be installed for the documentation to build. This ensures that the documentation picks up the right version number and install location.
+Note that the GUI Layout Toolbox must be installed for the tests to run.
