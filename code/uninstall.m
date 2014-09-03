@@ -14,6 +14,7 @@ thisFolder = fileparts( mfilename( 'fullpath' ) );
 foldersToRemove = {
     fullfile(thisFolder, 'layout')
     fullfile(thisFolder, 'layoutdoc')
+    fullfile(thisFolder, 'patch')
     };
 
 % Capture path
