@@ -50,7 +50,7 @@ classdef Image < hgsetget
         function delete( obj )
             
             container = obj.Container;
-            if ishghandle( container ) && strcmp( container.BeingDeleted, 'off' )
+            if isgraphics( container ) && strcmp( container.BeingDeleted, 'off' )
                 delete( container )
             end
             

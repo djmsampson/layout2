@@ -73,7 +73,7 @@ classdef Divider < hgsetget
             %delete  Destructor
             
             control = obj.Control;
-            if ishghandle( control ) && ~strcmp( control, 'BeingDeleted' )
+            if isgraphics( control ) && ~strcmp( control, 'BeingDeleted' )
                 control.delete()
             end
             
