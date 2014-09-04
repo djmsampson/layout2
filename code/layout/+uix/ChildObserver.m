@@ -43,7 +43,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             %  of o.
             
             % Check
-            assert( ishghandle( oRoot ) && ...
+            assert( isgraphics( oRoot ) && ...
                 isequal( size( oRoot ), [1 1] ), 'uix.InvalidArgument', ...
                 'Object must be a graphics object.' )
             
@@ -132,7 +132,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             % Create child node
             nChild = uix.Node( oChild );
             nParent.addChild( nChild )
-            if ishghandle( oChild )
+            if isgraphics( oChild )
                 % Add property listener
                 nChild.addListener( event.proplistener( oChild, ...
                     findprop( oChild, 'Internal' ), 'PostSet', ...
@@ -151,14 +151,14 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             end
             
             % Raise ChildAdded event
-            if ishghandle( oChild ) && oChild.Internal == false && ...
+            if isgraphics( oChild ) && oChild.Internal == false && ...
                     ~( strcmp( obj.HandleVisibilityMode, 'on' ) && ...
                     strcmp( oChild.HandleVisibility, 'off' ) )
                 notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
             end
             
             % Add grandchildren
-            if ~ishghandle( oChild )
+            if ~isgraphics( oChild )
                 oGrandchildren = hgGetTrueChildren( oChild );
                 for ii = 1:numel( oGrandchildren )
                     obj.addChild( nChild, oGrandchildren(ii) )
@@ -196,7 +196,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
                 
                 % Process this node
                 oc = nc.Object;
-                if ishghandle( oc ) && oc.Internal == false && ...
+                if isgraphics( oc ) && oc.Internal == false && ...
                         ~( strcmp( obj.HandleVisibilityMode, 'on' ) && ...
                         strcmp( oc.HandleVisibility, 'off' ) )
                     notify( obj, 'ChildRemoved', uix.ChildEvent( oc ) )
