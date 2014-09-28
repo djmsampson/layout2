@@ -1,4 +1,8 @@
 classdef Box < uix.Container
+    %uix.Box  Box and grid base class
+    %
+    %  uix.Box is a base class for containers with spacing between
+    %  contents.
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
