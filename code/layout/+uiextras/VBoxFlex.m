@@ -31,7 +31,7 @@ classdef VBoxFlex < uix.VBoxFlex
         Enable % deprecated
         Sizes
         MinimumSizes
-        ShowMarkings % deprecated
+        ShowMarkings
     end
     
     methods
@@ -104,27 +104,17 @@ classdef VBoxFlex < uix.VBoxFlex
             
         end % set.MinimumSizes
         
-        function value = get.ShowMarkings( ~ )
+        function value = get.ShowMarkings( obj )
             
-            % Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'Property ''ShowMarkings'' will be removed in a future release.' )
-            
-            % Return
-            value = 'on';
+            % Get
+            value = obj.Markings;
             
         end % get.ShowMarkings
         
-        function set.ShowMarkings( ~, value )
+        function set.ShowMarkings( obj, value )
             
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
-                'uiextras:InvalidPropertyValue', ...
-                'Property ''ShowMarkings'' must be ''on'' or ''off''.' )
-            
-            % Warn
-            % warning( 'uiextras:Deprecated', ...
-            %     'Property ''ShowMarkings'' will be removed in a future release.' )
+            % Set
+            obj.Markings = value;
             
         end % set.ShowMarkings
         
