@@ -16,7 +16,7 @@ function obj = Empty( varargin )
 %   >> uix.Empty( 'Parent', box )
 %   >> uicontrol( 'Parent', box, 'Background', 'b' )
 
-%   Copyright 2009-2013 The MathWorks, Inc.
+%   Copyright 2009-2014 The MathWorks, Inc.
 %   $Revision: 919 $ $Date: 2014-06-03 11:05:38 +0100 (Tue, 03 Jun 2014) $
 
 % Call uix constructor

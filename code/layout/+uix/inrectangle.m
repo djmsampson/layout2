@@ -13,7 +13,7 @@ function [tf, loc] = inrectangle( xy, xywh )
 %
 %  See also: inpolygon
 
-%  Copyright 2009-2013 The MathWorks, Inc.
+%  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision$ $Date$
 
 if isempty( xywh )

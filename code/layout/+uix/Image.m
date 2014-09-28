@@ -1,6 +1,6 @@
 classdef Image < hgsetget
     
-    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Access = private )

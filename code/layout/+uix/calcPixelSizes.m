@@ -13,7 +13,7 @@ function pSizes = calcPixelSizes( pTotal, mSizes, pMinimumSizes, pPadding, pSpac
 %  * Children may extend beyond the total available size if the minimum
 %  sizes, padding and spacing are too large
 
-%  Copyright 2009-2013 The MathWorks, Inc.
+%  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision$ $Date$
 
 n = numel( mSizes ); % number of children

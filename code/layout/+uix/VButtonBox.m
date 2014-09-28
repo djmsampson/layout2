@@ -1,6 +1,6 @@
 classdef VButtonBox < uix.ButtonBox
     
-    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     methods

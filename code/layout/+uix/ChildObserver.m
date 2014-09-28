@@ -7,7 +7,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     %
     %  See also: uix.AncestryObserver, uix.Node
     
-    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Access = private )

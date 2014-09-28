@@ -19,7 +19,7 @@ classdef ( Hidden, Sealed ) LocationObserver < handle
     %
     %  See also: uix.AncestryObserver
     
-    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( SetAccess = private )

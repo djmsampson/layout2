@@ -5,7 +5,7 @@ function a = ancestors( h )
 %  bottom.  For rooted objects, the highest level ancestor returned is the
 %  figure, not the root.
 
-%  Copyright 2009-2013 The MathWorks, Inc.
+%  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision$ $Date$
 
 % Find ancestors

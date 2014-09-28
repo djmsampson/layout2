@@ -7,7 +7,7 @@ classdef Container < handle
     %  c@uix.mixin.Container() initializes the container c during
     %  construction.
     
-    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Dependent, Access = public )
