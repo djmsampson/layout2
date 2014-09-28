@@ -17,18 +17,19 @@ classdef VBoxFlex < uix.VBox
     end
     
     properties( Access = private )
-        RowDividers = uix.Divider.empty( [0 1] )
-        FrontDivider
-        LocationObserver
-        MousePressListener = event.listener.empty( [0 0] )
-        MouseReleaseListener = event.listener.empty( [0 0] )
-        MouseMotionListener = event.listener.empty( [0 0] )
-        ActiveDivider = 0
-        ActiveDividerPosition = [NaN NaN NaN NaN]
-        MousePressLocation = [NaN NaN]
-        Pointer = 'unset'
-        OldPointer = 0
-        BackgroundColorListener
+        RowDividers = uix.Divider.empty( [0 1] ) % row dividers
+        FrontDivider % front divider
+        DividerMarkings_ = 'on' % backing for DividerMarkings
+        LocationObserver % location observer
+        MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
+        MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
+        MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
+        ActiveDivider = 0 % active divider index
+        ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
+        MousePressLocation = [NaN NaN] % mouse press location
+        Pointer = 'unset' % mouse pointer
+        OldPointer = 0 % old pointer
+        BackgroundColorListener % background color listener
     end
     
     methods
