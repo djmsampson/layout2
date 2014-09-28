@@ -21,9 +21,6 @@ classdef Divider < hgsetget
         Markings % markings [pixels]
     end
     
-    properties( AbortSet, SetObservable )
-    end
-    
     properties( Access = private )
         Control % uicontrol
         BackgroundColor_ = get( 0, 'DefaultUicontrolBackgroundColor' ) % backing for BackgroundColor
