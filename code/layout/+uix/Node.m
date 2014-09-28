@@ -1,7 +1,10 @@
-classdef( Hidden ) Node < dynamicprops
+classdef ( Hidden ) Node < dynamicprops
     %uix.Node  Node
     %
     %  n = uix.Node(o) creates a node for the handle o.
+    %
+    %  Node is a helper class for managing trees of objects and associated
+    %  listeners.
     
     %  Copyright 2009-2013 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -53,7 +56,7 @@ classdef( Hidden ) Node < dynamicprops
             obj.Children(end+1,:) = child;
             obj.ChildListeners(end+1,:) = childListener;
             
-        end % add
+        end % addChild
         
         function removeChild( obj, child )
             %removeChild  Remove child
@@ -73,7 +76,7 @@ classdef( Hidden ) Node < dynamicprops
             obj.Children(tf,:) = [];
             obj.ChildListeners(tf,:) = [];
             
-        end % remove
+        end % removeChild
         
         function addListener( obj, listener )
             %addListener  Add listener
