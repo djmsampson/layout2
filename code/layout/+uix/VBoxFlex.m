@@ -1,5 +1,9 @@
 classdef VBoxFlex < uix.VBox
     
+    properties( Access = public, Dependent, AbortSet )
+        Markings
+    end
+    
     properties( Access = private )
         RowDividers = uix.Divider.empty( [0 1] )
         FrontDivider
@@ -48,6 +52,29 @@ classdef VBoxFlex < uix.VBox
         end % constructor
         
     end % structors
+    
+    methods
+        
+        function value = get.Markings( obj )
+            
+            value = obj.Markings_;
+            
+        end % get.Markings
+        
+        function set.Markings( obj, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uix:InvalidArgument', ...
+                'Property ''Markings'' must be ''on'' or ''off'.' )
+            
+            % Set
+            obj.Markings_ = value;
+            obj.redraw()
+            
+        end % set.Markings
+        
+    end % accessors
     
     methods( Access = protected )
         
@@ -255,7 +282,12 @@ classdef VBoxFlex < uix.VBox
             for ii = 1:r
                 rowDivider = obj.RowDividers(ii);
                 rowDivider.Position = rowPositions(ii,:);
-                rowDivider.Markings = rowPositions(ii,3)/2;
+                switch obj.Markings_
+                    case 'on'
+                        rowDivider.Markings = rowPositions(ii,3)/2;
+                    case 'off'
+                        rowDivider.Markings = zeros( [0 1] );
+                end
             end
             
             % Update pointer

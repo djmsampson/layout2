@@ -1,6 +1,6 @@
 classdef GridFlex < uix.Grid
     
-    properties( Dependent, AbortSet )
+    properties( Access = public, Dependent, AbortSet )
         Markings
     end
     
