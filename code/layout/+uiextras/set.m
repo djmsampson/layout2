@@ -3,7 +3,7 @@ function set( ~, ~, ~ )
 %
 %  This functionality has been removed.
 
-%  Copyright 2009-2013 The MathWorks, Inc.
+%  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision$ $Date$
 
 % Check inputs

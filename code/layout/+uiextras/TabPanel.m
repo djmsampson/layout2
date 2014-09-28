@@ -21,9 +21,8 @@ classdef TabPanel < uix.TabPanel
     %   See also: uiextras.Panel
     %             uiextras.BoxPanel
     
-    %   Copyright 2009-2010 The MathWorks, Inc.
-    %   $Revision$
-    %   $Date$
+    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  $Revision$ $Date$
     
     properties( Hidden, Access = public, Dependent )
         Callback

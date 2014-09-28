@@ -23,8 +23,8 @@ classdef VButtonBox < uix.VButtonBox
     %   See also: uiextras.HButtonBox
     %             uiextras.VBox
     
-    %   Copyright 2009-2010 The MathWorks, Inc.
-    %   $Revision$ $Date$
+    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  $Revision$ $Date$
     
     methods
         
