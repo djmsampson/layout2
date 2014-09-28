@@ -1,7 +1,7 @@
 classdef GridFlex < uix.Grid
     
     properties( Access = public, Dependent, AbortSet )
-        DividerMarkings
+        DividerMarkings % divider markings [on|off]
     end
     
     properties( Access = private )

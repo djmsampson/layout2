@@ -1,7 +1,7 @@
 classdef VBoxFlex < uix.VBox
     
     properties( Access = public, Dependent, AbortSet )
-        DividerMarkings
+        DividerMarkings % divider markings [on|off]
     end
     
     properties( Access = private )
