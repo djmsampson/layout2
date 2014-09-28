@@ -1,5 +1,8 @@
 classdef BoxPanel < uix.Container
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Dependent )
         Title % title
         BorderWidth % border width [pixels]

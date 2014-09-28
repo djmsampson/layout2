@@ -1,5 +1,8 @@
 classdef GridFlex < uix.Grid
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = public, Dependent, AbortSet )
         DividerMarkings % divider markings [on|off]
     end

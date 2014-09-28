@@ -1,5 +1,8 @@
 classdef VBox < uix.Box
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = public, Dependent, AbortSet )
         Heights % heights of contents, in pixels and/or weights
         MinimumHeights % minimum heights of contents, in pixels

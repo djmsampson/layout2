@@ -1,5 +1,8 @@
 classdef Container < matlab.ui.container.internal.UIContainer & uix.mixin.Container
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     methods
         
         function obj = Container( varargin )

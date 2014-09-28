@@ -1,5 +1,8 @@
 classdef HButtonBox < uix.ButtonBox
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     methods
         
         function obj = HButtonBox( varargin )

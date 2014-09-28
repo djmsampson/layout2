@@ -1,5 +1,8 @@
 classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = public, Dependent, AbortSet )
         Selection % selected contents
     end

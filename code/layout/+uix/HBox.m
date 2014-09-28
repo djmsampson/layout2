@@ -1,5 +1,8 @@
 classdef HBox < uix.Box
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = public, Dependent, AbortSet )
         Widths % widths of contents, in pixels and/or weights
         MinimumWidths % minimum widths of contents, in pixels

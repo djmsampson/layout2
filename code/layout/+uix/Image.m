@@ -1,5 +1,8 @@
 classdef Image < hgsetget
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = private )
         Label % javax.swing.JLabel
         Container % container peer

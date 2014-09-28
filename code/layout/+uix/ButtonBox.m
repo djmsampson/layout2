@@ -1,5 +1,8 @@
 classdef ButtonBox < uix.Box
     
+    %  Copyright 2009-2013 The MathWorks, Inc.
+    %  $Revision$ $Date$
+    
     properties( Access = public, Dependent, AbortSet )
         ButtonSize % button size, in pixels
         HorizontalAlignment % horizontal alignment [left|center|right]
