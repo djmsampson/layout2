@@ -106,7 +106,26 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             
             % Raise ChildAdded event
             if isgraphics( oChild ) && oChild.Internal == false
-                notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
+                if verLessThan( 'MATLAB', '8.5' ) && ...
+                        isa( oChild, 'matlab.ui.control.UIControl' ) % TODO
+                    %  A workaround is required in R2014b for G1129721,
+                    %  where setting the property 'Visible' of a uicontrol
+                    %  to 'on' in response to an ObjectChildAdded event
+                    %  causes a crash.  Instead, the property set must be
+                    %  postponed until the PostSet event of the uicontrol
+                    %  property 'Parent', which follows the
+                    %  ObjectChildAdded event.  Thus it is necessary to
+                    %  ensure that the ChildAdded event on the
+                    %  ChildObserver does not fire until it is safe to set
+                    %  the property 'Visible' of the child.
+                    parentPostSetListener = event.proplistener( oChild, ...
+                        findprop( oChild, 'Parent' ), 'PostSet', ...
+                        @(~,~)obj.postSetParent(nChild) );
+                    nChild.addprop( 'ParentPostSetListener' );
+                    nChild.ParentPostSetListener = parentPostSetListener;
+                else
+                    notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
+                end
             end
             
             % Add grandchildren
@@ -156,7 +175,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             
         end % removeChild
         
-        function preSetInternal( ~, n )
+        function preSetInternal( ~, nChild )
             %preSetInternal  Perform property PreSet tasks
             %
             %  co.preSetInternal(n) caches the previous value of the
@@ -164,13 +183,13 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             %  enable PostSet tasks to identify whether the value changed.
             %  This is necessary since Internal AbortSet is false.
             
-            oldInternal = n.Object.Internal;
-            n.addprop( 'OldInternal' );
-            n.OldInternal = oldInternal;
+            oldInternal = nChild.Object.Internal;
+            nChild.addprop( 'OldInternal' );
+            nChild.OldInternal = oldInternal;
             
         end % preSetInternal
         
-        function postSetInternal( obj, n )
+        function postSetInternal( obj, nChild )
             %postSetInternal  Perform property PostSet tasks
             %
             %  co.postSetInternal(n) raises a ChildAdded or ChildRemoved
@@ -179,22 +198,35 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             %  by the node n.
             
             % Retrieve old and new values
-            object = n.Object;
-            newInternal = object.Internal;
-            oldInternal = n.OldInternal;
-            delete( findprop( n, 'OldInternal' ) )
+            oChild = nChild.Object;
+            newInternal = oChild.Internal;
+            oldInternal = nChild.OldInternal;
+            
+            % Clean up node
+            delete( findprop( nChild, 'OldInternal' ) )
             
             % Raise event
             switch newInternal
                 case oldInternal % no change
                     % no event
                 case true % false to true
-                    notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
+                    notify( obj, 'ChildRemoved', uix.ChildEvent( oChild ) )
                 case false % true to false
-                    notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
+                    notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
             end
             
         end % postSetInternal
+        
+        function postSetParent( obj, nChild )
+            
+            % Clean up node
+            delete( findprop( nChild, 'ParentPostSetListener' ) )
+            
+            % Raise event
+            oChild = nChild.Object;
+            notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
+            
+        end % postSetParent
         
     end % event handlers
     
