@@ -5,11 +5,6 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     %  object o.  A child observer raises events when objects are added to
     %  and removed from the property Children of o.
     %
-    %  When property 'HandleVisibilityMode' is set to 'all', children are
-    %  recognized regardless of handle visibility.  When set to 'on',
-    %  children with 'HandleVisibility' set to 'off' do not generate
-    %  events.
-    %
     %  See also: uix.AncestryObserver, uix.Node
     
     %  Copyright 2009-2013 The MathWorks, Inc.
@@ -17,14 +12,6 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     
     properties( Access = private )
         Root % root node
-    end
-    
-    properties( Dependent, AbortSet )
-        HandleVisibilityMode % handle visibility mode [all|on]
-    end
-    
-    properties( Access = private )
-        HandleVisibilityMode_ = 'all' % backing for HandleVisibilityMode
     end
     
     events( NotifyAccess = private )
@@ -73,51 +60,6 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
         
     end % structors
     
-    methods
-        
-        function value = get.HandleVisibilityMode( obj )
-            
-            value = obj.HandleVisibilityMode_;
-            
-        end % get.HandleVisibilityMode
-        
-        function set.HandleVisibilityMode( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'on','all'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HandleVisibilityMode'' must be ''on'' or ''all''.' )
-            
-            % Set
-            obj.HandleVisibilityMode_ = value;
-            
-            % Update
-            notifyChildEvent( obj.Root )
-            
-            function notifyChildEvent( nc )
-                
-                % Process child nodes
-                ngc = nc.Children;
-                for ii = 1:numel( ngc )
-                    notifyChildEvent( ngc(ii) )
-                end
-                
-                % Process this node
-                oc = nc.Object;
-                if strcmp( oc.HandleVisibility, 'on' )
-                    % no event
-                elseif strcmp( value, 'all' )
-                    notify( obj, 'ChildAdded', uix.ChildEvent( oc ) )
-                else % strcmp( value, 'on' )
-                    notify( obj, 'ChildRemoved', uix.ChildEvent( oc ) )
-                end
-                
-            end % notifyChildEvent
-            
-        end % set.HandleVisibilityMode
-        
-    end % accessors
-    
     methods( Access = private )
         
         function addChild( obj, nParent, oChild )
@@ -137,9 +79,6 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
                 nChild.addListener( event.proplistener( oChild, ...
                     findprop( oChild, 'Internal' ), 'PostSet', ...
                     @(~,~)obj.postSetInternal(nChild) ) )
-                nChild.addListener( event.proplistener( oChild, ...
-                    findprop( oChild, 'HandleVisibility' ), 'PostSet', ...
-                    @(~,~)obj.postSetHandleVisibility(nChild) ) )
             else
                 % Add child listeners
                 nChild.addListener( event.listener( oChild, ...
@@ -151,9 +90,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             end
             
             % Raise ChildAdded event
-            if isgraphics( oChild ) && oChild.Internal == false && ...
-                    ~( strcmp( obj.HandleVisibilityMode, 'on' ) && ...
-                    strcmp( oChild.HandleVisibility, 'off' ) )
+            if isgraphics( oChild ) && oChild.Internal == false
                 notify( obj, 'ChildAdded', uix.ChildEvent( oChild ) )
             end
             
@@ -196,9 +133,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
                 
                 % Process this node
                 oc = nc.Object;
-                if isgraphics( oc ) && oc.Internal == false && ...
-                        ~( strcmp( obj.HandleVisibilityMode, 'on' ) && ...
-                        strcmp( oc.HandleVisibility, 'off' ) )
+                if isgraphics( oc ) && oc.Internal == false
                     notify( obj, 'ChildRemoved', uix.ChildEvent( oc ) )
                 end
                 
@@ -216,38 +151,13 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             
             % Raise event if required
             object = n.Object;
-            if strcmp( obj.HandleVisibilityMode, 'on' ) && ...
-                    strcmp( object.HandleVisibility, 'off' )
-                % invisible
-            elseif object.Internal == false
+            if object.Internal == false
                 notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
             else
                 notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
             end
             
         end % postSetInternal
-        
-        function postSetHandleVisibility( obj, n )
-            %postSetHandleVisibility  Perform property PostSet tasks
-            %
-            %  co.postSetHandleVisibility(n) raises a ChildAdded or
-            %  ChildRemoved event on the child observer co in response to a
-            %  change of the value of the property HandleVisibility of the
-            %  object referenced by the node n.
-            
-            % Raise event if required
-            object = n.Object;
-            if object.Internal == true
-                % internal
-            elseif strcmp( obj.HandleVisibilityMode, 'all' )
-                % all handle visibilities
-            elseif strcmp( object.HandleVisibility, 'on' )
-                notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
-            else % strcmp( object.HandleVisibility, 'off' )
-                notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
-            end
-            
-        end % postSetHandleVisibility
         
     end % event handlers
     
