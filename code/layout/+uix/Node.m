@@ -15,7 +15,6 @@ classdef ( Hidden ) Node < dynamicprops
     end
     
     properties( Access = private )
-        Listeners = event.listener.empty( [0 1] ) % external listeners
         ChildListeners = event.listener.empty( [0 1] ) % internal listeners
     end
     
@@ -77,21 +76,6 @@ classdef ( Hidden ) Node < dynamicprops
             obj.ChildListeners(tf,:) = [];
             
         end % removeChild
-        
-        function addListener( obj, listener )
-            %addListener  Add listener
-            %
-            %  n.addListener(l) adds the listener l to the node n.
-            
-            % Check
-            assert( isa( listener, 'event.listener' ) && ...
-                isequal( size( listener ), [1 1] ), ...
-                'uix:InvalidArgument', 'Invalid listener.' )
-            
-            % Add
-            obj.Listeners(end+1,:) = listener;
-            
-        end % addListener
         
     end % public methods
     

@@ -40,12 +40,14 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
                 'ObjectChildAdded', ...
                 @(~,e)obj.addChild(nRoot,e.Child) );
             childAddedListener.Recursive = true;
-            nRoot.addListener( childAddedListener );
+            nRoot.addprop( 'ChildAddedListener' );
+            nRoot.ChildAddedListener = childAddedListener;
             childRemovedListener = event.listener( oRoot, ...
                 'ObjectChildRemoved', ...
                 @(~,e)obj.removeChild(nRoot,e.Child) );
             childRemovedListener.Recursive = true;
-            nRoot.addListener( childRemovedListener );
+            nRoot.addprop( 'ChildRemovedListener' );
+            nRoot.ChildRemovedListener = childRemovedListener;
             
             % Add children
             oChildren = hgGetTrueChildren( oRoot );
@@ -75,18 +77,31 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             nChild = uix.Node( oChild );
             nParent.addChild( nChild )
             if isgraphics( oChild )
-                % Add property listener
-                nChild.addListener( event.proplistener( oChild, ...
+                % Add Internal PreSet property listener
+                internalPreSetListener = event.proplistener( oChild, ...
+                    findprop( oChild, 'Internal' ), 'PreSet', ...
+                    @(~,~)obj.preSetInternal(nChild) );
+                nChild.addprop( 'InternalPreSetListener' );
+                nChild.InternalPreSetListener = internalPreSetListener;
+                % Add Internal PostSet property listener
+                internalPostSetListener = event.proplistener( oChild, ...
                     findprop( oChild, 'Internal' ), 'PostSet', ...
-                    @(~,~)obj.postSetInternal(nChild) ) )
+                    @(~,~)obj.postSetInternal(nChild) );
+                nChild.addprop( 'InternalPostSetListener' );
+                nChild.InternalPostSetListener = internalPostSetListener;
             else
-                % Add child listeners
-                nChild.addListener( event.listener( oChild, ...
+                % Add ObjectChildAdded listener
+                childAddedListener = event.listener( oChild, ...
                     'ObjectChildAdded', ...
-                    @(~,e)obj.addChild(nChild,e.Child) ) )
-                nChild.addListener( event.listener( oChild, ...
+                    @(~,e)obj.addChild(nChild,e.Child) );
+                nChild.addprop( 'ChildAddedListener' );
+                nChild.ChildAddedListener = childAddedListener;
+                % Add ObjectChildRemoved listener
+                childRemovedListener = event.listener( oChild, ...
                     'ObjectChildRemoved', ...
-                    @(~,e)obj.removeChild(nChild,e.Child) ) )
+                    @(~,e)obj.removeChild(nChild,e.Child) );
+                nChild.addprop( 'ChildRemovedListener' );
+                nChild.ChildRemovedListener = childRemovedListener;
             end
             
             % Raise ChildAdded event
@@ -141,6 +156,20 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             
         end % removeChild
         
+        function preSetInternal( ~, n )
+            %preSetInternal  Perform property PreSet tasks
+            %
+            %  co.preSetInternal(n) caches the previous value of the
+            %  property Internal of the object referenced by the node n, to
+            %  enable PostSet tasks to identify whether the value changed.
+            %  This is necessary since Internal AbortSet is false.
+            
+            oldInternal = n.Object.Internal;
+            n.addprop( 'OldInternal' );
+            n.OldInternal = oldInternal;
+            
+        end % preSetInternal
+        
         function postSetInternal( obj, n )
             %postSetInternal  Perform property PostSet tasks
             %
@@ -149,12 +178,20 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             %  the value of the property Internal of the object referenced
             %  by the node n.
             
-            % Raise event if required
+            % Retrieve old and new values
             object = n.Object;
-            if object.Internal == false
-                notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
-            else
-                notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
+            newInternal = object.Internal;
+            oldInternal = n.OldInternal;
+            delete( findprop( n, 'OldInternal' ) )
+            
+            % Raise event
+            switch newInternal
+                case oldInternal % no change
+                    % no event
+                case true % false to true
+                    notify( obj, 'ChildRemoved', uix.ChildEvent( object ) )
+                case false % true to false
+                    notify( obj, 'ChildAdded', uix.ChildEvent( object ) )
             end
             
         end % postSetInternal
