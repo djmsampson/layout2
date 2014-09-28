@@ -14,10 +14,7 @@ in combination to produce virtually any user interface layout.
 * Use panels and tabs for switching interface pages
 
 GUI Layout Toolbox version 2.x provides support for MATLAB Graphics version
-2.
-
-The current version is 2.0.7.  This is a beta version that is feature 
-complete but may contain bugs and performance issues.
+2.  The current version is 2.1.
 
 The developers expect to continue to provide bug fixes for GUI Layout 
 Toolbox version 1.
@@ -140,6 +137,9 @@ These can be disabled via warning( 'off', id ), where id is the identifier.
 
 
 5.  RELEASE HISTORY
+
+2.1 (28 September 2014)
+  - First release for R2014b
 
 2.0.7 (19 August 2014)
   - Packaged as a MATLAB toolbox file (.mltbx)
