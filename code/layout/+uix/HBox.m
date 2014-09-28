@@ -6,7 +6,7 @@ classdef HBox < uix.Box
     %
     %  A horizontal box lays out contents from left to right.
     %
-    %  See also: uix.VBox, uix.HButtonBox, uix.HBoxFlex
+    %  See also: uix.VBox, uix.Grid, uix.HButtonBox, uix.HBoxFlex
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$

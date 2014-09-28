@@ -6,7 +6,7 @@ classdef VBox < uix.Box
     %
     %  A vertical box lays out contents from top to bottom.
     %
-    %  See also: uix.HBox, uix.VButtonBox, uix.VBoxFlex
+    %  See also: uix.HBox, uix.Grid, uix.VButtonBox, uix.VBoxFlex
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
