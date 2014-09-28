@@ -1,7 +1,7 @@
 classdef VBoxFlex < uix.VBox
     
     properties( Access = public, Dependent, AbortSet )
-        Markings
+        DividerMarkings
     end
     
     properties( Access = private )
@@ -55,24 +55,24 @@ classdef VBoxFlex < uix.VBox
     
     methods
         
-        function value = get.Markings( obj )
+        function value = get.DividerMarkings( obj )
             
-            value = obj.Markings_;
+            value = obj.DividerMarkings_;
             
-        end % get.Markings
+        end % get.DividerMarkings
         
-        function set.Markings( obj, value )
+        function set.DividerMarkings( obj, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
                 'uix:InvalidArgument', ...
-                'Property ''Markings'' must be ''on'' or ''off'.' )
+                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
             
             % Set
-            obj.Markings_ = value;
+            obj.DividerMarkings_ = value;
             obj.redraw()
             
-        end % set.Markings
+        end % set.DividerMarkings
         
     end % accessors
     
@@ -282,7 +282,7 @@ classdef VBoxFlex < uix.VBox
             for ii = 1:r
                 rowDivider = obj.RowDividers(ii);
                 rowDivider.Position = rowPositions(ii,:);
-                switch obj.Markings_
+                switch obj.DividerMarkings_
                     case 'on'
                         rowDivider.Markings = rowPositions(ii,3)/2;
                     case 'off'

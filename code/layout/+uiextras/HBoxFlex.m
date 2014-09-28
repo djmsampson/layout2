@@ -107,14 +107,14 @@ classdef HBoxFlex < uix.HBoxFlex
         function value = get.ShowMarkings( obj )
             
             % Get
-            value = obj.Markings;
+            value = obj.DividerMarkings;
             
         end % get.ShowMarkings
         
         function set.ShowMarkings( obj, value )
             
             % Set
-            obj.Markings = value;
+            obj.DividerMarkings = value;
             
         end % set.ShowMarkings
         

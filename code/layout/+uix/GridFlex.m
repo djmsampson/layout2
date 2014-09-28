@@ -1,14 +1,14 @@
 classdef GridFlex < uix.Grid
     
     properties( Access = public, Dependent, AbortSet )
-        Markings
+        DividerMarkings
     end
     
     properties( Access = private )
         RowDividers = uix.Divider.empty( [0 1] )
         ColumnDividers = uix.Divider.empty( [0 1] )
         FrontDivider
-        Markings_ = 'on'
+        DividerMarkings_ = 'on'
         LocationObserver
         MousePressListener = event.listener.empty( [0 0] )
         MouseReleaseListener = event.listener.empty( [0 0] )
@@ -57,24 +57,24 @@ classdef GridFlex < uix.Grid
     
     methods
         
-        function value = get.Markings( obj )
+        function value = get.DividerMarkings( obj )
             
-            value = obj.Markings_;
+            value = obj.DividerMarkings_;
             
-        end % get.Markings
+        end % get.DividerMarkings
         
-        function set.Markings( obj, value )
+        function set.DividerMarkings( obj, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
                 'uix:InvalidArgument', ...
-                'Property ''Markings'' must be ''on'' or ''off'.' )
+                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
             
             % Set
-            obj.Markings_ = value;
+            obj.DividerMarkings_ = value;
             obj.redraw()
             
-        end % set.Markings
+        end % set.DividerMarkings
         
     end % accessors
     
@@ -385,7 +385,7 @@ classdef GridFlex < uix.Grid
             for ii = 1:r
                 rowDivider = obj.RowDividers(ii);
                 rowDivider.Position = rowPositions(ii,:);
-                switch obj.Markings_
+                switch obj.DividerMarkings_
                     case 'on'
                         rowDivider.Markings = cumsum( xColumnSizes ) + ...
                             spacing * transpose( 0:c ) - xColumnSizes / 2;

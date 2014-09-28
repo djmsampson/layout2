@@ -1,7 +1,7 @@
 classdef HBoxFlex < uix.HBox
     
     properties( Access = public, Dependent, AbortSet )
-        Markings
+        DividerMarkings
     end
     
     properties( Access = private )
@@ -55,24 +55,24 @@ classdef HBoxFlex < uix.HBox
     
     methods
         
-        function value = get.Markings( obj )
+        function value = get.DividerMarkings( obj )
             
-            value = obj.Markings_;
+            value = obj.DividerMarkings_;
             
-        end % get.Markings
+        end % get.DividerMarkings
         
-        function set.Markings( obj, value )
+        function set.DividerMarkings( obj, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
                 'uix:InvalidArgument', ...
-                'Property ''Markings'' must be ''on'' or ''off'.' )
+                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
             
             % Set
-            obj.Markings_ = value;
+            obj.DividerMarkings_ = value;
             obj.redraw()
             
-        end % set.Markings
+        end % set.DividerMarkings
         
     end % accessors
     
@@ -278,7 +278,7 @@ classdef HBoxFlex < uix.HBox
             for ii = 1:c
                 columnDivider = obj.ColumnDividers(ii);
                 columnDivider.Position = columnPositions(ii,:);
-                switch obj.Markings_
+                switch obj.DividerMarkings_
                     case 'on'
                         columnDivider.Markings = columnPositions(ii,4)/2;
                     case 'off'
