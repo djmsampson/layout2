@@ -1,4 +1,12 @@
 classdef VBox < uix.Box
+    %uix.VBox  Vertical box
+    %
+    %  b = uix.VBox(p1,v1,p2,v2,...) constructs a vertical box and sets
+    %  parameter p1 to value v1, etc.
+    %
+    %  A vertical box lays out contents from top to bottom.
+    %
+    %  See also: uix.HBox, uix.VButtonBox, uix.VBoxFlex
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -16,6 +24,12 @@ classdef VBox < uix.Box
     methods
         
         function obj = VBox( varargin )
+            %uix.VBox  Vertical box constructor
+            %
+            %  b = uix.VBox() constructs a horizontal box.
+            %
+            %  b = uix.VBox(p1,v1,p2,v2,...) sets parameter p1 to value v1,
+            %  etc.
             
             % Call superclass constructor
             obj@uix.Box()
