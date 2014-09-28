@@ -1,4 +1,13 @@
 classdef HButtonBox < uix.ButtonBox
+    %uix.HButtonBox  Horizontal button box
+    %
+    %  b = uix.HButtonBox(p1,v1,p2,v2,...) constructs a horizontal button
+    %  box and sets parameter p1 to value v1, etc.
+    %
+    %  A horizontal button box lays out equally sized buttons from left to
+    %  right.
+    %
+    %  See also: uix.VButtonBox
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -6,6 +15,12 @@ classdef HButtonBox < uix.ButtonBox
     methods
         
         function obj = HButtonBox( varargin )
+            %uix.HButtonBox  Horizontal button box constructor
+            %
+            %  b = uix.HButtonBox() constructs a horizontal button box.
+            %
+            %  b = uix.HButtonBox(p1,v1,p2,v2,...) sets parameter p1 to
+            %  value v1, etc.
             
             % Call superclass constructor
             obj@uix.ButtonBox()

@@ -1,9 +1,8 @@
 classdef Image < hgsetget
     %uix.Image  Image
     %
-    %  im = uix.Image() constructs an image.
-    %
-    %  im = uix.Image(p1,v1,p2,v2,...) sets parameter p1 to value v1, etc.
+    %  im = uix.Image(p1,v1,p2,v2,...) constructs an image and sets
+    %  parameter p1 to value v1, etc.
     %
     %  This class wraps a JLabel to provide a relatively lightweight way to
     %  present arbitrary CData and to align it both horizontally and
