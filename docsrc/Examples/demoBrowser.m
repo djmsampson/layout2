@@ -86,6 +86,8 @@ displayEndOfDemoMessage('')
             'Parent', mainLayout, ...
             'Title', 'Viewing: ???', ...
             'HelpFcn', @onDemoHelp );
+        gui.ViewContainer = uicontainer( ...
+            'Parent', gui.ViewPanel );        
 
         % + Adjust the main layout
         set( mainLayout, 'Widths', [-1,-2]  );
@@ -107,7 +109,7 @@ displayEndOfDemoMessage('')
         set( controlLayout, 'Heights', [-1 28] ); % Make the list fill the space
         
         % + Create the view
-        p = gui.ViewPanel;
+        p = gui.ViewContainer;
         gui.ViewAxes = axes( 'Parent', p );
         
         
@@ -161,7 +163,7 @@ displayEndOfDemoMessage('')
         % Now copy the axes from the demo into our window and restore its
         % state.
         cmap = colormap( gui.ViewAxes );
-        set( gui.ViewAxes, 'Parent', double(gui.ViewPanel) );
+        set( gui.ViewAxes, 'Parent', gui.ViewContainer );
         colormap( gui.ViewAxes, cmap );
         rotate3d( gui.ViewAxes, 'on' );
         % Get rid of the demo figure
