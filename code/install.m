@@ -6,8 +6,8 @@ function install()
 %
 %  See also: uninstall
 
-%  Copyright 2009-2013 The MathWorks, Inc.
-%  $Revision: 891 $ $Date: 2013-12-03 17:53:41 +0000 (Tue, 03 Dec 2013) $
+%  Copyright 2009-2014 The MathWorks, Inc.
+%  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 % Folders to add
 thisFolder = fileparts( mfilename( 'fullpath' ) );
