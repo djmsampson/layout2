@@ -1,4 +1,13 @@
 classdef GridFlex < uix.Grid
+    %uix.GridFlex  Flexible grid
+    %
+    %  b = uix.GridFlex(p1,v1,p2,v2,...) constructs a flexible grid and
+    %  sets parameter p1 to value v1, etc.
+    %
+    %  A grid lays out contents from top to bottom and left to right.
+    %  Users can resize contents by dragging the dividers.
+    %
+    %  See also: uix.HBoxFlex, uix.VBoxFlex, uix.Grid
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -27,6 +36,12 @@ classdef GridFlex < uix.Grid
     methods
         
         function obj = GridFlex( varargin )
+            %uix.GridFlex  Flexible grid constructor
+            %
+            %  b = uix.GridFlex() constructs a flexible grid.
+            %
+            %  b = uix.GridFlex(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Call superclass constructor
             obj@uix.Grid()

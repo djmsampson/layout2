@@ -1,4 +1,13 @@
 classdef VBoxFlex < uix.VBox
+    %uix.VBoxFlex  Flexible vertical box
+    %
+    %  b = uix.VBoxFlex(p1,v1,p2,v2,...) constructs a flexible vertical box
+    %  and sets parameter p1 to value v1, etc.
+    %
+    %  A vertical box lays out contents from top to bottom.  Users can
+    %  resize contents by dragging the dividers.
+    %
+    %  See also: uix.HBoxFlex, uix.GridFlex, uix.VBox, uix.VButtonBox
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -25,6 +34,12 @@ classdef VBoxFlex < uix.VBox
     methods
         
         function obj = VBoxFlex( varargin )
+            %uix.VBoxFlex  Flexible vertical box constructor
+            %
+            %  b = uix.VBoxFlex() constructs a flexible vertical box.
+            %
+            %  b = uix.VBoxFlex(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Call superclass constructor
             obj@uix.VBox()

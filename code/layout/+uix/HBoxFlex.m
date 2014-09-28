@@ -1,4 +1,13 @@
 classdef HBoxFlex < uix.HBox
+    %uix.HBoxFlex  Flexible horizontal box
+    %
+    %  b = uix.HBoxFlex(p1,v1,p2,v2,...) constructs a flexible horizontal
+    %  box and sets parameter p1 to value v1, etc.
+    %
+    %  A horizontal box lays out contents from left to right.  Users can
+    %  resize contents by dragging the dividers.
+    %
+    %  See also: uix.VBoxFlex, uix.GridFlex, uix.HBox, uix.HButtonBox
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -25,6 +34,12 @@ classdef HBoxFlex < uix.HBox
     methods
         
         function obj = HBoxFlex( varargin )
+            %uix.HBoxFlex  Flexible horizontal box constructor
+            %
+            %  b = uix.HBoxFlex() constructs a flexible horizontal box.
+            %
+            %  b = uix.HBoxFlex(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Call superclass constructor
             obj@uix.HBox()
