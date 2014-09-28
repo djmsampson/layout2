@@ -1,4 +1,11 @@
 classdef BoxPanel < uix.Container
+    %uix.BoxPanel  Box panel
+    %
+    %  p = uix.BoxPanel(p1,v1,p2,v2,...) constructs a box panel and sets
+    %  parameter p1 to value v1, etc.
+    %
+    %  A box panel is a decorated container with a title box, border, and
+    %  buttons to dock and undock, minimize, get help, and close.
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -53,7 +60,12 @@ classdef BoxPanel < uix.Container
     methods
         
         function obj = BoxPanel( varargin )
-            %uix.BoxPanel  Box panel
+            %uix.BoxPanel  Box panel constructor
+            %
+            %  p = uix.BoxPanel() constructs a box panel.
+            %
+            %  p = uix.BoxPanel(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Call superclass constructor
             obj@uix.Container()
