@@ -5,7 +5,10 @@ classdef BoxPanel < uix.Container
     %  parameter p1 to value v1, etc.
     %
     %  A box panel is a decorated container with a title box, border, and
-    %  buttons to dock and undock, minimize, get help, and close.
+    %  buttons to dock and undock, minimize, get help, and close.  A box
+    %  panel shows one of its contents and hides the others.
+    %
+    %  See also: uix.Panel, uipanel, uix.CardPanel
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$

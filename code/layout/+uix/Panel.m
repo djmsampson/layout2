@@ -1,4 +1,13 @@
 classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
+    %uix.Panel  Standard panel
+    %
+    %  b = uix.Panel(p1,v1,p2,v2,...) constructs a standard panel and sets
+    %  parameter p1 to value v1, etc.
+    %
+    %  A card panel is a standard panel (uipanel) that shows one its
+    %  contents and hides the others.
+    %
+    %  See also: uix.CardPanel, uix.BoxPanel, uipanel
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -14,6 +23,12 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
     methods
         
         function obj = Panel( varargin )
+            %uix.Panel  Standard panel constructor
+            %
+            %  p = uix.Panel() constructs a standard panel.
+            %
+            %  p = uix.Panel(p1,v1,p2,v2,...) sets parameter p1 to value
+            %  v1, etc.
             
             % Call superclass constructor
             obj@matlab.ui.container.Panel()

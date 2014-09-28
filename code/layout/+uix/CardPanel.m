@@ -1,4 +1,13 @@
 classdef CardPanel < uix.Container
+    %uix.CardPanel  Card panel
+    %
+    %  b = uix.CardPanel(p1,v1,p2,v2,...) constructs a card panel and sets
+    %  parameter p1 to value v1, etc.
+    %
+    %  A card panel is a standard container (uicontainer) that shows one
+    %  its contents and hides the others.
+    %
+    %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$
@@ -14,6 +23,12 @@ classdef CardPanel < uix.Container
     methods
         
         function obj = CardPanel( varargin )
+            %uix.CardPanel  Card panel constructor
+            %
+            %  p = uix.CardPanel() constructs a card panel.
+            %
+            %  p = uix.CardPanel(p1,v1,p2,v2,...) sets parameter p1 to
+            %  value v1, etc.
             
             % Call superclass constructor
             obj@uix.Container()
