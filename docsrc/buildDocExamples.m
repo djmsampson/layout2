@@ -42,6 +42,23 @@ set( axes2, 'xticklabel', [], 'yticklabel', [] );
 
 iCaptureFigure( f, 'axes_layout_example_3' );
 
+%% Legend/ colorbar
+f = iFigure( 'Axes legend and colorbars' );
+set( f, 'Position', [100 100 400 400] );
+iCaptureFigure( f, 'colorbar_example_1' );
+
+hbox = uix.VBoxFlex('Parent', f, 'Spacing', 3);
+axes1 = axes( 'Parent', uicontainer('Parent', hbox) );
+axes2 = axes( 'Parent', uicontainer('Parent', hbox) );
+iCaptureFigure( f, 'colorbar_example_2' );
+
+surf( axes1, membrane( 1, 15 ) );
+colorbar( axes1 );
+theta = 0:360;
+plot( axes2, theta, sind(theta), theta, cosd(theta) );
+legend( axes2, 'sin', 'cos', 'Location', 'NorthWestOutside' );
+iCaptureFigure( f, 'colorbar_example_3' );
+
 %% Layout basics
 f = iFigure( 'Basics' );
 set( f, 'Position', [100 100 180 90] );

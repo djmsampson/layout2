@@ -22,6 +22,9 @@
      <dl>
          <dt><ref link="AxesExample"><b>Positioning axes</b></ref></dt>
          <dd>Using the different axes position properties.</dd>
+
+         <dt><ref link="AxesLegendsColorbars"><b>Axes legends and colorbars</b></ref></dt>
+         <dd>How to work with axes that may also have legends and/or colorbars.</dd>
      </dl>
          
      <h4>Using panels</h4>
@@ -40,9 +43,11 @@
      
      <h4>Enable and Visible</h4>
       <dl>
+         <!--
          <dt><ref link="EnableExample"><b>Enabling/Disabling a layout</b></ref></dt>
          <dd>Using the "Enable" property to enable or disable groups of buttons</dd>
-      
+         -->
+         
          <dt><ref link="VisibleExample"><b>Showing/Hiding a layout</b></ref></dt>
          <dd>Using the "Visible" property to show or hide groups of buttons</dd>
       </dl>

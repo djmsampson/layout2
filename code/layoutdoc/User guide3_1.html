@@ -21,6 +21,8 @@
           
       <h2>3.1: Enable example&nbsp;<a href="User guide3.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
       
+        <p>Enabling and disabling layouts is not currently supported.</p>
+        <!--
             <p>(The code for this example can be found here: 
                             [ <a href="Examples/enableexample.m">view</a>
                 | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','enableexample.m'))">edit</a>
@@ -34,36 +36,37 @@
         </p>
         
         <example>
-            <para>Open a window and add a panel</para>
-            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">fig = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Name', 'Enable example', ...
+            <description>Open a window and add a panel</description>
+            <code>fig = <matlabfcn>figure</matlabfcn>( 'Name', 'Enable example', ...
     'Position', [100 100 150 250], ...
     'MenuBar', 'none', ...
     'ToolBar', 'none', ...
     'NumberTitle', 'off' );
-panel = <a href="uix.BoxPanel.html"><code class="FUNCTION">uix.BoxPanel</code></a>( 'Parent', fig, 'Title', 'Panel' );</font></pre>
-            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/EnableExample1.png"/></center></font></p>
+panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
+            <result><center><img src="Images/EnableExample1.png"/></center></result>
         </example>
         <example>
-            <para>Put some buttons inside the panel</para>
-            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">box = <a href="uix.VButtonBox.html"><code class="FUNCTION">uix.VButtonBox</code></a>( 'Parent', panel );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 1' );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 2' );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 3', 'Enable', 'off' );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 4' );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 5', 'Enable', 'off' );
-<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 6' );</font></pre>
-            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/EnableExample2.png"/></center></font></p>
+            <description>Put some buttons inside the panel</description>
+            <code>box = <fcnref>uix.VButtonBox</fcnref>( 'Parent', panel );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 1' );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 2' );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 3', 'Enable', 'off' );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 4' );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 5', 'Enable', 'off' );
+<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 6' );</code>
+            <result><center><img src="Images/EnableExample2.png"/></center></result>
         </example>
         <example>
-            <para>Try disabling the panel</para>
-            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">set( panel, 'Enable', 'off' );</font></pre>
-            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/EnableExample3.png"/></center></font></p>
+            <description>Try disabling the panel</description>
+            <code>set( panel, 'Enable', 'off' );</code>
+            <result><center><img src="Images/EnableExample3.png"/></center></result>
         </example>
         <example>
-            <para>Try enabling the panel. Note that the original "enable" state of each button is remembered.</para>
-            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">set( panel, 'Enable', 'on' );</font></pre>
-            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/EnableExample2.png"/></center></font></p>
+            <description>Try enabling the panel. Note that the original "enable" state of each button is remembered.</description>
+            <code>set( panel, 'Enable', 'on' );</code>
+            <result><center><img src="Images/EnableExample2.png"/></center></result>
         </example>
+        -->
     
       
       <br clear="ALL"/>

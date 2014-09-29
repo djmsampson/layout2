@@ -359,6 +359,50 @@ set( axes2, 'xticklabel', [], 'yticklabel', [] );</code>
             <p></p>
         </subsection>
     
+        <subsection name="Colorbars and legends" staticref="AxesLegendsColorbars">
+            <p>(The code for this example can be found here: 
+                            [ <a href="Examples/colorbarexample.m">view</a>
+                | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','colorbarexample.m'))">edit</a>
+                | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); colorbarexample; cd(p)">run</a> ]
+            )</p>
+            <p>
+                When using layouts to position axes that can also have a
+                colorbar or legend it is very important to group the axes
+                with its colorbar and legend by putting them inside a <code>uicontainer</code>.
+            </p>
+            <p>
+                The following example illustrates this.
+            </p>
+            
+            <h4>Open a window</h4>
+            <p>Open a new figure window and remove the toolbar and menus.</p>
+            <example><code>window = <matlabfcn>figure</matlabfcn>( 'Name', 'Axes legend and colorbars', ...
+            'MenuBar', 'none', ...
+            'Toolbar', 'none', ...
+            'NumberTitle', 'off' );</code>
+            <result><center><img src="Images/colorbar_example_1.png"/></center></result>
+            </example>
+            
+            <h4>Create the layout</h4>
+            <p>The layout involves two axes side by side. Each axes is placed into a uicontainer so that the legend and colorbar are "grouped" with the axes.</p>
+            <example><code>hbox = <fcnref>uix.HBoxFlex</fcnref>('Parent', window, 'Spacing', 3);
+axes1 = <matlabfcn>axes</matlabfcn>( 'Parent', <matlabfcn>uicontainer</matlabfcn>('Parent', hbox) );
+axes2 = <matlabfcn>axes</matlabfcn>( 'Parent', <matlabfcn>uicontainer</matlabfcn>('Parent', hbox) );</code>
+             <result><center><img src="Images/colorbar_example_2.png"/></center></result>
+           </example>
+            
+            <h4>Add decorations</h4>
+            <p>Give the first axes a colorbar and the second axes a legend.</p>
+            <example><code><matlabfcn>surf</matlabfcn>( axes1, <matlabfcn>membrane</matlabfcn>( 1, 15 ) );
+<matlabfcn>colorbar</matlabfcn>( axes1 );
+<br/>
+theta = 0:360;
+<matlabfcn>plot</matlabfcn>( axes2, theta, <matlabfcn>sind</matlabfcn>(theta), theta, <matlabfcn>cosd</matlabfcn>(theta) );
+<matlabfcn>legend</matlabfcn>( axes2, 'sin', 'cos', 'Location', 'NorthWestOutside' );</code>
+             <result><center><img src="Images/colorbar_example_3.png"/></center></result>
+           </example>
+
+       </subsection>
 </section>
 
 <!-- ****************************************************************** -->
@@ -367,6 +411,8 @@ set( axes2, 'xticklabel', [], 'yticklabel', [] );</code>
     "Enable" or "Visible" properties on a layout object.</p>
     
     <subsection name="Enable example" staticref="EnableExample">
+        <p>Enabling and disabling layouts is not currently supported.</p>
+        <!--
             <p>(The code for this example can be found here: 
                             [ <a href="Examples/enableexample.m">view</a>
                 | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','enableexample.m'))">edit</a>
@@ -410,6 +456,7 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
             <code>set( panel, 'Enable', 'on' );</code>
             <result><center><img src="Images/EnableExample2.png"/></center></result>
         </example>
+        -->
     </subsection>
     
     <subsection name="Visible example" staticref="VisibleExample">
