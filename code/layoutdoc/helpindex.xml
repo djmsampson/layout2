@@ -4,7 +4,7 @@
 <index version="1.0">
 <indexitem target="User guide8.html">A complete example</indexitem>
 <indexitem target="Getting Started1.html">About</indexitem>
-<indexitem target="Getting Started5.html">Acknowledgements</indexitem>
+<indexitem target="Getting Started6.html">Acknowledgements</indexitem>
 <indexitem target="User guide5.html">Advanced maneuvers with panels</indexitem>
 <indexitem target="User guide8.html">Application design</indexitem>
 <indexitem target="User guide8_1.html">Application structure</indexitem>
@@ -25,6 +25,7 @@
 <indexitem target="User guide8.html">Callbacks</indexitem>
 <indexitem target="Function reference1_2.html">CardPanel</indexitem>
 <indexitem target="User guide2_3.html">Colorbars and legends</indexitem>
+<indexitem target="Getting Started2.html">Compatibility considerations</indexitem>
 <indexitem target="User guide7.html">Compiler</indexitem>
 <indexitem target="User guide5_1.html">Context help</indexitem>
 <indexitem target="User guide8_2.html">createInterface</indexitem>
@@ -54,13 +55,13 @@
 <indexitem target="Function reference2_1.html">HBox</indexitem>
 <indexitem target="Function reference2_3.html">HBoxFlex</indexitem>
 <indexitem target="Function reference2_5.html">HButtonBox</indexitem>
-<indexitem target="Getting Started4.html">Help</indexitem>
+<indexitem target="Getting Started5.html">Help</indexitem>
 <indexitem target="Function reference2_5.html">Horizontal button layout</indexitem>
 <indexitem>Horizontal layout
     <indexitem target="Function reference2_1.html">uix.HBox (Function reference: 2.1)</indexitem>
     <indexitem target="Function reference2_3.html">uix.HBoxFlex (Function reference: 2.3)</indexitem>
 </indexitem>
-<indexitem target="Getting Started3.html">Installation</indexitem>
+<indexitem target="Getting Started4.html">Installation</indexitem>
 <indexitem target="Function reference4_2.html">Installation folder</indexitem>
 <indexitem target="User guide1_1.html">Layout basics</indexitem>
 <indexitem target="User guide1_4.html">Layout heirarchies</indexitem>
@@ -75,14 +76,14 @@
 <indexitem target="User guide2_1.html">Position vs OuterPosition</indexitem>
 <indexitem target="User guide2.html">Positioning Axes</indexitem>
 <indexitem target="User guide4.html">Property</indexitem>
-<indexitem target="Getting Started2.html">Release Notes</indexitem>
+<indexitem target="Getting Started3.html">Release Notes</indexitem>
 <indexitem target="Function reference4_2.html">Root</indexitem>
 <indexitem target="User guide8_5.html">Running it</indexitem>
 <indexitem target="User guide8_6.html">Scalability</indexitem>
 <indexitem target="User guide4_2.html">Setting defaults for all windows</indexitem>
 <indexitem target="User guide4_1.html">Setting defaults for one window</indexitem>
 <indexitem target="User guide1_3.html">Sizes and units</indexitem>
-<indexitem target="Getting Started4.html">Support</indexitem>
+<indexitem target="Getting Started5.html">Support</indexitem>
 <indexitem target="Function reference1_4.html">TabPanel</indexitem>
 <indexitem target="User guide1_2.html">Types of layout</indexitem>
 <indexitem target="Function reference1_3.html">uix.BoxPanel</indexitem>
@@ -100,7 +101,7 @@
 <indexitem target="Function reference2_6.html">uix.VButtonBox</indexitem>
 <indexitem target="User guide1.html">Understanding layouts</indexitem>
 <indexitem target="User guide5_3.html">Undock</indexitem>
-<indexitem target="Getting Started3.html">Uninstall</indexitem>
+<indexitem target="Getting Started4.html">Uninstall</indexitem>
 <indexitem target="User guide8_3.html">updateInterface</indexitem>
 <indexitem target="User guide.html">User guide</indexitem>
 <indexitem target="User guide6.html">Using layouts inside GUIDE GUIs</indexitem>

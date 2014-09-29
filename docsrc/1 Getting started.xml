@@ -43,6 +43,101 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
 
 <!-- ****************************************************************** -->
 
+<section name="Compatibility considerations" staticref="compatibility">
+    <inlinesubsection name="Minimum MATLAB version">
+        <p>This is the second version of the GUI Layout Toolbox, designed to 
+            work with MATLAB releases R2014b and later. For earlier MATLAB releases
+        use the first version.</p>
+    </inlinesubsection> 
+    
+    <inlinesubsection name="Compatibility with v1.x">
+        <p>If you are upgrading from the first version of GUI Layout Toolbox,
+    there are a number of compatibility considerations:</p>
+    
+<h4>Package name</h4>
+<p>GLT1 packages were contained in the package 'uiextras'.  GLT2 classes are 
+contained in the package 'uix'.  In GLT2, a package 'uiextras' is included 
+to provide support for legacy code.  Classes in 'uiextras' extend 
+corresponding classes in 'uix', and contain only compatibility-related 
+code.</p>
+
+<h4>Contents property</h4>
+<p>The contents of GLT1 objects were accessible via the property 'Children'.  
+The contents of GLT2 objects are accessible via the property 'Contents'.  
+GLT2 objects also provide a property 'Children', but this controls the 
+vertical stacking order of contents, rather than the layout order.  Legacy 
+code that accesses 'Children' will run without error, but will not achieve 
+the desired change in layout order, and should be modified to access 
+'Contents' instead.</p>
+
+<p>An upcoming release of GLT1 will include support for code that references 
+contents via 'Contents'.  That way, code modified to work in GLT2 will also 
+work in GLT1.</p>
+
+<p>The background to this change is as follows.  GLT1 objects were wrappers 
+for built-in graphics objects, and presented contents in layout order via 
+the property 'Children'.  GLT2 objects extend built-in graphics objects, 
+and as such, inherit properties, methods and events.  One such property is 
+'Children' which is used to control the top-to-bottom stacking order.  
+MATLAB stacking rules, e.g., controls are always on top of axes, mean that 
+some reasonable layout orders may be invalid stacking orders, so a new 
+property for layout order is required.</p>
+
+<h4>Auto-parenting</h4>
+<p>HG2 introduces unparented objects, i.e., those with property 'Parent' 
+empty.  HG2 also introduces a separation between class constructors, e.g., 
+matlab.ui.container.Panel, and construction functions, e.g., uipanel.  
+These behaviors are related in that construction functions are auto-
+parenting, i.e., if 'Parent' is not specified then it is set to gcf, 
+whereas class constructors return objects with 'Parent' empty by default.  
+GLT2 has adopted the HG2 pattern, with an HG2-like naming convention, e.g., 
+class constructor uix.Grid and construction function uixgrid.</p>
+
+<p>Classes in 'uiextras' are auto-parenting so the behavior of legacy code is 
+unchanged.  However, best practice is to specify parent explicitly during 
+construction.</p>
+
+<h4>Defaults mechanism</h4>
+<p>GLT1 provided a defaults mechanism -- 'get'/'set'/'unset' in 'uiextras' -- 
+that mimicked HG1 'get' and 'set'.  This feature has been removed from 
+GLT2.  Users should use an alternative programming pattern, e.g. factory 
+function, to create objects with standard settings.</p>
+
+<h4>Enable and disable</h4>
+<p>GLT1 provided a mechanism to enable and disable container contents using 
+the property 'Enable'.  This feature has been removed from GLT2.  Users 
+should enable and disable controls directly rather than via containers.</p>
+
+        <p>See related discussion at: <a href="http://goo.gl/j0KmTR">http://goo.gl/j0KmTR</a></p>
+
+<h4>Other property name changes</h4>
+<p>A number of property names have changed to achieve greater consistency 
+across the package.  For example, 'RowSizes' and 'ColumnSizes' in 
+uiextras.Grid are now 'Heights' and 'Widths' in uix.Grid.  The package 
+'uiextras' provides support for legacy property names.</p>
+<ul>
+    <li><code>RowSizes</code> -> <code>Heights</code></li>
+    <li><code>ColumnSizes</code> -> <code>Widths</code></li>
+    <li><code>ShowMarkings</code> -> <code>DividerMarkings</code></li>
+</ul>
+
+<h4>Property shape changes</h4>
+<p>GLT2 contents companion properties are now of the same size as 'Contents', 
+i.e., column vectors.  In GLT1, these properties were row vectors.  The 
+package 'uiextras' provides support for legacy property values.</p>
+
+    <h4>Tab selection behavior</h4>
+        <p>In GLT1, after adding a tab to a tab panel, the new tab is selected.</p>
+        <p>In GLT2, the original selection is preserved, except if the tab panel was 
+            empty, in which case the new tab is selected.  This is consistent with the 
+        behavior of matlab.ui.container.TabGroup.</p>
+
+    </inlinesubsection> 
+    
+</section>
+
+<!-- ****************************************************************** -->
+
 <section name="Release Notes" staticref="releasenotes">
     <para>
         The GUI Layout Toolbox version numbers take the form <code>major.minor.iter</code>. The
