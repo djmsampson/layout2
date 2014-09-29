@@ -1127,6 +1127,11 @@
                          <description>Function to call when the layout is being deleted</description>
                      </property>
                      <property>
+                         <name>DividerMarkings</name>
+                         <value>[ on | off ]</value>
+                         <description>Show markings on the draggable dividers (default 'on').</description>
+                     </property>
+                     <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
@@ -1150,11 +1155,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>ShowMarkings</name>
-                         <value>[ on | off ]</value>
-                         <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1268,6 +1268,11 @@
                          <description>Function to call when the layout is being deleted</description>
                      </property>
                      <property>
+                         <name>DividerMarkings</name>
+                         <value>[ on | off ]</value>
+                         <description>Show markings on the draggable dividers (default 'on').</description>
+                     </property>
+                     <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
@@ -1296,11 +1301,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>ShowMarkings</name>
-                         <value>[ on | off ]</value>
-                         <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1846,6 +1846,11 @@
                          <description>Function to call when the layout is being deleted</description>
                      </property>
                      <property>
+                         <name>DividerMarkings</name>
+                         <value>[ on | off ]</value>
+                         <description>Show markings on the draggable dividers (default 'on').</description>
+                     </property>
+                     <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
@@ -1869,11 +1874,6 @@
                          <name>Position</name>
                          <value>[x y w h]</value>
                          <description>The position (x,y) and size (w,h) of the layout.</description>
-                     </property>
-                     <property>
-                         <name>ShowMarkings</name>
-                         <value>[ on | off ]</value>
-                         <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <property>
                          <name>Spacing</name>
