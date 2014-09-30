@@ -418,7 +418,7 @@ classdef GridFlex < uix.Grid
             for ii = 1:c
                 columnDivider = obj.ColumnDividers(ii);
                 columnDivider.Position = columnPositions(ii,:);
-                switch obj.Markings_
+                switch obj.DividerMarkings_
                     case 'on'
                         columnDivider.Markings = cumsum( yRowSizes ) + ...
                             spacing * transpose( 0:r ) - yRowSizes / 2;
