@@ -89,7 +89,9 @@ classdef VBoxFlex < uix.VBox
             
             % Set
             obj.DividerMarkings_ = value;
-            obj.redraw()
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.DividerMarkings
         

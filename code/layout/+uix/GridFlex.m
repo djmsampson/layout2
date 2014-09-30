@@ -90,7 +90,9 @@ classdef GridFlex < uix.Grid
             
             % Set
             obj.DividerMarkings_ = value;
-            obj.redraw()
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.DividerMarkings
         
