@@ -96,7 +96,7 @@ classdef ( Hidden, Sealed ) AncestryObserver < handle
         
     end % methods
     
-    methods
+    methods( Access = private )
         
         function onPreChange( obj, ~, ~ )
             %onPreChange  Event handler
