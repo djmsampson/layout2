@@ -217,7 +217,7 @@ use layouts?</p>
                         <code>f = <matlabfcn>figure</matlabfcn>( 'Position', 200*ones(1,4) );
 <matlabfcn>axes</matlabfcn>( 'Parent', f, ...
     'Units', 'Normalized', ...
-    'OuterPosition', [0.02 0.2 0.96 0.8] );
+    'outerposition', [0.02 0.2 0.96 0.8] );
 <matlabfcn>uicontrol</matlabfcn>( 'Parent', f, ...
     'Units', 'Normalized', ...
     'Position', [0.02 0.02 0.46 0.16], ...
@@ -233,7 +233,7 @@ use layouts?</p>
                         <code>f = <matlabfcn>figure</matlabfcn>( 'Position', 200*ones(1,4) );
 <matlabfcn>axes</matlabfcn>( 'Parent', f, ...
     'Units', 'Pixels', ...
-    'OuterPosition', [10 35 190 175] );
+    'outerposition', [10 35 190 175] );
 <matlabfcn>uicontrol</matlabfcn>( 'Parent', f, ...
     'Units', 'Pixels', ...
     'Position', [5 5 90 25], ...
@@ -276,14 +276,14 @@ set( vbox, 'Heights', [-1 35] )</code>
         <keywords>axes</keywords>
         <p>
             Unlike other MATLAB user interface components, <matlabfcn>axes</matlabfcn>
-            have two position properties: "Position" and "OuterPosition". This
+            have two position properties: "Position" and "outerposition". This
             means one has some extra options as to how the layout will
             arrange the axes.
         </p>
         
-        <subsection name="Position vs OuterPosition">
+        <subsection name="Position vs outerposition">
             <p>Typically one
-                would position some axes using their "OuterPosition" so that the axis labels, title
+                would position some axes using their "outerposition" so that the axis labels, title
                 and other annotations are all contained within the specified area. Sometimes,
                 particularly if drawing images, one might want to instead make the axes
                 canvas (the white bit!) fill the specified area. This is done by setting
@@ -293,7 +293,7 @@ set( vbox, 'Heights', [-1 35] )</code>
             <examples>
                 <example>
                     <code><matlabfcn>figure</matlabfcn>
-<matlabfcn>axes</matlabfcn>( 'Units', 'Normalized', 'OuterPosition', [0 0 1 1] )
+<matlabfcn>axes</matlabfcn>( 'Units', 'Normalized', 'outerposition', [0 0 1 1] )
                     </code>
                     <result><center><img src="Images/axes_outer.png"/></center></result>
                 </example>
@@ -315,9 +315,9 @@ set( vbox, 'Heights', [-1 35] )</code>
             <p>
                 When using layouts to position axes, the position property
                 is set by the layout, not the user. Whether the "Position"
-                or "OuterPosition" property is used is determined by the
+                or "outerposition" property is used is determined by the
                 "ActivePositionProperty" property of the <matlabfcn>axes</matlabfcn>.
-                Note that the default setting is "OuterPosition".
+                Note that the default setting is "outerposition".
             </p>
             <p>
                 The following example illustrates the two usages.
@@ -332,10 +332,10 @@ set( vbox, 'Heights', [-1 35] )</code>
             <result><center><img src="Images/axes_layout_example_1.png"/></center></result>
             </example>
             <h4>Create the layout</h4>
-            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the ActivePositionProperty set to "OuterPosition", but the right-hand axes is switched to use "Position".</p>
+            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the ActivePositionProperty set to "outerposition", but the right-hand axes is switched to use "Position".</p>
             <example><code>hbox = <fcnref>uix.HBoxFlex</fcnref>('Parent', window, 'Spacing', 3);
 axes1 = <matlabfcn>axes</matlabfcn>( 'Parent', hbox, ...
-    'ActivePositionProperty', 'OuterPosition' );
+    'ActivePositionProperty', 'outerposition' );
 axes2 = <matlabfcn>axes</matlabfcn>( 'Parent', hbox, ...
     'ActivePositionProperty', 'Position' );
 set( hbox, 'Widths', [-2 -1] );</code>
@@ -343,7 +343,7 @@ set( hbox, 'Widths', [-2 -1] );</code>
            </example>
            
             <h4>Fill the axes</h4>
-            <p>Using "OuterPosition" (left-hand axes) is the normal mode and looks good for virtually any plot type. Using "Position" is only really useful for 2D plots with the axes turned off, such as images.</p>
+            <p>Using "outerposition" (left-hand axes) is the normal mode and looks good for virtually any plot type. Using "Position" is only really useful for 2D plots with the axes turned off, such as images.</p>
             <example><code>x = membrane( 1, 15 );
 <matlabfcn>surf</matlabfcn>( axes1, x );
 <matlabfcn>lighting</matlabfcn>( axes1, 'gouraud' );
