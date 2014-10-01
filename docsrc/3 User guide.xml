@@ -457,63 +457,6 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
 
     
 <!-- ****************************************************************** -->
-<section name="Using property defaults">
-        <keywords>Default</keywords>
-        <keywords>Property</keywords>
-
-        <p>Sometimes it is useful to override the default values used when
-            new layout managers are created. The default property values for most
-            properties are inherited from the parent panel, figure or environemt
-            when the layout is first created. Functions for setting these are
-        described below.</p>
-        
-        <subsection name="Setting defaults for one window" staticref="FigureDefaults">
-            <p>The usual use of defaults is to modify the colors, fonts or
-                other settings used for a particular application window. The defaults
-            are therefore changed on the figure object using the <fcnref>uix.set</fcnref> function.</p>
-        <p>The example below sets new defaults for panel title-bar color and font
-    on the window before two panels are added.</p>
-            <example>
-                <code>f = <matlabfcn>figure</matlabfcn>();
-<fcnref>uix.set</fcnref>( f, <string>'DefaultHBoxBackgroundColor'</string>, [0.3 0.3 0.3] );
-<fcnref>uix.set</fcnref>( f, <string>'DefaultBoxPanelTitleColor'</string>, <string>'y'</string> );
-<fcnref>uix.set</fcnref>( f, <string>'DefaultBoxPanelFontSize'</string>, 16 );
-h = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, f, <string>'Padding'</string>, 10, <string>'Spacing'</string>, 10 );
-p1 = <fcnref>uix.BoxPanel</fcnref>( <string>'Parent'</string>, h, <string>'Title'</string>, <string>'Panel 1'</string> );
-p2 = <fcnref>uix.BoxPanel</fcnref>( <string>'Parent'</string>, h, <string>'Title'</string>, <string>'Panel 2'</string> );</code>
-            <result><center><img src="Images/DefaultsFigure.png"/></center></result>
-            </example>
-        </subsection>
-        
-        <subsection name="Setting defaults for all windows" staticref="SystemDefaults">
-            <p>As well as modifying the <ref link="FigureDefaults">defaults used in one window</ref>,
-        it is possible to override the defaults used for all windows. This makes use of
-    the special "0" handle that roughly corresponds to the MATLAB environment. Note, however,
-that defaults set at the window level take precedence.</p>
-            <p>The example below shows how defaults can be set for the panel title-bar color
-            and font for all windows, but the font size is overridden for the second window:</p>
-            <example>
-                <code><fcnref>uix.set</fcnref>( 0, <string>'DefaultHBoxBackgroundColor'</string>, [0.3 0.3 0.3] );
-<fcnref>uix.set</fcnref>( 0, <string>'DefaultBoxPanelTitleColor'</string>, <string>'y'</string> );
-<fcnref>uix.set</fcnref>( 0, <string>'DefaultBoxPanelFontSize'</string>, 14 );
-f1 = <matlabfcn>figure</matlabfcn>();
-h = <fcnref>uix.HBox</fcnref>( <string>'Parent'</string>, f1, <string>'Padding'</string>, 10, <string>'Spacing'</string>, 10 );
-p1 = <fcnref>uix.BoxPanel</fcnref>( <string>'Parent'</string>, h, <string>'Title'</string>, <string>'Panel 1'</string> );
-p2 = <fcnref>uix.BoxPanel</fcnref>( <string>'Parent'</string>, h, <string>'Title'</string>, <string>'Panel 2'</string> );
-f2 = <matlabfcn>figure</matlabfcn>();
-<fcnref>uix.set</fcnref>( f2, <string>'DefaultBoxPanelFontSize'</string>, 20 );
-p3 = <fcnref>uix.BoxPanel</fcnref>( <string>'Parent'</string>, f2, <string>'Title'</string>, <string>'Panel 3'</string> );</code>
-            <result><center><img src="Images/DefaultsSystem1.png"/><img src="Images/DefaultsSystem2.png"/></center></result>
-            </example>
-            <p>It is important to note that although the default has been set
-            system-wide, it is not preserved between MATLAB sessions.</p>
-        </subsection>
-        
-</section>
-      
-        
-        
-<!-- ****************************************************************** -->
 <section name="Advanced maneuvers with panels" staticref="BoxPanelFancyStuff">
     <p>
         The <fcnref>uix.BoxPanel</fcnref> provides some extra buttons
