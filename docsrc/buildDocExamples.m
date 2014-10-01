@@ -10,8 +10,8 @@ function buildDocExamples()
 close all force;
 
 %% Axes examples
-f = iFigure( 'axes OuterPosition example' );
-axes( 'Parent', f, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1] );
+f = iFigure( 'axes outerposition example' );
+axes( 'Parent', f, 'Units', 'Normalized', 'outerposition', [0 0 1 1] );
 iCaptureFigure( f, 'axes_outer' );
 
 f = iFigure( 'axes Position example' );
@@ -24,7 +24,7 @@ iCaptureFigure( f, 'axes_layout_example_1' );
 
 hbox = uix.HBoxFlex('Parent', f, 'Spacing', 3);
 axes1 = axes( 'Parent', hbox, ...
-    'ActivePositionProperty', 'OuterPosition' );
+    'ActivePositionProperty', 'outerposition' );
 axes2 = axes( 'Parent', hbox, ...
     'ActivePositionProperty', 'Position' );
 % set( hbox, 'Widths', [-2 -1] );
@@ -98,7 +98,7 @@ f = iFigure( 'Normalized' );
 set( f, 'Position', 200*ones(1,4) );
 axes( 'Parent', f, ...
     'Units', 'Normalized', ...
-    'OuterPosition', [0.02 0.2 0.96 0.8] );
+    'outerposition', [0.02 0.2 0.96 0.8] );
 uicontrol( 'Parent', f, ...
     'Units', 'Normalized', ...
     'Position', [0.02 0.02 0.46 0.16], ...
@@ -115,7 +115,7 @@ f = iFigure( 'Fixed' );
 set( f, 'Position', 200*ones(1,4) );
 axes( 'Parent', f, ...
     'Units', 'Pixels', ...
-    'OuterPosition', [10 35 190 175] );
+    'outerposition', [10 35 190 175] );
 uicontrol( 'Parent', f, ...
     'Units', 'Pixels', ...
     'Position', [5 5 90 25], ...
@@ -497,7 +497,7 @@ iCaptureFigure( f, 'CombineBoxes' )
         figure( figh );
         drawnow();
         pos1 = get( figh, 'Position' );
-        pos = get( figh, 'OuterPosition' );
+        pos = get( figh, 'outerposition' );
         pos(1:2) = pos(1:2) - pos1(1:2); % + [1 1];
         fr = getframe( figh, pos );
         imwrite( fr.cdata, fullfile( 'Images', [filename,'.png'] ) );
