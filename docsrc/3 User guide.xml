@@ -406,58 +406,9 @@ theta = 0:360;
 </section>
 
 <!-- ****************************************************************** -->
-<section name="Enable and Visible">
+<section name="Controlling visibility">
     <p>The examples in this section show the effect of setting the
-    "Enable" or "Visible" properties on a layout object.</p>
-    
-    <subsection name="Enable example" staticref="EnableExample">
-        <p>Enabling and disabling layouts is not currently supported.</p>
-        <!--
-            <p>(The code for this example can be found here: 
-                            [ <a href="Examples/enableexample.m">view</a>
-                | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','enableexample.m'))">edit</a>
-                | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); enableexample; cd(p)">run</a> ]
-            )</p>
-        <p>
-            This example shows how the <code>enable</code> property can be
-            used to indicate to users which bits of an interface are currently
-            relevant. This is particularly useful for preventing unwanted
-            clicking during long calculations, loading and saving!
-        </p>
-        
-        <example>
-            <description>Open a window and add a panel</description>
-            <code>fig = <matlabfcn>figure</matlabfcn>( 'Name', 'Enable example', ...
-    'Position', [100 100 150 250], ...
-    'MenuBar', 'none', ...
-    'ToolBar', 'none', ...
-    'NumberTitle', 'off' );
-panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
-            <result><center><img src="Images/EnableExample1.png"/></center></result>
-        </example>
-        <example>
-            <description>Put some buttons inside the panel</description>
-            <code>box = <fcnref>uix.VButtonBox</fcnref>( 'Parent', panel );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 1' );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 2' );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 3', 'Enable', 'off' );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 4' );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 5', 'Enable', 'off' );
-<matlabfcn>uicontrol</matlabfcn>( 'Parent', box, 'String', 'Button 6' );</code>
-            <result><center><img src="Images/EnableExample2.png"/></center></result>
-        </example>
-        <example>
-            <description>Try disabling the panel</description>
-            <code>set( panel, 'Enable', 'off' );</code>
-            <result><center><img src="Images/EnableExample3.png"/></center></result>
-        </example>
-        <example>
-            <description>Try enabling the panel. Note that the original "enable" state of each button is remembered.</description>
-            <code>set( panel, 'Enable', 'on' );</code>
-            <result><center><img src="Images/EnableExample2.png"/></center></result>
-        </example>
-        -->
-    </subsection>
+    <code>Visible</code> property on a layout object.</p>
     
     <subsection name="Visible example" staticref="VisibleExample">
             <p>(The code for this example can be found here: 
@@ -466,7 +417,7 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
                 | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); visibleexample; cd(p)">run</a> ]
             )</p>
        <p>
-            This example shows how the <code>visible</code> property can be
+            This example shows how the <code>Visible</code> property can be
             used to hide whole sections of an interface.
         </p>
         <example>
@@ -496,7 +447,7 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
             <result><center><img src="Images/VisibleExample3.png"/></center></result>
         </example>
         <example>
-            <description>Try showing the panel. Note that the original "visible" state of each button is remembered.</description>
+            <description>Try showing the panel. Note that the original <code>Visible</code> state of each button is remembered.</description>
             <code>set( panel, 'Visible', 'on' );</code>
             <result><center><img src="Images/VisibleExample2.png"/></center></result>
         </example>
