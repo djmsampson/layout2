@@ -233,6 +233,7 @@ classdef VBoxFlex < uix.VBox
         end % onMouseMotion
         
         function onBackgroundColorChange( obj, ~, ~ )
+            %onBackgroundColorChange  Handler for BackgroundColor changes
             
             backgroundColor = obj.BackgroundColor;
             highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
