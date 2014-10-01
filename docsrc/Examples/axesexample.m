@@ -1,7 +1,7 @@
 %% Axes inside layouts
 % This example demonstrates how axes are affected by being placed into
 % layouts. The layouts take into account the "ActivePositionProperty" in
-% order to determine whether to set the "Position" or "outerposition"
+% order to determine whether to set the "Position" or "OuterPosition"
 % (default) property of the axes.
 %
 % Copyright 2009-2013 The MathWorks, Inc.
@@ -26,7 +26,7 @@ axes2 = axes( 'Parent', hbox, ...
 set( hbox, 'Widths', [-2 -1] );
 
 %% Fill the axes
-% Using "outerposition" (left-hand axes) is the normal mode and looks good
+% Using "OuterPosition" (left-hand axes) is the normal mode and looks good
 % for virtually any plot type. Using "Position" is only really useful for
 % 2D plots with the axes turned off, such as images
 x = membrane( 1, 15 );
