@@ -35,15 +35,15 @@
                     </example>
 
                 <p>Now let's create the horizontal layout and add it to the figure. Note
-            that in common with other MATLAB graphics objects, one object is added to
-        another by setting the "Parent" property - this will automatically adjust the list
-    of "Children" in the parent object. The job of a horizontal box layout is to arrange
-    its contents in a horizontal line, setting the position of each element to best fill
-    the space:</p>
+                that in common with other MATLAB graphics objects, one object is added to
+                another by setting the <code>Parent</code> property - this will automatically 
+                adjust the list of <code>Children</code> in the parent object. The job of a 
+                horizontal box layout is to arrange its contents in a horizontal line, 
+                setting the position of each element to best fill the space:</p>
                 <example>
                         <code>layout = <fcnref>uix.HBox</fcnref>( 'Parent', f );</code>
-                <result><center><img src="Images/basics_example1.png"/></center></result>
-</example>
+                        <result><center><img src="Images/basics_example1.png"/></center></result>
+                </example>
                 <p>Nothing's changed! That's because the layout is for arranging
             other user-interface components - it doesn't draw anything itself. Let's
         add some buttons. Note how after creating each button the existing contents
@@ -145,8 +145,9 @@ layout = <fcnref>uix.HBox</fcnref>( 'Parent', f );
                 <p>Many of the multi-element layouts also provide a <code>MinimumWidths</code>
                     or <code>MinimumHeights</code>
                     property to prevent an element becoming too small. This is measured in
-                    pixels and defaults to one pixel. If the specified minimum sizes cannot fit
-                within the available space then all element sizes are reduced to fit.</p>
+                    pixels and defaults to one pixel. Take care to ensure that the available 
+                    space is at least the sum of the minimum sizes, plus any padding and 
+                    spacing.</p>
             </subsubsection>
         
             </subsection>
@@ -276,18 +277,18 @@ set( vbox, 'Heights', [-1 35] )</code>
         <keywords>axes</keywords>
         <p>
             Unlike other MATLAB user interface components, <matlabfcn>axes</matlabfcn>
-            have two position properties: "Position" and "OuterPosition". This
-            means one has some extra options as to how the layout will
-            arrange the axes.
+            have two position properties: <code>Position</code> and 
+            <code>OuterPosition</code>. This means one has some extra 
+            options as to how the layout will arrange the axes.
         </p>
         
         <subsection name="Position vs OuterPosition">
             <p>Typically one
-                would position some axes using their "OuterPosition" so that the axis labels, title
-                and other annotations are all contained within the specified area. Sometimes,
-                particularly if drawing images, one might want to instead make the axes
-                canvas (the white bit!) fill the specified area. This is done by setting
-                the "Position" property instead.
+                would position some axes using their <code>OuterPosition</code> so that the 
+                axis labels, title and other annotations are all contained within the 
+                specified area. Sometimes, particularly if drawing images, one might want 
+                to instead make the axes canvas (the white bit!) fill the specified area. 
+                This is done by setting the <code>Position</code> property instead.
             </p>
             
             <examples>
@@ -314,9 +315,9 @@ set( vbox, 'Heights', [-1 35] )</code>
             )</p>
             <p>
                 When using layouts to position axes, the position property
-                is set by the layout, not the user. Whether the "Position"
-                or "OuterPosition" property is used is determined by the
-                "ActivePositionProperty" property of the <matlabfcn>axes</matlabfcn>.
+                is set by the layout, not the user. Whether the <code>Position</code>
+                or <code>OuterPosition</code> property is used is determined by the
+                <code>ActivePositionProperty</code> property of the <matlabfcn>axes</matlabfcn>.
                 Note that the default setting is "outerposition".
             </p>
             <p>
@@ -332,7 +333,7 @@ set( vbox, 'Heights', [-1 35] )</code>
             <result><center><img src="Images/axes_layout_example_1.png"/></center></result>
             </example>
             <h4>Create the layout</h4>
-            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the ActivePositionProperty set to "outerposition", but the right-hand axes is switched to use "Position".</p>
+            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the <code>ActivePositionProperty</code> set to "outerposition", but the right-hand axes is switched to use <code>Position</code>.</p>
             <example><code>hbox = <fcnref>uix.HBoxFlex</fcnref>('Parent', window, 'Spacing', 3);
 axes1 = <matlabfcn>axes</matlabfcn>( 'Parent', hbox, ...
     'ActivePositionProperty', 'outerposition' );
@@ -343,7 +344,7 @@ set( hbox, 'Widths', [-2 -1] );</code>
            </example>
            
             <h4>Fill the axes</h4>
-            <p>Using "OuterPosition" (left-hand axes) is the normal mode and looks good for virtually any plot type. Using "Position" is only really useful for 2D plots with the axes turned off, such as images.</p>
+            <p>Using <code>OuterPosition</code> (left-hand axes) is the normal mode and looks good for virtually any plot type. Using <code>Position</code> is only really useful for 2D plots with the axes turned off, such as images.</p>
             <example><code>x = membrane( 1, 15 );
 <matlabfcn>surf</matlabfcn>( axes1, x );
 <matlabfcn>lighting</matlabfcn>( axes1, 'gouraud' );
@@ -467,7 +468,7 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
     
     <subsection name="Context help" staticref="PanelHelp">
         <p>
-            When a <fcnref>uix.BoxPanel</fcnref> has its "HelpFcn"
+            When a <fcnref>uix.BoxPanel</fcnref> has its <code>HelpFcn</code> 
             filled in, a help button (<img src="Images/panelHelp.png"/>) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called.
@@ -491,7 +492,7 @@ b = <fcnref>uix.HBox</fcnref>( 'Parent', f );
     
     <subsection name="Minimize and maximize" staticref="PanelMinimize">
         <p>
-            When a <fcnref>uix.BoxPanel</fcnref> has its "MinimizeFcn"
+            When a <fcnref>uix.BoxPanel</fcnref> has its <code>MinimizeFcn</code> 
             filled in, a minimize/maximize button (<img src="Images/panelMinimize.png"/> / <img src="Images/panelMaximize.png"/>) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called. Since the behaviour of the parent container is
@@ -595,7 +596,7 @@ for simple applications.</p>
     <subsection name="Dock and undock" staticref="PanelDock">
         <keywords>Undock</keywords>
         <p>
-            When a <fcnref>uix.BoxPanel</fcnref> has its "DockFcn"
+            When a <fcnref>uix.BoxPanel</fcnref> has its <code>DockFcn</code> 
             filled in, a dock/undock button (<img src="Images/panelDock.png"/> / <img src="Images/panelUndock.png"/>) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called. Since re-docking the panel into its previous parent
@@ -769,7 +770,7 @@ g.Heights = [-1 -1];</code>
             executables using the <a href="matlab:doc compiler">MATLAB Compiler</a> in
         the same way as any other MATLAB application. There is, however, one thing to watch out for:</p>
         <ul>
-            <li>You must explicitly include the uix.Resources folder</li>
+            <li>You must explicitly include the "Resources" folder within the +uix package</li>
         </ul>
         <h4>Example</h4>
         <p>Below is a screen-shot of the <matlabfcn>deploytool</matlabfcn> setup
