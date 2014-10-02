@@ -28,10 +28,10 @@
             )</p>
             <p>
                 When using layouts to position axes, the position property
-                is set by the layout, not the user. Whether the "Position"
-                or "OuterPosition" property is used is determined by the
-                "ActivePositionProperty" property of the <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>.
-                Note that the default setting is "OuterPosition".
+                is set by the layout, not the user. Whether the <code>Position</code>
+                or <code>OuterPosition</code> property is used is determined by the
+                <code>ActivePositionProperty</code> property of the <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>.
+                Note that the default setting is "outerposition".
             </p>
             <p>
                 The following example illustrates the two usages.
@@ -46,10 +46,10 @@
             <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/axes_layout_example_1.png"/></center></font></p>
             </example>
             <h4>Create the layout</h4>
-            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the ActivePositionProperty set to "OuterPosition", but the right-hand axes is switched to use "Position".</p>
+            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the <code>ActivePositionProperty</code> set to "outerposition", but the right-hand axes is switched to use <code>Position</code>.</p>
             <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">hbox = <a href="uix.HBoxFlex.html"><code class="FUNCTION">uix.HBoxFlex</code></a>('Parent', window, 'Spacing', 3);
 axes1 = <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', hbox, ...
-    'ActivePositionProperty', 'OuterPosition' );
+    'ActivePositionProperty', 'outerposition' );
 axes2 = <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', hbox, ...
     'ActivePositionProperty', 'Position' );
 set( hbox, 'Widths', [-2 -1] );</font></pre>
@@ -57,7 +57,7 @@ set( hbox, 'Widths', [-2 -1] );</font></pre>
            </example>
            
             <h4>Fill the axes</h4>
-            <p>Using "OuterPosition" (left-hand axes) is the normal mode and looks good for virtually any plot type. Using "Position" is only really useful for 2D plots with the axes turned off, such as images.</p>
+            <p>Using <code>OuterPosition</code> (left-hand axes) is the normal mode and looks good for virtually any plot type. Using <code>Position</code> is only really useful for 2D plots with the axes turned off, such as images.</p>
             <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">x = membrane( 1, 15 );
 <a href="matlab:doc surf"><code class="FUNCTION">surf</code></a>( axes1, x );
 <a href="matlab:doc lighting"><code class="FUNCTION">lighting</code></a>( axes1, 'gouraud' );
