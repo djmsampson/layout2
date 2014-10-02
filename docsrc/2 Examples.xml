@@ -48,14 +48,14 @@
          <dd>Using the "Enable" property to enable or disable groups of buttons</dd>
          -->
          
-         <dt><ref link="VisibleExample"><b>Showing/Hiding a layout</b></ref></dt>
-         <dd>Using the "Visible" property to show or hide groups of buttons</dd>
+         <dt><ref link="VisibleExample"><b>Show and hide</b></ref></dt>
+         <dd>Showing and hiding a layout and its contents.</dd>
       </dl>
        
      <h4>Applications</h4>
       <dl>
          <dt><ref link="ExampleApp"><b>Building a complete application</b></ref></dt>
-         <dd>Using layouts together to produce a complete application</dd>
+         <dd>Using layouts together to produce a complete application.</dd>
      </dl>
        
 </doc>
