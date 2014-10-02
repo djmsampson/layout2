@@ -1,8 +1,8 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="884553853" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="2070991506" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
-    <param.email>gui-layout@mathworks.com</param.email>
+    <param.email>david.sampson@mathworks.co.uk</param.email>
     <param.company>MathWorks</param.company>
     <param.summary>This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.</param.summary>
     <param.description>&lt;p&gt;The classes supplied can be used in combination to produce virtually any user interface layout.&lt;/p&gt;
@@ -12,7 +12,7 @@
   &lt;li&gt;Dynamic resizing of elements by dragging dividers&lt;/li&gt;
   &lt;li&gt;Use panels and tabs for switching interface pages&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the Consulting Services group at MathWorks.&lt;/p&gt;</param.description>
+&lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the &lt;a href="http://www.mathworks.com/services/consulting/"&gt;Consulting Services&lt;/a&gt; group at MathWorks.&lt;/p&gt;</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
     <param.version>2.1</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
@@ -36,6 +36,7 @@ uninstall.m</param.exclude.filters>
     <param.apps />
     <param.docs>${PROJECT_ROOT}\layoutdoc\info.xml</param.docs>
     <unset>
+      <param.email />
       <param.company />
       <param.output />
       <param.platforms />
@@ -63,7 +64,20 @@ uninstall.m</param.exclude.filters>
     <workflow />
     <matlab>
       <root>C:\Program Files\MATLAB\R2014b</root>
-      <toolboxes />
+      <toolboxes>
+        <toolbox name="embeddedcoder" />
+        <toolbox name="matlabcoder" />
+      </toolboxes>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
     </matlab>
     <platform>
       <unix>false</unix>
