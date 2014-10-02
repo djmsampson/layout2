@@ -1086,14 +1086,14 @@
              <p>Arrange elements horizontally with draggable dividers</p>
              <dl>
                  <dt><function>
-                         <name>uix.HBoxFlex()</name>
+                         <name>uix.HBoxFlex</name>
                          <outputarg>obj</outputarg>
                  </function></dt>
                  <dd>creates a new horizontal box layout with draggable dividers and with all properties set to defaults.
              The output is a new layout object that can be used as the parent for other user-interface components.</dd>
                  
                  <dt><function>
-                         <name>uix.HBoxFlex()</name>
+                         <name>uix.HBoxFlex</name>
                          <outputarg>obj</outputarg>
                          <inputarg>prop</inputarg>
                          <inputarg>value</inputarg>
