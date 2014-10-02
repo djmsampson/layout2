@@ -16,10 +16,10 @@ how to install it and any known issues at the time of release.
 
 <!-- ****************************************************************** -->
 
-  <section name="What is the GUI Layout Toolbox?" staticref="about">
+  <section name="What is GUI Layout Toolbox?" staticref="about">
     <keywords>About</keywords>
 <P>
-The GUI Layout Toolbox provides a package of MATLAB objects that allow for complex
+GUI Layout Toolbox provides a package of MATLAB objects that allow for complex
 arrangement of graphical user interface elements within a figure window. The
 main capabilities provided are:
 <UL>
@@ -34,9 +34,9 @@ These element arrangement capabilities are designed to match those found as
 standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
 </P>
     <P>
-        Note that this is the second version of this toolbox, designed to 
-        work with MATLAB releases R2014b and later. For earlier MATLAB releases
-        use the first version.
+        Note that this is version 2 of this toolbox, designed to work with 
+        MATLAB releases R2014b and later. For earlier MATLAB releases use 
+        version 1.
     </P>
 </section>
 
@@ -46,41 +46,39 @@ standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
 <section name="Compatibility considerations" staticref="compatibility">
     <inlinesubsection name="Minimum MATLAB version">
         <p>A new MATLAB graphics system was introduced in R2014b.</p>
-        <p>This is the second version of GUI Layout Toolbox, designed to 
+        <p>This is version 2 of GUI Layout Toolbox, designed to 
            work with MATLAB releases R2014b and later.</p>
         <p>For earlier MATLAB releases using the old MATLAB graphics system, 
-           use the first version of GUI Layout Toolbox.</p>
+           use version 1.</p>
     </inlinesubsection> 
     
-    <inlinesubsection name="Compatibility with v1.x">
-        <p>If you are upgrading from the first version of GUI Layout Toolbox, there 
-        are a number of compatibility considerations. For brevity, the first and 
-        second versions of GUI Layout Toolbox are abbreviated below as GLT1 and GLT2 
-        respectively.</p>
+    <inlinesubsection name="Compatibility with version 1">
+        <p>If you are upgrading from version 1, there are a number of 
+        compatibility considerations:</p>
     
 <h4>Package name</h4>
-<p>GLT1 packages were contained in the package "uiextras".  GLT2 classes are 
-contained in the package "uix".  In GLT2, a package "uiextras" is included 
+<p>Version 1 packages were contained in the package "uiextras".  Version 2 classes are 
+contained in the package "uix".  In version 2, a package "uiextras" is included 
 to provide support for legacy code.  Classes in "uiextras" extend 
 corresponding classes in "uix", and contain only compatibility-related 
 code.</p>
 
 <h4>Contents property</h4>
-<p>The contents of GLT1 objects were accessible via the property <code>Children</code>.  
-The contents of GLT2 objects are accessible via the property <code>Contents</code>.  
-GLT2 objects also provide a property <code>Children</code>, but this controls the 
+<p>The contents of version 1 objects were accessible via the property <code>Children</code>.  
+The contents of version 2 objects are accessible via the property <code>Contents</code>.  
+Version 2 objects also provide a property <code>Children</code>, but this controls the 
 vertical stacking order of contents, rather than the layout order.  Legacy 
 code that accesses <code>Children</code> will run without error, but will not achieve 
 the desired change in layout order, and should be modified to access 
 <code>Contents</code> instead.</p>
 
-<p>An upcoming release of GLT1 will include support for code that references 
-contents via <code>Contents</code>.  That way, code modified to work in GLT2 will also 
-work in GLT1.</p>
+<p>An upcoming release of version 1 will include support for code that references 
+contents via <code>Contents</code>.  That way, code modified to work in version 2 will also 
+work in version 1.</p>
 
-<p>The background to this change is as follows.  GLT1 objects were wrappers 
+<p>The background to this change is as follows.  Version 1 objects were wrappers 
 for built-in graphics objects, and presented contents in layout order via 
-the property <code>Children</code>.  GLT2 objects extend built-in graphics objects, 
+the property <code>Children</code>.  Version 2 objects extend built-in graphics objects, 
 and as such, inherit properties, methods and events.  One such property is 
 <code>Children</code> which is used to control the top-to-bottom stacking order.  
 MATLAB stacking rules, e.g. controls are always on top of axes, mean that 
@@ -91,23 +89,24 @@ property for layout order is required.</p>
 <p>The new MATLAB graphics system introduces unparented objects, i.e. those with property <code>Parent</code> 
 empty.  The new system also introduces a separation between formal class constructors, e.g. 
 <code>matlab.ui.container.Panel</code>, and informal construction functions, e.g. <code>uipanel</code>.  
-Construction functions are auto-parenting, i.e. if <code>Parent</code> is not specified then it is set to gcf, 
-whereas class constructors return objects with <code>Parent</code> empty unless explicitly specified. 
-GLT2 presents a formal interface of class constructors which follow this new convention.</p>
+Construction functions are auto-parenting, i.e. if <code>Parent</code> is not specified then it is set to 
+<matlabfcn>gcf</matlabfcn>, whereas class constructors return objects with <code>Parent</code> empty unless 
+explicitly specified. Version 2 presents a formal interface of class constructors which follow this new 
+convention.</p>
 
 <p>Classes in "uiextras" are auto-parenting so the behavior of legacy code is 
 unchanged.  However, best practice is to specify parent explicitly during 
 construction.</p>
 
 <h4>Defaults mechanism</h4>
-<p>GLT1 provided a defaults mechanism (<code>get</code>, <code>set</code> and <code>unset</code> 
+<p>Version 1 provided a defaults mechanism (<code>get</code>, <code>set</code> and <code>unset</code> 
 in "uiextras") that mimicked <code>get</code> and <code>set</code> in the MATLAB graphics 
-system itself.  This feature has been removed from GLT2.  Users should use an alternative 
+system itself.  This feature has been removed from version 2.  Users should use an alternative 
 programming pattern, e.g. factory function, to create objects with standard settings.</p>
 
 <h4>Enable and disable</h4>
-<p>GLT1 provided a mechanism to enable and disable container contents using 
-the property 'Enable'.  This feature has been removed from GLT2.  Users 
+<p>Version 1 provided a mechanism to enable and disable container contents using 
+the property 'Enable'.  This feature has been removed from version 2.  Users 
 should enable and disable controls directly rather than via containers.</p>
 <p>For more commentary, see <a href="http://goo.gl/j0KmTR">this article</a>.</p>
 
@@ -118,18 +117,18 @@ uiextras.Grid are now <code>Heights</code> and <code>Widths</code> in uix.Grid. 
 "uiextras" provides support for legacy property names.</p>
 <ul>
     <li><code>RowSizes</code> in "uiextras" is <code>Heights</code> in "uix"</li>
-    <li><code>ColumnSizes</code> in "uiextras" -> <code>Widths</code> in "uix"</li>
-    <li><code>ShowMarkings</code> in "uiextras" -> <code>DividerMarkings</code> in "uix"</li>
+    <li><code>ColumnSizes</code> in "uiextras" is <code>Widths</code> in "uix"</li>
+    <li><code>ShowMarkings</code> in "uiextras" is <code>DividerMarkings</code> in "uix"</li>
 </ul>
 
 <h4>Property shape changes</h4>
-<p>GLT2 contents companion properties are now of the same size as <code>Contents</code>, 
-i.e. column vectors.  In GLT1, these properties were row vectors.  The 
+<p>Version 2 contents companion properties are now of the same size as <code>Contents</code>, 
+i.e. column vectors.  In version 1, these properties were row vectors.  The 
 package "uiextras" provides support for legacy property values.</p>
 
     <h4>Tab selection behavior</h4>
-        <p>In GLT1, after adding a tab to a tab panel, the new tab is selected.</p>
-        <p>In GLT2, the original selection is preserved, except if the tab panel was 
+        <p>In version 1, after adding a tab to a tab panel, the new tab is selected.</p>
+        <p>In version 2, the original selection is preserved, except if the tab panel was 
             empty, in which case the new tab is selected.  This is consistent with the 
         behavior of <matlabfcn>uitabgroup</matlabfcn>.</p>
 
@@ -139,77 +138,17 @@ package "uiextras" provides support for legacy property values.</p>
 
 <!-- ****************************************************************** -->
 
-<section name="Release Notes" staticref="releasenotes">
+<section name="Release notes" staticref="releasenotes">
     <para>
         The GUI Layout Toolbox version numbers take the form <code>major.minor.iter</code>. The
         current version you have installed can be checked by typing <matlabfcn>ver</matlabfcn>
         at the MATLAB command prompt.
     </para>
     
-    
     <inlinesubsection name="Version 2.1">
-        Released 28 August 2014
         <ul>
-            <li>First release for R2014b</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.7">
-        Released 19 August 2014
-        <ul>
-            <li>Packaged as a MATLAB Toolbox (.mltbx)</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.6">
-        Released 13 August 2014
-        <ul>
-            <li>Added missing uix.Empty</li>
-            <li>Removed internal class uix.EventSource</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.5">
-        Released 3 June 2014
-        <ul>
-            <li>Updated class and event names</li>
-            <li>Updated default styles and colours for BoxPanel for a different, more modern, look</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.4">
-        Released 7 February 2014
-        <ul>
-            <li>Added documentation</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.3">
-        Released 27 November 2013
-        <ul>
-            <li>Improved appearance of flexible dividers</li>
-            <li>Modified default tab titles to match GLT1 behavior</li>
-            <li>Modified button resize behavior to shrink-to-fit in button boxes</li>
-            <li>Modified default button box horizontal alignment to 'center'</li>
-            <li>Added support for row values for property <code>Contents</code></li>
-            <li>Fixed bugs in uiextras.Grid accessors for property 'Heights'</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.2">
-        Released 19 November 2013
-        <ul>
-            <li>Added support for row values for contents companion properties in uix</li>
-            <li>Modified uix.Image to construct JLabel on EDT</li>
-            <li>Added HandleVisibility awareness to uix.ChildObserver</li>
-            <li>Suppressed constructor warnings in uiextras</li>
-        </ul>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Version 2.0.1">
-        Released 16 November 2013
-        <ul>
-            <li>Initial beta version</li>
+            <li>Released 2 October 2014</li>
+            <li>Initial version for MATLAB R2014b</li>
         </ul>
     </inlinesubsection> 
     
