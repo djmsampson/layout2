@@ -503,7 +503,7 @@ b = <fcnref>uix.HBox</fcnref>( 'Parent', f );
                  </p>
                  <p>The following simple example shows how to add minimize/maximize
                      functionality to a box full of panels. Save the code into
-                 a file called "dockexample.m" to run it.</p>
+                 a file called "minimizeexample.m" to run it.</p>
                  
                  <p>(The code for this example can be found here: 
                      [ <a href="Examples/minimizeexample.m">view</a>

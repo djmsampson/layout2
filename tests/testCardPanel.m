@@ -69,5 +69,26 @@ assertEqual( u(3).Visible, 'off' )
 close all force;
 
 
+function testAxesVisibility()
+%testAxesVisibility  Test that axes children do not accidentally become
+%visible when not selected
+close all force;
+
+cp = uiextras.CardPanel( 'Parent', figure() );
+assertEqual( isa( cp, 'uiextras.CardPanel' ), true );
+
+ax1 = axes( 'Parent', cp, 'Color', [0.9 0.9 1.0] );
+ax2 = axes( 'Parent', cp, 'Color', [1.0 1.0 0.9] );
+
+% Axes 2 should be visible, 1 should be invisible
+cp.Selection = 2;
+assertEqual( ax1.Visible, 'off' );
+assertEqual( ax2.Visible, 'on' );
+
+% Plotting can make axes visible again (g1100294)
+plot( ax1, 1:10, 1:10 )
+assertEqual( ax1.Visible, 'off' );
+assertEqual( ax2.Visible, 'on' );
+
 
 
