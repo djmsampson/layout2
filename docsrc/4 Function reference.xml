@@ -703,7 +703,7 @@
                          <description>Which child is visible.</description>
                      </property>
                      <property>
-                         <name>SelectionChangedCallback</name>
+                         <name>SelectionChangedFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the selected tab is changed. The event-data supplied has fields <code>OldValue</code> and <code>NewValue</code> giving the previously selected and newly selected tab indices.</description>
                      </property>

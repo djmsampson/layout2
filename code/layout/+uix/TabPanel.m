@@ -29,7 +29,7 @@ classdef TabPanel < uix.Container
     end
     
     properties
-        SelectionChangedCallback = '' % selection change callback
+        SelectionChangedFcn = '' % selection change callback
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -350,7 +350,7 @@ classdef TabPanel < uix.Container
             
         end % get.Selection
         
-        function set.SelectionChangedCallback( obj, value )
+        function set.SelectionChangedFcn( obj, value )
             
             % Check
             if ischar( value ) % string
@@ -365,13 +365,13 @@ classdef TabPanel < uix.Container
                 % OK
             else
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''SelectionChangedCallback'' must be a valid callback.' )
+                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
             end
             
             % Set
-            obj.SelectionChangedCallback = value;
+            obj.SelectionChangedFcn = value;
             
-        end % set.SelectionChangedCallback
+        end % set.SelectionChangedFcn
         
         function set.Selection( obj, value ) % TODO
             
@@ -893,7 +893,7 @@ classdef TabPanel < uix.Container
         function onSelectionChanged( obj, source, eventData )
             
             % Call callback
-            callback = obj.SelectionChangedCallback;
+            callback = obj.SelectionChangedFcn;
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
             elseif ischar( callback )
