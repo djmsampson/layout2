@@ -77,11 +77,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>FontAngle</name>
                          <value>[ normal | italic | oblique ]</value>
@@ -266,11 +268,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>Padding</name>
                          <value>positive integer</value>
@@ -411,11 +415,13 @@
                          <value>function handle</value>
                          <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>FontAngle</name>
                          <value>[ normal | italic | oblique ]</value>
@@ -619,11 +625,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>FontAngle</name>
                          <value>[ normal | italic | oblique ]</value>
@@ -829,11 +837,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>MinimumWidths</name>
                          <value>double vector</value>
@@ -976,11 +986,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
@@ -1131,11 +1143,13 @@
                          <value>[ on | off ]</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>MinimumWidths</name>
                          <value>double vector</value>
@@ -1272,11 +1286,13 @@
                          <value>[ on | off ]</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
@@ -1418,11 +1434,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>HorizontalAlignment</name>
                          <value>[ left | center | right ]</value>
@@ -1562,11 +1580,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>HorizontalAlignment</name>
                          <value>[ left | center | right ]</value>
@@ -1707,11 +1727,13 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
@@ -1850,11 +1872,13 @@
                          <value>[ on | off ]</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
+                     <!--
                      <property>
                          <name>Enable</name>
                          <value>[ on | off ]</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
+                     -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
