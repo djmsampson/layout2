@@ -695,17 +695,12 @@
                          <description>Which child is visible.</description>
                      </property>
                      <property>
-                         <name>SelectionChangeCallback</name>
+                         <name>SelectionChangedCallback</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the selected tab is changed. The event-data supplied has fields <code>OldValue</code> and <code>NewValue</code> giving the previously selected and newly selected tab indices.</description>
                      </property>
                      <property>
-                         <name>TabSize</name>
-                         <value>positive integer</value>
-                         <description>Size (width) of the tabs in pixels (default 50).</description>
-                     </property>
-                     <property>
-                         <name>TabEnable</name>
+                         <name>TabEnables</name>
                          <value>cell array of [ on | off ]</value>
                          <description>A list of the enabled state of each tab (default is all 'on').</description>
                      </property>
@@ -713,6 +708,11 @@
                          <name>TabTitles</name>
                          <value>cell array of strings</value>
                          <description>A list of the names of the tabs with one entry per tab.</description>
+                     </property>
+                     <property>
+                         <name>TabWidth</name>
+                         <value>positive integer</value>
+                         <description>Width of each tab in pixels (default 50).</description>
                      </property>
                      <property>
                          <name>Tag</name>
