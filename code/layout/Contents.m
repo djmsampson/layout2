@@ -1,5 +1,5 @@
 % GUI Layout Toolbox
-% Version 2.1 (R2014b) 2-October-2014
+% Version 2.1.1 (R2014b) 17-October-2014
 %
 % Panels
 %   uix.Panel      - arrange a single element inside a standard panel
@@ -18,13 +18,6 @@
 % Grids
 %   uix.Grid       - arrange elements in a two-dimensional grid
 %   uix.GridFlex   - arrange elements in a two-dimensional grid with draggable dividers
-%
-% Installation
-%   install       - install toolbox
-%   uninstall     - uninstall toolbox
-%
-% See also
-%   <a href="readme.txt">Release notes</a>
 
 %  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision$ $Date$
