@@ -4,11 +4,28 @@ function release
 %  Copyright 2009-2014 The MathWorks, Inc.
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
-% Check MATLAB
+% Grab this directory and the current directory
+thisDir = fileparts( mfilename( 'fullpath' ) );
+currentDir = pwd;
+
+% Check MATLAB and related tools
 assert( ~verLessThan( 'MATLAB', '8.4' ), 'MATLAB R2014b or higher is required.' )
+assert( ~isempty( ver( 'DocToolsHelp' ) ), 'DocTools is required.' )
+assert( ~isempty( ver( 'xunit' ) ), 'xUnit is required.' )
+
+% Run tests
+fprintf( 1, 'Running tests...' );
+cd( fullfile( fileparts( thisDir ), 'tests' ) )
+[log, ok] = evalc( 'runtests' );
+cd( currentDir )
+if ok
+    fprintf( 1, ' OK.\n' );
+else
+    fprintf( 1, ' failed.\n' );
+    error( '%s', log )
+end
 
 % Check installation
-thisDir = fileparts( mfilename( 'fullpath' ) );
 v = ver( 'layout' );
 switch numel( v )
     case 0
@@ -38,6 +55,6 @@ assert( strcmp( info.version, v.Version ), 'Package version %s does not match co
 fprintf( 1, ' OK.\n' );
 
 % Show message
-fprintf( 1, 'Created %s\n', newMltbx );
+fprintf( 1, 'Output: %s\n', newMltbx );
 
 end % release
