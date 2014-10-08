@@ -39,22 +39,31 @@ end
 
 % Package and rename
 fprintf( 1, 'Packaging...' );
-prj = fullfile( thisDir, 'GUI Layout Toolbox.prj' );
-name = char( com.mathworks.toolbox_packaging.services.ToolboxPackagingService.openProject( prj ) );
-com.mathworks.toolbox_packaging.services.ToolboxPackagingService.packageProject( name )
-com.mathworks.toolbox_packaging.services.ToolboxPackagingService.closeProject( name )
-oldMltbx = fullfile( thisDir, [name '.mltbx'] );
-newMltbx = fullfile( fileparts( thisDir ), 'releases', [name ' ' v.Version '.mltbx'] );
-movefile( oldMltbx, newMltbx )
-fprintf( 1, ' OK.\n' );
+try
+    prj = fullfile( thisDir, 'GUI Layout Toolbox.prj' );
+    name = char( com.mathworks.toolbox_packaging.services.ToolboxPackagingService.openProject( prj ) );
+    com.mathworks.toolbox_packaging.services.ToolboxPackagingService.packageProject( name )
+    com.mathworks.toolbox_packaging.services.ToolboxPackagingService.closeProject( name )
+    oldMltbx = fullfile( thisDir, [name '.mltbx'] );
+    newMltbx = fullfile( fileparts( thisDir ), 'releases', [name ' ' v.Version '.mltbx'] );
+    movefile( oldMltbx, newMltbx )
+    fprintf( 1, ' OK.\n' );
+catch e
+    fprintf( 1, ' failed.\n' );
+    e.rethrow()
+end
 
 % Check package
 fprintf( 1, 'Checking package...' );
 info = mlAddonGetProperties( newMltbx );
-assert( strcmp( info.version, v.Version ), 'Package version %s does not match code version %s.', info.version, v.Version )
-fprintf( 1, ' OK.\n' );
+if strcmp( info.version, v.Version )
+    fprintf( 1, ' OK.\n' );
+else
+    fprintf( 1, ' failed.\n' );
+    error( 'Package version %s does not match code version %s.', info.version, v.Version )
+end
 
 % Show message
-fprintf( 1, 'Output: %s\n', newMltbx );
+fprintf( 1, 'Created package %s\n', newMltbx );
 
 end % release
