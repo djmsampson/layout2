@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="2070991506" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3011973161" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -14,7 +14,7 @@
 &lt;/ul&gt;
 &lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the &lt;a href="http://www.mathworks.com/services/consulting/"&gt;Consulting Services&lt;/a&gt; group at MathWorks.&lt;/p&gt;</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.1</param.version>
+    <param.version>2.1.1</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -29,7 +29,8 @@
     <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
     <param.exclude.filters>*.prj
 install.m
-uninstall.m</param.exclude.filters>
+uninstall.m
+release.m</param.exclude.filters>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples/&gt;</param.examples>
     <param.demosxml />
@@ -50,7 +51,6 @@ uninstall.m</param.exclude.filters>
       <file>${PROJECT_ROOT}\glt.png</file>
       <file>${PROJECT_ROOT}\layout</file>
       <file>${PROJECT_ROOT}\layoutdoc</file>
-      <file>${PROJECT_ROOT}\license.txt</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>
