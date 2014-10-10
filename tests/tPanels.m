@@ -82,7 +82,7 @@ classdef tPanels < ContainerSharedTests
         
         function testTabPanelCallbacks(testcase)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
-            prop = 'SelectionChangedCallback';
+            prop = 'SelectionChangedFcn';
             cb1  = '@()disp(''function as string'');';
             cb2  = @()disp('function as anon handle');
             cb3  = {@()disp, 'function as cell'};
