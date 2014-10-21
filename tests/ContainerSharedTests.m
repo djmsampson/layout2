@@ -4,7 +4,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     properties (TestParameter, Abstract)
 %         DefaultConstructionArgs;
         ContainerType;
-        ConstructionArgs;
+        ConstructorArgs;
         GetSetArgs;
     end
     
@@ -34,14 +34,14 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.assertClass(obj, ContainerType);
         end
         
-        function testConstructorArguments(testcase, ContainerType, ConstructionArgs)
+        function testConstructorArguments(testcase, ContainerType, ConstructorArgs)
             %testConstructionArguments  Test constructing the widget with optional arguments
            
             % create Box of specified type
-            obj = testcase.hCreateObj(ContainerType, ConstructionArgs);
+            obj = testcase.hCreateObj(ContainerType, ConstructorArgs);
             
             testcase.assertClass(obj, ContainerType);
-            testcase.hVerifyHandleContainsParameterValuePairs(obj, ConstructionArgs);
+            testcase.hVerifyHandleContainsParameterValuePairs(obj, ConstructorArgs);
         end
         
         function testRepeatedConstructorArguments(testcase, ContainerType)
