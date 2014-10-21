@@ -85,21 +85,7 @@ classdef tBoxAndGrid < ContainerSharedTests
             set( u(1), 'Parent', gcf )
             testcase.verifyEqual( obj.Contents, u([2 3 4 6]) );
         end
-        
-        function testAddingAxesToBox(testcase, ContainerType)
-            % tests that sizing is retained when adding new data to
-            % existing axis.
-            
-            obj = testcase.hCreateObj(ContainerType);
-            ax1 = axes('Parent', obj);
-            plot(ax1, rand(10,2));
-            ax2 = axes('Parent', obj);
-            plot(ax2, rand(10,2));
-            testcase.assertNumElements(obj.Contents, 2);
-            testcase.verifyClass(obj.Contents(1), 'matlab.graphics.axis.Axes');
-            testcase.verifyClass(obj.Contents(2), 'matlab.graphics.axis.Axes');
-        end
-        
+               
         function testResizeFigureRetainsElementSizesInHBoxes(testcase, HBoxes)
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(HBoxes, 'Width');

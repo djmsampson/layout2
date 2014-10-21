@@ -1,15 +1,16 @@
 classdef ContainerSharedTests < matlab.unittest.TestCase
-    %BOXSHAREDTESTS Contains tests that are common to all Box objects.
+    %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
-    properties (Abstract)
-        DefaultConstructionArgs;
+    properties (TestParameter, Abstract)
+%         DefaultConstructionArgs;
+        ContainerType;
+        ConstructionArgs;
+        GetSetArgs;
     end
     
-    properties(Abstract, TestParameter)
-        % list of all containers being tested by a subclass
-        ContainerType;
-        SpecialConstructionArgs;
-        GetSetPVArgs;
+    properties(Constant)
+        % tells testrunner whether to run testAxesLegend and testAxesColorbar
+        runAxesLegendAndColorbarTests = false;
     end
     
     methods(TestMethodTeardown)
@@ -33,33 +34,22 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.assertClass(obj, ContainerType);
         end
         
-        function testConstructionArguments(testcase, SpecialConstructionArgs)
+        function testConstructorArguments(testcase, ContainerType, ConstructionArgs)
             %testConstructionArguments  Test constructing the widget with optional arguments
-            
-            % first element in ConstructionArgs is the container type
-            type = SpecialConstructionArgs{1};
-            % adding parent gcf pair because gcf() is not executed when a
-            % class parameter in DefaultConstructionArgs
-            args = [{'Parent', gcf()}, testcase.DefaultConstructionArgs];
-            
-            if numel(SpecialConstructionArgs) > 1
-                % if more constructor arguments are specified, append to
-                % defaults.
-                args = [args, SpecialConstructionArgs{2:end}];
-            end
+           
             % create Box of specified type
-            obj = testcase.hCreateObj(type, args);
+            obj = testcase.hCreateObj(ContainerType, ConstructionArgs);
             
-            testcase.assertClass(obj, type);
-            testcase.hVerifyHandleContainsParameterValuePairs(obj, args);
+            testcase.assertClass(obj, ContainerType);
+            testcase.hVerifyHandleContainsParameterValuePairs(obj, ConstructionArgs);
         end
         
-        function testRepeatedConstructorArgument(testcase, ContainerType)
+        function testRepeatedConstructorArguments(testcase, ContainerType)
             obj = testcase.hCreateObj(ContainerType, {'Tag', '1', 'Tag', '2', 'Tag', '3'});
             testcase.verifyEqual(obj.Tag, '3');
         end
         
-        function testBadConstructionArguments(testcase, ContainerType)
+        function testBadConstructorArguments(testcase, ContainerType)
             badargs1 = {'Parent', gcf(), 'BackgroundColor'};
             badargs2 = {'Parent', gcf(), 200};
             %badargs3 = {'Parent', 3}; % throws same error identifier as axes('Parent', 3)
@@ -67,19 +57,17 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyError(@()testcase.hCreateObj(ContainerType, badargs2), 'uix:InvalidArgument');
         end
         
-        function testGetSet(testcase, GetSetPVArgs)
+        function testGetSet(testcase, ContainerType, GetSetArgs)
             % Test the get/set functions for each class.
             % Class specific parameters/values should be specified in the
             % test parameter GetSetPVArgs
             
-            % first element in GetSetPVArgs is the type
-            type = GetSetPVArgs{1};
-            obj = testcase.hBuildRGBBox(type);
+            obj = testcase.hBuildRGBBox(ContainerType);
             
             % test get/set parameter value pairs in testcase.GetSetPVArgs
-            for i = 2:2:(numel(GetSetPVArgs)-1)
-                param    = GetSetPVArgs{i};
-                expected = GetSetPVArgs{i+1};
+            for i = 1:2:(numel(GetSetArgs))
+                param    = GetSetArgs{i};
+                expected = GetSetArgs{i+1};
                 
                 set(obj, param, expected);
                 actual = get(obj, param);
@@ -110,10 +98,29 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             set( actualContents(3), 'Parent', figure )
             testcase.verifyEqual( obj.Contents, actualContents(1) );
         end
+        
+        function testAddingAxesToContainer(testcase, ContainerType)
+            % tests that sizing is retained when adding new data to
+            % existing axis.
+            
+            obj = testcase.hCreateObj(ContainerType);
+            ax1 = axes('Parent', obj);
+            plot(ax1, rand(10,2));
+            ax2 = axes('Parent', obj);
+            plot(ax2, rand(10,2));
+            testcase.assertNumElements(obj.Contents, 2);
+            testcase.verifyClass(obj.Contents(1), 'matlab.graphics.axis.Axes');
+            testcase.verifyClass(obj.Contents(2), 'matlab.graphics.axis.Axes');
+            testcase.verifySameHandle(obj.Contents(1), ax1);
+            testcase.verifySameHandle(obj.Contents(2), ax2);
+        end
               
         function testAxesLegend(testcase, ContainerType)
             %testAxesLegend  Test that axes legends are ignored properly
             % This is test for g1019459.
+            
+            testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
+                'ignoring test for legends being added correctly');
             
             obj = testcase.hCreateObj(ContainerType, ...
                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
@@ -130,6 +137,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function testAxesColorbar(testcase, ContainerType)
             % testAxesColorbar  Test that axes colorbars are ignored properly
             % This is test for g1019459.
+            testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
+                'ignoring test for colorbar being added correctly');
             
             obj = testcase.hCreateObj(ContainerType, ...
                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
@@ -147,7 +156,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
             obj = testcase.hCreateObj(ContainerType);
-            ax = axes('Parent', obj, 'Visible', 'on');
+            con = uicontainer('Parent', obj);
+            ax = axes('Parent', con, 'Visible', 'on');
             testcase.verifyEqual(ax.Visible, 'on');
             % equivalent of selecting the rotate button on figure window:
             rotate3d;
