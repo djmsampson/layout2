@@ -35,7 +35,6 @@ classdef BoxPanel < uix.Container
     end
     
     properties( Access = private )
-        LocationObserver % location observer
         Titlebar % titlebar
         TopBorder % border image
         MiddleBorder % border image
@@ -73,8 +72,7 @@ classdef BoxPanel < uix.Container
             % Call superclass constructor
             obj@uix.Container()
             
-            % Create location observer
-            locationObserver = uix.LocationObserver( obj );
+            % Set default colors
             defaultTitleColor = [0.05 0.25 0.5];
             defaultForegroundColor = [1 1 1];
             
@@ -119,7 +117,6 @@ classdef BoxPanel < uix.Container
                 'TooltipString', 'Minimize this panel' );
             
             % Store properties
-            obj.LocationObserver = locationObserver;
             obj.Titlebar = titlebar;
             obj.TopBorder = topBorder;
             obj.MiddleBorder = middleBorder;
@@ -481,12 +478,13 @@ classdef BoxPanel < uix.Container
             %  See also: redrawBorders, redrawButtons
             
             % Compute positions
-            location = obj.LocationObserver.Location;
-            width = ceil( location(1) + location(3) ) - floor( location(1) );
-            height = ceil( location(2) + location(4) ) - floor( location(2) );
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                [0 0 1 1], 'normalized', 'pixels', obj );
+            width = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) );
+            height = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) );
             titleHeight = obj.TitleHeight;
             if titleHeight == -1 % cache stale, refresh
-                titleAdjust = 3; % Dirty hack - extent seems to be a bit bigger than required for one line of text
+                titleAdjust = 3; % extent seems to be a bit bigger than required for one line of text
                 titleHeight = obj.Titlebar.Extent(4) - titleAdjust;
                 obj.TitleHeight = titleHeight; % store
             end
@@ -601,10 +599,6 @@ classdef BoxPanel < uix.Container
             %
             %  c.reparent(a,b) reparents the container c from the ancestors
             %  a to the ancestors b.
-            
-            % Refresh location observer
-            locationObserver = uix.LocationObserver( [newAncestors; obj] );
-            obj.LocationObserver = locationObserver;
             
             % Call superclass method
             reparent@uix.Container( obj, oldAncestors, newAncestors )
