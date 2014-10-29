@@ -573,9 +573,9 @@ classdef TabPanel < uix.Container
             % Check
             assert( isa( value, 'double' ) && isscalar( value ) && ...
                 isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value > 0, ...
+                ~isnan( value ) && value ~= 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabWidth'' must be a positive scalar.' )
+                'Property ''TabWidth'' must be a non-zero scalar.' )
             
             % Set
             obj.TabWidth_ = value;
@@ -632,6 +632,7 @@ classdef TabPanel < uix.Container
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
             tW = obj.TabWidth_; % tab width
+            if tW < 0, tW = w / n; end % relative
             dW = obj.DividerWidth; % tab divider width
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
