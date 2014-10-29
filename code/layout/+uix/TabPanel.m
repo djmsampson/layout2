@@ -608,9 +608,10 @@ classdef TabPanel < uix.Container
             end
             
             % Compute positions
-            location = obj.LocationObserver.Location;
-            w = ceil( location(1) + location(3) ) - floor( location(1) ); % width
-            h = ceil( location(2) + location(4) ) - floor( location(2) ); % height
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                [0 0 1 1], 'normalized', 'pixels', obj );
+            w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
+            h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
             p = obj.Padding_; % padding
             tH = obj.TabHeight; % tab height
             if n > 0 && tH == -1 % cache stale, refresh
