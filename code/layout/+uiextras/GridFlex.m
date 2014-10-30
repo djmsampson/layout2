@@ -37,8 +37,10 @@ classdef GridFlex < uix.GridFlex
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        ColumnSizes
-        RowSizes
+        RowSizes % heights of contents, in pixels and/or weights
+        MinimumRowSizes % minimum heights of contents, in pixels
+        ColumnSizes % widths of contents, in pixels and/or weights
+        MinimumColumnSizes % minimum widths of contents, in pixels
         ShowMarkings
     end
     
@@ -84,10 +86,38 @@ classdef GridFlex < uix.GridFlex
             
         end % set.Enable
         
+        function value = get.RowSizes( obj )
+            
+            % Get
+            value = obj.Heights;
+            
+        end % get.RowSizes
+        
+        function set.RowSizes( obj, value )
+            
+            % Set
+            obj.Heights = value;
+            
+        end % set.RowSizes
+        
+        function value = get.MinimumRowSizes( obj )
+            
+            % Get
+            value = obj.MinimumHeights;
+            
+        end % get.MinimumRowSizes
+        
+        function set.MinimumRowSizes( obj, value )
+            
+            % Set
+            obj.MinimumHeights = value;
+            
+        end % set.MinimumRowSizes
+        
         function value = get.ColumnSizes( obj )
             
             % Get
-            value = transpose( obj.Widths );
+            value = obj.Widths;
             
         end % get.ColumnSizes
         
@@ -98,19 +128,19 @@ classdef GridFlex < uix.GridFlex
             
         end % set.ColumnSizes
         
-        function value = get.RowSizes( obj )
+        function value = get.MinimumColumnSizes( obj )
             
             % Get
-            value = transpose( obj.Heights );
+            value = obj.MinimumWidths;
             
-        end % get.RowSizes
+        end % get.MinimumColumnSizes
         
-        function set.RowSizes( obj, value )
+        function set.MinimumColumnSizes( obj, value )
             
-            % Set
-            obj.Heights = value;
+            % Get
+            obj.MinimumWidths = value;
             
-        end % set.RowSizes
+        end % set.MinimumColumnSizes
         
         function value = get.ShowMarkings( obj )
             

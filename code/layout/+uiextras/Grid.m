@@ -85,7 +85,7 @@ classdef Grid < uix.Grid
         function value = get.RowSizes( obj )
             
             % Get
-            value = transpose( obj.Heights );
+            value = obj.Heights;
             
         end % get.RowSizes
         
@@ -96,10 +96,24 @@ classdef Grid < uix.Grid
             
         end % set.RowSizes
         
+        function value = get.MinimumRowSizes( obj )
+            
+            % Get
+            value = obj.MinimumHeights;
+            
+        end % get.MinimumRowSizes
+        
+        function set.MinimumRowSizes( obj, value )
+            
+            % Set
+            obj.MinimumHeights = value;
+            
+        end % set.MinimumRowSizes
+        
         function value = get.ColumnSizes( obj )
             
             % Get
-            value = transpose( obj.Widths );
+            value = obj.Widths;
             
         end % get.ColumnSizes
         
@@ -109,6 +123,20 @@ classdef Grid < uix.Grid
             obj.Widths = value;
             
         end % set.ColumnSizes
+        
+        function value = get.MinimumColumnSizes( obj )
+            
+            % Get
+            value = obj.MinimumWidths;
+            
+        end % get.MinimumColumnSizes
+        
+        function set.MinimumColumnSizes( obj, value )
+            
+            % Get
+            obj.MinimumWidths = value;
+            
+        end % set.MinimumColumnSizes
         
     end % accessors
     
