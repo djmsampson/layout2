@@ -29,7 +29,6 @@ currentDir = pwd;
 %% Check MATLAB and related tools
 assert( ~verLessThan( 'MATLAB', '8.4' ), 'MATLAB R2014b or higher is required.' )
 assert( ~isempty( ver( 'DocToolsHelp' ) ), 'DocTools is required.' )
-assert( ~isempty( ver( 'xunit' ) ), 'xUnit is required.' )
 
 %% Check installation
 fprintf( 1, 'Checking installation...' );
@@ -87,9 +86,9 @@ end
 %% Run tests
 fprintf( 1, 'Running tests...' );
 cd( fullfile( fileparts( codeDir ), 'tests' ) )
-[log, ok] = evalc( 'runtests' );
+[log, results] = evalc( 'runtests' );
 cd( currentDir )
-if ok
+if ~any( [results.Failed] )
     fprintf( 1, ' OK.\n' );
 else
     fprintf( 1, ' failed.\n' );
