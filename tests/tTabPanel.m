@@ -14,7 +14,12 @@ classdef tTabPanel  < ContainerSharedTests ...
             'TabSize',             10, ...
             'ForegroundColor',     [1 1 1], ...
             'HighlightColor',      [1 0 1], ...
-            'ShadowColor',         [0 0 0]
+            'ShadowColor',         [0 0 0], ...
+            'FontAngle',           'normal', ...
+            'FontName',            'Arial', ...
+            'FontSize',            20, ...
+            'FontUnits',           'points', ...
+            'FontWeight',          'bold'
             }};
         ConstructorArgs = {{
             'Units',           'pixels', ...
@@ -28,28 +33,30 @@ classdef tTabPanel  < ContainerSharedTests ...
             'FontUnits',   'points', ...
             'FontWeight',  'bold'
             }};
+        ValidCallbacks = {
+            {'@()disp(''function as string'');'}, ...
+            {@()disp('function as anon handle')}, ...
+            {{@()disp, 'function as cell'}} ...
+            };
     end
     
     
     methods (Test)
         
-        function testTabPanelCallbacks(testcase)
+        function testTabPanelCallbacks(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
-            prop = 'SelectionChangedFcn';
-            cb1  = '@()disp(''function as string'');';
-            cb2  = @()disp('function as anon handle');
-            cb3  = {@()disp, 'function as cell'};
-            cb4  = 2; % tests for invalid callback
-            % cb5  = 'this should error but doesn''t';
             
-            set(obj, prop, cb1);
-            testcase.verifyEqual(get(obj, prop), cb1);
-            set(obj, prop, cb2);
-            testcase.verifyEqual(get(obj, prop), cb2);
-            set(obj, prop, cb3);
-            testcase.verifyEqual(get(obj, prop), cb3);
-            testcase.verifyError(@()set(obj, prop, cb4), 'uix:InvalidPropertyValue');
+            set(obj, 'Callback', ValidCallbacks);
+            testcase.verifyEqual(get(obj, 'Callback'), ValidCallbacks);
         end
+         
+        function testTabPanelOnSelectionChanged(testcase, ValidCallbacks)
+            [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
+            
+            set(obj, 'SelectionChangedFcn', ValidCallbacks);
+            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), ValidCallbacks);
+        end       
+        
         
         function testRotate3dDoesNotAddMoreTabs(testcase)
             % test for g1129721 where rotating an axis in a panel causes

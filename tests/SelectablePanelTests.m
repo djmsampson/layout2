@@ -5,6 +5,11 @@ classdef SelectablePanelTests < matlab.unittest.TestCase
         ContainerType;
     end
     
+    properties (TestParameter)
+        failingSelection = {2.4, int32(2), [2 3 4], 4};
+    end
+    
+    
     methods (Test)
         function testSelectablePanelContents(testcase, ContainerType)
             %testChildren  Test adding and removing children
@@ -19,24 +24,26 @@ classdef SelectablePanelTests < matlab.unittest.TestCase
             testcase.verifyEqual(obj.Contents(3).Visible, 'off' );
         end
         
-        function testSelectablePanelGetSetSelection(testcase, ContainerType)
+        function testSelectableEmptyPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
+            objEmpty = testcase.hCreateObj(ContainerType);
+            
+            testcase.verifyError(@()set(objEmpty, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
+        end
+        
+        function testSelectableRGBPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
+            [obj3Children, ~] = testcase.hBuildRGBBox(ContainerType);
+
+            testcase.verifyError(@()set(obj3Children, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
+        end
+        
+        function testSelectablePanelSetSelectionSucceeds(testcase, ContainerType)
             objEmpty = testcase.hCreateObj(ContainerType);
             [obj3Children, ~] = testcase.hBuildRGBBox(ContainerType);
-            prop = 'Selection';
-            failSelectValues{1} = 2.4;
-            failSelectValues{2} = int32(2);
-            failSelectValues{3} = [2 3 4];
+            set(objEmpty, 'Selection', 0);
+            set(obj3Children, 'Selection', 2);
             
-            for val = failSelectValues
-                testcase.verifyError(@()set(objEmpty, prop, val), 'uix:InvalidPropertyValue');
-                testcase.verifyError(@()set(obj3Children, prop, val), 'uix:InvalidPropertyValue');
-            end
-            set(objEmpty, prop, 0);
-            testcase.verifyEqual(get(objEmpty, prop), 0);
-            testcase.verifyError(@()set(objEmpty, prop, 3), 'uix:InvalidPropertyValue');
-            
-            set(obj3Children, prop, 3);
-            testcase.verifyEqual(get(obj3Children, prop), 3);
+            testcase.verifyEqual(get(objEmpty, 'Selection'), 0);
+            testcase.verifyEqual(get(obj3Children, 'Selection'), 2);
         end
 
     end
