@@ -101,14 +101,14 @@ classdef GridFlex < uix.GridFlex
         function value = get.RowSizes( obj )
             
             % Get
-            value = transpose( obj.Widths );
+            value = transpose( obj.Heights );
             
         end % get.RowSizes
         
         function set.RowSizes( obj, value )
             
             % Set
-            obj.Widths = value;
+            obj.Heights = value;
             
         end % set.RowSizes
         
