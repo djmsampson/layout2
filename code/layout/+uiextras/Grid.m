@@ -34,8 +34,10 @@ classdef Grid < uix.Grid
     
     properties( Hidden, Access = public, Dependent )
         Enable % deprecated
-        RowSizes
-        ColumnSizes
+        RowSizes % heights of contents, in pixels and/or weights
+        MinimumRowSizes % minimum heights of contents, in pixels
+        ColumnSizes % widths of contents, in pixels and/or weights
+        MinimumColumnSizes % minimum widths of contents, in pixels
     end
     
     methods
