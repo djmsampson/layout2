@@ -19,7 +19,10 @@ classdef VBoxTests < matlab.unittest.TestCase
            
         function testAxesPositionInVBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
-            [~, ax1, ax2] = testcase.hPositionAxesInBox(ContainerType);
+            obj = testcase.hCreateObj(ContainerType, ...
+                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]});
+            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
+            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');
             
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 251 500 250] );
@@ -27,14 +30,7 @@ classdef VBoxTests < matlab.unittest.TestCase
         end
     end
     
-    methods
-        function [obj, ax1, ax2] = hPositionAxesInBox(testcase, type)
-            obj = testcase.hCreateObj(type, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]});
-            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
-            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');
-        end
-        
+    methods      
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute

@@ -16,7 +16,15 @@ classdef SelectablePanelTests < matlab.unittest.TestCase
             [obj, actualContents] = testcase.hBuildRGBBox(ContainerType);
             testcase.assertEqual( obj.Contents, actualContents );
             
-            obj.Selection = 2;            
+            obj.Selection = 2;
+            
+            % if the panel is unparented all children are automatically
+            % visible, but on reparenting we need to make sure the
+            % visibility is correctly set. So reparent obj at this point.
+            if ~testcase.isParented
+                obj.Parent = figure;
+            end
+            
             % Make sure the "selected" child is visible
             testcase.verifyEqual(obj.Contents(2).Visible, 'on' );            
             % Make sure the "hidden" children are invisible

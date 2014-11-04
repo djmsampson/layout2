@@ -1,64 +1,6 @@
 classdef HBoxTests < matlab.unittest.TestCase
     %HBOXTESTS Extra tests for HBox and HBoxFlex.
     
-%     properties (TestParameter)
-%         ContainerType = {
-%             'uiextras.HBox'
-%             'uiextras.VBox'
-%             'uiextras.HBoxFlex'
-%             'uiextras.VBoxFlex'
-%             'uiextras.Grid'
-%             'uiextras.GridFlex'
-%             };
-%         HBoxes = {
-%             'uiextras.HBox'
-%             'uiextras.HBoxFlex'
-%             };
-%         VBoxes = {
-%             'uiextras.VBox'
-%             'uiextras.VBoxFlex'
-%             };
-%         GridType = {
-%             'uiextras.Grid'
-%             'uiextras.GridFlex'
-%             };
-%         SpecialConstructionArgs = {
-%             {'uiextras.HBox'}
-%             {'uiextras.HBoxFlex', 'ShowMarkings', 'on'}
-%             {'uiextras.VBox'}
-%             {'uiextras.VBoxFlex', 'ShowMarkings', 'on'}
-%             {'uiextras.Grid'}
-%             {'uiextras.GridFlex', 'ShowMarkings','on'}
-%             };
-%         GetSetPVArgs  = {
-%             {'uiextras.HBox', 'Sizes', [-1 -2 100], 'MinimumSizes', [0 1 2]}
-%             {'uiextras.HBoxFlex', 'Sizes', [-1 -2 100], 'MinimumSizes', [0 1 2], 'ShowMarkings', 'off'}
-%             {'uiextras.VBox', 'Sizes', [-1 -2 100], 'MinimumSizes', [0 1 2]}
-%             {'uiextras.VBoxFlex', 'Sizes', [-1 -2 100], 'MinimumSizes', [0 1 2], 'ShowMarkings', 'off'}
-%             {'uiextras.Grid', 'RowSizes', [-0.5, 50], 'ColumnSizes', [-10, -1, 20], ...
-%             'MinimumWidths', [1; 1; 1], 'MinimumHeights', 2}
-%             {'uiextras.GridFlex', 'RowSizes', [-0.5, 50], 'ColumnSizes', [-10, -1, 20], ...
-%             'MinimumWidths', [1; 1; 1], 'MinimumHeights', 2, 'ShowMarkings', 'off'}
-%             };
-%         ResizeTestArgs = {
-%             {'uiextras.HBox', 'Width'}
-%             {'uiextras.HBoxFlex', 'Width'}
-%             {'uiextras.VBox', 'Height'}
-%             {'uiextras.VBoxFlex', 'Height'}
-%             };
-%     end
-%     
-%     properties
-%         DefaultConstructionArgs = {
-%             'BackgroundColor', [0 0 1], ...
-%             'Units',           'pixels', ...
-%             'Position',        [10 10 400 400], ...
-%             'Padding',         5, ...
-%             'Spacing',         5, ...
-%             'Tag',             'test', ...
-%             'Visible',         'on', ...
-%             };
-%     end
     properties (Abstract, TestParameter)
         ContainerType;
     end
@@ -77,7 +19,10 @@ classdef HBoxTests < matlab.unittest.TestCase
        
         function testAxesPositionInHBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
-            [~, ax1, ax2] = testcase.hPositionAxesInBox(ContainerType);
+            obj = testcase.hCreateObj(ContainerType, ...
+                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); %'Parent', figure, 
+            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
+            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');            
             
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 1 250 500] );
@@ -86,14 +31,7 @@ classdef HBoxTests < matlab.unittest.TestCase
 
     end
     
-    methods
-        function [obj, ax1, ax2] = hPositionAxesInBox(testcase, type)
-            obj = testcase.hCreateObj(type, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]});
-            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
-            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');
-        end
-        
+    methods        
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute

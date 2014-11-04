@@ -1,5 +1,5 @@
 classdef tGrid < ContainerSharedTests ...
-                & GridTests ...
+                & GridTests
 %TGRID unit tests for uiextras.Grid
 
 properties (TestParameter)

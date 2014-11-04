@@ -1,6 +1,10 @@
 classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
+    properties (ClassSetupParameter)
+        IsParentedOptions = struct('Parented', true, 'Unparented', false);
+    end
+    
     properties (TestParameter, Abstract)
 %         DefaultConstructionArgs;
         ContainerType;
@@ -11,6 +15,22 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     properties(Constant)
         % tells testrunner whether to run testAxesLegend and testAxesColorbar
         runAxesLegendAndColorbarTests = false;
+    end
+    
+    properties
+        isParented;
+        parentStr;
+    end
+    
+    methods(TestClassSetup)
+        function setParentedField(testcase, IsParentedOptions)
+            testcase.isParented = IsParentedOptions;
+            if IsParentedOptions
+                testcase.parentStr = 'figure';
+            else
+                testcase.parentStr = '[]';
+            end
+        end
     end
     
     methods(TestMethodTeardown)
@@ -24,13 +44,12 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         
         function testEmptyConstructor(testcase, ContainerType)
             % Test constructing the widget with no arguments
-            obj = testcase.hCreateObj(ContainerType);
+            obj = eval(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
         
         function testConstructorParentOnly(testcase, ContainerType)
-            f = figure;
-            obj = testcase.hCreateObj(ContainerType, {'Parent', f});
+            obj = testcase.hCreateObj(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
         
@@ -50,8 +69,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testBadConstructorArguments(testcase, ContainerType)
-            badargs1 = {'Parent', gcf(), 'BackgroundColor'};
-            badargs2 = {'Parent', gcf(), 200};
+            badargs1 = {'BackgroundColor'};
+            badargs2 = {200};
             %badargs3 = {'Parent', 3}; % throws same error identifier as axes('Parent', 3)
             testcase.verifyError(@()testcase.hCreateObj(ContainerType, badargs1), 'uix:InvalidArgument');
             testcase.verifyError(@()testcase.hCreateObj(ContainerType, badargs2), 'uix:InvalidArgument');
@@ -166,11 +185,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     methods
-        function obj = hCreateObj(testcase, type, varargin)
+        function obj = hCreateObj(testcase, type, varargin)          
             if(nargin > 2)
-                obj = eval([type, '( varargin{1}{:} );']);
+                obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
             else
-                obj = eval(type);
+                obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
             end
             testcase.assertClass(obj, type);
         end

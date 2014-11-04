@@ -7,8 +7,8 @@ import matlab.unittest.plugins.CodeCoveragePlugin
 addpath( fullfile('..', 'code', 'layout'));
 
 % build test suite and test runner
-% ts = matlab.unittest.TestSuite.fromFolder(pwd);
-ts = matlab.unittest.TestSuite.fromClass(?tTabPanel);
+ts = matlab.unittest.TestSuite.fromFolder(pwd);
+% ts = matlab.unittest.TestSuite.fromClass(?tTabPanel);
 runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput;
 
 % Tell the test runner to report code coverage for the code/layout folder

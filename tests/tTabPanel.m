@@ -45,16 +45,18 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testTabPanelCallbacks(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
+            validCB = ValidCallbacks{:};
+            set(obj, 'Callback', validCB);
             
-            set(obj, 'Callback', ValidCallbacks);
-            testcase.verifyEqual(get(obj, 'Callback'), ValidCallbacks);
+            testcase.verifyEqual(get(obj, 'Callback'), validCB);
         end
          
         function testTabPanelOnSelectionChanged(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
+            validCB = ValidCallbacks{:};   
+            set(obj, 'SelectionChangedFcn', validCB);
             
-            set(obj, 'SelectionChangedFcn', ValidCallbacks);
-            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), ValidCallbacks);
+            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), validCB);
         end       
         
         
