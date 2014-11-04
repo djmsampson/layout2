@@ -23,11 +23,11 @@ numTests            = size(resultsTable, 1);
 numFails            = size(failedResultsTable, 1);
 
 % disp(sprintf('%d tests passed out of %d\n', numTests-numFails, numTests));
-disp(sprintf('Of %d tests, %d failed.\n', numTests, numFails));
-if numFails > 0
-    disp('Tests that didn''t pass:')
-    disp(failedResultsTable);
-end
+% disp(sprintf('Of %d tests, %d failed.\n', numTests, numFails));
+% if numFails > 0
+%     disp('Tests that didn''t pass:')
+%     disp(failedResultsTable);
+% end
     
 
 

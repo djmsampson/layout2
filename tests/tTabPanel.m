@@ -33,31 +33,57 @@ classdef tTabPanel  < ContainerSharedTests ...
             'FontUnits',   'points', ...
             'FontWeight',  'bold'
             }};
-        ValidCallbacks = {
-            {'@()disp(''function as string'');'}, ...
-            {@()disp('function as anon handle')}, ...
-            {{@()disp, 'function as cell'}} ...
-            };
+        ValidCallbacks = struct(...
+            'fcnString',    '@()disp(''function as string'');', ...
+            'fcnAnonHandle', @()disp('function as anon handle'), ...
+            'fcnHandle',     @tTabPanel.selectionChangedCallback, ...
+            'fcnCell',      {{@()disp, 'function as cell'}} ...
+            );
     end
     
+    properties
+        selectionChangedCallbackCalled = false;
+    end
     
     methods (Test)
         
         function testTabPanelCallbacks(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
-            validCB = ValidCallbacks{:};
-            set(obj, 'Callback', validCB);
+            set(obj, 'Callback', ValidCallbacks);
             
-            testcase.verifyEqual(get(obj, 'Callback'), validCB);
+            testcase.verifyEqual(get(obj, 'Callback'), ValidCallbacks);
         end
          
-        function testTabPanelOnSelectionChanged(testcase, ValidCallbacks)
+        function testTabPanelGetSetOnSelectionChanged(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
-            validCB = ValidCallbacks{:};   
-            set(obj, 'SelectionChangedFcn', validCB);
+            set(obj, 'SelectionChangedFcn', ValidCallbacks);
             
-            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), validCB);
-        end       
+            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), ValidCallbacks);
+        end     
+        
+        function testTabPanelOnSelectionChangedCallbackExecutes(testcase)
+            [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
+            
+            % MATLAB did not correctly set callbacks when defined as a test
+            % parameter.
+            callbackCell = {...
+            @(varargin)testcase.selectionChangedCallback, ...
+            @testcase.selectionChangedCallback, ...
+            {@testcase.selectionChangedCallback, 2, 3 ,4} ...
+            };
+            
+            for i = 1:numel(callbackCell)
+                % set new callback
+                set(obj, 'SelectionChangedFcn', callbackCell{i});
+                % change selection
+                obj.Selection = 3;
+                % check callback executed
+                testcase.verifyTrue(testcase.selectionChangedCallbackCalled);
+                % reset selection and successflag
+                obj.Selection = 1;
+                testcase.selectionChangedCallbackCalled = false;
+            end
+        end
         
         
         function testRotate3dDoesNotAddMoreTabs(testcase)
@@ -70,6 +96,12 @@ classdef tTabPanel  < ContainerSharedTests ...
             % equivalent of selecting the rotate button on figure window:
             rotate3d;
             testcase.verifyNumElements(obj.TabTitles, 1);
+        end
+    end
+    
+    methods (Access = private)
+        function selectionChangedCallback(src, varargin)
+            src.selectionChangedCallbackCalled = true;
         end
     end
     

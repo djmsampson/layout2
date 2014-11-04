@@ -134,42 +134,42 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifySameHandle(obj.Contents(2), ax2);
         end
               
-        function testAxesLegend(testcase, ContainerType)
-            %testAxesLegend  Test that axes legends are ignored properly
-            % This is test for g1019459.
-            
-            testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
-                'ignoring test for legends being added correctly');
-            
-            obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
-            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
-            plot( ax1, peaks(7) )
-            legend( 'line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 6', 'line 7' );            
-            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
-            imagesc( peaks(7), 'Parent', ax2 );
-            
-            % Check that the legend does not appear as a child
-            testcase.verifyEqual( obj.Contents, [ax1;ax2] );
-        end
-
-        function testAxesColorbar(testcase, ContainerType)
-            % testAxesColorbar  Test that axes colorbars are ignored properly
-            % This is test for g1019459.
-            testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
-                'ignoring test for colorbar being added correctly');
-            
-            obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
-            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
-            contourf( ax1, peaks(30) );
-            colorbar( 'peer', ax1, 'location', 'EastOutside' )            
-            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
-            imagesc( peaks(7), 'Parent', ax2 );
-            
-            % Check that the legend doesn't appear as a child
-            testcase.verifyEqual( obj.Contents, [ax1;ax2] );
-        end
+%         function testAxesLegend(testcase, ContainerType)
+%             %testAxesLegend  Test that axes legends are ignored properly
+%             % This is test for g1019459.
+%             
+%             testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
+%                 'ignoring test for legends being added correctly');
+%             
+%             obj = testcase.hCreateObj(ContainerType, ...
+%                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
+%             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
+%             plot( ax1, peaks(7) )
+%             legend( 'line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 6', 'line 7' );            
+%             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
+%             imagesc( peaks(7), 'Parent', ax2 );
+%             
+%             % Check that the legend does not appear as a child
+%             testcase.verifyEqual( obj.Contents, [ax1;ax2] );
+%         end
+% 
+%         function testAxesColorbar(testcase, ContainerType)
+%             % testAxesColorbar  Test that axes colorbars are ignored properly
+%             % This is test for g1019459.
+%             testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
+%                 'ignoring test for colorbar being added correctly');
+%             
+%             obj = testcase.hCreateObj(ContainerType, ...
+%                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); 
+%             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
+%             contourf( ax1, peaks(30) );
+%             colorbar( 'peer', ax1, 'location', 'EastOutside' )            
+%             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
+%             imagesc( peaks(7), 'Parent', ax2 );
+%             
+%             % Check that the legend doesn't appear as a child
+%             testcase.verifyEqual( obj.Contents, [ax1;ax2] );
+%         end
                 
         function testAxesStillVisibleAfterRotate3d(testcase, ContainerType)
             % test for g1129721 where rotating an axis in a panel causes
