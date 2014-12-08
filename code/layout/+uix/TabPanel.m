@@ -634,7 +634,7 @@ classdef TabPanel < uix.Container
             cW = max( [w - 2 * p, 1] ); % contents width
             tW = obj.TabWidth_; % tab width
             dW = obj.DividerWidth; % tab divider width
-            if tW < 0 % relative
+            if tW < 0 && n > 0 % relative
                 tW = max( ( w - (n+1) * dW ) / n, 1 );
             end
             for ii = 1:n
