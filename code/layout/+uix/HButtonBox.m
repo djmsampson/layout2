@@ -1,4 +1,4 @@
-classdef HButtonBox < uix.ButtonBox
+classdef ( ConstructOnLoad ) HButtonBox < uix.ButtonBox
     %uix.HButtonBox  Horizontal button box
     %
     %  b = uix.HButtonBox(p1,v1,p2,v2,...) constructs a horizontal button

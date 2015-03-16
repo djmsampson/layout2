@@ -1,4 +1,4 @@
-classdef VButtonBox < uix.ButtonBox
+classdef ( ConstructOnLoad ) VButtonBox < uix.ButtonBox
     %uix.VButtonBox  Vertical button box
     %
     %  b = uix.VButtonBox(p1,v1,p2,v2,...) constructs a vertical button box

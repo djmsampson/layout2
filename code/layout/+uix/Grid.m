@@ -1,4 +1,4 @@
-classdef Grid < uix.Box
+classdef ( ConstructOnLoad ) Grid < uix.Box
     %uix.Grid  Grid
     %
     %  b = uix.Grid(p1,v1,p2,v2,...) constructs a grid and sets parameter

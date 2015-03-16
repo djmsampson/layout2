@@ -1,4 +1,4 @@
-classdef HBox < uix.Box
+classdef ( ConstructOnLoad ) HBox < uix.Box
     %uix.HBox  Horizontal box
     %
     %  b = uix.HBox(p1,v1,p2,v2,...) constructs a horizontal box and sets

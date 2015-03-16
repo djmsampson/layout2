@@ -27,8 +27,9 @@ classdef Container < handle
         Dirty % needs redraw
     end
     
-    properties( Access = private )
+    properties( Access = private, Transient )
         Dirty_ = false % backing for Dirty
+        Drawn = false % has been drawn
         AncestryObserver % observer
         AncestryListeners % listeners
         OldAncestors % old state
@@ -50,15 +51,6 @@ classdef Container < handle
             %  construction.
             
             % Create observers and listeners
-            ancestryObserver = uix.AncestryObserver( obj );
-            ancestryListeners = [ ...
-                event.listener( ancestryObserver, ...
-                'AncestryPreChange', @obj.onAncestryPreChange ); ...
-                event.listener( ancestryObserver, ...
-                'AncestryPostChange', @obj.onAncestryPostChange )];
-            visibilityObserver = uix.VisibilityObserver( obj );
-            visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChanged );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -68,14 +60,12 @@ classdef Container < handle
                 obj, 'SizeChanged', @obj.onSizeChanged );
             
             % Store observers and listeners
-            obj.AncestryObserver = ancestryObserver;
-            obj.AncestryListeners = ancestryListeners;
-            obj.VisibilityObserver = visibilityObserver;
-            obj.VisibilityListener = visibilityListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
             obj.SizeChangedListener = sizeChangedListener;
+            
+            % More observers and listeners will be created on first draw
             
         end % constructor
         
@@ -234,6 +224,27 @@ classdef Container < handle
         function onSizeChanged( obj, ~, ~ )
             %onSizeChanged  Event handler
             
+            % Complete initialization on first draw
+            if ~obj.Drawn % first draw
+                % Create observers and listeners
+                ancestryObserver = uix.AncestryObserver( obj );
+                ancestryListeners = [ ...
+                    event.listener( ancestryObserver, ...
+                    'AncestryPreChange', @obj.onAncestryPreChange ); ...
+                    event.listener( ancestryObserver, ...
+                    'AncestryPostChange', @obj.onAncestryPostChange )];
+                visibilityObserver = uix.VisibilityObserver( obj );
+                visibilityListener = event.listener( visibilityObserver, ...
+                    'VisibilityChange', @obj.onVisibilityChanged );
+                % Store observers and listeners
+                obj.AncestryObserver = ancestryObserver;
+                obj.AncestryListeners = ancestryListeners;
+                obj.VisibilityObserver = visibilityObserver;
+                obj.VisibilityListener = visibilityListener;
+                % Mark as drawn
+                obj.Drawn = true;
+            end
+            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -339,10 +350,15 @@ classdef Container < handle
             %  false otherwise.  To be drawable, a container must be rooted
             %  and visible.
             
-            ancestors = obj.AncestryObserver.Ancestors;
-            visible = obj.VisibilityObserver.Visible;
-            tf = visible && ~isempty( ancestors ) && ...
-                isa( ancestors(1), 'matlab.ui.Figure' );
+            ancestryObserver = obj.AncestryObserver;
+            if isempty( ancestryObserver ) % never drawn
+                tf = false;
+            else
+                ancestors = ancestryObserver.Ancestors;
+                visible = obj.VisibilityObserver.Visible;
+                tf = visible && ~isempty( ancestors ) && ...
+                    isa( ancestors(1), 'matlab.ui.Figure' );
+            end
             
         end % isDrawable
         
