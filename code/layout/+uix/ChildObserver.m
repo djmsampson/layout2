@@ -106,10 +106,8 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             
             % Raise ChildAdded event
             if isgraphics( oChild ) && oChild.Internal == false
-                oChild.Parent
                 if verLessThan( 'MATLAB', '8.5' ) && ...
-                        isa( oChild, 'matlab.ui.control.UIControl' ) && ...
-                        oChild.Parent ~= nParent.Object % TODO
+                        isa( oChild, 'matlab.ui.control.UIControl' ) % TODO
                     %  A workaround is required in R2014b for G1129721,
                     %  where setting the property 'Visible' of a uicontrol
                     %  to 'on' in response to an ObjectChildAdded event

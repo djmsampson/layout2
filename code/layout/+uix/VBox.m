@@ -1,4 +1,4 @@
-classdef ( ConstructOnLoad ) VBox < uix.Box
+classdef VBox < uix.Box
     %uix.VBox  Vertical box
     %
     %  b = uix.VBox(p1,v1,p2,v2,...) constructs a vertical box and sets
