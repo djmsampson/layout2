@@ -284,8 +284,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.HighlightColor_ = value;
             
-            % Redraw borders
-            obj.redrawBorders()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw borders
             
         end % set.HighlightColor
         
@@ -306,8 +306,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.ShadowColor_ = value;
             
-            % Redraw borders
-            obj.redrawBorders()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw borders
             
         end % set.ShadowColor
         
@@ -354,8 +354,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.CloseButton.Callback = value;
             
-            % Redraw buttons
-            obj.redrawButtons()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw buttons
             
         end % set.CloseRequestFcn
         
@@ -370,8 +370,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.DockButton.Callback = value;
             
-            % Redraw buttons
-            obj.redrawButtons()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw buttons
             
         end % set.DockFcn
         
@@ -386,8 +386,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.HelpButton.Callback = value;
             
-            % Redraw buttons
-            obj.redrawButtons()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw buttons
             
         end % set.HelpFcn
         
@@ -402,8 +402,8 @@ classdef BoxPanel < uix.Container
             % Set
             obj.MinimizeButton.Callback = value;
             
-            % Redraw buttons
-            obj.redrawButtons()
+            % Mark as dirty
+            obj.Dirty = true; % TODO just redraw buttons
             
         end % set.MinimizeFcn
         
