@@ -16,48 +16,38 @@ how to install it and any known issues at the time of release.
 
 <!-- ****************************************************************** -->
 
-  <section name="What is GUI Layout Toolbox?" staticref="about">
-    <keywords>About</keywords>
-<P>
-GUI Layout Toolbox provides a package of MATLAB objects that allow for complex
-arrangement of graphical user interface elements within a figure window. The
-main capabilities provided are:
-<UL>
-  <LI>Automatic element arrangement horizontally, vertically or in grids</LI>
-  <LI>Ability to specify fixed sizes or resizing weights for each element</LI>
-  <LI>Ability to "nest" layouts to produce virtually any element arrangement</LI>
-  <LI>Divider bars for user-resizing of elements</LI>
-</UL>
-</P>
-<P>
-These element arrangement capabilities are designed to match those found as
-standard in other user-interface toolkits such as Java Swing, GTK, QT etc.
-</P>
-    <P>
-        Note that this is version 2 of this toolbox, designed to work with 
-        MATLAB releases R2014b and later. For earlier MATLAB releases use 
-        version 1.
-    </P>
+<section name="What is GUI Layout Toolbox?" staticref="about">
+  <keywords>About</keywords>
+  <p>GUI Layout Toolbox provides a package of MATLAB objects that allow for complex
+  arrangement of graphical user interface elements within a figure window. The
+  main capabilities provided are:</p>
+  <ul>
+    <li>Automatic element arrangement horizontally, vertically or in grids</li>
+    <li>Ability to specify fixed sizes or resizing weights for each element</li>
+    <li>Ability to "nest" layouts to produce virtually any element arrangement</li>
+    <li>Divider bars for user-resizing of elements</li>
+  </ul>
+  <p>These element arrangement capabilities are designed to match those found as
+  standard in other user-interface toolkits such as Java Swing, GTK, QT etc.</p>
 </section>
-
 
 <!-- ****************************************************************** -->
 
 <section name="Compatibility considerations" staticref="compatibility">
-    <inlinesubsection name="Minimum MATLAB version">
-        <p>A new MATLAB graphics system was introduced in R2014b.</p>
-        <p>This is version 2 of GUI Layout Toolbox, designed to 
-           work with MATLAB releases R2014b and later.</p>
-        <p>For earlier MATLAB releases using the old MATLAB graphics system, 
-           use version 1.</p>
-    </inlinesubsection> 
-    
-    <inlinesubsection name="Compatibility with version 1">
-        <p>If you are upgrading from version 1, there are a number of 
-        compatibility considerations:</p>
+
+  <inlinesubsection name="Minimum MATLAB version">
+    <p>This is version 2 of GUI Layout Toolbox, designed to work with the new 
+    MATLAB graphics system that was introduced in R2014b.</p>
+    <p>Version 1 works with MATLAB releases prior to R2014b that use the old 
+    graphics system.</p>
+  </inlinesubsection> 
+  
+  <inlinesubsection name="Compatibility with version 1">
+    <p>If you are upgrading from version 1, there are a number of compatibility 
+    considerations:</p>
     
 <h4>Package name</h4>
-<p>Version 1 packages were contained in the package "uiextras".  Version 2 classes are 
+<p>Version 1 classes were contained in the package "uiextras".  Version 2 classes are 
 contained in the package "uix".  In version 2, a package "uiextras" is included 
 to provide support for legacy code.  Classes in "uiextras" extend 
 corresponding classes in "uix", and contain only compatibility-related 
@@ -67,10 +57,9 @@ code.</p>
 <p>The contents of version 1 objects were accessible via the property <code>Children</code>.  
 The contents of version 2 objects are accessible via the property <code>Contents</code>.  
 Version 2 objects also provide a property <code>Children</code>, but this controls the 
-vertical stacking order of contents, rather than the layout order.  Legacy 
-code that accesses <code>Children</code> will run without error, but will not achieve 
-the desired change in layout order, and should be modified to access 
-<code>Contents</code> instead.</p>
+vertical stacking order rather than the layout order.  Legacy code that accesses 
+<code>Children</code> will run without error, but will not achieve the desired change in 
+layout order, and should be modified to access <code>Contents</code> instead.</p>
 
 <p>An upcoming release of version 1 will include support for code that references 
 contents via <code>Contents</code>.  That way, code modified to work in version 2 will also 
@@ -99,15 +88,15 @@ unchanged.  However, best practice is to specify parent explicitly during
 construction.</p>
 
 <h4>Defaults mechanism</h4>
-<p>Version 1 provided a defaults mechanism (<code>get</code>, <code>set</code> and <code>unset</code> 
-in "uiextras") that mimicked <code>get</code> and <code>set</code> in the MATLAB graphics 
-system itself.  This feature has been removed from version 2.  Users should use an alternative 
-programming pattern, e.g. factory function, to create objects with standard settings.</p>
+<p>Version 1 provided a defaults mechanism (<code>uiextras.get</code>, <code>uiextras.set</code> 
+and <code>uiextras.unset</code>) that mimicked <code>get</code> and <code>set</code> in the MATLAB 
+graphics system itself.  This feature has been removed from version 2.  Users should use an 
+alternative programming pattern, e.g. factory function, to create objects with standard settings.</p>
 
 <h4>Enable and disable</h4>
-<p>Version 1 provided a mechanism to enable and disable container contents using 
-the property 'Enable'.  This feature has been removed from version 2.  Users 
-should enable and disable controls directly rather than via containers.</p>
+<p>Version 1 provided a mechanism to enable and disable container contents using the property 
+<code>Enable</code>.  This feature has been removed from version 2.  Users should enable and disable 
+controls directly rather than via containers.</p>
 <p>For more commentary, see <a href="http://goo.gl/j0KmTR">this article</a>.</p>
 
 <h4>Other property name changes</h4>
@@ -145,10 +134,23 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.1.1">
+        <ul>
+            <li>Released 19 March 2015</li>
+            <li>Fixed G1164656 "cannot set relative tab widths"</li>
+            <li>Fixed G1019441 "property RowSizes of uiextras.GridFlex sets heights not widths"</li>
+            <li>Fixed G1165274 "missing properties RowSizes, MinimumRowSizes, ColumnSizes, 
+                MinimumColumnSizes of uiextras.Grid, uiextras.GridFlex"</li>
+            <li>Fixed G1218142 "contents are lost when reordering via property Children"</li>
+            <li>Minor fixes to documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.1">
         <ul>
             <li>Released 2 October 2014</li>
             <li>Initial version for MATLAB R2014b</li>
+            <li>Versions 2.0.x were for prerelease testing</li>
         </ul>
     </inlinesubsection> 
     
@@ -183,7 +185,7 @@ package "uiextras" provides support for legacy property values.</p>
         <li><a href="http://www.mathworks.com/matlabcentral/fileexchange/authors/80363">Ben Tordoff</a></li>
     </ul>
     <p>If you like this toolbox, help others to find it by leaving a rating
-        and comment on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/index?term=gui+layout+toolbox">MATLAB Central File Exchange</a>.
+        and comment on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox">MATLAB Central File Exchange</a>.
     </p>
 </section>
 
