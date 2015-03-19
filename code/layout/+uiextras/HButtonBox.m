@@ -1,4 +1,4 @@
-classdef HButtonBox < uix.HButtonBox
+classdef ( ConstructOnLoad ) HButtonBox < uix.HButtonBox
     %uiextras.HButtonBox  Arrange buttons horizontally in a single row
     %
     %   obj = uiextras.HButtonBox() is a type of HBox specialised for

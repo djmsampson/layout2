@@ -1,4 +1,4 @@
-classdef HBox < uix.HBox
+classdef ( ConstructOnLoad ) HBox < uix.HBox
     %uiextras.HBox  Arrange elements in a single horizontal row
     %
     %   obj = uiextras.HBox() creates a new horizontal box layout with

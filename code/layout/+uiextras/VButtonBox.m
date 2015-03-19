@@ -1,4 +1,4 @@
-classdef VButtonBox < uix.VButtonBox
+classdef ( ConstructOnLoad ) VButtonBox < uix.VButtonBox
     %uiextras.VButtonBox  Arrange buttons vertically in a single column
     %
     %   obj = uiextras.VButtonBox() is a type of VBox specialised for

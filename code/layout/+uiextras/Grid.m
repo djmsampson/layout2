@@ -1,4 +1,4 @@
-classdef Grid < uix.Grid
+classdef ( ConstructOnLoad ) Grid < uix.Grid
     %uiextras.Grid  Container with contents arranged in a grid
     %
     %   obj = uiextras.Grid() creates a new new grid layout with all

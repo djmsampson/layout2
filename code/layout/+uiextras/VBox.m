@@ -1,4 +1,4 @@
-classdef VBox < uix.VBox
+classdef ( ConstructOnLoad ) VBox < uix.VBox
     %uiextras.VBox  Arrange elements vertically in a single column
     %
     %   obj = uiextras.VBox() creates a new vertical box layout with all
