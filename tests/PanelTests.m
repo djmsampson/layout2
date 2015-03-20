@@ -14,6 +14,21 @@ classdef PanelTests < matlab.unittest.TestCase
             b = uiextras.HBox( 'Parent', obj );
             testcase.verifyEqual( obj.Contents, b );
         end
+        
+        function testAddInvisibleUicontrolToPanel(testcase, ContainerType)
+            % test for g1129721 where adding an invisible uicontrol to a
+            % panel causes a segv.
+            obj = testcase.hCreateObj(ContainerType);
+            f = ancestor(obj, 'figure');
+            b1 = uicontrol('Parent', f, 'Visible', 'off');
+            b1.Parent = obj; % used to crash
+            testcase.verifyEqual(numel(obj.Contents), 1)
+            b2 = uicontrol('Parent', f, 'Internal', true, 'Visible', 'off');
+            b2.Parent = obj; % used to crash
+            testcase.verifyEqual(numel(obj.Contents), 1)
+            b2.Internal = false;
+            testcase.verifyEqual(numel(obj.Contents), 2)
+        end
 
     end
     
