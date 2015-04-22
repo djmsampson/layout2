@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3011973161" file="C:\Projects\tools\layouts2\code\GUI Layout Toolbox.prj" location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3011973161" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -37,15 +37,13 @@ release.m</param.exclude.filters>
     <param.apps />
     <param.docs>${PROJECT_ROOT}\layoutdoc\info.xml</param.docs>
     <unset>
-      <param.email />
-      <param.company />
       <param.output />
       <param.platforms />
       <param.demosxml />
       <param.apps />
     </unset>
     <fileset.rootdir>
-      <file>C:\Projects\tools\layouts2\code</file>
+      <file>C:\Development\layouts2\code</file>
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\glt.png</file>
@@ -59,7 +57,7 @@ release.m</param.exclude.filters>
     </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Projects\tools\layouts2\code" name="GUI Layout Toolbox.mltbx" optional="false">C:\Projects\tools\layouts2\code\GUI Layout Toolbox.mltbx</file>
+      <file location="C:\Development\layouts2\code" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layouts2\code\GUI Layout Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
