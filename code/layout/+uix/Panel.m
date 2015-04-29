@@ -32,6 +32,7 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
             
             % Call superclass constructor
             obj@matlab.ui.container.Panel()
+            obj@uix.mixin.Container()
             
             % Set properties
             if nargin > 0
