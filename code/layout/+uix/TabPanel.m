@@ -58,6 +58,7 @@ classdef TabPanel < uix.Container
         LocationObserver % location observer
         BackgroundColorListener % listener
         SelectionChangedListener % listener
+        G1218142 = false % bug flag
     end
     
     properties( Access = private, Constant )
@@ -655,7 +656,14 @@ classdef TabPanel < uix.Container
             for ii = 1:numel( children )
                 child = children(ii);
                 if ii == selection
-                    child.Visible = 'on';
+                    if obj.G1218142
+                        warning( 'uix:G1218142', ...
+                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
+                            class( obj ) )
+                        obj.G1218142 = false;
+                    else
+                        child.Visible = 'on';
+                    end
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
                         switch child.ActivePositionProperty
@@ -690,6 +698,11 @@ classdef TabPanel < uix.Container
         end % redraw
         
         function addChild( obj, child )
+            
+            % Check for bug
+            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
+                obj.G1218142 = true;
+            end
             
             % Create new tab
             n = numel( obj.Tabs );

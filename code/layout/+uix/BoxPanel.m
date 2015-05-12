@@ -53,6 +53,7 @@ classdef BoxPanel < uix.Container
         Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
         ColorButtonCData % Button images with colors applied
+        G1218142 = false % bug flag
     end
     
     properties( Access = private, Constant )
@@ -560,7 +561,14 @@ classdef BoxPanel < uix.Container
             for ii = 1:numel( children )
                 child = children(ii);
                 if ii == selection && ~minimized
-                    child.Visible = 'on';
+                    if obj.G1218142
+                        warning( 'uix:G1218142', ...
+                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
+                            class( obj ) )
+                        obj.G1218142 = false;
+                    else
+                        child.Visible = 'on';
+                    end
                     child.Units = 'pixels';
                     if isa( child, 'matlab.graphics.axis.Axes' )
                         switch child.ActivePositionProperty
@@ -594,16 +602,17 @@ classdef BoxPanel < uix.Container
             
         end % redraw
         
-        function reparent( obj, oldAncestors, newAncestors )
-            %reparent  Reparent container
-            %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
+        function addChild( obj, child )
+            
+            % Check for bug
+            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
+                obj.G1218142 = true;
+            end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            addChild@uix.Container( obj, child )
             
-        end % reparent
+        end % addChild
         
     end % template methods
     
