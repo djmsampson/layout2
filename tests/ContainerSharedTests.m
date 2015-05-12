@@ -118,6 +118,21 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual( obj.Contents, actualContents(1) );
         end
         
+        function testContentsAfterReorderingChildren(testcase, ContainerType)
+            
+            obj = testcase.hCreateObj(ContainerType);
+            b1 = uicontrol('Parent', obj); %#ok<NASGU>
+            c1 = uicontainer('Parent', obj); %#ok<NASGU>
+            b2 = uicontrol('Parent', obj); %#ok<NASGU>
+            c2 = uicontainer('Parent', obj); %#ok<NASGU>
+            testcase.verifyLength(obj.Contents, 4)
+            obj.Contents = flipud(obj.Contents);
+            testcase.verifyLength(obj.Contents, 4)
+            obj.Children = flipud(obj.Children);
+            testcase.verifyLength(obj.Contents, 4)
+            
+        end
+        
         function testAddingAxesToContainer(testcase, ContainerType)
             % tests that sizing is retained when adding new data to
             % existing axis.
