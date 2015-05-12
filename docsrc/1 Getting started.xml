@@ -136,12 +136,13 @@ package "uiextras" provides support for legacy property values.</p>
     
     <inlinesubsection name="Version 2.1.1">
         <ul>
-            <li>Released 19 March 2015</li>
+            <li>Released 12 May 2015</li>
             <li>Fixed G1164656 "cannot set relative tab widths"</li>
             <li>Fixed G1019441 "property RowSizes of uiextras.GridFlex sets heights not widths"</li>
             <li>Fixed G1165274 "missing properties RowSizes, MinimumRowSizes, ColumnSizes, 
                 MinimumColumnSizes of uiextras.Grid, uiextras.GridFlex"</li>
             <li>Fixed G1218142 "contents are lost when reordering via property Children"</li>
+            <li>Protected against G1136196 "segv when setting child visibility from 'off' to 'on' in response to being reparented</li>
             <li>Minor fixes to documentation</li>
         </ul>
     </inlinesubsection> 
