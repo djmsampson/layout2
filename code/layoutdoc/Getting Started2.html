@@ -3,7 +3,7 @@
       <link rel="stylesheet" type="text/css" href="doc.css"/>
       <link rel="stylesheet" type="text/css" href=""/>
       <meta author="The MathWorks Ltd."/>
-      <meta copyright="2014 The MathWorks Ltd."/>
+      <meta copyright="2015 The MathWorks Ltd."/>
       <title>Compatibility considerations</title>
    </head>
 
@@ -19,9 +19,10 @@
 
       <h2>2: Compatibility considerations&nbsp;<A href="Getting Started.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></A></h2>
       
-     
-    
-     
+
+   
+  
+   
     
 
       <h3>Section contents:</h3>
@@ -40,20 +41,19 @@
           
       <h2><a name="1">&nbsp;</a>2.1: Minimum MATLAB version&nbsp;<a href="Getting Started2.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
       
-        <p>A new MATLAB graphics system was introduced in R2014b.</p>
-        <p>This is version 2 of GUI Layout Toolbox, designed to 
-           work with MATLAB releases R2014b and later.</p>
-        <p>For earlier MATLAB releases using the old MATLAB graphics system, 
-           use version 1.</p>
-    <br clear="all"/><hr/>
+    <p>This is version 2 of GUI Layout Toolbox, designed to work with the new 
+    MATLAB graphics system that was introduced in R2014b.</p>
+    <p>Version 1 works with MATLAB releases prior to R2014b that use the old 
+    graphics system.</p>
+  <br clear="all"/><hr/>
           
       <h2><a name="2">&nbsp;</a>2.2: Compatibility with version 1&nbsp;<a href="Getting Started2.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
       
-        <p>If you are upgrading from version 1, there are a number of 
-        compatibility considerations:</p>
+    <p>If you are upgrading from version 1, there are a number of compatibility 
+    considerations:</p>
     
 <h4>Package name</h4>
-<p>Version 1 packages were contained in the package "uiextras".  Version 2 classes are 
+<p>Version 1 classes were contained in the package "uiextras".  Version 2 classes are 
 contained in the package "uix".  In version 2, a package "uiextras" is included 
 to provide support for legacy code.  Classes in "uiextras" extend 
 corresponding classes in "uix", and contain only compatibility-related 
@@ -63,10 +63,9 @@ code.</p>
 <p>The contents of version 1 objects were accessible via the property <code>Children</code>.  
 The contents of version 2 objects are accessible via the property <code>Contents</code>.  
 Version 2 objects also provide a property <code>Children</code>, but this controls the 
-vertical stacking order of contents, rather than the layout order.  Legacy 
-code that accesses <code>Children</code> will run without error, but will not achieve 
-the desired change in layout order, and should be modified to access 
-<code>Contents</code> instead.</p>
+vertical stacking order rather than the layout order.  Legacy code that accesses 
+<code>Children</code> will run without error, but will not achieve the desired change in 
+layout order, and should be modified to access <code>Contents</code> instead.</p>
 
 <p>An upcoming release of version 1 will include support for code that references 
 contents via <code>Contents</code>.  That way, code modified to work in version 2 will also 
@@ -95,15 +94,15 @@ unchanged.  However, best practice is to specify parent explicitly during
 construction.</p>
 
 <h4>Defaults mechanism</h4>
-<p>Version 1 provided a defaults mechanism (<code>get</code>, <code>set</code> and <code>unset</code> 
-in "uiextras") that mimicked <code>get</code> and <code>set</code> in the MATLAB graphics 
-system itself.  This feature has been removed from version 2.  Users should use an alternative 
-programming pattern, e.g. factory function, to create objects with standard settings.</p>
+<p>Version 1 provided a defaults mechanism (<code>uiextras.get</code>, <code>uiextras.set</code> 
+and <code>uiextras.unset</code>) that mimicked <code>get</code> and <code>set</code> in the MATLAB 
+graphics system itself.  This feature has been removed from version 2.  Users should use an 
+alternative programming pattern, e.g. factory function, to create objects with standard settings.</p>
 
 <h4>Enable and disable</h4>
-<p>Version 1 provided a mechanism to enable and disable container contents using 
-the property 'Enable'.  This feature has been removed from version 2.  Users 
-should enable and disable controls directly rather than via containers.</p>
+<p>Version 1 provided a mechanism to enable and disable container contents using the property 
+<code>Enable</code>.  This feature has been removed from version 2.  Users should enable and disable 
+controls directly rather than via containers.</p>
 <p>For more commentary, see <a href="http://goo.gl/j0KmTR">this article</a>.</p>
 
 <h4>Other property name changes</h4>
@@ -140,7 +139,7 @@ package "uiextras" provides support for legacy property values.</p>
             <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="Getting Started3.html"><img src="images/rightarrow.png" border="0" alt="next page"/></a></td>
          </tr>
       </table>
-      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2014 The MathWorks Ltd</font>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2015 The MathWorks Ltd</font>
       <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/license.txt'])">Terms of Use</a>
       <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
       <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
