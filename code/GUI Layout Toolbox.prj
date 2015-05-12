@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3011973161" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="1121510913" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -61,7 +61,7 @@ release.m</param.exclude.filters>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2014b</root>
+      <root>C:\Program Files\MATLAB\R2015a</root>
       <toolboxes>
         <toolbox name="embeddedcoder" />
         <toolbox name="matlabcoder" />
