@@ -36,6 +36,7 @@ classdef TabPanel < uix.Container
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom]
         TabTitles % tab titles
+        TabContextMenus % tab context menus
         TabWidth % tab width
     end
     
@@ -562,6 +563,27 @@ classdef TabPanel < uix.Container
             obj.Dirty = true;
             
         end % set.TabTitles
+        
+        function value = get.TabContextMenus( obj )
+            
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            value = cell( [n 1] );
+            for ii = 1:n
+                value{ii} = tabs(ii).UIContextMenu;
+            end
+            
+        end % get.TabContextMenus
+        
+        function set.TabContextMenus( obj, value )
+            
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tabs(ii).UIContextMenu = value{ii};
+            end
+            
+        end % set.TabContextMenus
         
         function value = get.TabWidth( obj )
             
