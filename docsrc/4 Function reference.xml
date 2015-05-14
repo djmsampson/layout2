@@ -708,6 +708,11 @@
                          <description>Function to call when the selected tab is changed. The event-data supplied has fields <code>OldValue</code> and <code>NewValue</code> giving the previously selected and newly selected tab indices.</description>
                      </property>
                      <property>
+                         <name>TabContextMenus</name>
+                         <value>cell array of context menus</value>
+                         <description>The context menu (or []) for each tab.</description>
+                     </property>
+                     <property>
                          <name>TabEnables</name>
                          <value>cell array of [ on | off ]</value>
                          <description>A list of the enabled state of each tab (default is all 'on').</description>
