@@ -137,7 +137,7 @@ package "uiextras" provides support for legacy property values.</p>
     <inlinesubsection name="Version 2.1.1">
         <ul>
             <li>Released 18 May 2015</li>
-            <li>Added context menus on uix.TabPanel tab labels (G1245669)
+            <li>Added context menus on uix.TabPanel tab labels (G1245669)</li>
             <li>Fixed G1164656 "cannot set relative tab widths"</li>
             <li>Fixed G1019441 "property RowSizes of uiextras.GridFlex sets heights not widths"</li>
             <li>Fixed G1165274 "missing properties RowSizes, MinimumRowSizes, ColumnSizes, 
