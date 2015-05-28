@@ -111,11 +111,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             
             % Delete a child
             delete( actualContents(2) )
-            testcase.verifyEqual( obj.Contents, actualContents([1,3]) );
+            testcase.verifyEqual( obj.Contents, actualContents([1 3 4]) );
             
             % Reparent a child
             set( actualContents(3), 'Parent', figure )
-            testcase.verifyEqual( obj.Contents, actualContents(1) );
+            testcase.verifyEqual( obj.Contents, actualContents([1 4]) );
         end
         
         function testContentsAfterReorderingChildren(testcase, ContainerType)
@@ -211,11 +211,13 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         
         function [obj, rgb] = hBuildRGBBox(testcase, type)
             % creates a Box of requested type and adds 3 uicontrols with
-            % red, green, and blue background colours.
+            % red, green, and blue background colours, with an empty space
+            % between green and blue.
             obj = testcase.hCreateObj(type);
             rgb = [
                 uicontrol('Parent', obj, 'BackgroundColor', 'r')
                 uicontrol('Parent', obj, 'BackgroundColor', 'g')
+                uiextras.Empty('Parent', obj)
                 uicontrol('Parent', obj, 'BackgroundColor', 'b') ];
         end
         

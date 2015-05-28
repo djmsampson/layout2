@@ -6,7 +6,7 @@ classdef PanelTests < matlab.unittest.TestCase
     end
     
     properties (TestParameter)
-        failingSelection = {2.4, int32(2), [2 3 4], 4};
+        failingSelection = {2.4, int32(2), [2 3 4], 5};
     end
     
     methods (Test)
@@ -47,19 +47,19 @@ classdef PanelTests < matlab.unittest.TestCase
         end
         
         function testSelectableRGBPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
-            [obj3Children, ~] = testcase.hBuildRGBBox(ContainerType);
+            [obj4Children, ~] = testcase.hBuildRGBBox(ContainerType);
             
-            testcase.verifyError(@()set(obj3Children, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
+            testcase.verifyError(@()set(obj4Children, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
         end
         
         function testSelectablePanelSetSelectionSucceeds(testcase, ContainerType)
             objEmpty = testcase.hCreateObj(ContainerType);
-            [obj3Children, ~] = testcase.hBuildRGBBox(ContainerType);
+            [obj4Children, ~] = testcase.hBuildRGBBox(ContainerType);
             set(objEmpty, 'Selection', 0);
-            set(obj3Children, 'Selection', 2);
+            set(obj4Children, 'Selection', 2);
             
             testcase.verifyEqual(get(objEmpty, 'Selection'), 0);
-            testcase.verifyEqual(get(obj3Children, 'Selection'), 2);
+            testcase.verifyEqual(get(obj4Children, 'Selection'), 2);
         end
         
         function testAddInvisibleUicontrolToPanel(testcase, ContainerType)

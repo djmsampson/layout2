@@ -13,6 +13,7 @@ classdef VBoxTests < matlab.unittest.TestCase
             actualSizes(1) = obj.Contents(1).Position(4);
             actualSizes(2) = obj.Contents(2).Position(4);
             actualSizes(3) = obj.Contents(3).Position(4);
+            actualSizes(4) = obj.Contents(4).Position(4);
             
             testcase.verifyEqual(actualSizes, expectedSizes);
         end
@@ -36,22 +37,21 @@ classdef VBoxTests < matlab.unittest.TestCase
             % absolute
             fig = figure('Position', [400 400 750 750]);
             [obj, ~] = testcase.hBuildRGBBox(type);
-            set(obj, 'Spacing', 10, 'Parent', fig);
-            set(obj, resizedParameter, [-3, -1, 50]);
+            set(obj, 'Padding', 10, 'Spacing', 10, 'Parent', fig);
+            set(obj, resizedParameter, [-3, -1, -1, 50]);
             
             % resize figure
             fig.Position = [600, 600, 200, 200];            
-            testcase.assertNumElements(obj.Contents, 3, ...
-                sprintf('created box with %d elements instead of 3\n', numel(obj.Contents)) );
+            testcase.assertNumElements(obj.Contents, 4, ...
+                sprintf('created box with %d elements instead of 4\n', numel(obj.Contents)) );
             
             % test rgb ui elements have correct sizes.
             
-            % After the absolute sized element, remaining space is divided between two elements.
-            % fig size is 200 -50 for 3rd block and -20 for 2*10px spacings.
-            % this space is split into 4 parts, 1 part to Contents(2)
-            % 3 parts to Contents(1)
-            relativePartPxSize = (200 - 50 - 20)/4;
-            expectedSizes = [relativePartPxSize*3, relativePartPxSize, 50];
+            % After the absolute sized element (50), the padding (2x10) and
+            % the spacing (3x10), remaining space is divided between three
+            % elements.
+            relativePartPxSize = (200 - 50 - 30 - 20)/5;
+            expectedSizes = [relativePartPxSize*3, relativePartPxSize, relativePartPxSize, 50];
         end
     end
     
