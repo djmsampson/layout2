@@ -1,8 +1,8 @@
 function obj = Empty( varargin )
 %uix.Empty  Create an empty space
 %
-%   obj = uix.Empty() creates a placeholder that can be used to add
-%   gaps between elements in layouts.
+%   obj = uix.Empty() creates an empty space that can be used to add gaps
+%   between elements in layouts.
 %
 %   obj = uix.Empty(param,value,...) also sets one or more property
 %   values.
@@ -27,8 +27,9 @@ ok = true;
 
 % Create a slider that cannot be rendered
 try
-    obj = matlab.ui.control.UIControl( varargin{:}, ...
-        'Style', 'slider', 'Min', 0, 'Max', -1, 'Tag', 'uix.Empty' );
+    obj = matlab.ui.control.UIControl( 'Tag', 'empty', ...
+        varargin{:}, ...
+        'Style', 'slider', 'Min', 0, 'Max', -1 );
 catch e
 end
 
