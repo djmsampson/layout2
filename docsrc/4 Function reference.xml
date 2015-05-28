@@ -413,7 +413,7 @@
                      <property>
                          <name>DockFcn</name>
                          <value>function handle</value>
-                         <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
+                         <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <!--
                      <property>
@@ -455,7 +455,7 @@
                      <property>
                          <name>HelpFcn</name>
                          <value>function handle</value>
-                         <description>Function to call when the help icon is clicked. Note that if empty, no help button is shown. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
+                         <description>Function to call when the help icon is clicked. Note that if empty, no help button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <property>
                          <name>HighlightColor</name>
@@ -465,17 +465,17 @@
                      <property>
                          <name>IsDocked</name>
                          <value>logical</value>
-                         <description>Is this panel in a docked state. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
+                         <description>Is this panel in a docked state. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <property>
                          <name>IsMinimized</name>
                          <value>logical</value>
-                         <description>Is this panel in a minimized state. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
+                         <description>Is this panel in a minimized state. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <property>
                          <name>MinimizeFcn</name>
                          <value>function handle</value>
-                         <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced manoeuvres with panels</ref> for details.</description>
+                         <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <property>
                          <name>Padding</name>
