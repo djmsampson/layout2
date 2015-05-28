@@ -19,23 +19,25 @@ function obj = Empty( varargin )
 %   Copyright 2009-2015 The MathWorks, Inc.
 %   $Revision: 919 $ $Date: 2014-06-03 11:05:38 +0100 (Tue, 03 Jun 2014) $
 
-% Create invisible uicontrol
-obj = matlab.ui.control.UIControl( varargin{:}, 'Visible', 'off' );
+% Disable warning
+oldState = warning( 'off', 'MATLAB:hg:uicontrol:MinMustBeLessThanMax' );
 
-% Keep invisible
-addlistener( obj, findprop( obj, 'Visible' ), 'PostSet', @onVisibleChanged );
+% Initialize error flag
+ok = true;
 
-end % uix.Empty
-
-function onVisibleChanged( ~, eventData )
-%onVisibleChanged  Event handler
-
-obj = eventData.AffectedObject;
-switch obj.Visible
-    case 'on'
-        obj.Visible = 'off'; % switch back to 'off'
-    case 'off'
-        % already 'off'
+% Create a slider that cannot be rendered
+try
+    obj = matlab.ui.control.UIControl( varargin{:}, ...
+        'Style', 'slider', 'Min', 0, 'Max', -1, 'Tag', 'uix.Empty' );
+catch e
 end
 
-end % onVisibleChanged
+% Restore warning state
+warning( oldState )
+
+% Rethrow any error
+if ~ok
+    rethrow( e )
+end
+
+end % uix.Empty
