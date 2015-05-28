@@ -18,7 +18,6 @@ classdef tEmpty < matlab.unittest.TestCase
             %testConstructionArguments  Test constructing the widget with optional arguments
             args = {
                 'Parent',   gcf()
-                'Visible', 'on'
                 'Tag',     'Test'
                 }';
             
@@ -26,7 +25,6 @@ classdef tEmpty < matlab.unittest.TestCase
             testcase.verifyClass(obj, 'matlab.ui.control.UIControl');
             testcase.verifySameHandle(obj.Parent, gcf);
             testcase.verifyEqual(obj.Tag, 'Test');
-            testcase.verifyEqual(obj.Visible, 'off'); % empty should automatically set visible off.
         end
         
         function testPositioning(testcase)
