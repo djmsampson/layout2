@@ -1,6 +1,5 @@
 classdef tTabPanel  < ContainerSharedTests ...
-        & PanelTests ...
-        & SelectablePanelTests
+        & PanelTests
     %TTABPANEL unit tests for uiextras.TabPanel
     
     properties (TestParameter)
@@ -53,13 +52,13 @@ classdef tTabPanel  < ContainerSharedTests ...
             
             testcase.verifyEqual(get(obj, 'Callback'), ValidCallbacks);
         end
-         
+        
         function testTabPanelGetSetOnSelectionChanged(testcase, ValidCallbacks)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
             set(obj, 'SelectionChangedFcn', ValidCallbacks);
             
             testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), ValidCallbacks);
-        end     
+        end
         
         function testTabPanelOnSelectionChangedCallbackExecutes(testcase)
             [obj, ~] = testcase.hBuildRGBBox('uiextras.TabPanel');
@@ -67,10 +66,10 @@ classdef tTabPanel  < ContainerSharedTests ...
             % MATLAB did not correctly set callbacks when defined as a test
             % parameter.
             callbackCell = {...
-            @(varargin)testcase.selectionChangedCallback, ...
-            @testcase.selectionChangedCallback, ...
-            {@testcase.selectionChangedCallback, 2, 3 ,4} ...
-            };
+                @(varargin)testcase.selectionChangedCallback, ...
+                @testcase.selectionChangedCallback, ...
+                {@testcase.selectionChangedCallback, 2, 3 ,4} ...
+                };
             
             for i = 1:numel(callbackCell)
                 % set new callback
@@ -106,4 +105,3 @@ classdef tTabPanel  < ContainerSharedTests ...
     end
     
 end
-

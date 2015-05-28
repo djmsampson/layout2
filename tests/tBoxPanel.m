@@ -1,7 +1,6 @@
 classdef tBoxPanel  < ContainerSharedTests ...
-        & PanelTests ...
-        & SelectablePanelTests
-%TBOXPANEL unit tests for uiextras.BoxPanel
+        & PanelTests
+    %TBOXPANEL unit tests for uiextras.BoxPanel
     
     properties (TestParameter)
         ContainerType   = {'uiextras.BoxPanel'};
@@ -33,4 +32,3 @@ classdef tBoxPanel  < ContainerSharedTests ...
     end
     
 end
-
