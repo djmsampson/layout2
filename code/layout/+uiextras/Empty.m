@@ -1,7 +1,7 @@
 function obj = Empty( varargin )
 %uiextras.Empty  Create an empty space
 %
-%   obj = uiextras.Empty() creates a placeholder that can be used to add
+%   obj = uiextras.Empty() creates an empty space that can be used to add
 %   gaps between elements in layouts.
 %
 %   obj = uiextras.Empty(param,value,...) also sets one or more property
