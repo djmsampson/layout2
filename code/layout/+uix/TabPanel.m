@@ -1,4 +1,4 @@
-classdef TabPanel < uix.Container
+classdef TabPanel < uix.Container & uix.mixin.Container
     %uix.TabPanel  Tab panel
     %
     %  p = uix.TabPanel(p1,v1,p2,v2,...) constructs a tab panel and sets
@@ -84,8 +84,9 @@ classdef TabPanel < uix.Container
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructor
+            % Call superclass constructors
             obj@uix.Container()
+            obj@uix.mixin.Container()
             
             % Create observers and listeners
             locationObserver = uix.LocationObserver( obj );
@@ -752,7 +753,7 @@ classdef TabPanel < uix.Container
             obj.TabHeight = -1;
             
             % Call superclass method
-            addChild@uix.Container( obj, child )
+            addChild@uix.mixin.Container( obj, child )
             
             % Notify selection change
             if oldSelection ~= newSelection
@@ -802,7 +803,7 @@ classdef TabPanel < uix.Container
             end
             
             % Call superclass method
-            removeChild@uix.Container( obj, child )
+            removeChild@uix.mixin.Container( obj, child )
             
             % Notify selection change
             if oldSelection == index
@@ -827,7 +828,7 @@ classdef TabPanel < uix.Container
             end
             
             % Call superclass method
-            reorder@uix.Container( obj, indices )
+            reorder@uix.mixin.Container( obj, indices )
             
         end % reorder
         
@@ -865,7 +866,7 @@ classdef TabPanel < uix.Container
             end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.mixin.Container( obj, oldAncestors, newAncestors )
             
         end % reparent
         
