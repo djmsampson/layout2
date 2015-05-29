@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="1121510913" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="1565687310" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -14,7 +14,7 @@
 &lt;/ul&gt;
 &lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the &lt;a href="http://www.mathworks.com/services/consulting/"&gt;Consulting Services&lt;/a&gt; group at MathWorks.&lt;/p&gt;</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.1.1</param.version>
+    <param.version>2.1.2</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
