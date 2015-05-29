@@ -19,26 +19,64 @@ function obj = Empty( varargin )
 %   Copyright 2009-2015 The MathWorks, Inc.
 %   $Revision: 919 $ $Date: 2014-06-03 11:05:38 +0100 (Tue, 03 Jun 2014) $
 
-% Disable warning
-oldState = warning( 'off', 'MATLAB:hg:uicontrol:MinMustBeLessThanMax' );
+% Create uicontainer
+obj = matlab.ui.container.internal.UIContainer( 'Tag', 'empty', varargin{:} );
 
-% Initialize error flag
-ok = true;
+% Create Parent listener
+p = addprop( obj, 'ParentListener' );
+p.Hidden = true;
+obj.ParentListener = event.proplistener( obj, ...
+    findprop( obj, 'Parent' ), 'PostSet', @(~,~)onParentChanged(obj) );
 
-% Create a slider that cannot be rendered
-try
-    obj = matlab.ui.control.UIControl( 'Tag', 'empty', ...
-        varargin{:}, ...
-        'Style', 'slider', 'Min', 0, 'Max', -1 );
-catch e
-end
+% Create property for Parent color listener
+p = addprop( obj, 'ParentColorListener' );
+p.Hidden = true;
 
-% Restore warning state
-warning( oldState )
-
-% Rethrow any error
-if ~ok
-    rethrow( e )
-end
+% Initialize
+onParentChanged( obj )
 
 end % uix.Empty
+
+function onParentChanged( obj )
+%onParentColorChanged  Event handler
+
+parent = obj.Parent;
+if isempty( parent )
+    obj.ParentColorListener = [];
+else
+    property = getColorProperty( parent );
+    obj.ParentColorListener = event.proplistener( parent, ...
+        findprop( parent, property ), 'PostSet', ...
+        @(~,~)onParentColorChanged(obj) );
+end
+
+end % onParentChanged
+
+function onParentColorChanged( obj )
+%onParentColorChanged  Event handler
+
+% Set uicontainer BackgroundColor to match Parent
+parent = obj.Parent;
+property = getColorProperty( parent );
+color = parent.( property );
+try
+    obj.BackgroundColor = color;
+catch e
+    warning( e.identifier, e.message ) % rethrow as warning
+end
+
+end % onParentColorChanged
+
+function name = getColorProperty( obj )
+%getColorProperty  Get color property
+
+names = {'Color','BackgroundColor'}; % possible names
+for ii = 1:numel( names ) % loop over possible names
+    name = names{ii};
+    if isprop( obj, name )
+        return
+    end
+end
+error( 'Cannot find color property for %s.', class( obj ) )
+
+end % getColorProperty
