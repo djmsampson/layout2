@@ -59,6 +59,56 @@ classdef Panel < uix.mixin.Container
     
     methods( Access = protected )
         
+        function redrawContents( obj, position )
+            %redrawContents  Redraw contents
+            
+            % Set positions and visibility
+            children = obj.Contents_;
+            selection = obj.Selection_;
+            for ii = 1:numel( children )
+                child = children(ii);
+                if ii == selection
+                    if obj.G1218142
+                        warning( 'uix:G1218142', ...
+                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
+                            class( obj ) )
+                        obj.G1218142 = false;
+                    else
+                        child.Visible = 'on';
+                    end
+                    child.Units = 'pixels';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        switch child.ActivePositionProperty
+                            case 'position'
+                                child.Position = position;
+                            case 'outerposition'
+                                child.OuterPosition = position;
+                            otherwise
+                                error( 'uix:InvalidState', ...
+                                    'Unknown value ''%s'' for property ''ActivePositionProperty'' of %s.', ...
+                                    child.ActivePositionProperty, class( child ) )
+                        end
+                        child.ContentsVisible = 'on';
+                    else
+                        child.Position = position;
+                    end
+                else
+                    child.Visible = 'off';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'off';
+                    end
+                    % As a remedy for g1100294, move off-screen too
+                    if isa( child, 'matlab.graphics.axis.Axes' ) ...
+                            && strcmp(child.ActivePositionProperty, 'outerposition' )
+                        child.OuterPosition(1) = -child.OuterPosition(3)-20;
+                    else
+                        child.Position(1) = -child.Position(3)-20;
+                    end
+                end
+            end
+            
+        end % redrawContents
+        
         function addChild( obj, child )
             
             % Check for bug
