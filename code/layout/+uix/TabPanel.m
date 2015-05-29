@@ -349,29 +349,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
         end % get.Selection
         
-        function set.SelectionChangedFcn( obj, value )
-            
-            % Check
-            if ischar( value ) % string
-                % OK
-            elseif isa( value, 'function_handle' ) && ...
-                    isequal( size( value ), [1 1] ) % function handle
-                % OK
-            elseif iscell( value ) && ndims( value ) == 2 && ...
-                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
-                    isa( value{1}, 'function_handle' ) && ...
-                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
-                % OK
-            else
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
-            end
-            
-            % Set
-            obj.SelectionChangedFcn = value;
-            
-        end % set.SelectionChangedFcn
-        
         function set.Selection( obj, value ) % TODO
             
             % Check
@@ -407,6 +384,29 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 uix.SelectionEvent( oldSelection, newSelection ) )
             
         end % set.Selection
+        
+        function set.SelectionChangedFcn( obj, value )
+            
+            % Check
+            if ischar( value ) % string
+                % OK
+            elseif isa( value, 'function_handle' ) && ...
+                    isequal( size( value ), [1 1] ) % function handle
+                % OK
+            elseif iscell( value ) && ndims( value ) == 2 && ...
+                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
+                    isa( value{1}, 'function_handle' ) && ...
+                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                % OK
+            else
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
+            end
+            
+            % Set
+            obj.SelectionChangedFcn = value;
+            
+        end % set.SelectionChangedFcn
         
         function value = get.ShadowColor( obj )
             
