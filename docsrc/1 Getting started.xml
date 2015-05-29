@@ -134,6 +134,15 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.1.2">
+        <ul>
+            <li>Released 29 May 2015</li>
+            <li>Fixed G1250248 "uix.Empty becomes visible in a panel"</li>
+            <li>Fixed G1250249 "property 'Selection' is missing in uix.BoxPanel"</li>
+            <li>Minor updates to documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.1.1">
         <ul>
             <li>Released 15 May 2015</li>
