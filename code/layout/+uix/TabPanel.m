@@ -84,10 +84,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructors
-            obj@uix.Container()
-            obj@uix.mixin.Container()
-            
             % Create observers and listeners
             locationObserver = uix.LocationObserver( obj );
             backgroundColorListener = event.proplistener( obj, ...
