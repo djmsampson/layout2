@@ -332,7 +332,7 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Call superclass method
-            unparent@uix.Container( obj, oldAncestors )
+            unparent@uix.HBox( obj, oldAncestors )
             
         end % unparent
         
@@ -378,7 +378,7 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.HBox( obj, oldAncestors, newAncestors )
             
             % Update pointer
             obj.onMouseMotion( ancestor( obj, 'figure' ), [] )

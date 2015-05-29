@@ -1,25 +1,20 @@
-classdef Container < matlab.ui.container.internal.UIContainer & uix.mixin.Container
+classdef Container < matlab.ui.container.internal.UIContainer
     %uix.Container  Container base class
     %
-    %  uix.Container is base class for containers that extend uicontainer
-    %  and that include various standard properties and template methods.
+    %  uix.Container is base class for containers that extend uicontainer.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     methods
         
-        function obj = Container( varargin )
+        function obj = Container()
+            %uix.Container  Initialize
+            %
+            %  c@uix.Container() initializes the container c.
             
-            % Call superclass constructors
+            % Call superclass constructor
             obj@matlab.ui.container.internal.UIContainer()
-            obj@uix.mixin.Container()
-            
-            % Set properties
-            if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
-            end
             
         end % constructor
         

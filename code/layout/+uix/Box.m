@@ -1,4 +1,4 @@
-classdef Box < uix.Container
+classdef Box < uix.Container & uix.mixin.Container
     %uix.Box  Box and grid base class
     %
     %  uix.Box is a base class for containers with spacing between
@@ -17,16 +17,14 @@ classdef Box < uix.Container
     
     methods
         
-        function obj = Box( varargin )
+        function obj = Box()
+            %uix.Box  Initialize
+            %
+            %  b@uix.Box() initializes the box b.
             
-            % Call superclass constructor
+            % Call superclass constructors
             obj@uix.Container()
-            
-            % Set properties
-            if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
-            end
+            obj@uix.mixin.Container()
             
         end % constructor
         

@@ -452,7 +452,7 @@ classdef GridFlex < uix.Grid
             end
             
             % Call superclass method
-            unparent@uix.Container( obj, oldAncestors )
+            unparent@uix.mixin.Container( obj, oldAncestors )
             
         end % unparent
         
@@ -498,7 +498,7 @@ classdef GridFlex < uix.Grid
             end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.mixin.Container( obj, oldAncestors, newAncestors )
             
             % Update pointer
             obj.onMouseMotion( ancestor( obj, 'figure' ), [] )

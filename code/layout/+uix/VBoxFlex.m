@@ -336,7 +336,7 @@ classdef VBoxFlex < uix.VBox
             end
             
             % Call superclass method
-            unparent@uix.Container( obj, oldAncestors )
+            unparent@uix.VBox( obj, oldAncestors )
             
         end % unparent
         
@@ -382,7 +382,7 @@ classdef VBoxFlex < uix.VBox
             end
             
             % Call superclass method
-            reparent@uix.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.VBox( obj, oldAncestors, newAncestors )
             
             % Update pointer
             obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
