@@ -50,16 +50,16 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
                          <name>BorderType</name>
-                         <value>[ none | etchedin | etchedout | beveledin | beveledout | line ]</value>
+                         <value>none | etchedin | etchedout | beveledin | beveledout | line</value>
                          <description>Type of border around the uipanel area.</description>
                      </property>
                      <property>
@@ -68,25 +68,25 @@
                          <description>Width of the panel border.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>FontAngle</name>
-                         <value>[ normal | italic | oblique ]</value>
+                         <value>normal | italic | oblique</value>
                          <description>Title font angle.</description>
                      </property>
                      <property>
@@ -101,12 +101,12 @@
                      </property>
                      <property>
                          <name>FontUnits</name>
-                         <value>[ inches | centimeters | normalized | points | pixels ]</value>
+                         <value>inches | centimeters | normalized | points | pixels</value>
                          <description>Title font units for measuring size.</description>
                      </property>
                      <property>
                          <name>FontWeight</name>
-                         <value>[ light | normal | demi | bold ]</value>
+                         <value>light | normal | demi | bold</value>
                          <description>Title font weight.</description>
                      </property>
                      <property>
@@ -126,13 +126,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Selection</name>
@@ -147,7 +147,7 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Title</name>
@@ -156,23 +156,23 @@
                      </property>
                      <property>
                          <name>TitlePosition</name>
-                         <value>[ lefttop | centertop | righttop | leftbottom | centerbottom | rightbottom ]</value>
+                         <value>lefttop | centertop | righttop | leftbottom | centerbottom | rightbottom</value>
                          <description>Location of title string in relation to the panel.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -251,27 +251,27 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
@@ -282,13 +282,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Selection</name>
@@ -298,22 +298,22 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -383,22 +383,22 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
                          <name>BorderType</name>
-                         <value>[ none | etchedin | etchedout | beveledin | beveledout | line ]</value>
+                         <value>none | etchedin | etchedout | beveledin | beveledout | line</value>
                          <description>Type of border around the title and content areas.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>CloseRequestFcn</name>
@@ -408,7 +408,7 @@
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <property>
                          <name>DockFcn</name>
@@ -418,13 +418,13 @@
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>FontAngle</name>
-                         <value>[ normal | italic | oblique ]</value>
+                         <value>normal | italic | oblique</value>
                          <description>Title font angle.</description>
                      </property>
                      <property>
@@ -439,12 +439,12 @@
                      </property>
                      <property>
                          <name>FontUnits</name>
-                         <value>[ inches | centimeters | normalized | points | pixels ]</value>
+                         <value>inches | centimeters | normalized | points | pixels</value>
                          <description>Title font units for measuring size.</description>
                      </property>
                      <property>
                          <name>FontWeight</name>
-                         <value>[ light | normal | demi | bold ]</value>
+                         <value>light | normal | demi | bold</value>
                          <description>Title font weight.</description>
                      </property>
                      <property>
@@ -484,13 +484,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Selection</name>
@@ -505,7 +505,7 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Title</name>
@@ -520,17 +520,17 @@
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen. See the <ref link="VisibleExample">visible example</ref> for more details.</description>
+                         <value>on | off</value>
+                         <description>Visibility. See the <ref link="VisibleExample">visible example</ref> for more details.</description>
                      </property>
                  </propertytable>                 
              
@@ -608,33 +608,33 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>FontAngle</name>
-                         <value>[ normal | italic | oblique ]</value>
+                         <value>normal | italic | oblique</value>
                          <description>Title font angle.</description>
                      </property>
                      <property>
@@ -649,12 +649,12 @@
                      </property>
                      <property>
                          <name>FontUnits</name>
-                         <value>[ inches | centimeters | normalized | points | pixels ]</value>
+                         <value>inches | centimeters | normalized | points | pixels</value>
                          <description>Title font units for measuring size.</description>
                      </property>
                      <property>
                          <name>FontWeight</name>
-                         <value>[ light | normal | demi | bold ]</value>
+                         <value>light | normal | demi | bold</value>
                          <description>Title font weight.</description>
                      </property>
                      <property>
@@ -689,13 +689,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Selection</name>
@@ -714,7 +714,7 @@
                      </property>
                      <property>
                          <name>TabEnables</name>
-                         <value>cell array of [ on | off ]</value>
+                         <value>cell array of on | off</value>
                          <description>A list of the enabled state of each tab (default is all 'on').</description>
                      </property>
                      <property>
@@ -730,22 +730,22 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -825,34 +825,34 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>MinimumWidths</name>
                          <value>double vector</value>
-                         <description>The minimum width in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -861,13 +861,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -877,27 +877,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                      <property>
                          <name>Widths</name>
                          <value>double vector</value>
-                         <description>The width of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                         <description>Width of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
                  </propertytable>                 
              
@@ -974,39 +974,39 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
-                         <description>The height of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                         <description>Height of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
                      <property>
                          <name>MinimumHeights</name>
                          <value>double vector</value>
-                         <description>The minimum height in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1015,13 +1015,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1031,22 +1031,22 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -1126,39 +1126,39 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <property>
                          <name>DividerMarkings</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>MinimumWidths</name>
                          <value>double vector</value>
-                         <description>The minimum width in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1167,13 +1167,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1183,27 +1183,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                      <property>
                          <name>Widths</name>
                          <value>double vector</value>
-                         <description>The width of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                         <description>Width of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
                  </propertytable>                 
              
@@ -1269,44 +1269,44 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <property>
                          <name>DividerMarkings</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
-                         <description>The height of each of the child elements. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the number of elements (children).</description>
+                         <description>Height of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
                      <property>
                          <name>MinimumHeights</name>
                          <value>double vector</value>
-                         <description>The minimum height in pixels for each of the child elements. The size of this vector must always match the number of elements (children).</description>
+                         <description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1315,13 +1315,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1331,22 +1331,22 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -1417,12 +1417,12 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
                          <name>ButtonSize</name>
@@ -1430,25 +1430,25 @@
                          <description>The size for the buttons (all are given equal size).</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>HorizontalAlignment</name>
-                         <value>[ left | center | right ]</value>
+                         <value>left | center | right</value>
                          <description>The horizontal position of the buttons.</description>
                      </property>
                      <property>
@@ -1458,13 +1458,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1474,27 +1474,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>VerticalAlignment</name>
-                         <value>[ top | middle | bottom ]</value>
+                         <value>top | middle | bottom</value>
                          <description>The vertical position of the buttons.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -1563,12 +1563,12 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
                          <name>ButtonSize</name>
@@ -1576,25 +1576,25 @@
                          <description>The size for the buttons (all are given equal size).</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>HorizontalAlignment</name>
-                         <value>[ left | center | right ]</value>
+                         <value>left | center | right</value>
                          <description>The horizontal position of the buttons.</description>
                      </property>
                      <property>
@@ -1604,13 +1604,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1620,27 +1620,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>VerticalAlignment</name>
-                         <value>[ top | middle | bottom ]</value>
+                         <value>top | middle | bottom</value>
                          <description>The vertical position of the buttons.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
@@ -1715,34 +1715,34 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
-                         <description>The height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                         <description>Height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1751,13 +1751,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1767,27 +1767,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                      <property>
                          <name>Widths</name>
                          <value>double vector</value>
-                         <description>The width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                         <description>Width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                  </propertytable>                 
              
@@ -1855,39 +1855,39 @@
                      <property>
                          <name>BackgroundColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
-                         <description>The color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
                      </property>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
                      </property>
                      <property>
-                         <name>Children</name>
-                         <value>handle array</value>
-                         <description>List of child objects within this layout (note that this can only be set to permutations of itself).</description>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
                      </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
-                         <description>Function to call when the layout is being deleted</description>
+                         <description>Function to call when the layout is being deleted.</description>
                      </property>
                      <property>
                          <name>DividerMarkings</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
                      <!--
                      <property>
                          <name>Enable</name>
-                         <value>[ on | off ]</value>
+                         <value>on | off</value>
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
                      <property>
                          <name>Heights</name>
                          <value>double vector</value>
-                         <description>The height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                         <description>Height of each of the rows. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -1896,13 +1896,13 @@
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Spacing</name>
@@ -1912,27 +1912,27 @@
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with layout.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                      <property>
                          <name>Widths</name>
                          <value>double vector</value>
-                         <description>The width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
+                         <description>Width of each of the columns. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing.</description>
                      </property>
                  </propertytable>                 
              
@@ -1990,43 +1990,48 @@
                  
              </dl>
              
-                    
              <h3>uix.Empty properties</h3>
+                 <p>The empty space is achieved using an unrendered uicontrol.</p>
                  <propertytable>
                      <property>
                          <name>BeingDeleted</name>
-                         <value>[ on | off ]</value>
-                         <description>is the object in the process of being deleted.</description>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
+                     </property>
+                     <property>
+                         <name>HandleVisibility</name>
+                         <value>on | off</value>
+                         <description>Visibility of the object.</description>
                      </property>
                      <property>
                          <name>Parent</name>
-                         <value>handle</value>
-                         <description>The handle of the parent figure or container.</description>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the object.</description>
                      </property>
                      <property>
                          <name>Position</name>
                          <value>[x y w h]</value>
-                         <description>The position (x,y) and size (w,h) of the layout.</description>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
                      <property>
                          <name>Tag</name>
                          <value>string</value>
-                         <description>A string that can be used to identify this object later.</description>
+                         <description>Tag to associate with object.</description>
                      </property>
                      <property>
                          <name>Type</name>
                          <value>string</value>
-                         <description>the object type (class).</description>
+                         <description>Type of graphics object.</description>
                      </property>
                      <property>
                          <name>Units</name>
-                         <value>[ inches | centimeters | normalized | points | pixels | characters ]</value>
-                         <description>The units of measurement for position the layout within its parent.</description>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
                      </property>
                      <property>
                          <name>Visible</name>
-                         <value>[ on | off ]</value>
-                         <description>Is the object visible on screen.</description>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
                      </property>
                  </propertytable>                 
              
