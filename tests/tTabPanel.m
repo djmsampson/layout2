@@ -84,6 +84,35 @@ classdef tTabPanel  < ContainerSharedTests ...
             end
         end
         
+        function testContextMenuReparents(testcase)
+            % test for g1250808 where reparenting a tab panel to a
+            % different figure causes the context menus to be orphaned.
+            
+            f = figure;
+            obj = uix.TabPanel( 'Parent', f );
+            obj.Position = [0.1 0.1 0.8 0.8];
+            for ii = 1:3
+                uicontrol( 'Parent', obj );
+            end
+            % Create a context menu
+            contextMenu = uicontextmenu( 'Parent', f );
+            uimenu( 'Parent', contextMenu, 'Label', 'Red' );
+            uimenu( 'Parent', contextMenu, 'Label', 'Green' );
+            uimenu( 'Parent', contextMenu, 'Label', 'Blue' );
+            obj.TabContextMenus{2} = contextMenu;
+            % Reparent to a new figure
+            g = figure;
+            obj.Parent = g;
+            testcase.verifyEqual( contextMenu.Parent, g );
+            % Unparent
+            obj.Parent = [];
+            testcase.verifyEmpty( contextMenu.Parent );
+            % Reparent within the current figure
+            u = uix.TabPanel( 'Parent', g, 'TabLocation', 'bottom' );
+            obj.Parent = u;
+            testcase.verifyEqual( contextMenu.Parent, g );
+            
+        end
         
         function testRotate3dDoesNotAddMoreTabs(testcase)
             % test for g1129721 where rotating an axis in a panel causes
