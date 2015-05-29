@@ -1,5 +1,5 @@
 % GUI Layout Toolbox
-% Version 2.1.1 (R2015a) 12-May-2015
+% Version 2.1.2 (R2015a) 29-May-2015
 %
 % Panels
 %   uix.Panel      - arrange a single element inside a standard panel
@@ -18,6 +18,9 @@
 % Grids
 %   uix.Grid       - arrange elements in a two-dimensional grid
 %   uix.GridFlex   - arrange elements in a two-dimensional grid with draggable dividers
+%
+% Other
+%   uix.Empty      - create an empty space
 
 %  Copyright 2009-2015 The MathWorks, Inc.
 %  $Revision$ $Date$
