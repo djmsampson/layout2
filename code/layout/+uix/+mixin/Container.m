@@ -1,10 +1,8 @@
 classdef Container < handle
     %uix.mixin.Container  Container mixin
     %
-    %  uix.mixin.Container is a mixin class used by uix.Container and
-    %  uix.Panel to provide various properties and template methods.
-    %
-    %  c@uix.mixin.Container() initializes the container c.
+    %  uix.mixin.Container is a mixin class used by containers to provide
+    %  various properties and template methods.
     
     %  Copyright 2009-2014 The MathWorks, Inc.
     %  $Revision$ $Date$

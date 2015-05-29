@@ -22,10 +22,6 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
             %  p = uix.Panel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructors
-            obj@matlab.ui.container.Panel()
-            obj@uix.mixin.Panel()
-            
             % Set properties
             if nargin > 0
                 uix.pvchk( varargin )

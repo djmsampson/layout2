@@ -42,9 +42,6 @@ classdef VBoxFlex < uix.VBox
             %  b = uix.VBoxFlex(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructor
-            obj@uix.VBox()
-            
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
                 'Orientation', 'horizontal', ...

@@ -22,9 +22,6 @@ classdef HButtonBox < uix.ButtonBox
             %  b = uix.HButtonBox(p1,v1,p2,v2,...) sets parameter p1 to
             %  value v1, etc.
             
-            % Call superclass constructor
-            obj@uix.ButtonBox()
-            
             % Set properties
             if nargin > 0
                 uix.pvchk( varargin )

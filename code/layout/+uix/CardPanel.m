@@ -22,10 +22,6 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
             %  p = uix.CardPanel(p1,v1,p2,v2,...) sets parameter p1 to
             %  value v1, etc.
             
-            % Call superclass constructors
-            obj@uix.Container()
-            obj@uix.mixin.Panel()
-            
             % Set properties
             if nargin > 0
                 uix.pvchk( varargin )

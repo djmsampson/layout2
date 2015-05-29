@@ -69,10 +69,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             %  p = uix.BoxPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructors
-            obj@uix.Container()
-            obj@uix.mixin.Panel()
-            
             % Set default colors
             defaultTitleColor = [0.05 0.25 0.5];
             defaultForegroundColor = [1 1 1];

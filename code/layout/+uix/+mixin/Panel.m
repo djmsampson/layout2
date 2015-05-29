@@ -1,13 +1,10 @@
 classdef Panel < uix.mixin.Container
     %uix.mixin.Panel  Panel mixin
     %
-    %  uix.mixin.Panel is a mixin class used by uix.Panel, uix.CardPanel,
-    %  uix.BoxPanel and uix.TabPanel to provide various properties and
-    %  template methods.
-    %
-    %  p@uix.mixin.Panel() initializes the panel p.
+    %  uix.mixin.Panel is a mixin class used by panels to provide various
+    %  properties and template methods.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision: 1077 $ $Date: 2015-03-19 16:44:14 +0000 (Thu, 19 Mar 2015) $
     
     properties( Access = public, Dependent, AbortSet )
@@ -21,20 +18,6 @@ classdef Panel < uix.mixin.Container
     properties( Access = protected )
         G1218142 = false % bug flag
     end
-    
-    methods
-        
-        function obj = Panel()
-            %uix.mixin.Panel  Initialize
-            %
-            %  p@uix.mixin.Panel() initializes the panel p.
-            
-            % Call superclass constructor
-            obj@uix.mixin.Container()
-            
-        end % constructor
-        
-    end % structors
     
     methods
         

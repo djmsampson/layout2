@@ -17,21 +17,6 @@ classdef Box < uix.Container & uix.mixin.Container
     
     methods
         
-        function obj = Box()
-            %uix.Box  Initialize
-            %
-            %  b@uix.Box() initializes the box b.
-            
-            % Call superclass constructors
-            obj@uix.Container()
-            obj@uix.mixin.Container()
-            
-        end % constructor
-        
-    end % structors
-    
-    methods
-        
         function value = get.Spacing( obj )
             
             value = obj.Spacing_;

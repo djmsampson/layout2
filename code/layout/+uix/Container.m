@@ -6,18 +6,4 @@ classdef Container < matlab.ui.container.internal.UIContainer
     %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
-    methods
-        
-        function obj = Container()
-            %uix.Container  Initialize
-            %
-            %  c@uix.Container() initializes the container c.
-            
-            % Call superclass constructor
-            obj@matlab.ui.container.internal.UIContainer()
-            
-        end % constructor
-        
-    end % structors
-    
 end % classdef

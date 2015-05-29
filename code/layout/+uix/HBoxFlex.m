@@ -42,9 +42,6 @@ classdef HBoxFlex < uix.HBox
             %  b = uix.HBoxFlex(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Call superclass constructor
-            obj@uix.HBox()
-            
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, ...
                 'Orientation', 'vertical', ...

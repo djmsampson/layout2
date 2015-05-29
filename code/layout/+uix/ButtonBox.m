@@ -20,23 +20,6 @@ classdef ButtonBox < uix.Box
     
     methods
         
-        function obj = ButtonBox( varargin )
-            
-            % Call superclass constructor
-            obj@uix.Box()
-            
-            % Set properties
-            if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
-            end
-            
-        end % constructor
-        
-    end % structors
-    
-    methods
-        
         function value = get.ButtonSize( obj )
             
             value = obj.ButtonSize_;
