@@ -11,7 +11,7 @@ classdef tEmpty < matlab.unittest.TestCase
     methods (Test)  
         function testDefaultConstructor(testcase)
             %testDefaultConstructor  Test constructing the widget with no arguments
-            testcase.verifyClass(uiextras.Empty(), 'matlab.ui.control.UIControl');
+            testcase.verifyClass(uiextras.Empty(), 'matlab.ui.container.internal.UIContainer');
         end
         
         function testConstructionArguments(testcase)
@@ -22,7 +22,7 @@ classdef tEmpty < matlab.unittest.TestCase
                 }';
             
             obj = uiextras.Empty( args{:} );
-            testcase.verifyClass(obj, 'matlab.ui.control.UIControl');
+            testcase.verifyClass(obj, 'matlab.ui.container.internal.UIContainer');
             testcase.verifySameHandle(obj.Parent, gcf);
             testcase.verifyEqual(obj.Tag, 'Test');
         end
