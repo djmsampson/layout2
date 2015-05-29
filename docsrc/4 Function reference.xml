@@ -1991,7 +1991,8 @@
              </dl>
              
              <h3>uix.Empty properties</h3>
-                 <p>The empty space is achieved using an unrendered uicontrol.</p>
+                 <p>The empty space is achieved using a container that monitors 
+                 its parent's color and changes its own to match.</p>
                  <propertytable>
                      <property>
                          <name>BeingDeleted</name>
