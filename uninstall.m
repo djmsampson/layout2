@@ -12,8 +12,8 @@ function uninstall()
 % Folders to remove
 thisFolder = fileparts( mfilename( 'fullpath' ) );
 foldersToRemove = {
-    fullfile(thisFolder, 'layout')
-    fullfile(thisFolder, 'layoutdoc')
+    fullfile( thisFolder, 'tbx', 'layout')
+    fullfile( thisFolder, 'tbx', 'layoutdoc')
     };
 
 % Capture path

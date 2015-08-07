@@ -12,8 +12,8 @@ function install()
 % Folders to add
 thisFolder = fileparts( mfilename( 'fullpath' ) );
 foldersToAdd = {
-    fullfile(thisFolder, 'layout')
-    fullfile(thisFolder, 'layoutdoc')
+    fullfile( thisFolder, 'tbx', 'layout')
+    fullfile( thisFolder, 'tbx', 'layoutdoc')
     };
 
 % Capture path
