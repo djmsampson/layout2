@@ -23,7 +23,8 @@ switch nargin
 end
 
 %% Grab this directory and the current directory
-codeDir = fileparts( mfilename( 'fullpath' ) );
+prjDir = fileparts( mfilename( 'fullpath' ) );
+tbxDir = fullfile( prjDir, 'tbx' );
 currentDir = pwd;
 
 %% Check MATLAB and related tools
@@ -43,27 +44,27 @@ switch numel( v )
         fprintf( 1, ' failed.\n' );
         error( 'There are multiple copies of GUI Layout Toolbox on the MATLAB path.' )
 end
-if strncmp( which( 'layoutRoot' ), codeDir, numel( codeDir ) )
+if strncmp( which( 'layoutRoot' ), tbxDir, numel( tbxDir ) )
     fprintf( 1, ' OK.\n' );
 else
     fprintf( 1, ' failed.\n' );
-    error( 'GUI Layout Toolbox code at %s is not on the MATLAB path.', codeDir )
+    error( 'GUI Layout Toolbox code at %s is not on the MATLAB path.', prjDir )
 end
 
 %% Build documentation
 fprintf( 1, 'Generating documentation...' );
 try
-    cd( fullfile( fileparts( codeDir ), 'docsrc' ) )
+    cd( fullfile( fileparts( prjDir ), 'docsrc' ) )
     log = evalc( 'buildDoc' );
     close( 'all', 'force' )
     drawnow()
-    cd( codeDir )
+    cd( prjDir )
     fprintf( 1, ' OK.\n' );
     if verbose
         fprintf( 1, '%s', log );
     end
 catch e
-    cd( codeDir )
+    cd( prjDir )
     fprintf( 1, ' failed.\n' );
     e.rethrow()
 end
@@ -71,21 +72,21 @@ end
 %% Build examples
 fprintf( 1, 'Generating examples...' );
 try
-    cd( fullfile( fileparts( codeDir ), 'docsrc' ) )
+    cd( fullfile( fileparts( prjDir ), 'docsrc' ) )
     buildDocExamples()
     close all force
     drawnow
-    cd( codeDir )
+    cd( prjDir )
     fprintf( 1, ' OK.\n' );
 catch e
-    cd( codeDir )
+    cd( prjDir )
     fprintf( 1, ' OK.\n' );
     e.rethrow()
 end
 
 %% Run tests
 fprintf( 1, 'Running tests...' );
-cd( fullfile( fileparts( codeDir ), 'tests' ) )
+cd( fullfile( fileparts( prjDir ), 'tests' ) )
 [log, results] = evalc( 'runtests' );
 cd( currentDir )
 if ~any( [results.Failed] )
@@ -98,12 +99,12 @@ end
 %% Package and rename
 fprintf( 1, 'Packaging...' );
 try
-    prj = fullfile( codeDir, 'GUI Layout Toolbox.prj' );
+    prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
     name = char( com.mathworks.toolbox_packaging.services.ToolboxPackagingService.openProject( prj ) );
     com.mathworks.toolbox_packaging.services.ToolboxPackagingService.packageProject( name )
     com.mathworks.toolbox_packaging.services.ToolboxPackagingService.closeProject( name )
-    oldMltbx = fullfile( codeDir, [name '.mltbx'] );
-    newMltbx = fullfile( fileparts( codeDir ), 'releases', [name ' ' v.Version '.mltbx'] );
+    oldMltbx = fullfile( prjDir, [name '.mltbx'] );
+    newMltbx = fullfile( fileparts( prjDir ), 'releases', [name ' ' v.Version '.mltbx'] );
     movefile( oldMltbx, newMltbx )
     fprintf( 1, ' OK.\n' );
 catch e

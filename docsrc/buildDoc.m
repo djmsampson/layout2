@@ -24,10 +24,10 @@ name = v.Name(1:end-8);
 fprintf('Building documentation for %s v%s...\n', name, verStr)
 
 % Work out where to put it
-srcDir = fileparts( mfilename('fullpath') );
-layoutDir = layoutRoot;
-parentDir = fileparts( layoutDir );
-dstDir = fullfile( parentDir, 'layoutdoc' );
+srcDir = fileparts( mfilename( 'fullpath' ) );
+layoutDir = layoutRoot();
+tbxDir = fileparts( layoutDir );
+dstDir = fullfile( tbxDir, 'layoutdoc' );
 
 % Now build the doc
 docBuild( name, verStr, srcDir, dstDir, type );

@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="1565687310" file="C:\Development\layouts2\code\GUI Layout Toolbox.prj" location="C:\Development\layouts2\code" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="1565687310" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -14,7 +14,7 @@
 &lt;/ul&gt;
 &lt;p&gt;This toolbox was developed by David Sampson and Ben Tordoff from the &lt;a href="http://www.mathworks.com/services/consulting/"&gt;Consulting Services&lt;/a&gt; group at MathWorks.&lt;/p&gt;</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.1.2</param.version>
+    <param.version>2.1.3</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -23,7 +23,7 @@
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>8.4</item>
+      <item>8.5</item>
     </param.products.version>
     <param.platforms />
     <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
@@ -35,29 +35,29 @@ release.m</param.exclude.filters>
 &lt;examples/&gt;</param.examples>
     <param.demosxml />
     <param.apps />
-    <param.docs>${PROJECT_ROOT}\layoutdoc\info.xml</param.docs>
+    <param.docs>${PROJECT_ROOT}\tbx\layoutdoc\info.xml</param.docs>
     <unset>
+      <param.email />
+      <param.company />
       <param.output />
       <param.platforms />
       <param.demosxml />
       <param.apps />
     </unset>
     <fileset.rootdir>
-      <file>C:\Development\layouts2\code</file>
+      <file>${PROJECT_ROOT}\tbx</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}\glt.png</file>
-      <file>${PROJECT_ROOT}\layout</file>
-      <file>${PROJECT_ROOT}\layoutdoc</file>
+      <file>${PROJECT_ROOT}\tbx\layout</file>
+      <file>${PROJECT_ROOT}\tbx\layoutdoc</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>
-      <file>${MATLAB_ROOT}\toolbox\local\pathdef.m</file>
-      <file>${MATLAB_ROOT}\toolbox\local\userpath.m</file>
+      <file>C:\Development\doctools\Package\DocToolsHelp\doc.m</file>
     </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Development\layouts2\code" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layouts2\code\GUI Layout Toolbox.mltbx</file>
+      <file location="C:\Development\layouts2" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layouts2\GUI Layout Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
