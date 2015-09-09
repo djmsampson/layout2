@@ -60,9 +60,6 @@ displayEndOfDemoMessage('')
             'Toolbar', 'none', ...
             'HandleVisibility', 'off' );
         
-        % Set default panel color
-        uiextras.set( gui.Window, 'DefaultBoxPanelTitleColor', [0.7 1.0 0.7] );
-        
         % + File menu
         gui.FileMenu = uimenu( gui.Window, 'Label', 'File' );
         uimenu( gui.FileMenu, 'Label', 'Exit', 'Callback', @onExit );
@@ -79,23 +76,25 @@ displayEndOfDemoMessage('')
         
         
         % Arrange the main interface
-        mainLayout = uiextras.HBoxFlex( 'Parent', gui.Window, 'Spacing', 3 );
+        mainLayout = uix.HBoxFlex( 'Parent', gui.Window, 'Spacing', 3 );
         
         % + Create the panels
-        controlPanel = uiextras.BoxPanel( ...
+        controlPanel = uix.BoxPanel( ...
             'Parent', mainLayout, ...
             'Title', 'Select a demo:' );
-        gui.ViewPanel = uiextras.BoxPanel( ...
+        gui.ViewPanel = uix.BoxPanel( ...
             'Parent', mainLayout, ...
             'Title', 'Viewing: ???', ...
             'HelpFcn', @onDemoHelp );
+        gui.ViewContainer = uicontainer( ...
+            'Parent', gui.ViewPanel );        
 
         % + Adjust the main layout
-        set( mainLayout, 'Sizes', [-1,-2]  );
+        set( mainLayout, 'Widths', [-1,-2]  );
         
         
         % + Create the controls
-        controlLayout = uiextras.VBox( 'Parent', controlPanel, ...
+        controlLayout = uix.VBox( 'Parent', controlPanel, ...
             'Padding', 3, 'Spacing', 3 );
         gui.ListBox = uicontrol( 'Style', 'list', ...
             'BackgroundColor', 'w', ...
@@ -107,10 +106,10 @@ displayEndOfDemoMessage('')
             'Parent', controlLayout, ...
             'String', 'Help for <demo>', ...
             'Callback', @onDemoHelp );
-        set( controlLayout, 'Sizes', [-1 28] ); % Make the list fill the space
+        set( controlLayout, 'Heights', [-1 28] ); % Make the list fill the space
         
         % + Create the view
-        p = gui.ViewPanel;
+        p = gui.ViewContainer;
         gui.ViewAxes = axes( 'Parent', p );
         
         
@@ -164,7 +163,7 @@ displayEndOfDemoMessage('')
         % Now copy the axes from the demo into our window and restore its
         % state.
         cmap = colormap( gui.ViewAxes );
-        set( gui.ViewAxes, 'Parent', double(gui.ViewPanel) );
+        set( gui.ViewAxes, 'Parent', gui.ViewContainer );
         colormap( gui.ViewAxes, cmap );
         rotate3d( gui.ViewAxes, 'on' );
         % Get rid of the demo figure

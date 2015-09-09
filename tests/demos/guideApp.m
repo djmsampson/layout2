@@ -61,14 +61,14 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % Put a layout in the panel
-g = uiextras.GridFlex( 'Parent', handles.uipanel1, ...
+g = uix.GridFlex( 'Parent', handles.uipanel1, ...
     'Units', 'Normalized', 'Position', [0 0 1 1], ...
     'Spacing', 5 );
-uiextras.BoxPanel( 'Parent', g, 'Title', 'Panel 1' );
-uiextras.BoxPanel( 'Parent', g, 'Title', 'Panel 2' );
-uiextras.BoxPanel( 'Parent', g, 'Title', 'Panel 3' );
-uiextras.BoxPanel( 'Parent', g, 'Title', 'Panel 4' );
-g.RowSizes = [-1 -1];
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 1' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 2' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 3' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 4' );
+g.Heights = [-1 -1];
 
 % UIWAIT makes guideApp wait for user response (see UIRESUME)
 % uiwait(handles.figure1);

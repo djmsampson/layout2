@@ -16,14 +16,14 @@ window = figure( 'Name', 'Axes inside layouts', ...
 %% Create the layout
 % The layout involves two axes side by side. This is done using a
 % flexible horizontal box. The left-hand axes is left with the
-% ActivePositionProperty set to "OuterPosition", but the right-hand axes is
+% ActivePositionProperty set to "outerposition", but the right-hand axes is
 % switched to use "Position"
-hbox = uiextras.HBoxFlex('Parent', window, 'Spacing', 3);
+hbox = uix.HBoxFlex('Parent', window, 'Spacing', 3);
 axes1 = axes( 'Parent', hbox, ...
-    'ActivePositionProperty', 'OuterPosition' );
+    'ActivePositionProperty', 'outerposition' );
 axes2 = axes( 'Parent', hbox, ...
     'ActivePositionProperty', 'Position' );
-set( hbox, 'Sizes', [-2 -1] );
+set( hbox, 'Widths', [-2 -1] );
 
 %% Fill the axes
 % Using "OuterPosition" (left-hand axes) is the normal mode and looks good

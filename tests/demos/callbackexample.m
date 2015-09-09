@@ -24,15 +24,15 @@ colorValues = [
 
 % Layout the interface
 f = figure();
-p = uiextras.Panel( 'Parent', f, 'Title', 'A Panel', 'TitlePosition', 'CenterTop');
-b = uiextras.HBoxFlex( 'Parent', p, 'Spacing', 5, 'Padding', 5  );
+p = uix.Panel( 'Parent', f, 'Title', 'A Panel', 'TitlePosition', 'CenterTop');
+b = uix.HBoxFlex( 'Parent', p, 'Spacing', 5, 'Padding', 5  );
 hList = uicontrol( 'Style', 'listbox', 'Parent', b, ...
     'String', colorNames, ...
     'Back', 'w' );
 hButton = uicontrol( 'Parent', b, ...
     'Background', colorValues(1,:), ...
     'String', colorNames{1} );
-set( b, 'Sizes', [-1 -3] );
+set( b, 'Widths', [-1 -3] );
 
 % Add user interactions
 set( hList, 'Callback', @onChangeColor );

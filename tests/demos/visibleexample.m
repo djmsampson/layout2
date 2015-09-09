@@ -12,10 +12,10 @@ fig = figure( 'Name', 'Visible example', ...
     'MenuBar', 'none', ...
     'ToolBar', 'none', ...
     'NumberTitle', 'off' );
-panel = uiextras.BoxPanel( 'Parent', fig, 'Title', 'Panel' );
+panel = uix.BoxPanel( 'Parent', fig, 'Title', 'Panel' );
 
 %% Put some buttons inside the panel
-box = uiextras.VButtonBox( 'Parent', panel );
+box = uix.VButtonBox( 'Parent', panel );
 uicontrol( 'Parent', box, 'String', 'Button 1' );
 uicontrol( 'Parent', box, 'String', 'Button 2' );
 uicontrol( 'Parent', box, 'String', 'Button 3', 'Visible', 'off' );

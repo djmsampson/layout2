@@ -9,23 +9,21 @@ fig = figure( 'Name', 'Dockable GUI example', ...'
     'Toolbar', 'none', ...
     'MenuBar', 'none', ...
     'CloseRequestFcn', @nCloseAll );
-box = uiextras.HBox( 'Parent', fig );
+box = uix.HBox( 'Parent', fig );
 
 % Add three panels to the box
-panel{1} = uiextras.BoxPanel( 'Title', 'Panel 1', ...
-    'DockFcn', {@nDock, 1}, ...
-    'Parent', box );
-panel{2} = uiextras.BoxPanel( 'Title', 'Panel 2', ...
-    'DockFcn', {@nDock, 2}, ...
-    'Parent', box );
-panel{3} = uiextras.BoxPanel( 'Title', 'Panel 3', ...
-    'DockFcn', {@nDock, 3}, ...
-    'Parent', box );
+panel{1} = uix.BoxPanel( 'Title', 'Panel 1', 'Parent', box );
+panel{2} = uix.BoxPanel( 'Title', 'Panel 2', 'Parent', box );
+panel{3} = uix.BoxPanel( 'Title', 'Panel 3', 'Parent', box );
 
 % Add some contents
 uicontrol( 'Style', 'PushButton', 'String', 'Button 1', 'Parent', panel{1} );
 uicontrol( 'Style', 'PushButton', 'String', 'Button 2', 'Parent', panel{2} );
-uicontrol( 'Style', 'PushButton', 'String', 'Button 3', 'Parent', panel{3} );
+box1 = uix.VBox( 'Parent', panel{3} );
+box2 = uix.HBox( 'Parent', box1 );
+uicontrol( 'Style', 'PushButton', 'String', 'Button 3', 'Parent', box1 );
+uicontrol( 'Style', 'PushButton', 'String', 'Button 4', 'Parent', box2 );
+uicontrol( 'Style', 'PushButton', 'String', 'Button 5', 'Parent', box2 );
 
 % Set the dock/undock callback
 set( panel{1}, 'DockFcn', {@nDock, 1} );
@@ -35,8 +33,8 @@ set( panel{3}, 'DockFcn', {@nDock, 3} );
 %-------------------------------------------------------------------------%
     function nDock( eventSource, eventData, whichpanel ) %#ok<INUSL>
         % Set the flag
-        panel{whichpanel}.IsDocked = ~panel{whichpanel}.IsDocked;
-        if panel{whichpanel}.IsDocked
+        panel{whichpanel}.Docked = ~panel{whichpanel}.Docked;
+        if panel{whichpanel}.Docked
             % Put it back into the layout
             newfig = get( panel{whichpanel}, 'Parent' );
             set( panel{whichpanel}, 'Parent', box );
