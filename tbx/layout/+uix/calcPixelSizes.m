@@ -42,4 +42,6 @@ else
         sum( pSizes(a|s) ), 0 );
     pSizes(~a&~s) = pTotalRelative * mSizes(~a&~s) / sum( mSizes(~a&~s) );
     
-end % getPixelPositions
+end
+
+end % calcPixelSizes
