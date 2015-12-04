@@ -201,3 +201,21 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     end % event handlers
     
 end % classdef
+
+function tf = isgraphics( o )
+%isgraphics  True for user-visible graphics objects
+%
+%  uix.ChildObserver needs to determine which objects are user-visible:
+%  * of type matlab.graphics.internal.GraphicsBaseFunctions
+%  * HandleVisibility 'on'
+%  * Internal false
+%
+%  Before R2016a, isgraphics returns true for objects of type
+%  matlab.graphics.internal.GraphicsBaseFunctions.
+%
+%  From R2016a, isgraphics returns true for objects of type
+%  matlab.graphics.Graphics.
+
+tf = isa( o, 'matlab.graphics.internal.GraphicsBaseFunctions' );
+
+end % isgraphics
