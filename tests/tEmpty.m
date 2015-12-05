@@ -37,7 +37,42 @@ classdef tEmpty < matlab.unittest.TestCase
             
             testcase.verifyEqual( e.Position, [1 1 250 500] );
         end
+        
+        function testInitialColor(testcase)
+            %testColor  Test background color
+            c = rand( [1 3] ); % random color
+            h = uiextras.HBox( 'Parent', figure, 'BackgroundColor', c );
+            
+            uicontrol( 'Parent', h );
+            e = uiextras.Empty( 'Parent', h );
+            uicontrol( 'Parent', h );
+            
+            testcase.verifyEqual( e.BackgroundColor, c );
+        end
+        
+        function testParentColorChanged(testcase)
+            %testParentColorChanged  Test color when Parent color changes
+            h = uiextras.HBox( 'Parent', figure );
+            uicontrol( 'Parent', h );
+            e = uiextras.Empty( 'Parent', h );
+            uicontrol( 'Parent', h );
+            
+            c = rand( [1 3] ); % random color
+            h.BackgroundColor = c;
+            
+            testcase.verifyEqual( e.BackgroundColor, c );
+        end    
+        
+        function testColorOnReparent(testcase)
+            %testColor  Test color when reparenting
+            c = rand( [1 3] ); % random color
+            h = uiextras.HBox( 'Parent', figure, 'BackgroundColor', c );
+            uicontrol( 'Parent', h );
+            
+            e = uiextras.Empty(); % unparented
+            e.Parent = h; % parent
+            
+            testcase.verifyEqual( e.BackgroundColor, c );
+        end    
     end
 end
-
-
