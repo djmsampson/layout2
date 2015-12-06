@@ -9,7 +9,7 @@ classdef Image < hgsetget
     %  vertically (unlike a uicontrol) and without the overhead of creating
     %  axes.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Access = private )
@@ -30,6 +30,10 @@ classdef Image < hgsetget
     properties( Dependent, Hidden )
         Internal % internal
         JData % Java integer image data
+    end
+    
+    properties( Constant, Hidden )
+        Scaling = scaling() % DPI scaling
     end
     
     methods
@@ -311,3 +315,12 @@ classdef Image < hgsetget
     end % static methods
     
 end % classdef
+
+function s = scaling()
+%scaling  DPI scaling
+
+jScreenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+mlScreenSize = get( groot(), 'ScreenSize' );
+s = jScreenSize.getWidth() / mlScreenSize(3);
+
+end % scaling
