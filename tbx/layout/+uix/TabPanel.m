@@ -893,12 +893,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                     case 'bottom'
                         jData = flipud( jData );
                 end
-                if ii == 1
-                    jData(:,1) = [];
-                    allJData(1:dtH,(ii-1)*(ddW+dtW)+(1:ddW+1)) = jData;
-                else
-                    allJData(1:dtH,(ii-1)*(ddW+dtW)+(0:ddW+1)) = jData;
-                end
+                allJData(1:dtH,(ii-1)*(ddW+dtW)+(1:ddW)) = jData;
             end
             allJData(allJData==0) = -1;
             obj.Dividers.JData = allJData;
