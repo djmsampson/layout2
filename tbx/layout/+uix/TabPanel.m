@@ -65,8 +65,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     properties( Access = private, Constant )
         FontNames = listfonts() % all available font names
         DividerMask = uix.TabPanel.getDividerMask() % divider image data
-        DividerWidth = 8 / uix.Image.Scaling % divider width
-        TabMinimumHeight = 8 / uix.Image.Scaling % tab minimum height
+        DividerWidth = 8 % divider width
+        TabMinimumHeight = 9 % tab minimum height
         Tint = 0.85 % tint factor for unselected tabs
     end
     
@@ -85,8 +85,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  v1, etc.
             
             % Create dividers
-            dividers = uix.Image( 'Internal', true, ...
-                'Parent', obj, 'Units', 'pixels' );
+            dividers = matlab.ui.control.UIControl( 'Internal', true, ...
+                'Parent', obj, 'Units', 'pixels', 'Style', 'checkbox' );
             
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
@@ -619,17 +619,18 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 [0 0 1 1], 'normalized', 'pixels', obj );
             w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
             h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
-            s = uix.Image.Scaling; % DPI scaling
             p = obj.Padding_; % padding
             tabs = obj.Tabs;
             n = numel( tabs ); % number of tabs
             tH = obj.TabHeight; % tab height
-            if n > 0 && tH == -1 % cache stale, refresh
-                cTabExtents = get( tabs, {'Extent'} );
-                tabExtents = vertcat( cTabExtents{:} );
-                tH = max( tabExtents(:,4) );
+            if tH == -1 % cache stale, refresh
+                if n > 0
+                    cTabExtents = get( tabs, {'Extent'} );
+                    tabExtents = vertcat( cTabExtents{:} );
+                    tH = max( tabExtents(:,4) );
+                end
                 tH = max( tH, obj.TabMinimumHeight ); % apply minimum
-                tH = ceil( tH * s ) / s; % integer number of device pixels
+                tH = ceil( tH ); % round up
                 obj.TabHeight = tH; % store
             end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
@@ -648,11 +649,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             if tW < 0 && n > 0 % relative
                 tW = max( ( w - (n+1) * dW ) / n, 1 );
             end
-            tW = ceil( tW * s ) / s; % integer number of device pixels
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
             end
-            obj.Dividers.Position = [1 tY max( [w tH], [1 1] )]; % Java wh>0
+            obj.Dividers.Position = [0 tY w+1 tH];
             contentsPosition = [cX cY cW cH];
             
             % Redraw tabs
@@ -874,29 +874,36 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 dividerNames(selection,2) = 'T'; % selected
                 dividerNames(selection+1,1) = 'T'; % selected
             end
-            s = uix.Image.Scaling;
-            dtH = obj.TabHeight * s; % device pixels
-            dtW = ceil( obj.TabWidth_ * s ); % device pixels
-            ddW = obj.DividerWidth * s; % device pixels
-            allJData = zeros( [dtH, 0], 'int32' ); % initialize
+            tH = obj.TabHeight;
+            tW = obj.TabWidth_;
+            dW = obj.DividerWidth;
+            allCData = zeros( [tH 0 3] ); % initialize
+            map = [obj.ShadowColor; obj.BackgroundColor; ...
+                obj.Tint * obj.BackgroundColor; obj.HighlightColor];
             for ii = 1:d
-                mask = obj.DividerMask.( dividerNames(ii,:) );
-                jMask = zeros( size( mask ), 'int32' ); % initialize
-                jMask(mask==0) = uix.Image.rgb2int( obj.ShadowColor );
-                jMask(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
-                jMask(mask==2) = uix.Image.rgb2int( obj.Tint * obj.BackgroundColor );
-                jMask(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
-                jData = repmat( jMask(5,:), [dtH 1] );
-                jData(1:4,:) = jMask(1:4,:);
-                jData(end-3:end,:) = jMask(end-3:end,:);
+                % Select mask
+                iMask = obj.DividerMask.( dividerNames(ii,:) );
+                % Resize
+                iData = repmat( iMask(5,:), [tH 1] );
+                iData(1:4,:) = iMask(1:4,:);
+                iData(end-3:end,:) = iMask(end-3:end,:);
+                % Convert to RGB
+                cData = ind2rgb( iData+1, map );
+                % Orient
                 switch obj.TabLocation_
                     case 'bottom'
-                        jData = flipud( jData );
+                        cData = flipud( cData );
                 end
-                allJData(1:dtH,(ii-1)*(ddW+dtW)+(1:ddW)) = jData;
+                % Insert
+                allCData(1:tH,(ii-1)*(dW+tW)+(1:dW),:) = cData; % center
+                if ii > 1 % extend left under transparent uicontrol edge
+                    allCData(1:tH,(ii-1)*(dW+tW),:) = cData(:,1,:);
+                end
+                if ii < d % extend right under transparent uicontrol edge
+                    allCData(1:tH,(ii-1)*(dW+tW)+dW+1,:) = cData(:,end,:);
+                end
             end
-            allJData(allJData==0) = -1;
-            obj.Dividers.JData = allJData;
+            obj.Dividers.CData = allCData; % paint
             fprintf( 1, 'Redraw tabs!\n' );
             
         end % redrawTabs
