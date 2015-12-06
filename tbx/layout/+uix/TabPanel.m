@@ -84,8 +84,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Create observers and listeners
-            locationObserver = uix.LocationObserver( obj );
+            % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChange );
@@ -93,7 +92,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 'SelectionChanged', @obj.onSelectionChanged );
             
             % Store properties
-            obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             
@@ -381,7 +379,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
             % Notify selection change
             obj.notify( 'SelectionChanged', ...
-                uix.SelectionEvent( oldSelection, newSelection ) )
+                uix.SelectionData( oldSelection, newSelection ) )
             
         end % set.Selection
         
@@ -500,7 +498,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Notify selection change
             if oldSelection ~= newSelection
                 obj.notify( 'SelectionChanged', ...
-                    uix.SelectionEvent( oldSelection, newSelection ) )
+                    uix.SelectionData( oldSelection, newSelection ) )
             end
             
         end % set.TabEnables
@@ -754,7 +752,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Notify selection change
             if oldSelection ~= newSelection
                 obj.notify( 'SelectionChanged', ...
-                    uix.SelectionEvent( oldSelection, newSelection ) )
+                    uix.SelectionData( oldSelection, newSelection ) )
             end
             
         end % addChild
@@ -804,7 +802,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Notify selection change
             if oldSelection == index
                 obj.notify( 'SelectionChanged', ...
-                    uix.SelectionEvent( oldSelection, newSelection ) )
+                    uix.SelectionData( oldSelection, newSelection ) )
             end
             
         end % removeChild
@@ -828,29 +826,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
         end % reorder
         
-        function reparent( obj, oldAncestors, newAncestors )
+        function reparent( obj, oldFigure, newFigure )
             %reparent  Reparent container
             %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
             
-            % Refresh location observer
-            locationObserver = uix.LocationObserver( [newAncestors; obj] );
-            obj.LocationObserver = locationObserver;
-            
-            % Reparent context menus if figure has changed
-            if isempty( oldAncestors ) || ...
-                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = gobjects( [0 0] );
-            else
-                oldFigure = oldAncestors(1);
-            end
-            if isempty( newAncestors ) || ...
-                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
-                newFigure = gobjects( [0 0] );
-            else
-                newFigure = newAncestors(1);
-            end
             if ~isequal( oldFigure, newFigure )
                 contextMenus = obj.TabContextMenus;
                 for ii = 1:numel( contextMenus )
@@ -862,7 +843,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
             
             % Call superclass method
-            reparent@uix.mixin.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.mixin.Container( obj, oldFigure, newFigure )
             
         end % reparent
         
@@ -910,7 +891,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 jMask(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
                 jMask(mask==2) = uix.Image.rgb2int( obj.Tint * obj.BackgroundColor );
                 jMask(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
-                jData = repmat( jMask(5,:), [tabDivider.Position(4) 1] );
+                jData = repmat( jMask(5,:), [ceil( tabDivider.Position(4) ) 1] );
                 jData(1:4,:) = jMask(1:4,:);
                 jData(end-3:end,:) = jMask(end-3:end,:);
                 switch obj.TabLocation_
@@ -939,7 +920,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
             % Notify selection change
             obj.notify( 'SelectionChanged', ...
-                uix.SelectionEvent( oldSelection, newSelection ) )
+                uix.SelectionData( oldSelection, newSelection ) )
             
         end % onTabClick
         
