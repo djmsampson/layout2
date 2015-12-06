@@ -341,8 +341,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Set
             obj.HighlightColor_ = value;
             
-            % Redraw tabs
-            obj.redrawTabs()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.HighlightColor
         
@@ -428,8 +428,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Set
             obj.ShadowColor_ = value;
             
-            % Redraw tabs
-            obj.redrawTabs()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.ShadowColor
         
@@ -904,7 +904,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 end
             end
             obj.Dividers.CData = allCData; % paint
-            fprintf( 1, 'Redraw tabs!\n' );
             
         end % redrawTabs
         
@@ -931,7 +930,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         
         function onBackgroundColorChange( obj, ~, ~ )
             
-            obj.redrawTabs()
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % onBackgroundColorChange
         
