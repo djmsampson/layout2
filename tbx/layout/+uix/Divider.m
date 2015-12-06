@@ -249,7 +249,7 @@ classdef Divider < hgsetget
             %  wmd is consistent with the mouse pointer being over the
             %  divider d.
             
-            tf = obj.Control == eventData.HitObject;
+            tf = reshape( [obj.Control] == eventData.HitObject, size( obj ) );
             
         end % isMouseOver
         
