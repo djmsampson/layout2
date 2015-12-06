@@ -20,7 +20,6 @@ classdef HBoxFlex < uix.HBox
         ColumnDividers = uix.Divider.empty( [0 1] ) % column dividers
         FrontDivider % front divider
         DividerMarkings_ = 'on' % backing for DividerMarkings
-        LocationObserver % location observer
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
@@ -48,15 +47,13 @@ classdef HBoxFlex < uix.HBox
                 'BackgroundColor', obj.BackgroundColor * 0.75, ...
                 'Visible', 'off' );
             
-            % Create observers and listeners
-            locationObserver = uix.LocationObserver( obj );
+            % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChange );
             
             % Store properties
             obj.FrontDivider = frontDivider;
-            obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
@@ -96,26 +93,19 @@ classdef HBoxFlex < uix.HBox
     
     methods( Access = protected )
         
-        function onMousePress( obj, ~, ~ )
+        function onMousePress( obj, ~, eventData )
             %onMousePress  Handler for WindowMousePress events
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             % Check whether mouse is over a divider
-            pointerLocation = ROOT.PointerLocation;
-            point = pointerLocation - ...
-                obj.LocationObserver.Location(1:2) + [1 1];
-            cColumnPositions = get( obj.ColumnDividers, {'Position'} );
-            columnPositions = vertcat( cColumnPositions{:} );
-            [tf, loc] = uix.inrectangle( point, columnPositions );
-            if ~tf, return, end
+            loc = find( obj.ColumnDividers.isMouseOver( eventData ) );
+            if isempty( loc ), return, end
             
             % Capture state at button down
             divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = pointerLocation;
+            root = groot();
+            obj.MousePressLocation = root.PointerLocation;
             
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -130,19 +120,17 @@ classdef HBoxFlex < uix.HBox
         function onMouseRelease( obj, ~, ~ )
             %onMousePress  Handler for WindowMouseRelease events
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             % Compute new positions
             loc = obj.ActiveDivider;
-            contents = obj.Contents_;
             if loc > 0
-                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                root = groot();
+                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
                 jc = loc + 1;
-                divider = obj.ColumnDividers(iw);
+                divider = obj.ColumnDividers(loc);
+                contents = obj.Contents_;
                 oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
                 minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
@@ -182,21 +170,17 @@ classdef HBoxFlex < uix.HBox
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, ~ )
+        function onMouseMotion( obj, source, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
-            
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
-                point = ROOT.PointerLocation - ...
-                    obj.LocationObserver.Location(1:2) + [1 1];
-                cColumnPositions = get( obj.ColumnDividers, {'Position'} );
-                columnPositions = vertcat( cColumnPositions{:} );
-                tfc = uix.inrectangle( point, columnPositions );
                 oldPointer = obj.OldPointer;
-                newPointer = double( tfc );
+                if any( obj.ColumnDividers.isMouseOver( eventData ) )
+                    newPointer = 1;
+                else
+                    newPointer = 0;
+                end
                 if oldPointer == 1 && newPointer == 0
                     source.Pointer = obj.Pointer; % restore
                     obj.Pointer = 'unset'; % unset
@@ -206,7 +190,8 @@ classdef HBoxFlex < uix.HBox
                 end
                 obj.OldPointer = newPointer;
             else % dragging column divider
-                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                root = groot();
+                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
@@ -265,8 +250,6 @@ classdef HBoxFlex < uix.HBox
                         'BackgroundColor', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = divider;
                 end
-                % Bring front divider to the front
-                frontDivider = obj.FrontDivider;
             elseif b > c % destroy
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )
@@ -306,56 +289,16 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Update pointer
-            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
+            obj.updatePointer()
             
         end % redraw
         
-        function unparent( obj, oldAncestors )
-            %unparent  Unparent container
-            %
-            %  c.unparent(a) unparents the container c from the ancestors
-            %  a.
-            
-            % Restore figure pointer
-            if ~isempty( oldAncestors ) && ...
-                    isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = oldAncestors(1);
-                oldPointer = obj.OldPointer;
-                if oldPointer ~= 0
-                    oldFigure.Pointer = obj.Pointer;
-                    obj.Pointer = 'unset';
-                    obj.OldPointer = 0;
-                end
-            end
-            
-            % Call superclass method
-            unparent@uix.HBox( obj, oldAncestors )
-            
-        end % unparent
-        
-        function reparent( obj, oldAncestors, newAncestors )
+        function reparent( obj, oldFigure, newFigure )
             %reparent  Reparent container
             %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
             
-            % Refresh location observer
-            locationObserver = uix.LocationObserver( [newAncestors; obj] );
-            obj.LocationObserver = locationObserver;
-            
-            % Refresh mouse listeners if figure has changed
-            if isempty( oldAncestors ) || ...
-                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = gobjects( [0 0] );
-            else
-                oldFigure = oldAncestors(1);
-            end
-            if isempty( newAncestors ) || ...
-                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
-                newFigure = gobjects( [0 0] );
-            else
-                newFigure = newAncestors(1);
-            end
             if ~isequal( oldFigure, newFigure )
                 if isempty( newFigure )
                     mousePressListener = event.listener.empty( [0 0] );
@@ -375,13 +318,27 @@ classdef HBoxFlex < uix.HBox
             end
             
             % Call superclass method
-            reparent@uix.HBox( obj, oldAncestors, newAncestors )
+            reparent@uix.HBox( obj, oldFigure, newFigure )
             
             % Update pointer
-            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
+            obj.updatePointer()
             
         end % reparent
         
     end % template methods
+    
+    methods( Access = private )
+        
+        function updatePointer( ~ )
+            %updatePointer  Update pointer by wiggling
+            
+            r = groot();
+            p = r.PointerLocation;
+            r.PointerLocation = [1 1];
+            r.PointerLocation = p;
+            
+        end % updatePointer
+        
+    end % helper methods
     
 end % classdef

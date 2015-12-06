@@ -26,11 +26,8 @@ classdef Container < handle
     
     properties( Access = private )
         Dirty_ = false % backing for Dirty
-        AncestryObserver % observer
-        AncestryListeners % listeners
-        OldAncestors % old state
-        VisibilityObserver % observer
-        VisibilityListener % listeners
+        FigureObserver % observer
+        FigureListener % listener
         ChildObserver % observer
         ChildAddedListener % listener
         ChildRemovedListener % listener
@@ -46,15 +43,9 @@ classdef Container < handle
             %  c@uix.mixin.Container() initializes the container c.
             
             % Create observers and listeners
-            ancestryObserver = uix.AncestryObserver( obj );
-            ancestryListeners = [ ...
-                event.listener( ancestryObserver, ...
-                'AncestryPreChange', @obj.onAncestryPreChange ); ...
-                event.listener( ancestryObserver, ...
-                'AncestryPostChange', @obj.onAncestryPostChange )];
-            visibilityObserver = uix.VisibilityObserver( obj );
-            visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChanged );
+            figureObserver = uix.FigureObserver( obj );
+            figureListener = event.listener( figureObserver, ...
+                'FigureChanged', @obj.onFigureChanged );
             childObserver = uix.ChildObserver( obj );
             childAddedListener = event.listener( ...
                 childObserver, 'ChildAdded', @obj.onChildAdded );
@@ -64,10 +55,8 @@ classdef Container < handle
                 obj, 'SizeChanged', @obj.onSizeChanged );
             
             % Store observers and listeners
-            obj.AncestryObserver = ancestryObserver;
-            obj.AncestryListeners = ancestryListeners;
-            obj.VisibilityObserver = visibilityObserver;
-            obj.VisibilityListener = visibilityListener;
+            obj.FigureObserver = figureObserver;
+            obj.FigureListener = figureListener;
             obj.ChildObserver = childObserver;
             obj.ChildAddedListener = childAddedListener;
             obj.ChildRemovedListener = childRemovedListener;
@@ -149,42 +138,11 @@ classdef Container < handle
     
     methods( Access = private, Sealed )
         
-        function onAncestryPreChange( obj, ~, ~ )
-            %onAncestryPreChange  Event handler
-            
-            % Retrieve ancestors from observer
-            ancestryObserver = obj.AncestryObserver;
-            oldAncestors = ancestryObserver.Ancestors;
-            
-            % Store ancestors in cache
-            obj.OldAncestors = oldAncestors;
+        function onFigureChanged( obj, ~, eventData )
+            %onFigureChanged  Event handler
             
             % Call template method
-            obj.unparent( oldAncestors )
-            
-        end % onAncestryPreChange
-        
-        function onAncestryPostChange( obj, ~, ~ )
-            %onAncestryPostChange  Event handler
-            
-            % Retrieve old ancestors from cache
-            oldAncestors = obj.OldAncestors;
-            
-            % Retrieve new ancestors from observer
-            ancestryObserver = obj.AncestryObserver;
-            newAncestors = ancestryObserver.Ancestors;
-            
-            % Refresh observers and listeners
-            visibilityObserver = uix.VisibilityObserver( [newAncestors; obj] );
-            visibilityListener = event.listener( visibilityObserver, ...
-                'VisibilityChange', @obj.onVisibilityChanged );
-            
-            % Store observers and listeners
-            obj.VisibilityObserver = visibilityObserver;
-            obj.VisibilityListener = visibilityListener;
-            
-            % Call template method
-            obj.reparent( oldAncestors, newAncestors )
+            obj.reparent( eventData.OldFigure, eventData.NewFigure )
             
             % Redraw if possible and if dirty
             if obj.Dirty_ && obj.isDrawable()
@@ -192,21 +150,7 @@ classdef Container < handle
                 obj.Dirty_ = false;
             end
             
-            % Reset caches
-            obj.OldAncestors = [];
-            
-        end % onAncestryPostChange
-        
-        function onVisibilityChanged( obj, ~, ~ )
-            %onVisibilityChanged  Event handler
-            
-            % Redraw if possible and if dirty
-            if obj.Dirty_ && obj.isDrawable()
-                obj.redraw()
-                obj.Dirty_ = false;
-            end
-            
-        end % onVisibilityChanged
+        end % onFigureChanged
         
         function onChildAdded( obj, ~, eventData )
             %onChildAdded  Event handler
@@ -294,19 +238,11 @@ classdef Container < handle
             
         end % removeChild
         
-        function unparent( obj, oldAncestors ) %#ok<INUSD>
-            %unparent  Unparent container
-            %
-            %  c.unparent(a) unparents the container c from the ancestors
-            %  a.
-            
-        end % unparent
-        
-        function reparent( obj, oldAncestors, newAncestors ) %#ok<INUSD>
+        function reparent( obj, oldFigure, newFigure ) %#ok<INUSD>
             %reparent  Reparent container
             %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
             
         end % reparent
         
@@ -332,13 +268,10 @@ classdef Container < handle
             %isDrawable  Test for drawability
             %
             %  c.isDrawable() is true if the container c is drawable, and
-            %  false otherwise.  To be drawable, a container must be rooted
-            %  and visible.
+            %  false otherwise.  To be drawable, a container must be
+            %  rooted.
             
-            ancestors = obj.AncestryObserver.Ancestors;
-            visible = obj.VisibilityObserver.Visible;
-            tf = visible && ~isempty( ancestors ) && ...
-                isa( ancestors(1), 'matlab.ui.Figure' );
+            tf = ~isempty( obj.FigureObserver.Figure );
             
         end % isDrawable
         

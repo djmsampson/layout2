@@ -21,7 +21,6 @@ classdef GridFlex < uix.Grid
         ColumnDividers = uix.Divider.empty( [0 1] )
         FrontDivider % front divider
         DividerMarkings_ = 'on' % backing for DividerMarkings
-        LocationObserver % location observer
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
@@ -49,15 +48,13 @@ classdef GridFlex < uix.Grid
                 'BackgroundColor', obj.BackgroundColor * 0.75, ...
                 'Visible', 'off' );
             
-            % Create observers and listeners
-            locationObserver = uix.LocationObserver( obj );
+            % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChange );
             
             % Store properties
             obj.FrontDivider = frontDivider;
-            obj.LocationObserver = locationObserver;
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
@@ -97,26 +94,16 @@ classdef GridFlex < uix.Grid
     
     methods( Access = protected )
         
-        function onMousePress( obj, ~, ~ )
+        function onMousePress( obj, ~, eventData )
             %onMousePress  Handler for WindowMousePress events
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             % Check whether mouse is over a divider
-            pointerLocation = ROOT.PointerLocation;
-            point = pointerLocation - ...
-                obj.LocationObserver.Location(1:2) + [1 1];
-            cRowPositions = get( obj.RowDividers, {'Position'} );
-            rowPositions = vertcat( cRowPositions{:} );
-            [tfr, locr] = uix.inrectangle( point, rowPositions );
-            cColumnPositions = get( obj.ColumnDividers, {'Position'} );
-            columnPositions = vertcat( cColumnPositions{:} );
-            [tfc, locc] = uix.inrectangle( point, columnPositions );
-            if tfr
+            locr = find( obj.RowDividers.isMouseOver( eventData ) );
+            locc = find( obj.ColumnDividers.isMouseOver( eventData ) );
+            if ~isempty( locr )
                 loc = locr;
                 divider = obj.RowDividers(locr);
-            elseif tfc
+            elseif ~isempty( locc )
                 loc = -locc;
                 divider = obj.ColumnDividers(locc);
             else
@@ -126,15 +113,16 @@ classdef GridFlex < uix.Grid
             % Capture state at button down
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = pointerLocation;
+            root = groot();
+            obj.MousePressLocation = root.PointerLocation;
             
             % Activate divider
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
             frontDivider.Orientation = divider.Orientation;
+            divider.Visible = 'off';
             frontDivider.Parent = [];
             frontDivider.Parent = obj;
-            divider.Visible = 'off';
             frontDivider.Visible = 'on';
             
         end % onMousePress
@@ -142,19 +130,17 @@ classdef GridFlex < uix.Grid
         function onMouseRelease( obj, ~, ~ )
             %onMousePress  Handler for WindowMouseRelease events
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             % Compute new positions
             loc = obj.ActiveDivider;
-            contents = obj.Contents_;
             if loc > 0
-                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                root = groot();
+                delta = root.PointerLocation(2) - obj.MousePressLocation(2);
                 ih = loc;
                 jh = loc + 1;
                 ic = loc;
                 jc = loc + 1;
                 divider = obj.RowDividers(loc);
+                contents = obj.Contents_;
                 oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
                 minimumHeights = obj.MinimumHeights_(ih:jh,:);
                 if delta < 0 % limit to minimum distance from lower neighbor
@@ -177,13 +163,15 @@ classdef GridFlex < uix.Grid
                 end
                 obj.Heights_(loc:loc+1) = newHeights;
             elseif loc < 0
-                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                root = groot();
+                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
                 r = numel( obj.Heights_ );
                 ic = r * (-loc-1) + 1;
                 jc = r * -loc + 1;
                 divider = obj.ColumnDividers(iw);
+                contents = obj.Contents_;
                 oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
                 minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
@@ -223,25 +211,19 @@ classdef GridFlex < uix.Grid
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, ~ )
+        function onMouseMotion( obj, source, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
-            persistent ROOT
-            if isequal( ROOT, [] ), ROOT = groot(); end
-            
             loc = obj.ActiveDivider;
-            contents = obj.Contents_;
             if loc == 0 % hovering, update pointer
-                point = ROOT.PointerLocation - ...
-                    obj.LocationObserver.Location(1:2) + [1 1];
-                cRowPositions = get( obj.RowDividers, {'Position'} );
-                rowPositions = vertcat( cRowPositions{:} );
-                tfr = uix.inrectangle( point, rowPositions );
-                cColumnPositions = get( obj.ColumnDividers, {'Position'} );
-                columnPositions = vertcat( cColumnPositions{:} );
-                tfc = uix.inrectangle( point, columnPositions );
                 oldPointer = obj.OldPointer;
-                newPointer = tfr - ( tfc && ~tfr );
+                if any( obj.RowDividers.isMouseOver( eventData ) )
+                    newPointer = 1;
+                elseif any( obj.ColumnDividers.isMouseOver( eventData ) )
+                    newPointer = -1;
+                else
+                    newPointer = 0;
+                end
                 if oldPointer == -1 && newPointer == 1
                     source.Pointer = 'top';
                 elseif oldPointer == 1 && newPointer == -1
@@ -258,11 +240,13 @@ classdef GridFlex < uix.Grid
                 end
                 obj.OldPointer = newPointer;
             elseif loc > 0 % dragging row divider
-                delta = ROOT.PointerLocation(2) - obj.MousePressLocation(2);
+                root = groot();
+                delta = root.PointerLocation(2) - obj.MousePressLocation(2);
                 ih = loc;
                 jh = loc + 1;
                 ic = loc;
                 jc = loc + 1;
+                contents = obj.Contents_;
                 oldPixelHeights = [contents(ic).Position(4); contents(jc).Position(4)];
                 minimumHeights = obj.MinimumHeights_(ih:jh,:);
                 if delta < 0 % limit to minimum distance from lower neighbor
@@ -273,12 +257,14 @@ classdef GridFlex < uix.Grid
                 obj.FrontDivider.Position = ...
                     obj.ActiveDividerPosition + [0 delta 0 0];
             else % loc < 0, dragging column divider
-                delta = ROOT.PointerLocation(1) - obj.MousePressLocation(1);
+                root = groot();
+                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
                 r = numel( obj.Heights_ );
                 ic = r * (-loc-1) + 1;
                 jc = r * -loc + 1;
+                contents = obj.Contents_;
                 oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
                 minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
@@ -339,8 +325,6 @@ classdef GridFlex < uix.Grid
                         'BackgroundColor', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = columnDivider;
                 end
-                % Bring front divider to the front
-                frontDivider = obj.FrontDivider;
             elseif b > c % destroy
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )
@@ -426,56 +410,16 @@ classdef GridFlex < uix.Grid
             end
             
             % Update pointer
-            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
+            obj.updatePointer()
             
         end % redraw
         
-        function unparent( obj, oldAncestors )
-            %unparent  Unparent container
-            %
-            %  c.unparent(a) unparents the container c from the ancestors
-            %  a.
-            
-            % Restore figure pointer
-            if ~isempty( oldAncestors ) && ...
-                    isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = oldAncestors(1);
-                oldPointer = obj.OldPointer;
-                if oldPointer ~= 0
-                    oldFigure.Pointer = obj.Pointer;
-                    obj.Pointer = 'unset';
-                    obj.OldPointer = 0;
-                end
-            end
-            
-            % Call superclass method
-            unparent@uix.mixin.Container( obj, oldAncestors )
-            
-        end % unparent
-        
-        function reparent( obj, oldAncestors, newAncestors )
+        function reparent( obj, oldFigure, newFigure )
             %reparent  Reparent container
             %
-            %  c.reparent(a,b) reparents the container c from the ancestors
-            %  a to the ancestors b.
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
             
-            % Refresh location observer
-            locationObserver = uix.LocationObserver( [newAncestors; obj] );
-            obj.LocationObserver = locationObserver;
-            
-            % Refresh mouse listeners if figure has changed
-            if isempty( oldAncestors ) || ...
-                    ~isa( oldAncestors(1), 'matlab.ui.Figure' )
-                oldFigure = gobjects( [0 0] );
-            else
-                oldFigure = oldAncestors(1);
-            end
-            if isempty( newAncestors ) || ...
-                    ~isa( newAncestors(1), 'matlab.ui.Figure' )
-                newFigure = gobjects( [0 0] );
-            else
-                newFigure = newAncestors(1);
-            end
             if ~isequal( oldFigure, newFigure )
                 if isempty( newFigure )
                     mousePressListener = event.listener.empty( [0 0] );
@@ -495,13 +439,27 @@ classdef GridFlex < uix.Grid
             end
             
             % Call superclass method
-            reparent@uix.mixin.Container( obj, oldAncestors, newAncestors )
+            reparent@uix.Grid( obj, oldFigure, newFigure )
             
             % Update pointer
-            obj.onMouseMotion( ancestor( obj, 'figure' ), [] )
+            obj.updatePointer()
             
         end % reparent
         
     end % template methods
+    
+    methods( Access = private )
+        
+        function updatePointer( ~ )
+            %updatePointer  Update pointer by wiggling
+            
+            r = groot();
+            p = r.PointerLocation;
+            r.PointerLocation = [1 1];
+            r.PointerLocation = p;
+            
+        end % updatePointer
+        
+    end % helper methods
     
 end % classdef
