@@ -849,11 +849,19 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
             % Get relevant properties
             selection = obj.Selection_;
+            tabs = obj.Tabs;
+            t = numel( tabs );
+            dividers = obj.Dividers;
+            
+            % Handle no tabs as a special case
+            if t == 0
+                dividers.Visible = 'off'; % hide
+                return
+            end
             
             % Repaint tabs
-            tabs = obj.Tabs;
             backgroundColor = obj.BackgroundColor;
-            for ii = 1:numel( tabs )
+            for ii = 1:t
                 tab = tabs(ii);
                 if ii == selection
                     tab.BackgroundColor = backgroundColor;
@@ -863,18 +871,17 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
             
             % Repaint dividers
-            t = numel( obj.Tabs );
-            d = ( t + 1 ) * sign( t );
+            d = t + 1;
             dividerNames = repmat( 'F', [d 2] ); % initialize
-            if d > 0
-                dividerNames(1,1) = 'E'; % end
-                dividerNames(end,2) = 'E'; % end
-            end
+            dividerNames(1,1) = 'E'; % end
+            dividerNames(end,2) = 'E'; % end
             if selection ~= 0
                 dividerNames(selection,2) = 'T'; % selected
                 dividerNames(selection+1,1) = 'T'; % selected
             end
             tH = obj.TabHeight;
+            assert( tH >= obj.TabMinimumHeight, 'uix:InvalidState', ...
+                'Cannot redraw tabs with invalid TabHeight.' )
             tW = obj.TabWidth_;
             dW = obj.DividerWidth;
             allCData = zeros( [tH 0 3] ); % initialize
@@ -903,7 +910,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                     allCData(1:tH,(ii-1)*(dW+tW)+dW+1,:) = cData(:,end,:);
                 end
             end
-            obj.Dividers.CData = allCData; % paint
+            dividers.CData = allCData; % paint
+            dividers.Visible = 'on'; % show
             
         end % redrawTabs
         
