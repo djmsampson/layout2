@@ -65,8 +65,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     properties( Access = private, Constant )
         FontNames = listfonts() % all available font names
         DividerMask = uix.TabPanel.getDividerMask() % divider image data
-        DividerWidth = 8 % divider width
-        DividerHeight = 8 % minimum divider height
+        DividerWidth = 8 / uix.Image.Scaling % divider width
+        DividerHeight = 8 / uix.Image.Scaling % minimum divider height
         Tint = 0.85 % tint factor for unselected tabs
     end
     
@@ -636,7 +636,9 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 cTabExtents = get( tabs, {'Extent'} );
                 tabExtents = vertcat( cTabExtents{:} );
                 tH = max( tabExtents(:,4) );
-                tH = max( [tH obj.DividerHeight] ); % apply minimum
+                tH = max( tH, obj.DividerHeight ); % apply minimum
+                s = uix.Image.Scaling; % DPI scaling
+                tH = ceil( tH * s ) / s; % integer number of device pixels
                 obj.TabHeight = tH; % store
             end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
@@ -891,7 +893,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 jMask(mask==1) = uix.Image.rgb2int( obj.BackgroundColor );
                 jMask(mask==2) = uix.Image.rgb2int( obj.Tint * obj.BackgroundColor );
                 jMask(mask==3) = uix.Image.rgb2int( obj.HighlightColor );
-                jData = repmat( jMask(5,:), [ceil( tabDivider.Position(4) ) 1] );
+                h = tabDivider.Position(4) * uix.Image.Scaling;
+                jData = repmat( jMask(5,:), [round( h ) 1] );
                 jData(1:4,:) = jMask(1:4,:);
                 jData(end-3:end,:) = jMask(end-3:end,:);
                 switch obj.TabLocation_
