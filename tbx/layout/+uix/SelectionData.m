@@ -1,7 +1,7 @@
-classdef( Hidden, Sealed ) SelectionEvent < event.EventData
-    %uix.SelectionEvent  Event data for selection event
+classdef( Hidden, Sealed ) SelectionData < event.EventData
+    %uix.SelectionData  Event data for selection event
     %
-    %  e = uix.SelectionEvent(o,n) creates event data including the old
+    %  e = uix.SelectionData(o,n) creates event data including the old
     %  value o and the new value n.
     
     %  Copyright 2009-2014 The MathWorks, Inc.
@@ -14,10 +14,10 @@ classdef( Hidden, Sealed ) SelectionEvent < event.EventData
     
     methods
         
-        function obj = SelectionEvent( oldValue, newValue )
-            %uix.SelectionEvent  Event data for selection event
+        function obj = SelectionData( oldValue, newValue )
+            %uix.SelectionData  Event data for selection event
             %
-            %  e = uix.SelectionEvent(o,n) creates event data including the
+            %  e = uix.SelectionData(o,n) creates event data including the
             %  old value o and the new value n.
             
             % Set properties
