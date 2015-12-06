@@ -649,6 +649,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             if tW < 0 && n > 0 % relative
                 tW = max( ( w - (n+1) * dW ) / n, 1 );
             end
+            tW = ceil( tW ); % round up
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
             end
@@ -882,7 +883,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             tH = obj.TabHeight;
             assert( tH >= obj.TabMinimumHeight, 'uix:InvalidState', ...
                 'Cannot redraw tabs with invalid TabHeight.' )
-            tW = obj.TabWidth_;
+            tW = obj.Tabs(1).Position(3);
             dW = obj.DividerWidth;
             allCData = zeros( [tH 0 3] ); % initialize
             map = [obj.ShadowColor; obj.BackgroundColor; ...
