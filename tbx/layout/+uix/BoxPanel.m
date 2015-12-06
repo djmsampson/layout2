@@ -10,7 +10,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     %
     %  See also: uix.Panel, uipanel, uix.CardPanel
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Dependent )

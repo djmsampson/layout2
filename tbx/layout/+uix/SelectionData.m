@@ -4,7 +4,7 @@ classdef( Hidden, Sealed ) SelectionData < event.EventData
     %  e = uix.SelectionData(o,n) creates event data including the old
     %  value o and the new value n.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( SetAccess = private )

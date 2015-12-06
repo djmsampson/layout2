@@ -9,7 +9,7 @@ classdef VBoxFlex < uix.VBox
     %
     %  See also: uix.HBoxFlex, uix.GridFlex, uix.VBox, uix.VButtonBox
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Access = public, Dependent, AbortSet )

@@ -6,7 +6,7 @@ classdef Divider < hgsetget
     %  d = uix.Divider(p1,v1,p2,v2,...) creates a divider and sets
     %  specified property p1 to value v1, etc.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Dependent )

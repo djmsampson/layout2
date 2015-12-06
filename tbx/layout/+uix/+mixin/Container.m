@@ -4,7 +4,7 @@ classdef Container < handle
     %  uix.mixin.Container is a mixin class used by containers to provide
     %  various properties and template methods.
     
-    %  Copyright 2009-2014 The MathWorks, Inc.
+    %  Copyright 2009-2015 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Dependent, Access = public )
