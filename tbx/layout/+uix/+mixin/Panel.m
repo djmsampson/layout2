@@ -19,6 +19,10 @@ classdef Panel < uix.mixin.Container
         G1218142 = false % bug flag
     end
     
+    events( NotifyAccess = protected )
+        SelectionChanged % selection changed
+    end
+    
     methods
         
         function value = get.Selection( obj )
@@ -48,10 +52,16 @@ classdef Panel < uix.mixin.Container
             end
             
             % Set
-            obj.Selection_ = value;
+            oldSelection = obj.Selection_;
+            newSelection = value;
+            obj.Selection_ = newSelection;
             
             % Mark as dirty
             obj.Dirty = true;
+            
+            % Raise event
+            notify( obj, 'SelectionChanged', ...
+                uix.SelectionData( oldSelection, newSelection ) )
             
         end % set.Selection
         
@@ -117,10 +127,18 @@ classdef Panel < uix.mixin.Container
             end
             
             % Select new content
-            obj.Selection_ = numel( obj.Contents_ ) + 1;
+            oldSelection = obj.Selection_;
+            newSelection = numel( obj.Contents_ ) + 1;
+            obj.Selection_ = newSelection;
             
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
+            
+            % Notify selection change
+            if oldSelection ~= newSelection
+                obj.notify( 'SelectionChanged', ...
+                    uix.SelectionData( oldSelection, newSelection ) )
+            end
             
         end % addChild
         
@@ -130,17 +148,26 @@ classdef Panel < uix.mixin.Container
             contents = obj.Contents_;
             n = numel( contents );
             index = find( contents == child );
-            selection = obj.Selection_;
-            if index == 1 && selection == 1 && n > 1
+            oldSelection = obj.Selection_;
+            if index == 1 && oldSelection == 1 && n > 1
                 % retain selection
-            elseif index <= selection
-                obj.Selection_ = selection - 1;
+                newSelection = oldSelection;
+            elseif index <= oldSelection
+                newSelection = oldSelection - 1;
+                obj.Selection_ = oldSelection - 1;
             else
                 % retain selection
+                newSelection = oldSelection;
             end
             
             % Call superclass method
             removeChild@uix.mixin.Container( obj, child )
+            
+            % Notify selection change
+            if oldSelection ~= newSelection
+                obj.notify( 'SelectionChanged', ...
+                    uix.SelectionData( oldSelection, newSelection ) )
+            end
             
         end % removeChild
         

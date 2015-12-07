@@ -1,4 +1,4 @@
-classdef TabPanel < uix.Container & uix.mixin.Container
+classdef TabPanel < uix.Container & uix.mixin.Panel
     %uix.TabPanel  Tab panel
     %
     %  p = uix.TabPanel(p1,v1,p2,v2,...) constructs a tab panel and sets
@@ -25,7 +25,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         ForegroundColor % tab text color [RGB]
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
-        Selection % selected contents
     end
     
     properties
@@ -49,7 +48,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
-        Selection_ = 0 % backing for Selection
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
@@ -59,7 +57,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         LocationObserver % location observer
         BackgroundColorListener % listener
         SelectionChangedListener % listener
-        G1218142 = false % bug flag
     end
     
     properties( Access = private, Constant )
@@ -68,10 +65,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         DividerWidth = 8 % divider width
         TabMinimumHeight = 9 % tab minimum height
         Tint = 0.85 % tint factor for unselected tabs
-    end
-    
-    events( NotifyAccess = private )
-        SelectionChanged % selection changed
     end
     
     methods
@@ -346,48 +339,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             
         end % set.HighlightColor
         
-        function value = get.Selection( obj )
-            
-            value = obj.Selection_;
-            
-        end % get.Selection
-        
-        function set.Selection( obj, value ) % TODO
-            
-            % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''Selection'' must be of type double.' )
-            assert( isequal( size( value ), [1 1] ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Selection'' must be scalar.' )
-            assert( isreal( value ) && rem( value, 1 ) == 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Selection'' must be an integer.' )
-            n = numel( obj.Contents_ );
-            if n == 0
-                assert( value == 0, 'uix:InvalidPropertyValue', ...
-                    'Property ''Selection'' must be 0 for a container with no children.' )
-            else
-                assert( value >= 1 && value <= n, 'uix:InvalidPropertyValue', ...
-                    'Property ''Selection'' must be between 1 and the number of children.' )
-                assert( strcmp( obj.Tabs(value).Enable, 'inactive' ), ...
-                    'uix:InvalidPropertyValue', 'Cannot select a disabled tab.' )
-            end
-            
-            % Set
-            oldSelection = obj.Selection_;
-            newSelection = value;
-            obj.Selection_ = newSelection;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-            % Notify selection change
-            obj.notify( 'SelectionChanged', ...
-                uix.SelectionData( oldSelection, newSelection ) )
-            
-        end % set.Selection
-        
         function set.SelectionChangedFcn( obj, value )
             
             % Check
@@ -660,49 +611,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             obj.redrawTabs()
             
             % Redraw contents
-            children = obj.Contents_;
-            selection = obj.Selection_;
-            for ii = 1:numel( children )
-                child = children(ii);
-                if ii == selection
-                    if obj.G1218142
-                        warning( 'uix:G1218142', ...
-                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
-                            class( obj ) )
-                        obj.G1218142 = false;
-                    else
-                        child.Visible = 'on';
-                    end
-                    child.Units = 'pixels';
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        switch child.ActivePositionProperty
-                            case 'position'
-                                child.Position = contentsPosition;
-                            case 'outerposition'
-                                child.OuterPosition = contentsPosition;
-                            otherwise
-                                error( 'uix:InvalidState', ...
-                                    'Unknown value ''%s'' for property ''ActivePositionProperty'' of %s.', ...
-                                    child.ActivePositionProperty, class( child ) )
-                        end
-                        child.ContentsVisible = 'on';
-                    else
-                        child.Position = contentsPosition;
-                    end
-                else
-                    child.Visible = 'off';
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.ContentsVisible = 'off';
-                    end
-                    % As a remedy for g1100294, move off-screen too
-                    if isa( child, 'matlab.graphics.axis.Axes' ) ...
-                            && strcmp(child.ActivePositionProperty, 'outerposition')
-                        child.OuterPosition(1) = -child.OuterPosition(3)-20;
-                    else
-                        child.Position(1) = -child.Position(3)-20;
-                    end
-                end
-            end
+            obj.redrawContents( contentsPosition )
             
         end % redraw
         
@@ -814,7 +723,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
             
             % Call superclass method
-            reorder@uix.mixin.Container( obj, indices )
+            reorder@uix.mixin.Panel( obj, indices )
             
         end % reorder
         
@@ -835,7 +744,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
             
             % Call superclass method
-            reparent@uix.mixin.Container( obj, oldFigure, newFigure )
+            reparent@uix.mixin.Panel( obj, oldFigure, newFigure )
             
         end % reparent
         
