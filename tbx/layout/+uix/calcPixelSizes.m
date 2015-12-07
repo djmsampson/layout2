@@ -27,8 +27,8 @@ pSizes(a) = max( mSizes(a), pMinima(a) );
 while true
     
     u = isnan( pSizes ); % unsolved
-    pUnsolvedTotal = pTotal - max( (n-1), 0 ) * pPadding ...
-        - 2 * sign( n ) * pSpacing - sum( pSizes(~u) );
+    pUnsolvedTotal = pTotal - max( (n-1), 0 ) * pSpacing ...
+        - 2 * sign( n ) * pPadding - sum( pSizes(~u) );
     pUnsolvedSizes = mSizes(u) / sum( mSizes(u) ) * pUnsolvedTotal;
     pUnsolvedMinima = pMinima(u);
     s = pUnsolvedSizes < pUnsolvedMinima; % small
