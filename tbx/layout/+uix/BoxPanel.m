@@ -449,7 +449,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             tH = obj.TitleHeight; % title height
             if tH == -1 % cache stale, refresh
                 tH = ceil( obj.TitleText.Extent(4) );
-                tH = tH - 3; % extent seems to be a bit bigger than required for one line of text
+                tH = tH - 3; % extent is a bit bigger than required
                 obj.TitleHeight = tH; % store
             end
             switch obj.TitlePanel.BorderType
