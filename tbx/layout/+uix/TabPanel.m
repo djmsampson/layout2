@@ -577,11 +577,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         
         function addChild( obj, child )
             
-            % Check for bug
-            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
-                obj.G1218142 = true;
-            end
-            
             % Create new tab
             n = numel( obj.Tabs );
             tab = matlab.ui.control.UIControl( 'Internal', true, ...
@@ -595,26 +590,11 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.Tabs(n+1,:) = tab;
             obj.TabListeners(n+1,:) = tabListener;
             
-            % If nothing was selected, select the new content
-            oldSelection = obj.Selection_;
-            if oldSelection == 0
-                newSelection = n + 1;
-                obj.Selection_ = newSelection;
-            else
-                newSelection = oldSelection;
-            end
-            
             % Mark as dirty
             obj.TabHeight = -1;
             
             % Call superclass method
-            addChild@uix.mixin.Container( obj, child )
-            
-            % Notify selection change
-            if oldSelection ~= newSelection
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
+            addChild@uix.mixin.Panel( obj, child )
             
         end % addChild
         
@@ -629,42 +609,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.Tabs(index,:) = [];
             obj.TabListeners(index,:) = [];
             
-            % Adjust selection
-            oldSelection = obj.Selection_;
-            if oldSelection < index
-                % When a tab to the right of the selected tab is removed,
-                % the previous selection remains valid
-            elseif oldSelection > index
-                % When a tab to the left of the selected tab is removed,
-                % decrement the selection by 1
-                newSelection = oldSelection - 1;
-                obj.Selection_ = newSelection;
-            else
-                % When the selected tab is removed, select the first
-                % enabled tab to the right, or failing that, the last
-                % enabled tab to the left, or failing that, nothing
-                tf = strcmp( get( obj.Tabs, {'Enable'} ), 'inactive' );
-                preSelection = find( tf(1:oldSelection-1), 1, 'last' );
-                postSelection = oldSelection - 1 + ...
-                    find( tf(oldSelection:end), 1, 'first' );
-                if ~isempty( postSelection )
-                    newSelection = postSelection;
-                elseif ~isempty( preSelection )
-                    newSelection = preSelection;
-                else
-                    newSelection = 0;
-                end
-                obj.Selection_ = newSelection;
-            end
-            
             % Call superclass method
-            removeChild@uix.mixin.Container( obj, child )
-            
-            % Notify selection change
-            if oldSelection == index
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
+            removeChild@uix.mixin.Panel( obj, child )
             
         end % removeChild
         
