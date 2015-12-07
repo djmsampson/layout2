@@ -623,10 +623,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Reorder
             obj.Tabs = obj.Tabs(indices,:);
             obj.TabListeners = obj.TabListeners(indices,:);
-            selection = obj.Selection_;
-            if selection ~= 0
-                obj.Selection_ = find( indices == selection );
-            end
             
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
