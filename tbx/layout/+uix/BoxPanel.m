@@ -26,12 +26,12 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         TitleColor % title background color [RGB]
-        CloseRequestFcn % close request callback
+        Minimized % minimized [true|false]
+        MinimizeFcn % minimize callback
         Docked % docked [true|false]
         DockFcn % dock callback
         HelpFcn % help callback
-        Minimized % minimized [true|false]
-        MinimizeFcn % minimize callback
+        CloseRequestFcn % close request callback
     end
     
     properties( Access = private )
@@ -39,13 +39,13 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         TitlePanel % panel
         TitleBox % box
         TitleText % text
-        TitleButtonBox % box
+        TitleEmpty % flag
         MainPanel % panel
         TitleHeight = -1 % cache of title height (-1 denotes stale cache)
+        MinimizeButton % title button
+        DockButton % title button
         HelpButton % title button
         CloseButton % title button
-        DockButton % title button
-        MinimizeButton % title button
         Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
     end
@@ -65,43 +65,52 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             %  v1, etc.
             
             % Set default colors
-            defaultTitleColor = [0.05 0.25 0.5];
-            defaultForegroundColor = [1 1 1];
+            foregroundColor = [1 1 1];
+            backgroundColor = [0.05 0.25 0.5];
             
             % Create panels and decorations
             decorationBox = uix.VBox( ...
                 'Internal', true, 'Parent', obj );
             titlePanel = uipanel( 'Parent', decorationBox );
-            titleBox = uix.HBox( 'Parent', titlePanel );
-            titleText = uicontrol( 'Parent', titleBox, 'Style', 'text', ...
-                'String', ' ', 'BackgroundColor', defaultTitleColor, ...
-                'ForegroundColor', defaultForegroundColor, ...
-                'HorizontalAlignment', 'left' );
-            titleButtonBox = uix.HButtonBox( 'Parent', titleBox, ...
-                'BackgroundColor', defaultTitleColor, ...
-                'ButtonSize', [10 9], 'Padding', 2, 'Spacing', 2 );
-            titleBox.Widths(2) = 2 * titleButtonBox.Padding;
+            titleBox = uix.HBox( 'Parent', titlePanel, ...
+                'BackgroundColor', backgroundColor );
+            titleText = uix.Text( 'Parent', titleBox, ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'String', ' ', 'HorizontalAlignment', 'left' );
             mainPanel = uipanel( 'Parent', decorationBox );
             
             % Create buttons
-            closeButton = uicontrol( 'Parent', [], 'Style', 'checkbox', ...
-                'TooltipString', 'Close this panel' );
-            dockButton = uicontrol( 'Parent', [], 'Style', 'checkbox' );
-            helpButton = uicontrol( 'Parent', [], 'Style', 'checkbox', ...
-                'TooltipString', 'Get help on this panel' );
-            minimizeButton = uicontrol( 'Parent', [], 'Style', 'checkbox' );
+            minimizeButton = uix.Text( ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'FontWeight', 'bold', 'Enable', 'on' );
+            dockButton = uix.Text( ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'FontWeight', 'bold', 'Enable', 'on' );
+            helpButton = uix.Text( ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'FontWeight', 'bold', 'String', '?', ...
+                'TooltipString', 'Get help on this panel', 'Enable', 'on' );
+            closeButton = uix.Text( ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'FontWeight', 'bold', 'String', char( 215 ), ...
+                'TooltipString', 'Close this panel', 'Enable', 'on' );
             
             % Store properties
             obj.DecorationBox = decorationBox;
             obj.TitlePanel = titlePanel;
             obj.TitleBox = titleBox;
             obj.TitleText = titleText;
-            obj.TitleButtonBox = titleButtonBox;
+            obj.TitleEmpty = true;
             obj.MainPanel = mainPanel;
+            obj.MinimizeButton = minimizeButton;
+            obj.DockButton = dockButton;
             obj.HelpButton = helpButton;
             obj.CloseButton = closeButton;
-            obj.DockButton = dockButton;
-            obj.MinimizeButton = minimizeButton;
             
             % Draw buttons
             obj.redrawButtons()
@@ -202,6 +211,10 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitleText.FontSize = value;
+            obj.HelpButton.FontSize = value;
+            obj.CloseButton.FontSize = value;
+            obj.DockButton.FontSize = value;
+            obj.MinimizeButton.FontSize = value;
             
             % Mark as dirty
             obj.TitleHeight = -1;
@@ -218,6 +231,10 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         function set.FontUnits( obj, value )
             
             obj.TitleText.FontUnits = value;
+            obj.HelpButton.FontUnits = value;
+            obj.CloseButton.FontUnits = value;
+            obj.DockButton.FontUnits = value;
+            obj.MinimizeButton.FontUnits = value;
             
         end % set.FontUnits
         
@@ -243,6 +260,10 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitleText.ForegroundColor = value;
+            obj.MinimizeButton.ForegroundColor = value;
+            obj.DockButton.ForegroundColor = value;
+            obj.HelpButton.ForegroundColor = value;
+            obj.CloseButton.ForegroundColor = value;
             
             % Mark as dirty
             obj.redrawButtons()
@@ -291,15 +312,24 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         
         function value = get.Title( obj )
             
-            value = obj.TitleText.String(2:end);
-            if isempty( value ), value = ''; end
+            if obj.TitleEmpty
+                value = '';
+            else
+                value = obj.TitleText.String;
+            end
             
         end % get.Title
         
         function set.Title( obj, value )
             
             % Set
-            obj.TitleText.String = sprintf( ' %s', value );
+            if isempty( value )
+                obj.TitleText.String = ' '; % need non-empty string
+                obj.TitleEmpty = true; % flag
+            else
+                obj.TitleText.String = value;
+                obj.TitleEmpty = false;
+            end
             
             % Mark as dirty
             obj.TitleHeight = -1;
@@ -309,14 +339,19 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         
         function value = get.TitleColor( obj )
             
-            value = obj.TitleText.BackgroundColor;
+            value = obj.TitleBox.BackgroundColor;
             
         end % get.TitleColor
         
         function set.TitleColor( obj, value )
             
             % Set
+            obj.TitleBox.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
+            obj.MinimizeButton.BackgroundColor = value;
+            obj.DockButton.BackgroundColor = value;
+            obj.HelpButton.BackgroundColor = value;
+            obj.CloseButton.BackgroundColor = value;
             
             % Mark as dirty
             obj.redrawButtons()
@@ -449,7 +484,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             tH = obj.TitleHeight; % title height
             if tH == -1 % cache stale, refresh
                 tH = ceil( obj.TitleText.Extent(4) );
-                tH = tH - 3; % extent is a bit bigger than required
                 obj.TitleHeight = tH; % store
             end
             switch obj.TitlePanel.BorderType
@@ -513,71 +547,60 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             %redrawButtons  Redraw buttons
             %
             %  p.redrawButtons() redraws the titlebar buttons.
+            %
+            %  Buttons use unicode arrow symbols:
+            %  https://en.wikipedia.org/wiki/Arrow_%28symbol%29#Arrows_in_Unicode
             
             % Retrieve button box and buttons
-            buttonBox = obj.TitleButtonBox;
-            closeButton = obj.CloseButton;
-            dockButton = obj.DockButton;
+            box = obj.TitleBox;
             minimizeButton = obj.MinimizeButton;
+            dockButton = obj.DockButton;
             helpButton = obj.HelpButton;
+            closeButton = obj.CloseButton;
             
             % Detach all buttons
-            closeButton.Parent = [];
-            dockButton.Parent = [];
             minimizeButton.Parent = [];
+            dockButton.Parent = [];
             helpButton.Parent = [];
+            closeButton.Parent = [];
             
             % Attach active buttons
-            close = ~isempty( obj.CloseRequestFcn );
-            if close
-                closeButton.Parent = buttonBox;
+            minimize = ~isempty( obj.MinimizeFcn );
+            if minimize
+                minimizeButton.Parent = box;
+                box.Widths(end) = minimizeButton.Extent(3);
             end
             dock = ~isempty( obj.DockFcn );
             if dock
-                dockButton.Parent = buttonBox;
-            end
-            minimize = ~isempty( obj.MinimizeFcn );
-            if minimize
-                minimizeButton.Parent = buttonBox;
+                dockButton.Parent = box;
+                box.Widths(end) = dockButton.Extent(3);
             end
             help = ~isempty( obj.HelpFcn );
             if help
-                helpButton.Parent = buttonBox;
+                helpButton.Parent = box;
+                box.Widths(end) = helpButton.Extent(3);
+            end
+            close = ~isempty( obj.CloseRequestFcn );
+            if close
+                closeButton.Parent = box;
+                box.Widths(end) = closeButton.Extent(3);
             end
             
-            % Retrieve colors
-            mask = obj.IconMask;
-            foregroundColor = obj.TitleText.ForegroundColor;
-            backgroundColor = obj.TitleText.BackgroundColor;
-            map = [backgroundColor; foregroundColor];
-            
-            % Repaint
-            buttonBox.BackgroundColor = backgroundColor;
-            closeButton.CData = ind2rgb( mask.Close + 1, map );
-            closeButton.BackgroundColor = backgroundColor;
-            if obj.Docked_
-                dockButton.CData = ind2rgb( mask.Undock + 1, map );
-                dockButton.TooltipString = 'Undock this panel';
-            else
-                dockButton.CData = ind2rgb( mask.Dock + 1, map );
-                dockButton.TooltipString = 'Dock this panel';
-            end
-            dockButton.BackgroundColor = backgroundColor;
-            helpButton.CData = ind2rgb( mask.Help + 1, map );
-            helpButton.BackgroundColor = backgroundColor;
+            % Update icons
             if obj.Minimized_
-                minimizeButton.CData = ind2rgb( mask.Maximize + 1, map );
+                minimizeButton.String = char( 9662 );
                 minimizeButton.TooltipString = 'Expand this panel';
             else
-                minimizeButton.CData = ind2rgb( mask.Minimize + 1, map );
+                minimizeButton.String = char( 9652 );
                 minimizeButton.TooltipString = 'Collapse this panel';
             end
-            minimizeButton.BackgroundColor = backgroundColor;
-            
-            % Lay out
-            n = sum( close + dock + minimize + help ); % number of buttons
-            obj.TitleBox.Widths(2) = n * buttonBox.ButtonSize(1) + ...
-                (n+1) * buttonBox.Spacing * 2 * buttonBox.Padding;
+            if obj.Docked_
+                dockButton.String = char( 8599 );
+                dockButton.TooltipString = 'Undock this panel';
+            else
+                dockButton.String = char( 8600 );
+                dockButton.TooltipString = 'Dock this panel';
+            end
             
         end % redrawButtons
         
