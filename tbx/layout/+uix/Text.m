@@ -15,9 +15,23 @@ classdef Text < matlab.mixin.SetGet
     
     properties( Dependent )
         BackgroundColor
+    end
+    
+    properties( Dependent, SetAccess = private )
+        BeingDeleted
+    end
+    
+    properties( Dependent )
         Callback
         DeleteFcn
         Enable
+    end
+    
+    properties( Dependent, SetAccess = private )
+        Extent
+    end
+    
+    properties( Dependent )
         FontAngle
         FontName
         FontSize
@@ -31,17 +45,18 @@ classdef Text < matlab.mixin.SetGet
         String
         Tag
         TooltipString
+    end
+    
+    properties( Dependent, SetAccess = private )
+        Type
+    end
+    
+    properties( Dependent )
         UIContextMenu
         Units
         UserData
         VerticalAlignment
         Visible
-    end
-    
-    properties( Dependent, SetAccess = private )
-        BeingDeleted
-        Extent
-        Type
     end
     
     properties( Access = private )
