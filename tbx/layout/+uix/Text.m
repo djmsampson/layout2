@@ -109,6 +109,7 @@ classdef Text < matlab.mixin.SetGet
             
             % Set properties
             if nargin > 0
+                uix.pvchk( varargin )
                 set( obj, varargin{:} );
             end
             
