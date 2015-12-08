@@ -70,12 +70,16 @@ classdef Text < matlab.mixin.SetGet
     end
     
     properties( Constant, Access = private )
-        Margin = 15
+        Margin = 15 % checkbox size
     end
     
     methods
         
         function obj = Text( varargin )
+            %uix.Text  Text control
+            %
+            %  t = uix.Text(p1,v1,p2,v2,...) constructs a text control and
+            %  sets parameter p1 to value v1, etc.
             
             % Create graphics
             container = uicontainer( 'Parent', [], ...
@@ -111,6 +115,7 @@ classdef Text < matlab.mixin.SetGet
         end % constructor
         
         function delete( obj )
+            %delete  Destructor
             
             delete( obj.Container )
             
@@ -443,25 +448,33 @@ classdef Text < matlab.mixin.SetGet
     methods( Access = private )
         
         function onResized( obj, ~, ~ )
+            %onResized  Event handler
             
+            % Rooted, so redraw
             obj.redraw()
             
-        end
+        end % onResized
         
         function onFigureChanged( obj, ~, eventData )
             
+            % If rooted, redraw
             if isempty( eventData.OldFigure ) && ...
                     ~isempty( eventData.NewFigure ) && obj.Dirty
                 obj.redraw()
             end
             
-        end
+        end % onFigureChanged
         
     end % event handlers
     
     methods( Access = private )
         
         function setDirty( obj )
+            %setDirty  Mark as dirty
+            %
+            %  t.setDirty() marks the text control t as dirty.  If the text
+            %  control is rooted then it is redrawn immediately.  If not
+            %  then the redraw is queued for when it is next rooted.
             
             if isempty( obj.FigureObserver.Figure )
                 obj.Dirty = true; % set flag
@@ -469,9 +482,16 @@ classdef Text < matlab.mixin.SetGet
                 obj.Dirty = false; % unset flag
                 obj.redraw() % redraw
             end
-        end
+            
+        end % setDirty
         
         function redraw( obj )
+            %redraw  Redraw
+            %
+            %  t.redraw() redraws the text control t.  Note that this
+            %  requires the text control to be rooted.  Methods should
+            %  request redraws using setDirty, rather than calling redraw
+            %  directly.
             
             c = obj.Container;
             b = obj.Checkbox;
