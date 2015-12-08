@@ -34,6 +34,10 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         CloseRequestFcn % close request callback
     end
     
+    properties( Dependent, SetAccess = private )
+        TitleExtent % title extent
+    end
+    
     properties( Access = private )
         DecorationBox % box
         TitlePanel % panel
@@ -453,6 +457,12 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.Dirty = true;
             
         end % set.Minimized
+        
+        function value = get.TitleExtent( obj )
+            
+            value = [1 1 obj.TitlePanel.Position(3:4)];
+            
+        end % get.TitleExtent
         
     end % accessors
     
