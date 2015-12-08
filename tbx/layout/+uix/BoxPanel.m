@@ -50,10 +50,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         Minimized_ = false % backing for Minimized
     end
     
-    properties( Access = private, Constant )
-        IconMask = uix.BoxPanel.getIconMask() % icon image data
-    end
-    
     methods
         
         function obj = BoxPanel( varargin )
