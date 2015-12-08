@@ -265,9 +265,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.HelpButton.ForegroundColor = value;
             obj.CloseButton.ForegroundColor = value;
             
-            % Mark as dirty
-            obj.redrawButtons()
-            
         end % set.ForegroundColor
         
         function value = get.HighlightColor( obj )
@@ -352,9 +349,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.DockButton.BackgroundColor = value;
             obj.HelpButton.BackgroundColor = value;
             obj.CloseButton.BackgroundColor = value;
-            
-            % Mark as dirty
-            obj.redrawButtons()
             
         end % set.TitleColor
         
