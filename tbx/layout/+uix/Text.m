@@ -1,4 +1,17 @@
 classdef Text < matlab.mixin.SetGet
+    %uix.Text  Text control
+    %
+    %  t = uix.Text(p1,v1,p2,v2,...) constructs a text control and sets
+    %  parameter p1 to value v1, etc.
+    %
+    %  A text control adds functionality to a uicontrol of Style text:
+    %  * Set VerticalAlignment to 'top', 'middle' or 'bottom'
+    %  * Fire a Callback when the user clicks on the text
+    %
+    %  See also: uicontrol
+    
+    %  Copyright 2009-2015 The MathWorks, Inc.
+    %  $Revision: 1165 $ $Date: 2015-12-06 03:09:17 -0500 (Sun, 06 Dec 2015) $
     
     properties( Dependent )
         BackgroundColor
