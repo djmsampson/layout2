@@ -600,25 +600,4 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         
     end % helper methods
     
-    methods( Access = private, Static )
-        
-        function mask = getIconMask()
-            %getIconMask  Get icon image data
-            %
-            %  m = uix.BoxPanel.getDividerMask() returns the image masks
-            %  for box panel icons.  Mask entries are 0 (background), 1
-            %  (foreground).
-            
-            mask.Close = ~isnan( sum( uix.loadIcon( 'panelClose.png' ), 3 ) );
-            mask.Dock = ~isnan( sum( uix.loadIcon( 'panelDock.png' ), 3 ) );
-            mask.Undock = ~isnan( sum( uix.loadIcon( 'panelUndock.png' ), 3 ) );
-            mask.Help = ~isnan( sum( uix.loadIcon( 'panelHelp.png' ), 3 ) );
-            mask.Minimize = ~isnan( sum( uix.loadIcon( 'panelMinimize.png' ), 3 ) );
-            mask.Maximize = ~isnan( sum( uix.loadIcon( 'panelMaximize.png' ), 3 ) );
-            mask = structfun( @double, mask, 'UniformOutput', false );
-            
-        end % getIconMask
-        
-    end % static helper methods
-    
 end % classdef
