@@ -35,7 +35,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     end
     
     properties( Dependent, SetAccess = private )
-        TitleExtent % title extent
+        TitleHeight % title panel height [pixels]
     end
     
     properties( Access = private )
@@ -45,7 +45,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         TitleText % text
         TitleEmpty % flag
         MainPanel % panel
-        TitleHeight = -1 % cache of title height (-1 denotes stale cache)
+        TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
         DockButton % title button
         HelpButton % title button
@@ -196,7 +196,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.TitleText.FontName = value;
             
             % Mark as dirty
-            obj.TitleHeight = -1;
+            obj.TitleHeight_ = -1;
             obj.Dirty = true;
             
         end % set.FontName
@@ -217,7 +217,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.MinimizeButton.FontSize = value;
             
             % Mark as dirty
-            obj.TitleHeight = -1;
+            obj.TitleHeight_ = -1;
             obj.Dirty = true;
             
         end % set.FontSize
@@ -329,7 +329,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             end
             
             % Mark as dirty
-            obj.TitleHeight = -1;
+            obj.TitleHeight_ = -1;
             obj.Dirty = true;
             
         end % set.Title
@@ -458,11 +458,11 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
         end % set.Minimized
         
-        function value = get.TitleExtent( obj )
+        function value = get.TitleHeight( obj )
             
-            value = [1 1 obj.TitlePanel.Position(3:4)];
+            value = obj.TitlePanel.Position(4);
             
-        end % get.TitleExtent
+        end % get.TitleHeight
         
     end % accessors
     
@@ -481,10 +481,10 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
             h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
             p = obj.Padding_;
-            tH = obj.TitleHeight; % title height
+            tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
                 tH = ceil( obj.TitleText.Extent(4) );
-                obj.TitleHeight = tH; % store
+                obj.TitleHeight_ = tH; % store
             end
             switch obj.TitlePanel.BorderType
                 case 'none'
