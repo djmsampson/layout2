@@ -70,7 +70,7 @@ classdef Text < matlab.mixin.SetGet
     end
     
     properties( Constant, Access = private )
-        Margin = 15 % checkbox size
+        Margin = 16 % checkbox size
     end
     
     methods
@@ -508,7 +508,7 @@ classdef Text < matlab.mixin.SetGet
                 case 'right'
                     x = 1 + bo(3) - e(3) - m;
             end
-            w = bo(3) - x + 1;
+            w = e(3) + m;
             switch obj.VerticalAlignment_
                 case 'top'
                     y = 1 + bo(4) - e(4);
