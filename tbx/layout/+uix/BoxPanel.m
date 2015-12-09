@@ -44,7 +44,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         TitleBox % box
         TitleText % text
         TitleEmpty % flag
-        MainPanel % panel
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
         DockButton % title button
@@ -69,16 +68,14 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             backgroundColor = [0.05 0.25 0.5];
             
             % Create panels and decorations
-            decorationBox = uix.VBox( ...
-                'Internal', true, 'Parent', obj );
-            titlePanel = uipanel( 'Parent', decorationBox );
+            titlePanel = matlab.ui.container.Panel( ...
+                'Internal', true, 'Parent', obj, 'Units', 'pixels' );
             titleBox = uix.HBox( 'Parent', titlePanel, ...
                 'BackgroundColor', backgroundColor );
             titleText = uix.Text( 'Parent', titleBox, ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'String', ' ', 'HorizontalAlignment', 'left' );
-            mainPanel = uipanel( 'Parent', decorationBox );
             
             % Create buttons
             minimizeButton = uix.Text( ...
@@ -100,13 +97,15 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
                 'FontWeight', 'bold', 'String', char( 215 ), ...
                 'TooltipString', 'Close this panel', 'Enable', 'on' );
             
+            % Create listeners
+            addlistener( obj, 'BackgroundColor', 'PostSet', ...
+                @obj.onBackgroundColorChanged );
+            
             % Store properties
-            obj.DecorationBox = decorationBox;
             obj.TitlePanel = titlePanel;
             obj.TitleBox = titleBox;
             obj.TitleText = titleText;
             obj.TitleEmpty = true;
-            obj.MainPanel = mainPanel;
             obj.MinimizeButton = minimizeButton;
             obj.DockButton = dockButton;
             obj.HelpButton = helpButton;
@@ -142,7 +141,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitlePanel.BorderWidth = value;
-            obj.MainPanel.BorderWidth = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -165,7 +163,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitlePanel.BorderType = value;
-            obj.MainPanel.BorderType = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -283,7 +280,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitlePanel.HighlightColor = value;
-            obj.MainPanel.HighlightColor = value;
             
         end % set.HighlightColor
         
@@ -303,7 +299,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             
             % Set
             obj.TitlePanel.ShadowColor = value;
-            obj.MainPanel.ShadowColor = value;
             
         end % set.ShadowColor
         
@@ -475,42 +470,40 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             %
             %  See also: redrawButtons
             
-            % Compute positions
+            % Compute bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
-            h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
-            p = obj.Padding_;
-            tH = obj.TitleHeight_; % title height
-            if tH == -1 % cache stale, refresh
-                tH = ceil( obj.TitleText.Extent(4) );
-                obj.TitleHeight_ = tH; % store
+            
+            % Position decorations
+            tX = 1;
+            tW = max( bounds(3), 1 );
+            xH = obj.TitleHeight_; % title height
+            if xH == -1 % cache stale, refresh
+                xH = ceil( obj.TitleText.Extent(4) );
+                obj.TitleHeight_ = xH; % store
             end
-            switch obj.TitlePanel.BorderType
+            titlePanel = obj.TitlePanel;
+            switch titlePanel.BorderType
                 case 'none'
                     b = 0;
                 case {'line','beveledin','beveledout'}
-                    b = obj.TitlePanel.BorderWidth;
+                    b = titlePanel.BorderWidth;
                 case {'etchedin','etchedout'}
-                    b = obj.TitlePanel.BorderWidth * 2;
+                    b = titlePanel.BorderWidth * 2;
             end
-            tpH = tH + 2 * b; % title panel height
-            cX = 1 + b + p; % contents x
-            cY = 1 + b + p; % contents y
-            cW = max( w - 2 * b - 2 * p, 1 ); % contents width
-            cH = max( h - tH - 4 * b - 2 * p, 1 ); % contents height
-            contentsPosition = [cX cY cW cH];
-            
-            % Redraw decorations
-            obj.DecorationBox.Heights(1) = tpH;
+            tH = xH + 2 * b; % title panel height
+            tY = 1 + bounds(4) - tH;
+            titlePanel.Position = [tX tY tW tH];
             obj.redrawButtons()
-            if obj.Minimized_
-                obj.MainPanel.Visible = 'off';
-            else
-                obj.MainPanel.Visible = 'on';
-            end
             
-            % Redraw contents
+            % Position contents
+            p = obj.Padding_;
+            cX = 1 + p;
+            cW = max( bounds(3) - 2 * p, 1 );
+            h = uix.calcPixelSizes( bounds(4), [tH;-1], [1;1], p, 0 );
+            cH = h(2);
+            cY = tY - p - cH;
+            contentsPosition = [cX cY cW cH];
             obj.redrawContents( contentsPosition )
             
         end % redraw
@@ -522,7 +515,7 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             redrawContents@uix.mixin.Panel( obj, position )
             
             % If minimized, hide selected contents too
-            if obj.Minimized_ && obj.Selection_ ~= 0
+            if obj.Selection_ ~= 0 && obj.Minimized_
                 child = obj.Contents_(obj.Selection_);
                 child.Visible = 'off';
                 if isa( child, 'matlab.graphics.axis.Axes' )
@@ -540,6 +533,17 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         end % redrawContents
         
     end % template methods
+    
+    methods( Access = private )
+        
+        function onBackgroundColorChanged( obj, ~, ~ )
+            
+            backgroundColor = obj.BackgroundColor;
+            obj.DecorationBox.BackgroundColor = backgroundColor;
+            
+        end % onBackgroundColorChanged
+        
+    end % event handlers
     
     methods( Access = private )
         
@@ -605,5 +609,58 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
         end % redrawButtons
         
     end % helper methods
+    
+    methods
+        
+        function contentsPanel = createContentsPanel( obj )
+            %createContentsPanel  Create contents panel
+            %
+            %  p = b.createContentsPanel() creates a panel p as contents of
+            %  the box panel b.  The BackgroundColor, BorderWidth,
+            %  BorderType, HighlightColor and ShadowColor properties of the
+            %  new panel are synchronized with the box panel.
+            %
+            %  The panel created is a standard uipanel, not a uix.Panel.
+            
+            contentsPanel = uipanel( 'Parent', obj, ...
+                'Units', 'pixels', ...
+                'BackgroundColor', obj.BackgroundColor, ...
+                'BorderWidth', obj.BorderWidth, ...
+                'BorderType', obj.BorderType, ...
+                'HighlightColor', obj.HighlightColor, ...
+                'ShadowColor', obj.ShadowColor );
+            
+            % Create listeners
+            titlePanel = obj.TitlePanel;
+            backgroundColorListener = event.proplistener( obj, ...
+                findprop( obj, 'BackgroundColor' ), 'PostSet', @onChanged );
+            borderWidthListener = event.proplistener( titlePanel, ...
+                findprop( titlePanel, 'BorderWidth' ), 'PostSet', @onChanged );
+            borderTypeListener = event.proplistener( titlePanel, ...
+                findprop( titlePanel, 'BorderType' ), 'PostSet', @onChanged );
+            highlightColorListener = event.proplistener( titlePanel, ...
+                findprop( titlePanel, 'HighlightColor' ), 'PostSet', @onChanged );
+            shadowColorListener = event.proplistener( titlePanel, ...
+                findprop( titlePanel, 'ShadowColor' ), 'PostSet', @onChanged );
+            
+            % Store listeners
+            prop = addprop( contentsPanel, 'uixBoxPanelListeners' );
+            prop.Hidden = true;
+            contentsPanel.uixBoxPanelListeners = [ ...
+                backgroundColorListener; borderWidthListener; ...
+                borderTypeListener; highlightColorListener; ...
+                shadowColorListener];
+            
+            function onChanged( ~, eventData )
+                %onChanged  Event handler
+                
+                p = eventData.Source.Name;
+                contentsPanel.( p ) = eventData.AffectedObject.( p );
+                
+            end % onChanged
+            
+        end % createContentsPanel
+        
+    end % public methods
     
 end % classdef
