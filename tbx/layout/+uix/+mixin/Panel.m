@@ -149,16 +149,14 @@ classdef Panel < uix.mixin.Container
             n = numel( contents );
             index = find( contents == child );
             oldSelection = obj.Selection_;
-            if index == 1 && oldSelection == 1 && n > 1
-                % retain selection
-                newSelection = oldSelection;
-            elseif index <= oldSelection
+            if index < oldSelection
                 newSelection = oldSelection - 1;
-                obj.Selection_ = oldSelection - 1;
-            else
-                % retain selection
+            elseif index == oldSelection
+                newSelection = min( oldSelection, n - 1 );
+            else % index > oldSelection
                 newSelection = oldSelection;
             end
+            obj.Selection_ = newSelection;
             
             % Call superclass method
             removeChild@uix.mixin.Container( obj, child )
