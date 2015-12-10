@@ -70,7 +70,7 @@ classdef Text < matlab.mixin.SetGet
     end
     
     properties( Constant, Access = private )
-        Margin = 16 % checkbox size
+        Margin = checkBoxLabelOffset() % checkbox size
     end
     
     methods
@@ -527,3 +527,14 @@ classdef Text < matlab.mixin.SetGet
     end % helpers
     
 end % classdef
+
+function o = checkBoxLabelOffset()
+%checkBoxLabelOffset  Horizontal offset to checkbox label
+
+if verLessThan( 'MATLAB', '8.6' ) % R2015b
+    o = 18;
+else
+    o = 16;
+end
+
+end % margin
