@@ -1,17 +1,16 @@
-function uninstall()
-%uninstall  Uninstall GUI Layout Toolbox
+function addsandbox()
+%addsandbox  Add sandbox to installed path
 %
-%  uninstall() uninstalls GUI Layout Toolbox by removing its files from the
-%  saved path.
+%  addsandbox() adds the GUI Layout Toolbox sandbox to the saved path.
 %
-%  See also: install
+%  See also: rmsandbox
 
-%  Copyright 2009-2014 The MathWorks, Inc.
+%  Copyright 2009-2015 The MathWorks, Inc.
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
-% Folders to remove
+% Folders to add
 thisFolder = fileparts( mfilename( 'fullpath' ) );
-foldersToRemove = {
+foldersToAdd = {
     fullfile( thisFolder, 'tbx', 'layout')
     fullfile( thisFolder, 'tbx', 'layoutdoc')
     };
@@ -19,7 +18,7 @@ foldersToRemove = {
 % Capture path
 oldPathList = path();
 
-% Remove toolbox directory from saved path
+% Add toolbox directory to saved path
 userPathList = userpath();
 if isempty( userPathList )
     userPathCell = cell( [0 1] );
@@ -31,12 +30,12 @@ savedPathList = pathdef();
 savedPathCell = textscan( savedPathList, '%s', 'Delimiter', ';' );
 savedPathCell = savedPathCell{:};
 savedPathCell = setdiff( savedPathCell, userPathCell, 'stable' );
-savedPathCell = setdiff( savedPathCell, foldersToRemove, 'stable' );
+savedPathCell = [foldersToAdd; savedPathCell];
 path( sprintf( '%s;', userPathCell{:}, savedPathCell{:} ) )
 savepath()
 
-% Restore path minus toolbox directory
+% Restore path plus toolbox directory
 path( oldPathList )
-rmpath( sprintf( '%s;', foldersToRemove{:} ) )
+addpath( sprintf( '%s;', foldersToAdd{:} ) )
 
-end % uninstall
+end % addsandbox
