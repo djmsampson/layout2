@@ -332,6 +332,8 @@ classdef HBoxFlex < uix.HBox
         function updatePointer( ~ )
             %updatePointer  Update pointer by wiggling
             
+            if ismac(), return, end % setting PointerLocation is not supported on Mac
+            
             r = groot();
             p = r.PointerLocation;
             r.PointerLocation = [1 1];
