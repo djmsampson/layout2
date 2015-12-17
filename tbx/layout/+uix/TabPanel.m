@@ -93,6 +93,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             
+            % Set selection mode
+            obj.SelectionMode = 'manual';
+            
             % Set properties
             if nargin > 0
                 uix.pvchk( varargin )
@@ -581,7 +584,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Call superclass method
             redrawContents@uix.mixin.Panel( obj, position )
             
-            % If minimized, hide selected contents too
+            % If not enabled, hide selected contents too
             selection = obj.Selection_;
             if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'off' )
                 child = obj.Contents_(selection);

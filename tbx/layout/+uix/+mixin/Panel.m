@@ -11,6 +11,10 @@ classdef Panel < uix.mixin.Container
         Selection % selected contents
     end
     
+    properties
+        SelectionMode = 'auto' % selection mode [auto|manual]
+    end
+    
     properties( Access = protected )
         Selection_ = 0 % backing for Selection
     end
@@ -64,6 +68,19 @@ classdef Panel < uix.mixin.Container
                 uix.SelectionData( oldSelection, newSelection ) )
             
         end % set.Selection
+        
+        function set.SelectionMode( obj, value )
+            
+            % Check
+            assert( ischar( value ) && ...
+                ismember( value, {'auto','manual'} ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''SelectionMode'' must be ''auto'' or ''manual''.' )
+            
+            % Set
+            obj.SelectionMode = value;
+            
+        end % set.SelectionMode
         
     end % accessors
     
@@ -128,8 +145,13 @@ classdef Panel < uix.mixin.Container
             
             % Select new content
             oldSelection = obj.Selection_;
-            newSelection = numel( obj.Contents_ ) + 1;
-            obj.Selection_ = newSelection;
+            n = numel( obj.Contents_ );
+            if n == 0 || strcmp( obj.SelectionMode, 'auto' )
+                newSelection = n + 1;
+                obj.Selection_ = newSelection;
+            else
+                newSelection = oldSelection;
+            end
             
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
