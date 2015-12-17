@@ -11,7 +11,7 @@ classdef Panel < uix.mixin.Container
         Selection % selected contents
     end
     
-    properties
+    properties( Hidden )
         SelectionMode = 'auto' % selection mode [auto|manual]
     end
     
