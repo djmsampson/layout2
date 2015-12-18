@@ -68,17 +68,6 @@ classdef tExamples <  matlab.unittest.TestCase
             end
         end % testdockexample
         
-        function testEnableExample(testcase)
-            try                
-                enableexample;          
-            catch e
-                errstr = ['the "enableexample" demo threw error ', e.message, ...
-                    ' with the identifier: ', e.identifier];
-                testcase.verifyFail(errstr);
-                e.rethrow()
-            end
-        end % testenableexample
-        
         function testGridFlexPositioning(testcase)
             try                
                 gridflexpositioning;
@@ -90,9 +79,9 @@ classdef tExamples <  matlab.unittest.TestCase
             end
         end % testgridflexpositioning
         
-        function testHeirarchyExample(testcase)
+        function testHierarchyExample(testcase)
             try                
-                heirarchyexample;
+                hierarchyexample;
             catch e
                 errstr = ['the "hierarchyexample" demo threw error ', e.message, ...
                     ' with the identifier: ', e.identifier];
@@ -138,7 +127,7 @@ classdef tExamples <  matlab.unittest.TestCase
     
     methods
         function d = demoroot(~)            
-            d = fullfile( fileparts( 'fullpath' ), 'demos' );            
+            d = fullfile( layoutDocRoot(), 'Examples' );            
         end % helper function
     end
 end
