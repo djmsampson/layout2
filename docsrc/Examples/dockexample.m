@@ -17,14 +17,9 @@ panel{2} = uix.BoxPanel( 'Title', 'Panel 2', 'Parent', box );
 panel{3} = uix.BoxPanel( 'Title', 'Panel 3', 'Parent', box );
 
 % Add some contents
-cPanel{1} = panel{1}.createContentsPanel();
-uicontrol( 'Style', 'PushButton', 'String', 'Button 1', ...
-    'Units', 'normalized', 'Position', [0 0 1 1], 'Parent', cPanel{1} );
-cPanel{2} = panel{2}.createContentsPanel();
-uicontrol( 'Style', 'PushButton', 'String', 'Button 2', ...
-    'Units', 'normalized', 'Position', [0 0 1 1], 'Parent', cPanel{2} );
-cPanel{3} = panel{3}.createContentsPanel();
-box1 = uix.VBox( 'Parent', cPanel{3} );
+uicontrol( 'Style', 'PushButton', 'String', 'Button 1', 'Parent', panel{1} );
+uicontrol( 'Style', 'PushButton', 'String', 'Button 2', 'Parent', panel{2} );
+box1 = uix.VBox( 'Parent', panel{3} );
 box2 = uix.HBox( 'Parent', box1 );
 uicontrol( 'Style', 'PushButton', 'String', 'Button 3', 'Parent', box1 );
 uicontrol( 'Style', 'PushButton', 'String', 'Button 4', 'Parent', box2 );

@@ -86,15 +86,15 @@ displayEndOfDemoMessage('')
             'Parent', mainLayout, ...
             'Title', 'Viewing: ???', ...
             'HelpFcn', @onDemoHelp );
-        viewContentsPanel = gui.ViewPanel.createContentsPanel();
-        gui.ViewContainer = uicontainer( 'Parent', viewContentsPanel );
-        
+        gui.ViewContainer = uicontainer( ...
+            'Parent', gui.ViewPanel );        
+
         % + Adjust the main layout
         set( mainLayout, 'Widths', [-1,-2]  );
         
+        
         % + Create the controls
-        controlContentsPanel = controlPanel.createContentsPanel();
-        controlLayout = uix.VBox( 'Parent', controlContentsPanel(), ...
+        controlLayout = uix.VBox( 'Parent', controlPanel, ...
             'Padding', 3, 'Spacing', 3 );
         gui.ListBox = uicontrol( 'Style', 'list', ...
             'BackgroundColor', 'w', ...
@@ -196,7 +196,7 @@ displayEndOfDemoMessage('')
 
 %-------------------------------------------------------------------------%
     function onDemoHelp( ~, ~ )
-        % User wants documentation for the current demo
+        % User wnats documentation for the current demo
         showdemo( data.DemoFunctions{data.SelectedDemo} );
     end % onDemoHelp
 
