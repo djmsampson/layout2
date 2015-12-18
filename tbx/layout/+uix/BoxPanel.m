@@ -28,10 +28,10 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     end
     
     properties( Access = private )
-        TitleBox % box
-        TitleText % text
-        TitleEmpty % flag, true when title is empty
-        TitleInternal = false % flag, true when title is being accessed internally
+        TitleBox % title bar box
+        TitleText % title text label
+        EmptyTitle = '' % title when empty, [] otherwise
+        TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
         DockButton % title button
@@ -39,6 +39,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         CloseButton % title button
         Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
+    end
+    
+    properties( Constant, Access = private )
+        NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
+        BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
     
     methods
@@ -61,7 +66,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             titleText = uix.Text( 'Parent', titleBox, ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
-                'String', ' ', 'HorizontalAlignment', 'left' );
+                'String', obj.BlankTitle, 'HorizontalAlignment', 'left' );
             
             % Create buttons
             minimizeButton = uix.Text( ...
@@ -84,9 +89,9 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 'TooltipString', 'Close this panel', 'Enable', 'on' );
             
             % Store properties
+            obj.Title = obj.NullTitle;
             obj.TitleBox = titleBox;
             obj.TitleText = titleText;
-            obj.TitleEmpty = true;
             obj.MinimizeButton = minimizeButton;
             obj.DockButton = dockButton;
             obj.HelpButton = helpButton;
@@ -342,15 +347,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function onTitleReturning( obj, ~, ~ )
             
-            if ~obj.TitleInternal
+            if strcmp( obj.TitleAccess, 'public' )
                 
-                obj.TitleInternal = true; % start
-                if obj.TitleEmpty
-                    title = ''; % title is '', not ' '
+                obj.TitleAccess = 'private'; % start
+                if ischar( obj.EmptyTitle )
+                    obj.Title = obj.EmptyTitle;
                 else
-                    title = obj.TitleText.String; % get title
+                    obj.Title = obj.TitleText.String;
                 end
-                obj.Title = title; % set Title to title
                 
             end
             
@@ -358,27 +362,27 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function onTitleReturned( obj, ~, ~ )
             
-            obj.Title = ''; % unset Title
-            obj.TitleInternal = false; % finish
+            obj.Title = obj.NullTitle; % unset Title
+            obj.TitleAccess = 'public'; % finish
             
         end % onTitleReturned
         
         function onTitleChanged( obj, ~, ~ )
             
-            if ~obj.TitleInternal
+            if strcmp( obj.TitleAccess, 'public' )
                 
                 % Set
-                obj.TitleInternal = true; % start
+                obj.TitleAccess = 'private'; % start
                 title = obj.Title;
                 if isempty( title )
-                    obj.TitleText.String = ' '; % need non-empty string
-                    obj.TitleEmpty = true;
+                    obj.EmptyTitle = title; % store
+                    obj.TitleText.String = obj.BlankTitle; % set String to blank
                 else
-                    obj.TitleText.String = title;
-                    obj.TitleEmpty = false;
+                    obj.EmptyTitle = []; % not empty
+                    obj.TitleText.String = title; % set String to title
                 end
-                obj.Title = ''; % unset Title
-                obj.TitleInternal = false; % finish
+                obj.Title = obj.NullTitle; % unset Title
+                obj.TitleAccess = 'public'; % finish
                 
                 % Mark as dirty
                 obj.TitleHeight_ = -1;
