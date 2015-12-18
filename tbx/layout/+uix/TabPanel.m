@@ -93,9 +93,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             
-            % Set selection mode
-            obj.SelectionMode = 'manual';
-            
             % Set properties
             if nargin > 0
                 uix.pvchk( varargin )
@@ -621,8 +618,28 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Mark as dirty
             obj.TabHeight = -1;
             
+            % Check for bug
+            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
+                obj.G1218142 = true;
+            end
+            
+            % Select new content
+            oldSelection = obj.Selection_;
+            if numel( obj.Contents_ ) == 0
+                newSelection = 1;
+                obj.Selection_ = newSelection;
+            else
+                newSelection = oldSelection;
+            end
+            
             % Call superclass method
-            addChild@uix.mixin.Panel( obj, child )
+            addChild@uix.mixin.Container( obj, child )
+            
+            % Notify selection change
+            if oldSelection ~= newSelection
+                obj.notify( 'SelectionChanged', ...
+                    uix.SelectionData( oldSelection, newSelection ) )
+            end
             
         end % addChild
         
