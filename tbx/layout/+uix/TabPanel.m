@@ -654,25 +654,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.Tabs(index,:) = [];
             obj.TabListeners(index,:) = [];
             
-            % Adjust selection if required
-            oldSelection = obj.Selection_;
-            if index < oldSelection
-                newSelection = oldSelection - 1;
-            elseif index == oldSelection
-                newSelection = min( oldSelection, numel( contents ) - 1 );
-            else % index > oldSelection
-                newSelection = oldSelection;
-            end
-            obj.Selection_ = newSelection;
-            
             % Call superclass method
-            removeChild@uix.mixin.Container( obj, child )
-            
-            % Notify selection change
-            if oldSelection ~= newSelection
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
+            removeChild@uix.mixin.Panel( obj, child )
             
         end % removeChild
         
