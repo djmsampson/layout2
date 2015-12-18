@@ -28,11 +28,10 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     end
     
     properties( Access = private )
-        TitlePanel % panel
         TitleBox % box
         TitleText % text
-        TitleEmpty % flag
-        Flag = false % flag
+        TitleEmpty % flag, true when title is empty
+        TitleInternal = false % flag, true when title is being accessed internally
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
         DockButton % title button
@@ -57,10 +56,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             backgroundColor = [0.05 0.25 0.5];
             
             % Create panels and decorations
-            titlePanel = matlab.ui.container.Panel( ...
-                'Internal', true, 'Parent', obj, 'Units', 'pixels' );
-            titleBox = uix.HBox( 'Parent', titlePanel, ...
-                'BackgroundColor', backgroundColor );
+            titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels', 'BackgroundColor', backgroundColor );
             titleText = uix.Text( 'Parent', titleBox, ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
@@ -87,7 +84,6 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 'TooltipString', 'Close this panel', 'Enable', 'on' );
             
             % Store properties
-            obj.TitlePanel = titlePanel;
             obj.TitleBox = titleBox;
             obj.TitleText = titleText;
             obj.TitleEmpty = true;
@@ -261,13 +257,13 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function value = get.TitleHeight( obj )
             
-            value = obj.TitlePanel.Position(4);
+            value = obj.TitleBox.Position(4);
             
         end % get.TitleHeight
         
     end % accessors
     
-    methods( Access = protected )
+    methods( Access = private )
         
         function onBorderWidthChanged( obj, ~, ~ )
             
@@ -346,30 +342,33 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function onTitleReturning( obj, ~, ~ )
             
-            if ~obj.Flag
-                obj.Flag = true;
+            if ~obj.TitleInternal
+                
+                obj.TitleInternal = true; % start
                 if obj.TitleEmpty
-                    obj.Title = '';
+                    title = ''; % title is '', not ' '
                 else
-                    obj.Title = obj.TitleText.String;
+                    title = obj.TitleText.String; % get title
                 end
+                obj.Title = title; % set Title to title
+                
             end
             
         end % onTitleReturning
         
         function onTitleReturned( obj, ~, ~ )
             
-            obj.Title = '';
-            obj.Flag = false;
+            obj.Title = ''; % unset Title
+            obj.TitleInternal = false; % finish
             
         end % onTitleReturned
         
         function onTitleChanged( obj, ~, ~ )
             
-            if ~obj.Flag
+            if ~obj.TitleInternal
                 
                 % Set
-                obj.Flag = true;
+                obj.TitleInternal = true; % start
                 title = obj.Title;
                 if isempty( title )
                     obj.TitleText.String = ' '; % need non-empty string
@@ -378,8 +377,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                     obj.TitleText.String = title;
                     obj.TitleEmpty = false;
                 end
-                obj.Title = '';
-                obj.Flag = false;
+                obj.Title = ''; % unset Title
+                obj.TitleInternal = false; % finish
                 
                 % Mark as dirty
                 obj.TitleHeight_ = -1;
@@ -407,31 +406,20 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Position decorations
             tX = 1;
             tW = max( bounds(3), 1 );
-            xH = obj.TitleHeight_; % title height
-            if xH == -1 % cache stale, refresh
-                xH = ceil( obj.TitleText.Extent(4) );
-                obj.TitleHeight_ = xH; % store
+            tH = obj.TitleHeight_; % title height
+            if tH == -1 % cache stale, refresh
+                tH = ceil( obj.TitleText.Extent(4) );
+                obj.TitleHeight_ = tH; % store
             end
-            titlePanel = obj.TitlePanel;
-            switch titlePanel.BorderType
-                case 'none'
-                    b = 0;
-                case {'line','beveledin','beveledout'}
-                    b = titlePanel.BorderWidth;
-                case {'etchedin','etchedout'}
-                    b = titlePanel.BorderWidth * 2;
-            end
-            tH = xH + 2 * b; % title panel height
             tY = 1 + bounds(4) - tH;
-            titlePanel.Position = [tX tY tW tH];
+            obj.TitleBox.Position = [tX tY tW tH];
             obj.redrawButtons()
             
             % Position contents
             p = obj.Padding_;
             cX = 1 + p;
             cW = max( bounds(3) - 2 * p, 1 );
-            h = uix.calcPixelSizes( bounds(4), [tH;-1], [1;1], p, 0 );
-            cH = h(2);
+            cH = max( bounds(4) - tH - 2 * p, 1 );
             cY = tY - p - cH;
             contentsPosition = [cX cY cW cH];
             obj.redrawContents( contentsPosition )
@@ -463,10 +451,6 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         end % redrawContents
         
     end % template methods
-    
-    methods( Access = private )
-        
-    end % event handlers
     
     methods( Access = private )
         
