@@ -1,5 +1,5 @@
 % GUI Layout Toolbox
-% Version 2.2.0.1 (R2016a) 18-December-2015
+% Version 2.2 (R2016a) 18-December-2015
 %
 % Panels
 %   uix.Panel      - arrange a single element inside a standard panel
