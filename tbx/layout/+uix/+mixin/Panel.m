@@ -11,10 +11,6 @@ classdef Panel < uix.mixin.Container
         Selection % selected contents
     end
     
-    properties( Hidden )
-        SelectionMode = 'auto' % selection mode [auto|manual]
-    end
-    
     properties( Access = protected )
         Selection_ = 0 % backing for Selection
     end
@@ -68,19 +64,6 @@ classdef Panel < uix.mixin.Container
                 uix.SelectionData( oldSelection, newSelection ) )
             
         end % set.Selection
-        
-        function set.SelectionMode( obj, value )
-            
-            % Check
-            assert( ischar( value ) && ...
-                ismember( value, {'auto','manual'} ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''SelectionMode'' must be ''auto'' or ''manual''.' )
-            
-            % Set
-            obj.SelectionMode = value;
-            
-        end % set.SelectionMode
         
     end % accessors
     
@@ -145,13 +128,8 @@ classdef Panel < uix.mixin.Container
             
             % Select new content
             oldSelection = obj.Selection_;
-            n = numel( obj.Contents_ );
-            if n == 0 || strcmp( obj.SelectionMode, 'auto' )
-                newSelection = n + 1;
-                obj.Selection_ = newSelection;
-            else
-                newSelection = oldSelection;
-            end
+            newSelection = numel( obj.Contents_ ) + 1;
+            obj.Selection_ = newSelection;
             
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
@@ -168,13 +146,12 @@ classdef Panel < uix.mixin.Container
             
             % Adjust selection if required
             contents = obj.Contents_;
-            n = numel( contents );
             index = find( contents == child );
             oldSelection = obj.Selection_;
             if index < oldSelection
                 newSelection = oldSelection - 1;
             elseif index == oldSelection
-                newSelection = min( oldSelection, n - 1 );
+                newSelection = min( oldSelection, numel( contents ) - 1 );
             else % index > oldSelection
                 newSelection = oldSelection;
             end
