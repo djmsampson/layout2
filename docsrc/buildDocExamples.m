@@ -265,7 +265,7 @@ iCaptureFigure( newfig, 'BoxPanelDockExample4' );
 % f = iFigure( 'Enable example', 'Position', [100 100 150 250] );
 % panel = uix.BoxPanel( 'Parent', f, 'Title', 'Panel' );
 % iCaptureFigure( f, 'EnableExample1' );
-% 
+%
 % box = uix.VButtonBox( 'Parent', panel );
 % uicontrol( 'Parent', box, 'String', 'Button 1' );
 % uicontrol( 'Parent', box, 'String', 'Button 2' );
@@ -274,7 +274,7 @@ iCaptureFigure( newfig, 'BoxPanelDockExample4' );
 % uicontrol( 'Parent', box, 'String', 'Button 5', 'Enable', 'off' );
 % uicontrol( 'Parent', box, 'String', 'Button 6' );
 % iCaptureFigure( f, 'EnableExample2' );
-% 
+%
 % set( panel, 'Enable', 'off' );
 % iCaptureFigure( f, 'EnableExample3' );
 
@@ -306,8 +306,8 @@ iCaptureFigure( f, 'VisibleExample3' );
 % uix.BoxPanel( 'Parent', h, 'Title', 'Panel 1' );
 % uix.BoxPanel( 'Parent', h, 'Title', 'Panel 2' );
 % iCaptureFigure( f, 'DefaultsFigure' );
-% 
-% 
+%
+%
 % uix.set( 0, 'DefaultHBoxBackgroundColor', [0.3 0.3 0.3] );
 % uix.set( 0, 'DefaultBoxPanelTitleColor', 'y' );
 % uix.set( 0, 'DefaultBoxPanelFontSize', 14 );
@@ -316,12 +316,12 @@ iCaptureFigure( f, 'VisibleExample3' );
 % p1 = uix.BoxPanel( 'Parent', h, 'Title', 'Panel 1' );
 % p2 = uix.BoxPanel( 'Parent', h, 'Title', 'Panel 2' );
 % iCaptureFigure( f1, 'DefaultsSystem1' );
-% 
+%
 % f2 = iFigure( 'Defaults example 2' );
 % uix.set( f2, 'DefaultBoxPanelFontSize', 20 );
 % p3 = uix.BoxPanel( 'Parent', f2, 'Title', 'Panel 3' );
 % iCaptureFigure( f2, 'DefaultsSystem2' );
-% 
+%
 % uix.unset( 0, 'DefaultHBoxBackgroundColor' );
 % uix.unset( 0, 'DefaultBoxPanelTitleColor' );
 % uix.unset( 0, 'DefaultBoxPanelFontSize' );
@@ -408,19 +408,19 @@ iCaptureFigure( f, 'CombineBoxes' )
 %% Combining boxes 2
 % f = iFigure( 'Boxes inside boxes example' );
 % b1 = uix.HBoxFlex( 'Parent', f, 'Spacing', 5 );
-% 
+%
 % uicontrol( 'Parent', b1, 'Background', 'r' );
 % b2 = uix.VBoxFlex( 'Parent', b1, 'Spacing', 5 );
 % uicontrol( 'Parent', b1, 'Background', 'r' );
-% 
+%
 % uicontrol( 'Parent', b2, 'Background', 'b' );
 % b3 = uix.HBoxFlex( 'Parent', b2, 'Spacing', 5 );
 % uicontrol( 'Parent', b2, 'Background', 'b' );
-% 
+%
 % uicontrol( 'Parent', b3, 'Background', 'm' );
 % b4 = uix.VBoxFlex( 'Parent', b3, 'Spacing', 5 );
 % uicontrol( 'Parent', b3, 'Background', 'm' );
-% 
+%
 % uicontrol( 'Parent', b4, 'Background', 'g' );
 % uix.Empty( 'Parent', b4 );
 % uicontrol( 'Parent', b4, 'Background', 'g' );
@@ -496,10 +496,7 @@ iCaptureFigure( f, 'CombineBoxes' )
     function iCaptureFigure( figh, filename )
         figure( figh );
         drawnow();
-        pos1 = get( figh, 'Position' );
-        pos = get( figh, 'OuterPosition' );
-        pos(1:2) = pos(1:2) - pos1(1:2); % + [1 1];
-        fr = getframe( figh, pos );
+        fr = getframe( figh );
         imwrite( fr.cdata, fullfile( 'Images', [filename,'.png'] ) );
     end
 
