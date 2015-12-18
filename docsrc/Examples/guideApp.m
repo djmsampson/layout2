@@ -64,10 +64,10 @@ guidata(hObject, handles);
 g = uix.GridFlex( 'Parent', handles.uipanel1, ...
     'Units', 'Normalized', 'Position', [0 0 1 1], ...
     'Spacing', 5 );
-for ii = 1:4
-    p = uix.BoxPanel( 'Parent', g, 'Title', sprintf( 'Panel %d', ii ) );
-    p.createContentsPanel();
-end
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 1' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 2' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 3' );
+uix.BoxPanel( 'Parent', g, 'Title', 'Panel 4' );
 g.Heights = [-1 -1];
 
 % UIWAIT makes guideApp wait for user response (see UIRESUME)
