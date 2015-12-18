@@ -1,4 +1,4 @@
-classdef BoxPanel < uix.Container & uix.mixin.Panel
+classdef BoxPanel < uix.Panel & uix.mixin.Panel
     %uix.BoxPanel  Box panel
     %
     %  p = uix.BoxPanel(p1,v1,p2,v2,...) constructs a box panel and sets
@@ -14,17 +14,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     %  $Revision$ $Date$
     
     properties( Dependent )
-        Title % title
-        BorderWidth % border width [pixels]
-        BorderType % border type [none|line|beveledin|beveledout|etchedin|etchedout]
-        FontAngle % font angle [normal|italic|oblique]
-        FontName % font name
-        FontSize % font size
-        FontUnits % font units
-        FontWeight % font weight [normal|bold]
-        ForegroundColor % title text color [RGB]
-        HighlightColor % border highlight color [RGB]
-        ShadowColor % border shadow color [RGB]
         TitleColor % title background color [RGB]
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
@@ -39,11 +28,11 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     end
     
     properties( Access = private )
-        DecorationBox % box
         TitlePanel % panel
         TitleBox % box
         TitleText % text
         TitleEmpty % flag
+        Flag = false % flag
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
         DockButton % title button
@@ -97,10 +86,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
                 'FontWeight', 'bold', 'String', char( 215 ), ...
                 'TooltipString', 'Close this panel', 'Enable', 'on' );
             
-            % Create listeners
-            addlistener( obj, 'BackgroundColor', 'PostSet', ...
-                @obj.onBackgroundColorChanged );
-            
             % Store properties
             obj.TitlePanel = titlePanel;
             obj.TitleBox = titleBox;
@@ -110,6 +95,30 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
             obj.DockButton = dockButton;
             obj.HelpButton = helpButton;
             obj.CloseButton = closeButton;
+            
+            % Create listeners
+            addlistener( obj, 'BorderWidth', 'PostSet', ...
+                @obj.onBorderWidthChanged );
+            addlistener( obj, 'BorderType', 'PostSet', ...
+                @obj.onBorderTypeChanged );
+            addlistener( obj, 'FontAngle', 'PostSet', ...
+                @obj.onFontAngleChanged );
+            addlistener( obj, 'FontName', 'PostSet', ...
+                @obj.onFontNameChanged );
+            addlistener( obj, 'FontSize', 'PostSet', ...
+                @obj.onFontSizeChanged );
+            addlistener( obj, 'FontUnits', 'PostSet', ...
+                @obj.onFontUnitsChanged );
+            addlistener( obj, 'FontWeight', 'PostSet', ...
+                @obj.onFontWeightChanged );
+            addlistener( obj, 'ForegroundColor', 'PostSet', ...
+                @obj.onForegroundColorChanged );
+            addlistener( obj, 'Title', 'PreGet', ...
+                @obj.onTitleReturning );
+            addlistener( obj, 'Title', 'PostGet', ...
+                @obj.onTitleReturned );
+            addlistener( obj, 'Title', 'PostSet', ...
+                @obj.onTitleChanged );
             
             % Draw buttons
             obj.redrawButtons()
@@ -125,209 +134,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     end % structors
     
     methods
-        
-        function value = get.BorderWidth( obj )
-            
-            value = obj.TitlePanel.BorderWidth;
-            
-        end % get.BorderWidth
-        
-        function set.BorderWidth( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 1] ) && ...
-                value > 0, 'uix:InvalidPropertyValue', ...
-                'Property ''BorderWidth'' must be numeric and positive.' )
-            
-            % Set
-            obj.TitlePanel.BorderWidth = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.BorderWidth
-        
-        function value = get.BorderType( obj )
-            
-            value = obj.TitlePanel.BorderType;
-            
-        end % get.BorderType
-        
-        function set.BorderType( obj, value )
-            
-            % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'none','line','beveledin','beveledout','etchedin','etchedout'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''BorderType'' must be ''none'', ''line'', ''beveledin'', ''beveledout'', ''etchedin'' or ''etchedout''.' )
-            
-            % Set
-            obj.TitlePanel.BorderType = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.BorderType
-        
-        function value = get.FontAngle( obj )
-            
-            value = obj.TitleText.FontAngle;
-            
-        end % get.FontAngle
-        
-        function set.FontAngle( obj, value )
-            
-            obj.TitleText.FontAngle = value;
-            
-        end % set.FontAngle
-        
-        function value = get.FontName( obj )
-            
-            value = obj.TitleText.FontName;
-            
-        end % get.FontName
-        
-        function set.FontName( obj, value )
-            
-            % Set
-            obj.TitleText.FontName = value;
-            
-            % Mark as dirty
-            obj.TitleHeight_ = -1;
-            obj.Dirty = true;
-            
-        end % set.FontName
-        
-        function value = get.FontSize( obj )
-            
-            value = obj.TitleText.FontSize;
-            
-        end % get.FontSize
-        
-        function set.FontSize( obj, value )
-            
-            % Set
-            obj.TitleText.FontSize = value;
-            obj.HelpButton.FontSize = value;
-            obj.CloseButton.FontSize = value;
-            obj.DockButton.FontSize = value;
-            obj.MinimizeButton.FontSize = value;
-            
-            % Mark as dirty
-            obj.TitleHeight_ = -1;
-            obj.Dirty = true;
-            
-        end % set.FontSize
-        
-        function value = get.FontUnits( obj )
-            
-            value = obj.TitleText.FontUnits;
-            
-        end % get.FontUnits
-        
-        function set.FontUnits( obj, value )
-            
-            obj.TitleText.FontUnits = value;
-            obj.HelpButton.FontUnits = value;
-            obj.CloseButton.FontUnits = value;
-            obj.DockButton.FontUnits = value;
-            obj.MinimizeButton.FontUnits = value;
-            
-        end % set.FontUnits
-        
-        function value = get.FontWeight( obj )
-            
-            value = obj.TitleText.FontWeight;
-            
-        end % get.FontWeight
-        
-        function set.FontWeight( obj, value )
-            
-            obj.TitleText.FontWeight = value;
-            
-        end % set.FontWeight
-        
-        function value = get.ForegroundColor( obj )
-            
-            value = obj.TitleText.ForegroundColor;
-            
-        end % get.ForegroundColor
-        
-        function set.ForegroundColor( obj, value )
-            
-            % Set
-            obj.TitleText.ForegroundColor = value;
-            obj.MinimizeButton.ForegroundColor = value;
-            obj.DockButton.ForegroundColor = value;
-            obj.HelpButton.ForegroundColor = value;
-            obj.CloseButton.ForegroundColor = value;
-            
-        end % set.ForegroundColor
-        
-        function value = get.HighlightColor( obj )
-            
-            value = obj.TitlePanel.HighlightColor;
-            
-        end % get.HighlightColor
-        
-        function set.HighlightColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HighlightColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.TitlePanel.HighlightColor = value;
-            
-        end % set.HighlightColor
-        
-        function value = get.ShadowColor( obj )
-            
-            value = obj.TitlePanel.ShadowColor;
-            
-        end % get.ShadowColor
-        
-        function set.ShadowColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''ShadowColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.TitlePanel.ShadowColor = value;
-            
-        end % set.ShadowColor
-        
-        function value = get.Title( obj )
-            
-            if obj.TitleEmpty
-                value = '';
-            else
-                value = obj.TitleText.String;
-            end
-            
-        end % get.Title
-        
-        function set.Title( obj, value )
-            
-            % Set
-            if isempty( value )
-                obj.TitleText.String = ' '; % need non-empty string
-                obj.TitleEmpty = true; % flag
-            else
-                obj.TitleText.String = value;
-                obj.TitleEmpty = false;
-            end
-            
-            % Mark as dirty
-            obj.TitleHeight_ = -1;
-            obj.Dirty = true;
-            
-        end % set.Title
         
         function value = get.TitleColor( obj )
             
@@ -463,6 +269,130 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     
     methods( Access = protected )
         
+        function onBorderWidthChanged( obj, ~, ~ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % onBorderWidthChanged
+        
+        function onBorderTypeChanged( obj, ~, ~ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % onBorderTypeChanged
+        
+        function onFontAngleChanged( obj, ~, ~ )
+            
+            obj.TitleText.FontAngle = obj.FontAngle;
+            
+        end % onFontAngleChanged
+        
+        function onFontNameChanged( obj, ~, ~ )
+            
+            % Set
+            obj.TitleText.FontName = obj.FontName;
+            
+            % Mark as dirty
+            obj.TitleHeight_ = -1;
+            obj.Dirty = true;
+            
+        end % onFontNameChanged
+        
+        function onFontSizeChanged( obj, ~, ~ )
+            
+            % Set
+            fontSize = obj.FontSize;
+            obj.TitleText.FontSize = fontSize;
+            obj.HelpButton.FontSize = fontSize;
+            obj.CloseButton.FontSize = fontSize;
+            obj.DockButton.FontSize = fontSize;
+            obj.MinimizeButton.FontSize = fontSize;
+            
+            % Mark as dirty
+            obj.TitleHeight_ = -1;
+            obj.Dirty = true;
+            
+        end % onFontSizeChanged
+        
+        function onFontUnitsChanged( obj, ~, ~ )
+            
+            fontUnits = obj.FontUnits;
+            obj.TitleText.FontUnits = fontUnits;
+            obj.HelpButton.FontUnits = fontUnits;
+            obj.CloseButton.FontUnits = fontUnits;
+            obj.DockButton.FontUnits = fontUnits;
+            obj.MinimizeButton.FontUnits = fontUnits;
+            
+        end % onFontUnitsChanged
+        
+        function onFontWeightChanged( obj, ~, ~ )
+            
+            obj.TitleText.FontWeight = obj.FontWeight;
+            
+        end % onFontWeightChanged
+        
+        function onForegroundColorChanged( obj, ~, ~ )
+            
+            foregroundColor = obj.ForegroundColor;
+            obj.TitleText.ForegroundColor = foregroundColor;
+            obj.MinimizeButton.ForegroundColor = foregroundColor;
+            obj.DockButton.ForegroundColor = foregroundColor;
+            obj.HelpButton.ForegroundColor = foregroundColor;
+            obj.CloseButton.ForegroundColor = foregroundColor;
+            
+        end % onForegroundColorChanged
+        
+        function onTitleReturning( obj, ~, ~ )
+            
+            if ~obj.Flag
+                obj.Flag = true;
+                if obj.TitleEmpty
+                    obj.Title = '';
+                else
+                    obj.Title = obj.TitleText.String;
+                end
+            end
+            
+        end % onTitleReturning
+        
+        function onTitleReturned( obj, ~, ~ )
+            
+            obj.Title = '';
+            obj.Flag = false;
+            
+        end % onTitleReturned
+        
+        function onTitleChanged( obj, ~, ~ )
+            
+            if ~obj.Flag
+                
+                % Set
+                obj.Flag = true;
+                title = obj.Title;
+                if isempty( title )
+                    obj.TitleText.String = ' '; % need non-empty string
+                    obj.TitleEmpty = true;
+                else
+                    obj.TitleText.String = title;
+                    obj.TitleEmpty = false;
+                end
+                obj.Title = '';
+                obj.Flag = false;
+                
+                % Mark as dirty
+                obj.TitleHeight_ = -1;
+                obj.Dirty = true;
+                
+            end
+            
+        end % onTitleChanged
+        
+    end % property event handlers
+    
+    methods( Access = protected )
+        
         function redraw( obj )
             %redraw  Redraw
             %
@@ -535,13 +465,6 @@ classdef BoxPanel < uix.Container & uix.mixin.Panel
     end % template methods
     
     methods( Access = private )
-        
-        function onBackgroundColorChanged( obj, ~, ~ )
-            
-            backgroundColor = obj.BackgroundColor;
-            obj.DecorationBox.BackgroundColor = backgroundColor;
-            
-        end % onBackgroundColorChanged
         
     end % event handlers
     
