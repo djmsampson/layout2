@@ -54,7 +54,7 @@ end
 %% Build documentation
 fprintf( 1, 'Generating documentation...' );
 try
-    cd( fullfile( fileparts( prjDir ), 'docsrc' ) )
+    cd( fullfile( prjDir, 'docsrc' ) )
     log = evalc( 'buildDoc' );
     close( 'all', 'force' )
     drawnow()
@@ -72,7 +72,7 @@ end
 %% Build examples
 fprintf( 1, 'Generating examples...' );
 try
-    cd( fullfile( fileparts( prjDir ), 'docsrc' ) )
+    cd( fullfile( prjDir, 'docsrc' ) )
     buildDocExamples()
     close all force
     drawnow
@@ -86,7 +86,7 @@ end
 
 %% Run tests
 fprintf( 1, 'Running tests...' );
-cd( fullfile( fileparts( prjDir ), 'tests' ) )
+cd( fullfile( prjDir, 'tests' ) )
 [log, results] = evalc( 'runtests' );
 cd( currentDir )
 if ~any( [results.Failed] )
@@ -104,7 +104,7 @@ try
     com.mathworks.toolbox_packaging.services.ToolboxPackagingService.packageProject( name )
     com.mathworks.toolbox_packaging.services.ToolboxPackagingService.closeProject( name )
     oldMltbx = fullfile( prjDir, [name '.mltbx'] );
-    newMltbx = fullfile( fileparts( prjDir ), 'releases', [name ' ' v.Version '.mltbx'] );
+    newMltbx = fullfile( prjDir, 'releases', [name ' ' v.Version '.mltbx'] );
     movefile( oldMltbx, newMltbx )
     fprintf( 1, ' OK.\n' );
 catch e
