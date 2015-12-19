@@ -1,3 +1,7 @@
+Doc:
+Move examples to layoutdemos
+Remove multiple copies of examples
+
 Implementation:
 Defer redraws while invisible
 Cancel pending redraws in onChildAdded, onChildRemoved
