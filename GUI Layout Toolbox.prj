@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="2590810951" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="483868037" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
@@ -27,10 +27,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     </param.products.version>
     <param.platforms />
     <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
-    <param.exclude.filters>*.prj
-install.m
-uninstall.m
-release.m</param.exclude.filters>
+    <param.exclude.filters />
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples/&gt;</param.examples>
     <param.demosxml />
