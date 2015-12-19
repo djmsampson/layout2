@@ -41,13 +41,8 @@
          separate windows.</dd>
      </dl>
      
-     <h4>Enable and Visible</h4>
+     <h4>Visible</h4>
       <dl>
-         <!--
-         <dt><ref link="EnableExample"><b>Enabling/Disabling a layout</b></ref></dt>
-         <dd>Using the "Enable" property to enable or disable groups of buttons</dd>
-         -->
-         
          <dt><ref link="VisibleExample"><b>Show and hide</b></ref></dt>
          <dd>Showing and hiding a layout and its contents.</dd>
       </dl>

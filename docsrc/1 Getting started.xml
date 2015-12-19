@@ -134,6 +134,21 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.2">
+        <ul>
+            <li>Released 18 December 2015</li>
+            <li>Improved box panel title bar appearance</li>
+            <li>Changed selection behavior of uix.TabGroup to match that of uitabgroup when the selected tab is removed</li>
+            <li>Fixed G1253937 "uix.TabPanel/redrawTabs fails" (R2015b)</li>
+            <li>Fixed G1292238 "uix.BoxPanel/redrawBorders fails" (R2015b)</li>
+            <li>Fixed G1330841 "mouse-over-divider detection does not work for docked figures" (all)</li>
+            <li>Fixed G1332109 "uix.Empty background color does not match that of its Parent" (all)</li>
+            <li>Fixed G1334867 "cannot add axes to container" (R2016a prerelease)</li>
+            <li>Removed internal helper classes uix.AncestryObserver, uix.LocationObserver, uix.VisibilityObserver</li>
+            <li>Updates to documentation</li>    
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.1.2">
         <ul>
             <li>Released 29 May 2015</li>

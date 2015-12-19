@@ -31,7 +31,6 @@
                     a horizontal list (or box). We first create a window:</p>
                     <example>
                         <code>f = <matlabfcn>figure</matlabfcn>();</code>
-                        <result><center><img src="Images/basics_example1.png"/></center></result>
                     </example>
 
                 <p>Now let's create the horizontal layout and add it to the figure. Note
@@ -42,7 +41,6 @@
                 setting the position of each element to best fill the space:</p>
                 <example>
                         <code>layout = <fcnref>uix.HBox</fcnref>( 'Parent', f );</code>
-                        <result><center><img src="Images/basics_example1.png"/></center></result>
                 </example>
                 <p>Nothing's changed! That's because the layout is for arranging
             other user-interface components - it doesn't draw anything itself. Let's
@@ -152,7 +150,7 @@ layout = <fcnref>uix.HBox</fcnref>( 'Parent', f );
         
             </subsection>
             
-            <subsection name="Layout heirarchies">
+            <subsection name="Layout hierarchies">
                 <p>Consider the following simple interface:</p>
                 <center><img src="Images/why_layout1.png"/></center>
                 <p>Instead of thinking of this in terms of three elements that need
@@ -273,7 +271,7 @@ set( vbox, 'Heights', [-1 35] )</code>
     </section>
     
 <!-- ****************************************************************** -->
-<section name="Positioning Axes">
+<section name="Positioning axes">
         <keywords>axes</keywords>
         <p>
             Unlike other MATLAB user interface components, <matlabfcn>axes</matlabfcn>
@@ -330,7 +328,6 @@ set( vbox, 'Heights', [-1 35] )</code>
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
             'NumberTitle', 'off' );</code>
-            <result><center><img src="Images/axes_layout_example_1.png"/></center></result>
             </example>
             <h4>Create the layout</h4>
             <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the <code>ActivePositionProperty</code> set to "outerposition", but the right-hand axes is switched to use <code>Position</code>.</p>
@@ -381,7 +378,6 @@ set( axes2, 'xticklabel', [], 'yticklabel', [] );</code>
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
             'NumberTitle', 'off' );</code>
-            <result><center><img src="Images/colorbar_example_1.png"/></center></result>
             </example>
             
             <h4>Create the layout</h4>
@@ -469,7 +465,7 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
     <subsection name="Context help" staticref="PanelHelp">
         <p>
             When a <fcnref>uix.BoxPanel</fcnref> has its <code>HelpFcn</code> 
-            filled in, a help button (<img src="Images/panelHelp.png"/>) is shown in the upper-right of the
+            filled in, a help button (?) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called.
         </p>
@@ -493,7 +489,7 @@ b = <fcnref>uix.HBox</fcnref>( 'Parent', f );
     <subsection name="Minimize and maximize" staticref="PanelMinimize">
         <p>
             When a <fcnref>uix.BoxPanel</fcnref> has its <code>MinimizeFcn</code> 
-            filled in, a minimize/maximize button (<img src="Images/panelMinimize.png"/> / <img src="Images/panelMaximize.png"/>) is shown in the upper-right of the
+            filled in, a minimize/maximize button (&#9652;/&#9662;) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called. Since the behaviour of the parent container is
             different in different use-cases, it is up to the user to write
@@ -597,7 +593,7 @@ for simple applications.</p>
         <keywords>Undock</keywords>
         <p>
             When a <fcnref>uix.BoxPanel</fcnref> has its <code>DockFcn</code> 
-            filled in, a dock/undock button (<img src="Images/panelDock.png"/> / <img src="Images/panelUndock.png"/>) is shown in the upper-right of the
+            filled in, a dock/undock button (&#8600;/&#8599;) is shown in the upper-right of the
             title-bar. When the user clicks this button the specified function
             is called. Since re-docking the panel into its previous parent
             depends on the type of parent, it is up to the user to write
