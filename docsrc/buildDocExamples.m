@@ -20,7 +20,6 @@ iCaptureFigure( f, 'axes_inner' );
 
 f = iFigure( 'Axes inside layouts' );
 set( f, 'Position', [100 100 400 250] );
-iCaptureFigure( f, 'axes_layout_example_1' );
 
 hbox = uix.HBoxFlex('Parent', f, 'Spacing', 3);
 axes1 = axes( 'Parent', hbox, ...
@@ -45,7 +44,6 @@ iCaptureFigure( f, 'axes_layout_example_3' );
 %% Legend/ colorbar
 f = iFigure( 'Axes legend and colorbars' );
 set( f, 'Position', [100 100 400 400] );
-iCaptureFigure( f, 'colorbar_example_1' );
 
 hbox = uix.VBoxFlex('Parent', f, 'Spacing', 3);
 axes1 = axes( 'Parent', uicontainer('Parent', hbox) );
@@ -62,7 +60,6 @@ iCaptureFigure( f, 'colorbar_example_3' );
 %% Layout basics
 f = iFigure( 'Basics' );
 set( f, 'Position', [100 100 180 90] );
-iCaptureFigure( f, 'basics_example1' );
 layout = uix.HBox( 'Parent', f );
 
 uicontrol( 'String', 'Button 1', 'Parent', layout );
