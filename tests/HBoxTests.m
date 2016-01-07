@@ -29,6 +29,28 @@ classdef HBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 1 250 500] );
             testcase.verifyEqual( get( ax2, 'Position' ), [251 1 250 500] );
         end
+        
+        function testMinimumSizes(testcase, ContainerType)
+            %testMinimumSizes Test that minimum size is honored (g1329485)
+            
+            f = figure();
+            obj = testcase.hCreateObj(ContainerType, ...
+                {'Parent', f, 'Units', 'Pixels', 'Position', [1 1 1000 500]});  
+            
+            for ii = 1:5 
+                ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
+            end
+            
+            obj.Widths = [100 100 -1 -1 -2]; 
+            obj.MinimumWidths(:) = 100;
+
+            % Squeeze right, verify that all elements obey their MinimumWidth setting                
+            obj.Position(3) = 400; 
+            
+            for ii = 1:5
+                testcase.verifyEqual(ui(ii).Position(3), 100);
+            end
+        end
 
     end
     

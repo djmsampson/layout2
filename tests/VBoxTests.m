@@ -29,6 +29,29 @@ classdef VBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 251 500 250] );
             testcase.verifyEqual( get( ax2, 'Position' ), [1 1 500 250] );
         end
+        
+        function testMinimumSizes(testcase, ContainerType)
+            %testMinimumSizes Test that minimum size is honored (g1329485)
+            
+            f = figure();
+            obj = testcase.hCreateObj(ContainerType, ...
+                {'Parent', f, 'Units', 'Pixels', 'Position', [1 1 500 1000]});  
+            
+            for ii = 1:5 
+                ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
+            end
+            
+            obj.Heights = [100 100 -1 -1 -2]; 
+            obj.MinimumHeights(:) = 100;
+
+            % Squeeze bottom, verify that all elements obey their MinimumHeight setting                
+            obj.Position(4) = 400; 
+            
+            for ii = 1:5
+                testcase.verifyEqual(ui(ii).Position(4), 100);
+            end
+        end
+
     end
     
     methods      
