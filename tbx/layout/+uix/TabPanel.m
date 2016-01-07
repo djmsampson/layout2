@@ -54,7 +54,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabHeight = -1 % cache of tab height (-1 denotes stale cache)
         TabWidth_ = 50 % backing for TabWidth
         Dividers % tab dividers
-        LocationObserver % location observer
         BackgroundColorListener % listener
         SelectionChangedListener % listener
     end
