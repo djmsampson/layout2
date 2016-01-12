@@ -27,7 +27,6 @@ classdef HBoxFlex < uix.HBox
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
         Pointer = 'unset' % mouse pointer
-        OldPointer = 0 % old pointer
         BackgroundColorListener % background color listener
     end
     
@@ -175,20 +174,21 @@ classdef HBoxFlex < uix.HBox
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
-                oldPointer = obj.OldPointer;
+                oldPointer = obj.Pointer;
                 if any( obj.ColumnDividers.isMouseOver( eventData ) )
-                    newPointer = 1;
+                    newPointer = 'left';
                 else
-                    newPointer = 0;
+                    newPointer = 'unset';
                 end
-                if oldPointer == newPointer
-                    % no change in pointer
-                elseif newPointer == 1
-                    uix.PointerManager.setPointer( obj, 'left' ) % set
-                else % newPointer == 0
-                    uix.PointerManager.unsetPointer( obj ) % unset
+                switch newPointer
+                    case oldPointer
+                        % no change in pointer
+                    case 'unset'
+                        uix.PointerManager.unsetPointer( obj ) % unset
+                    otherwise
+                        uix.PointerManager.setPointer( obj, newPointer ) % set
                 end
-                obj.OldPointer = newPointer;
+                obj.Pointer = newPointer;
             else % dragging column divider
                 root = groot();
                 delta = root.PointerLocation(1) - obj.MousePressLocation(1);
