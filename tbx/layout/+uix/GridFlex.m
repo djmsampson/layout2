@@ -211,7 +211,7 @@ classdef GridFlex < uix.Grid
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, eventData )
+        function onMouseMotion( obj, ~, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
@@ -224,19 +224,14 @@ classdef GridFlex < uix.Grid
                 else
                     newPointer = 0;
                 end
-                if oldPointer == -1 && newPointer == 1
-                    source.Pointer = 'top';
-                elseif oldPointer == 1 && newPointer == -1
-                    source.Pointer = 'left';
-                elseif oldPointer ~= 0 && newPointer == 0
-                    source.Pointer = obj.Pointer; % restore
-                    obj.Pointer = 'unset'; % unset
-                elseif oldPointer == 0 && newPointer == -1
-                    obj.Pointer = source.Pointer; % set
-                    source.Pointer = 'left';
-                elseif oldPointer == 0 && newPointer == 1
-                    obj.Pointer = source.Pointer; % set
-                    source.Pointer = 'top';
+                if oldPointer == newPointer
+                    % no change in pointer
+                elseif newPointer == 1
+                    uix.PointerManager.setPointer( obj, 'top' ) % set
+                elseif newPointer == -1
+                    uix.PointerManager.setPointer( obj, 'left' ) % set
+                else % newPointer == 0
+                    uix.PointerManager.unsetPointer( obj ) % unset
                 end
                 obj.OldPointer = newPointer;
             elseif loc > 0 % dragging row divider

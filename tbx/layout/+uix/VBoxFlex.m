@@ -170,7 +170,7 @@ classdef VBoxFlex < uix.VBox
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, eventData )
+        function onMouseMotion( obj, ~, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
@@ -181,12 +181,12 @@ classdef VBoxFlex < uix.VBox
                 else
                     newPointer = 0;
                 end
-                if oldPointer == 1 && newPointer == 0
-                    source.Pointer = obj.Pointer; % restore
-                    obj.Pointer = 'unset'; % unset
-                elseif oldPointer == 0 && newPointer == 1
-                    obj.Pointer = source.Pointer; % set
-                    source.Pointer = 'top';
+                if oldPointer == newPointer
+                    % no change in pointer
+                elseif newPointer == 1
+                    uix.PointerManager.setPointer( obj, 'top' ) % set
+                else % newPointer == 0
+                    uix.PointerManager.unsetPointer( obj ) % unset
                 end
                 obj.OldPointer = newPointer;
             else % dragging row divider

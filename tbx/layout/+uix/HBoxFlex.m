@@ -170,7 +170,7 @@ classdef HBoxFlex < uix.HBox
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, source, eventData )
+        function onMouseMotion( obj, ~, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
@@ -181,12 +181,12 @@ classdef HBoxFlex < uix.HBox
                 else
                     newPointer = 0;
                 end
-                if oldPointer == 1 && newPointer == 0
-                    source.Pointer = obj.Pointer; % restore
-                    obj.Pointer = 'unset'; % unset
-                elseif oldPointer == 0 && newPointer == 1
-                    obj.Pointer = source.Pointer; % set
-                    source.Pointer = 'left';
+                if oldPointer == newPointer
+                    % no change in pointer
+                elseif newPointer == 1
+                    uix.PointerManager.setPointer( obj, 'left' ) % set
+                else % newPointer == 0
+                    uix.PointerManager.unsetPointer( obj ) % unset
                 end
                 obj.OldPointer = newPointer;
             else % dragging column divider
@@ -299,23 +299,21 @@ classdef HBoxFlex < uix.HBox
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
             
-            if ~isequal( oldFigure, newFigure )
-                if isempty( newFigure )
-                    mousePressListener = event.listener.empty( [0 0] );
-                    mouseReleaseListener = event.listener.empty( [0 0] );
-                    mouseMotionListener = event.listener.empty( [0 0] );
-                else
-                    mousePressListener = event.listener( newFigure, ...
-                        'WindowMousePress', @obj.onMousePress );
-                    mouseReleaseListener = event.listener( newFigure, ...
-                        'WindowMouseRelease', @obj.onMouseRelease );
-                    mouseMotionListener = event.listener( newFigure, ...
-                        'WindowMouseMotion', @obj.onMouseMotion );
-                end
-                obj.MousePressListener = mousePressListener;
-                obj.MouseReleaseListener = mouseReleaseListener;
-                obj.MouseMotionListener = mouseMotionListener;
+            if isempty( newFigure )
+                mousePressListener = event.listener.empty( [0 0] );
+                mouseReleaseListener = event.listener.empty( [0 0] );
+                mouseMotionListener = event.listener.empty( [0 0] );
+            else
+                mousePressListener = event.listener( newFigure, ...
+                    'WindowMousePress', @obj.onMousePress );
+                mouseReleaseListener = event.listener( newFigure, ...
+                    'WindowMouseRelease', @obj.onMouseRelease );
+                mouseMotionListener = event.listener( newFigure, ...
+                    'WindowMouseMotion', @obj.onMouseMotion );
             end
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
+            obj.MouseMotionListener = mouseMotionListener;
             
             % Call superclass method
             reparent@uix.HBox( obj, oldFigure, newFigure )
