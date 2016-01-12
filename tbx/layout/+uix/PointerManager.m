@@ -1,7 +1,5 @@
 classdef ( Hidden, Sealed ) PointerManager < handle
     %uix.PointerManager  Pointer manager
-    %
-    %  A pointer manager
     
     %  Copyright 2016 The MathWorks, Inc.
     %  $Revision: 115 $ $Date: 2015-07-29 05:03:09 +0100 (Wed, 29 Jul 2015) $

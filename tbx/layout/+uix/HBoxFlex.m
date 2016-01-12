@@ -299,6 +299,7 @@ classdef HBoxFlex < uix.HBox
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
             
+            % Update listeners
             if isempty( newFigure )
                 mousePressListener = event.listener.empty( [0 0] );
                 mouseReleaseListener = event.listener.empty( [0 0] );

@@ -415,23 +415,22 @@ classdef GridFlex < uix.Grid
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
             
-            if ~isequal( oldFigure, newFigure )
-                if isempty( newFigure )
-                    mousePressListener = event.listener.empty( [0 0] );
-                    mouseReleaseListener = event.listener.empty( [0 0] );
-                    mouseMotionListener = event.listener.empty( [0 0] );
-                else
-                    mousePressListener = event.listener( newFigure, ...
-                        'WindowMousePress', @obj.onMousePress );
-                    mouseReleaseListener = event.listener( newFigure, ...
-                        'WindowMouseRelease', @obj.onMouseRelease );
-                    mouseMotionListener = event.listener( newFigure, ...
-                        'WindowMouseMotion', @obj.onMouseMotion );
-                end
-                obj.MousePressListener = mousePressListener;
-                obj.MouseReleaseListener = mouseReleaseListener;
-                obj.MouseMotionListener = mouseMotionListener;
+            % Update listeners
+            if isempty( newFigure )
+                mousePressListener = event.listener.empty( [0 0] );
+                mouseReleaseListener = event.listener.empty( [0 0] );
+                mouseMotionListener = event.listener.empty( [0 0] );
+            else
+                mousePressListener = event.listener( newFigure, ...
+                    'WindowMousePress', @obj.onMousePress );
+                mouseReleaseListener = event.listener( newFigure, ...
+                    'WindowMouseRelease', @obj.onMouseRelease );
+                mouseMotionListener = event.listener( newFigure, ...
+                    'WindowMouseMotion', @obj.onMouseMotion );
             end
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
+            obj.MouseMotionListener = mouseMotionListener;
             
             % Call superclass method
             reparent@uix.Grid( obj, oldFigure, newFigure )
