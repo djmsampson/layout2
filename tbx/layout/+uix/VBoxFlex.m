@@ -1,4 +1,4 @@
-classdef VBoxFlex < uix.VBox
+classdef VBoxFlex < uix.VBox & uix.mixin.Flex
     %uix.VBoxFlex  Flexible vertical box
     %
     %  b = uix.VBoxFlex(p1,v1,p2,v2,...) constructs a flexible vertical box
@@ -26,7 +26,6 @@ classdef VBoxFlex < uix.VBox
         ActiveDivider = 0 % active divider index
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
-        Pointer = 'unset' % mouse pointer
         BackgroundColorListener % background color listener
     end
     
@@ -169,26 +168,25 @@ classdef VBoxFlex < uix.VBox
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, ~, eventData )
+        function onMouseMotion( obj, source, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
-                oldPointer = obj.OldPointer;
+                oldPointer = obj.Pointer;
                 if any( obj.RowDividers.isMouseOver( eventData ) )
                     newPointer = 'top';
                 else
                     newPointer = 'unset';
                 end
                 switch newPointer
-                    case oldPointer
-                        % no change in pointer
-                    case 'unset'
-                        uix.PointerManager.unsetPointer( obj ) % unset
-                    otherwise
-                        uix.PointerManager.setPointer( obj, newPointer ) % set
+                    case oldPointer % no change
+                        % do nothing
+                    case 'unset' % change, unset
+                        obj.unsetPointer( source )
+                    otherwise % change, set
+                        obj.setPointer( source, newPointer )
                 end
-                obj.OldPointer = newPointer;
             else % dragging row divider
                 root = groot();
                 delta = root.PointerLocation(2) - obj.MousePressLocation(2);
@@ -288,9 +286,6 @@ classdef VBoxFlex < uix.VBox
                 end
             end
             
-            % Update pointer
-            obj.updatePointer()
-            
         end % redraw
         
         function reparent( obj, oldFigure, newFigure )
@@ -320,26 +315,12 @@ classdef VBoxFlex < uix.VBox
             reparent@uix.VBox( obj, oldFigure, newFigure )
             
             % Update pointer
-            obj.updatePointer()
+            if ~isempty( oldFigure ) && ~strcmp( obj.Pointer, 'unset' )
+                obj.unsetPointer( oldFigure )
+            end
             
         end % reparent
         
     end % template methods
-    
-    methods( Access = private )
-        
-        function updatePointer( ~ )
-            %updatePointer  Update pointer by wiggling
-            
-            if ismac(), return, end % setting PointerLocation is not supported on Mac
-            
-            r = groot();
-            p = r.PointerLocation;
-            r.PointerLocation = [1 1];
-            r.PointerLocation = p;
-            
-        end % updatePointer
-        
-    end % helper methods
     
 end % classdef

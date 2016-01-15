@@ -9,17 +9,10 @@ classdef ( Hidden, Sealed ) PointerManager < handle
     end
     
     properties( Access = private )
-        Setters % setters
+        Tokens % tokens
         Pointers % pointers
-        FigureDeletedListener % listener
+        NextToken % next token
         PointerListener % listener
-        SetterFigureObservers % observers
-        SetterFigureChangedListeners % listeners
-        SetterDeletedListeners % listeners
-    end
-    
-    properties( Constant, Access = private )
-        Unknown = gobjects % placeholder
     end
     
     methods( Access = private )
@@ -31,16 +24,12 @@ classdef ( Hidden, Sealed ) PointerManager < handle
             %  figure f.
             
             obj.Figure = figure;
-            obj.Setters = obj.Unknown;
+            obj.Tokens = 0;
             obj.Pointers = {figure.Pointer};
+            obj.NextToken = 1;
             obj.PointerListener = event.proplistener( figure, ...
                 findprop( figure, 'Pointer' ), 'PostSet', ...
                 @obj.onPointerChanged );
-            obj.FigureDeletedListener = event.listener( figure, ...
-                'ObjectBeingDestroyed', @obj.onFigureDeleted );
-            obj.SetterFigureObservers = {[]};
-            obj.SetterFigureChangedListeners = {[]};
-            obj.SetterDeletedListeners = {[]};
             
         end % constructor
         
@@ -48,36 +37,19 @@ classdef ( Hidden, Sealed ) PointerManager < handle
     
     methods( Access = private )
         
-        function doSetPointer( obj, setter, pointer )
+        function doSetPointer( obj, token, pointer )
             %doSetPointer  Set pointer
             %
-            %  m.doSetPointer(s,p) sets the pointer of the setter s to p.
+            %  m.doSetPointer(t,p) sets the pointer to p with the token t.
             
             % Remove old entry
-            tf = obj.Setters == setter;
-            obj.Setters(tf) = [];
+            tf = obj.Tokens == token;
+            obj.Tokens(tf) = [];
             obj.Pointers(tf) = [];
-            obj.SetterFigureObservers(tf) = [];
-            obj.SetterFigureChangedListeners(tf) = [];
-            obj.SetterDeletedListeners(tf) = [];
             
             % Add new entry
-            obj.Setters(end+1) = setter;
+            obj.Tokens(end+1) = token;
             obj.Pointers{end+1} = pointer;
-            if setter == obj.Unknown
-                obj.SetterFigureObservers{end+1} = [];
-                obj.SetterFigureChangedListeners{end+1} = [];
-                obj.SetterDeletedListeners{end+1} = [];
-            else
-                figureObserver = uix.FigureObserver( setter );
-                obj.SetterFigureObservers{end+1} = figureObserver;
-                obj.SetterFigureChangedListeners{end+1} = ...
-                    event.listener( figureObserver, 'FigureChanged', ...
-                    @obj.onSetterFigureChanged );
-                obj.SetterDeletedListeners{end+1} = ...
-                    event.listener( setter, 'ObjectBeingDestroyed', ...
-                    @obj.onSetterDeleted );
-            end
             
             % Set pointer
             obj.PointerListener.Enabled = false;
@@ -86,18 +58,15 @@ classdef ( Hidden, Sealed ) PointerManager < handle
             
         end % doSetPointer
         
-        function doUnsetPointer( obj, setter )
+        function doUnsetPointer( obj, token )
             %doUnsetPointer  Unset pointer
             %
-            %  m.doUnsetPointer(s) unsets the pointer of the setter s.
+            %  m.doUnsetPointer(s) unsets the pointer with the token t.
             
             % Remove old entry
-            tf = obj.Setters == setter;
-            obj.Setters(tf) = [];
+            tf = obj.Tokens == token;
+            obj.Tokens(tf) = [];
             obj.Pointers(tf) = [];
-            obj.SetterFigureObservers(tf) = [];
-            obj.SetterFigureChangedListeners(tf) = [];
-            obj.SetterDeletedListeners(tf) = [];
             
             % Update pointer
             obj.PointerListener.Enabled = false;
@@ -110,86 +79,64 @@ classdef ( Hidden, Sealed ) PointerManager < handle
     
     methods
         
-        function onFigureDeleted( obj, ~, ~ )
-            %onFigureDeleted  Event handler
-            
-            % Delete pointer manager
-            delete( obj )
-            
-        end % onFigureDeleted
-        
         function onPointerChanged( obj, ~, ~ )
             %onPointerChanged  Event handler
             
             % Log as unknown setter
-            obj.doSetPointer( obj.Unknown, obj.Figure.Pointer )
+            obj.doSetPointer( 0, obj.Figure.Pointer )
             
         end % onPointerChanged
-        
-        function onSetterFigureChanged( obj, source, ~ )
-            %onSetterFigureChanged  Event handler
-            
-            % Unset for this setter
-            obj.doUnsetPointer( source.Subject )
-            
-        end % onSetterFigureChanged
-        
-        function onSetterDeleted( obj, source, ~ )
-            %onSetterDeleted  Event handler
-            
-            % Unset for this setter
-            obj.doUnsetPointer( source )
-            
-        end % onSetterDeleted
         
     end % event handlers
     
     methods( Static )
         
-        function setPointer( setter, pointer )
+        function token = setPointer( figure, pointer )
             %setPointer  Set pointer
             %
-            %  uix.PointerManager.setPointer(s,p) sets the pointer of the
-            %  setter s to p.
+            %  t = uix.PointerManager.setPointer(f,p) sets the pointer of
+            %  the figure f to p.  The returned token t can be used
+            %  subsequently to unset the pointer.
             
             % Get pointer manager
-            obj = uix.PointerManager.getInstance( setter );
+            obj = uix.PointerManager.getInstance( figure );
+            
+            % Retrieve token
+            token = obj.NextToken;
             
             % Set
-            obj.doSetPointer( setter, pointer )
+            obj.doSetPointer( token, pointer )
+            
+            % Increment token
+            obj.NextToken = token + 1;
             
         end % setPointer
         
-        function unsetPointer( setter )
+        function unsetPointer( figure, token )
             %unsetPointer  Unset pointer
             %
-            %  uix.PointerManager.unsetPointer(s) unsets the pointer of the
-            %  setter s.
+            %  uix.PointerManager.unsetPointer(f,t) unsets the pointer of
+            %  the figure f using the token t.
+            
+            % Check ID
+            validateattributes( token, {'numeric'}, {'scalar','integer','>',0} )
             
             % Get pointer manager
-            obj = uix.PointerManager.getInstance( setter );
-            
-            % Check setter
-            assert( any( setter == obj.Setters ) && ...
-                isequal( size( setter ), [1 1] ), ...
-                'uix:InvalidArgument', 'Setter not found.' )
+            obj = uix.PointerManager.getInstance( figure );
             
             % Unset
-            obj.doUnsetPointer( setter )
+            obj.doUnsetPointer( token )
             
         end % unsetPointer
         
-        function obj = getInstance( setter )
+        function obj = getInstance( figure )
             %getInstance  Get pointer manager
             %
-            %  m = uix.PointerManager.getInstance(s) gets the pointer
-            %  manager for the setter s.
-            
-            % Get figure
-            figure = ancestor( setter, 'figure' );
+            %  m = uix.PointerManager.getInstance(f) gets the pointer
+            %  manager for the figure f.
             
             % Get pointer manager
-            name = 'PointerManager';
+            name = 'UIxPointerManager';
             if isprop( figure, name ) % existing, retrieve
                 obj = figure.( name );
             else % new, create and store
