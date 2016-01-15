@@ -25,7 +25,7 @@ classdef tExamples <  matlab.unittest.TestCase
         
         
         function testAxesExample(testcase)
-            try                
+            try
                 axesexample;
             catch e
                 errstr = ['the "axesexample" demo threw error ', e.message, ...
@@ -36,7 +36,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testaxesexample
         
         function testCallbackExample(testcase)
-            try                
+            try
                 callbackexample;
             catch e
                 errstr = ['the "callbackexample" demo threw error ', e.message, ...
@@ -47,7 +47,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testcallbackexample
         
         function testDemoBrowser(testcase)
-            try                
+            try
                 demoBrowser;
             catch e
                 errstr = ['"demoBrowser" threw error ', e.message, ...
@@ -58,7 +58,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testdemoBrowser
         
         function testDockExample(testcase)
-            try                
+            try
                 dockexample;
             catch e
                 errstr = ['the "dockexample" demo threw error ', e.message, ...
@@ -69,7 +69,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testdockexample
         
         function testGridFlexPositioning(testcase)
-            try                
+            try
                 gridflexpositioning;
             catch e
                 errstr = ['the "gridflexpositioning" demo threw error ', e.message, ...
@@ -80,7 +80,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testgridflexpositioning
         
         function testHierarchyExample(testcase)
-            try                
+            try
                 hierarchyexample;
             catch e
                 errstr = ['the "hierarchyexample" demo threw error ', e.message, ...
@@ -102,7 +102,7 @@ classdef tExamples <  matlab.unittest.TestCase
         end % testminimizeexample
         
         function testTabPanelExample(testcase)
-            try                
+            try
                 tabpanelexample;
             catch e
                 errstr = ['the "tabpanelexample" demo threw error ', e.message, ...
@@ -126,8 +126,10 @@ classdef tExamples <  matlab.unittest.TestCase
     
     
     methods
-        function d = demoroot(~)            
-            d = fullfile( layoutDocRoot(), 'Examples' );            
+        function d = demoroot(~)
+            t = fileparts( mfilename( 'fullpath' ) );
+            r = fileparts( t );
+            d = fullfile( r, 'docsrc', 'Examples' );
         end % helper function
     end
 end
