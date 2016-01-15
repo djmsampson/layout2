@@ -183,7 +183,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                     case oldPointer % no change
                         % do nothing
                     case 'unset' % change, unset
-                        obj.unsetPointer( source )
+                        obj.unsetPointer()
                     otherwise % change, set
                         obj.setPointer( source, newPointer )
                 end
@@ -254,7 +254,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 obj.RowDividers(r+1:q,:) = [];
                 % Update pointer
                 if r == 0 && strcmp( obj.Pointer, 'top' )
-                    obj.unsetPointer( ancestor( obj, 'figure' ) )
+                    obj.unsetPointer()
                 end
             end
             
@@ -320,7 +320,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             
             % Update pointer
             if ~isempty( oldFigure ) && ~strcmp( obj.Pointer, 'unset' )
-                obj.unsetPointer( oldFigure )
+                obj.unsetPointer()
             end
             
         end % reparent
