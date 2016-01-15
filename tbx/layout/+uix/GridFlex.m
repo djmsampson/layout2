@@ -1,4 +1,4 @@
-classdef GridFlex < uix.Grid
+classdef GridFlex < uix.Grid & uix.mixin.Flex
     %uix.GridFlex  Flexible grid
     %
     %  b = uix.GridFlex(p1,v1,p2,v2,...) constructs a flexible grid and
@@ -27,7 +27,6 @@ classdef GridFlex < uix.Grid
         ActiveDivider = 0 % active divider index
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
-        Pointer = 'unset' % mouse pointer
         BackgroundColorListener % background color listener
     end
     
@@ -210,7 +209,7 @@ classdef GridFlex < uix.Grid
             
         end % onMouseRelease
         
-        function onMouseMotion( obj, ~, eventData )
+        function onMouseMotion( obj, source, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
             
             loc = obj.ActiveDivider;
@@ -224,12 +223,12 @@ classdef GridFlex < uix.Grid
                     newPointer = 'unset';
                 end
                 switch newPointer
-                    case oldPointer
-                        % no change in pointer
-                    case 'unset'
-                        uix.PointerManager.unsetPointer( obj ) % unset
-                    otherwise
-                        uix.PointerManager.setPointer( obj, newPointer ) % set
+                    case oldPointer % no change
+                        % do nothing
+                    case 'unset' % change, unset
+                        obj.unsetPointer( source )
+                    otherwise % change, set
+                        obj.setPointer( source, newPointer )
                 end
                 obj.Pointer = newPointer;
             elseif loc > 0 % dragging row divider
@@ -402,9 +401,6 @@ classdef GridFlex < uix.Grid
                 end
             end
             
-            % Update pointer
-            obj.updatePointer()
-            
         end % redraw
         
         function reparent( obj, oldFigure, newFigure )
@@ -434,26 +430,12 @@ classdef GridFlex < uix.Grid
             reparent@uix.Grid( obj, oldFigure, newFigure )
             
             % Update pointer
-            obj.updatePointer()
+            if ~isempty( oldFigure ) && ~strcmp( obj.Pointer, 'unset' )
+                obj.unsetPointer( oldFigure )
+            end
             
         end % reparent
         
     end % template methods
-    
-    methods( Access = private )
-        
-        function updatePointer( ~ )
-            %updatePointer  Update pointer by wiggling
-            
-            if ismac(), return, end % setting PointerLocation is not supported on Mac
-            
-            r = groot();
-            p = r.PointerLocation;
-            r.PointerLocation = [1 1];
-            r.PointerLocation = p;
-            
-        end % updatePointer
-        
-    end % helper methods
     
 end % classdef
