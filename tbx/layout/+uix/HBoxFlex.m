@@ -252,6 +252,10 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
                 % Destroy dividers
                 delete( obj.ColumnDividers(c+1:b,:) )
                 obj.ColumnDividers(c+1:b,:) = [];
+                % Update pointer
+                if c == 0 && strcmp( obj.Pointer, 'left' )
+                    obj.unsetPointer( ancestor( obj, 'figure' ) )
+                end
             end
             
             % Compute container bounds

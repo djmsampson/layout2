@@ -252,6 +252,10 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 % Destroy dividers
                 delete( obj.RowDividers(r+1:q,:) )
                 obj.RowDividers(r+1:q,:) = [];
+                % Update pointer
+                if r == 0 && strcmp( obj.Pointer, 'top' )
+                    obj.unsetPointer( ancestor( obj, 'figure' ) )
+                end
             end
             
             % Compute container bounds
