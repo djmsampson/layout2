@@ -125,6 +125,127 @@ classdef tTabPanel  < ContainerSharedTests ...
             rotate3d;
             testcase.verifyNumElements(obj.TabTitles, 1);
         end
+        
+        function testSelectionBehaviourNewChild(testcase)
+            % g1342432 Tests that adding a new child doesn't change current selection 
+
+            % Create a TabPanel with two tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            % Store the selection
+            oldSelection = tp.Selection;
+            % Add new tab
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+           
+            testcase.verifyEqual(oldSelection, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDeleteLowerChild(testcase)
+            % g1342432 Tests that deleting a child with a lower index than the
+            % current selection causes the selection index to decrease by 1
+
+            % Create a TabPanel with three tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+            % Select the 2nd child, then delete the first
+            tp.Selection = 2; 
+            oldSelection = tp.Selection;
+            delete(c1)
+            
+            testcase.verifyEqual(oldSelection - 1, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDeleteSelectedChild(testcase)
+            % g1342432 Tests that deleting the currently selected child
+            % causes the selection index to stay the same. 
+
+            % Create a TabPanel with three tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+            % Select the 2nd child, then delete the 1st
+            tp.Selection = 2; 
+            oldSelection = tp.Selection;
+            delete(c2)
+            
+            testcase.verifyEqual(oldSelection, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDeleteOnlyChild(testcase)
+            % g1342432 Tests that deleting the only child
+            % causes the selection index to go to 0. 
+
+            % Create a TabPanel with a single tab
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            % Ensure that the 1st child is selected. 
+            tp.Selection = 1; 
+            delete(c1)
+            
+            testcase.verifyEqual(0, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDeleteHigherChild(testcase)
+            % g1342432 Tests that deleting a child with a higher index than the
+            % current selection causes the selection index remain same. 
+
+            % Create a TabPanel with three tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+            % Select the 2nd child, then delete the 3rd
+            tp.Selection = 2; 
+            oldSelection = tp.Selection;
+            delete(c3)
+            
+            testcase.verifyEqual(oldSelection, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDisableSelectedChild(testcase)
+            % g1342432 Tests that disabling a child which is selected won't stop it
+            % being selected. 
+
+            % Create a TabPanel with three tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+            % Select the 2nd child, then disable it
+            tp.Selection = 2; 
+            oldSelection = tp.Selection;
+            tp.TabEnables{2}='off';
+            
+            testcase.verifyEqual(oldSelection, tp.Selection);
+        end
+        
+        function testSelectionBehaviourDisableNonSelectedChild(testcase)
+            % g1342432 Tests that disabling a non-selected child doesn't change
+            % selection
+
+            % Create a TabPanel with three tabs
+            fig = figure();
+            tp = uix.TabPanel('Parent',fig);
+            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
+            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
+            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+            % Select the 1st child, then disable the second
+            tp.Selection = 1; 
+            oldSelection = tp.Selection;
+            tp.TabEnables{2}='off';
+            
+            testcase.verifyEqual(oldSelection, tp.Selection);
+        end
     end
     
     methods (Access = private)
