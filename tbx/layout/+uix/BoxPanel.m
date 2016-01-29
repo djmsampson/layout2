@@ -56,9 +56,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             %  p = uix.BoxPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
             
-            % Set default colors
+            % Define default colors
             foregroundColor = [1 1 1];
             backgroundColor = [0.05 0.25 0.5];
+            
+            % Set default colors
+            obj.ForegroundColor = foregroundColor;
             
             % Create panels and decorations
             titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
