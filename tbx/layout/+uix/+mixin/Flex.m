@@ -2,7 +2,7 @@ classdef Flex < handle
     %uix.mixin.Flex  Flex mixin
     %
     %  uix.mixin.Flex is a mixin class used by flex containers to provide
-    %  various properties and helper methods methods.
+    %  various properties and helper methods.
     
     %  Copyright 2016 The MathWorks, Inc.
     %  $Revision: 1077 $ $Date: 2015-03-19 16:44:14 +0000 (Thu, 19 Mar 2015) $
