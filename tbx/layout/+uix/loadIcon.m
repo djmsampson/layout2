@@ -43,7 +43,7 @@ end
 cdata = convertToDouble( cdata );
 
 % Handle transparency
-[rows, cols, depth] = size( cdata ); %#ok<NASGU>
+[rows, cols, ~] = size( cdata );
 if ~isempty( alpha )
     
     % Transparency specified
