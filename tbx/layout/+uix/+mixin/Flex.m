@@ -37,6 +37,12 @@ classdef Flex < handle
             %
             %  c.setPointer(f,p) sets the pointer for the figure f to p.
             
+            % If set, unset
+            if obj.Token ~= -1
+                obj.unsetPointer()
+            end
+            
+            % Set            
             obj.Token = uix.PointerManager.setPointer( figure, pointer );
             obj.Figure = figure;
             obj.Pointer = pointer;
