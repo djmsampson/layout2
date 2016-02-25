@@ -110,6 +110,9 @@ classdef HBox < uix.Box
     methods( Access = protected )
         
         function redraw( obj )
+            %redraw  Redraw
+            %
+            %  c.redraw() redraws the container c.
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -152,6 +155,9 @@ classdef HBox < uix.Box
         end % redraw
         
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
             
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
@@ -163,6 +169,9 @@ classdef HBox < uix.Box
         end % addChild
         
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
             
             % Remove from sizes
             tf = obj.Contents_ == child;

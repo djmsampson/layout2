@@ -223,6 +223,9 @@ classdef Grid < uix.Box
     methods( Access = protected )
         
         function redraw( obj )
+            %redraw  Redraw
+            %
+            %  c.redraw() redraws the container c.
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -272,6 +275,9 @@ classdef Grid < uix.Box
         end % redraw
         
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
             
             % Add column and even a row if necessary
             n = numel( obj.Contents_ );
@@ -293,6 +299,9 @@ classdef Grid < uix.Box
         end % addChild
         
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
             
             % Remove column and even row if necessary
             n = numel( obj.Contents_ );
