@@ -134,6 +134,14 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.2.1">
+        <ul>
+            <li>Released 26 February 2016</li>
+            <li>Fixed G1346921 "Mouse pointer gets confused when moving between adjacent flex containers"</li>
+            <li>Fixed G1357340 "BoxPanel property ForegroundColor is initialized incorrectly"</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.2">
         <ul>
             <li>Released 18 December 2015</li>
