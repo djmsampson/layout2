@@ -7,9 +7,12 @@ classdef Flex < handle
     %  Copyright 2016 The MathWorks, Inc.
     %  $Revision: 1077 $ $Date: 2015-03-19 16:44:14 +0000 (Thu, 19 Mar 2015) $
     
-    properties( Access = protected )
-        Figure = gobjects( 0 ); % mouse pointer figure
+    properties( GetAccess = protected, SetAccess = private )
         Pointer = 'unset' % mouse pointer
+    end
+    
+    properties( Access = private )
+        Figure = gobjects( 0 ); % mouse pointer figure
         Token = -1 % mouse pointer token
     end
     
