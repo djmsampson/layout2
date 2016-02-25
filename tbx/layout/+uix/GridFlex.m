@@ -230,7 +230,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                     otherwise % change, set
                         obj.setPointer( source, newPointer )
                 end
-                obj.Pointer = newPointer;
             elseif loc > 0 % dragging row divider
                 root = groot();
                 delta = root.PointerLocation(2) - obj.MousePressLocation(2);
