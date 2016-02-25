@@ -42,7 +42,7 @@ classdef Flex < handle
                 obj.unsetPointer()
             end
             
-            % Set            
+            % Set
             obj.Token = uix.PointerManager.setPointer( figure, pointer );
             obj.Figure = figure;
             obj.Pointer = pointer;
@@ -54,6 +54,11 @@ classdef Flex < handle
             %
             %  c.unsetPointer() undoes the previous pointer set.
             
+            % Check
+            assert( obj.Token ~= -1, 'uix:InvalidOperation', ...
+                'Pointer is already unset.' )
+            
+            % Unset
             uix.PointerManager.unsetPointer( obj.Figure, obj.Token );
             obj.Figure = gobjects( 0 );
             obj.Pointer = 'unset';
