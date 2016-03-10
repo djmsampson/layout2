@@ -14,12 +14,17 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     %  Copyright 2016 The MathWorks, Inc.
     %  $Revision: 1165 $ $Date: 2015-12-06 03:09:17 -0500 (Sun, 06 Dec 2015) $
     
+    properties( Access = public, Dependent, AbortSet )
+        Orientation % orientation [vertical|horizontal]
+    end
+    
     properties( Access = protected )
         Slider % slider
+        Orientation_ = 'vertical' % backing for Orientation
     end
     
     properties( Constant, Access = protected )
-        SliderWidth = 20 % slider width [pixels]
+        SliderSize = 20 % slider size [pixels]
     end
     
     methods
@@ -50,6 +55,30 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         
     end % structors
     
+    methods
+        
+        function value = get.Orientation( obj )
+            
+            value = obj.Orientation_;
+            
+        end % get.Orientation
+        
+        function set.Orientation( obj, value )
+            
+            % Check
+            assert( ischar( value ) && ismember( value, ...
+                {'horizontal','vertical'} ) )
+            
+            % Set
+            obj.Orientation_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.Orientation
+        
+    end % accessors
+    
     methods( Access = protected )
         
         function redraw( obj )
@@ -61,18 +90,28 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Count contents
             n = numel( obj.Contents_ );
-            w = (n>1) * obj.SliderWidth;
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
             padding = obj.Padding_;
-            xSizes = uix.calcPixelSizes( bounds(3)-w, -1, 1, padding, 0 );
-            ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
-            position = [padding+1 padding+1 xSizes ySizes];
+            switch obj.Orientation_
+                case 'vertical'
+                    w = (n>1) * obj.SliderSize;
+                    xSizes = uix.calcPixelSizes( bounds(3)-w, -1, 1, padding, 0 );
+                    ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
+                    contentsPosition = [padding+1, padding+1, xSizes, ySizes];
+                    sliderPosition = [bounds(3)-w+1, 1, w, bounds(4)];
+                otherwise % horizontal
+                    h = (n>1) * obj.SliderSize;
+                    xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
+                    ySizes = uix.calcPixelSizes( bounds(4)-h, -1, 1, padding, 0 );
+                    contentsPosition = [padding+1, h+padding+1, xSizes, ySizes];
+                    sliderPosition = [1, 1, bounds(3), h];
+            end
             
             % Redraw contents
-            obj.redrawContents( position )
+            obj.redrawContents( contentsPosition )
             
             % Redraw slider
             slider = obj.Slider;
@@ -80,7 +119,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 slider.Visible = 'off';
             else % show
                 slider.Visible = 'on';
-                slider.Position = [bounds(3) - w, 0, w, bounds(4)];
+                slider.Position = sliderPosition;
                 slider.Max = 1 - 1/n;
                 slider.SliderStep = [1 1]/(n-1);
                 slider.Value = 1 - obj.Selection_/n;
