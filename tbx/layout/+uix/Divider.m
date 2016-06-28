@@ -44,7 +44,8 @@ classdef Divider < hgsetget
             % Create control
             control = matlab.ui.control.UIControl( ...
                 'Style', 'checkbox', 'Internal', true, ...
-                'Enable', 'inactive', 'DeleteFcn', @obj.onDeleted );
+                'Enable', 'inactive', 'DeleteFcn', @obj.onDeleted,...
+                'Tag', 'uix.Divider' );
             
             % Store control
             obj.Control = control;
