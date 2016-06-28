@@ -214,6 +214,7 @@ function tf = iscontent( o )
 %  matlab.graphics.internal.GraphicsBaseFunctions, which is what isgraphics
 %  did prior to R2016a.
 
-tf = isa( o, 'matlab.graphics.internal.GraphicsBaseFunctions' );
+tf = isa( o, 'matlab.graphics.internal.GraphicsBaseFunctions' ) &&...
+     isprop( o, 'Position' );
 
 end % iscontent
