@@ -91,7 +91,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
     
     methods( Access = protected )
         
-        function onMousePress( obj, ~, eventData )
+        function onMousePress( obj, source, eventData )
             %onMousePress  Handler for WindowMousePress events
             
             % Check whether mouse is over a divider
@@ -104,6 +104,9 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             obj.ActiveDividerPosition = divider.Position;
             root = groot();
             obj.MousePressLocation = root.PointerLocation;
+            
+            % Make sure the pointer is appropriate
+            obj.updateMousePointer( source, eventData );
             
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -173,20 +176,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
-                oldPointer = obj.Pointer;
-                if any( obj.ColumnDividers.isMouseOver( eventData ) )
-                    newPointer = 'left';
-                else
-                    newPointer = 'unset';
-                end
-                switch newPointer
-                    case oldPointer % no change
-                        % do nothing
-                    case 'unset' % change, unset
-                        obj.unsetPointer()
-                    otherwise % change, set
-                        obj.setPointer( source, newPointer )
-                end
+                obj.updateMousePointer( source, eventData );
             else % dragging column divider
                 root = groot();
                 delta = root.PointerLocation(1) - obj.MousePressLocation(1);
@@ -326,5 +316,28 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
         end % reparent
         
     end % template methods
+    
+    methods( Access = protected )
+        
+        function updateMousePointer ( obj, source, eventData  )
+            
+            oldPointer = obj.Pointer;
+            if any( obj.ColumnDividers.isMouseOver( eventData ) )
+                newPointer = 'left';
+            else
+                newPointer = 'unset';
+            end
+            switch newPointer
+                case oldPointer % no change
+                    % do nothing
+                case 'unset' % change, unset
+                    obj.unsetPointer()
+                otherwise % change, set
+                    obj.setPointer( source, newPointer )
+            end
+                
+        end % updateMousePointer
+        
+    end % helpers methods
     
 end % classdef
