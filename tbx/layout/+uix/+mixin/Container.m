@@ -62,6 +62,9 @@ classdef Container < handle
             obj.ChildRemovedListener = childRemovedListener;
             obj.SizeChangedListener = sizeChangedListener;
             
+            % Track usage
+            obj.track()
+            
         end % constructor
         
     end % structors
@@ -274,6 +277,18 @@ classdef Container < handle
             tf = ~isempty( obj.FigureObserver.Figure );
             
         end % isDrawable
+        
+        function track( obj )
+            %track  Track usage
+            
+            persistent TRACKED % single shot
+            if isempty( TRACKED )
+                v = ver( 'layout' );
+                uix.tracking( 'UA-82270656-1', v.Name, v.Version, class( obj ) )
+                TRACKED = true;
+            end
+            
+        end % track
         
     end % template methods
     
