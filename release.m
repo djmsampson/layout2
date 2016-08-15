@@ -5,7 +5,7 @@ function release( mode )
 %
 %  release -verbose displays detailed information.
 
-%  Copyright 2009-2014 The MathWorks, Inc.
+%  Copyright 2009-2016 The MathWorks, Inc.
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 %% Check inputs
@@ -96,33 +96,29 @@ else
     error( '%s', log )
 end
 
+%% Check version
+fprintf( 1, 'Checking version...' );
+prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
+w = matlab.addons.toolbox.toolboxVersion( prj );
+if strcmp( w, v.Version )
+    fprintf( 1, ' OK.\n' );
+else
+    fprintf( 1, ' failed.\n' );
+    error( 'Package version %s does not match code version %s.', w, v.Version )
+end
+
 %% Package and rename
 fprintf( 1, 'Packaging...' );
 try
-    prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
-    name = char( com.mathworks.toolbox_packaging.services.ToolboxPackagingService.openProject( prj ) );
-    com.mathworks.toolbox_packaging.services.ToolboxPackagingService.packageProject( name )
-    com.mathworks.toolbox_packaging.services.ToolboxPackagingService.closeProject( name )
-    oldMltbx = fullfile( prjDir, [name '.mltbx'] );
-    newMltbx = fullfile( prjDir, 'releases', [name ' ' v.Version '.mltbx'] );
-    movefile( oldMltbx, newMltbx )
+    mltbx = fullfile( prjDir, 'releases', ['GUI Layout Toolbox ' v.Version '.mltbx'] );
+    matlab.addons.toolbox.packageToolbox( prj, mltbx )
     fprintf( 1, ' OK.\n' );
 catch e
     fprintf( 1, ' failed.\n' );
     e.rethrow()
 end
 
-%% Check package
-fprintf( 1, 'Checking package...' );
-info = mlAddonGetProperties( newMltbx );
-if strcmp( info.version, v.Version )
-    fprintf( 1, ' OK.\n' );
-else
-    fprintf( 1, ' failed.\n' );
-    error( 'Package version %s does not match code version %s.', info.version, v.Version )
-end
-
 %% Show message
-fprintf( 1, 'Created package %s\n', newMltbx );
+fprintf( 1, 'Created package %s\n', mltbx );
 
 end % release
