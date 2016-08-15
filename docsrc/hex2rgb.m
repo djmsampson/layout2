@@ -12,7 +12,7 @@ function rgb = hex2rgb( hex )
 %   Copyright 2009 The MathWorks Inc
 %   $Revision: 82 $    $Date: 2009-11-06 10:42:52 +0000 (Fri, 06 Nov 2009) $
 
-error( nargchk( 1, 1, nargin ) );
+narginchk( 1, 1 )
 if ~ischar( hex ) ...
         || ~ismember( numel( hex ), [3 6] ) ...
         || any( ~ismember( lower( hex ), '0123456789abcdef' ) )
