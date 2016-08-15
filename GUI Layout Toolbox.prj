@@ -14,7 +14,7 @@
 
 This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.2.1</param.version>
+    <param.version>2.2.2</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -23,7 +23,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>8.6</item>
+      <item>9.0</item>
     </param.products.version>
     <param.platforms />
     <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
@@ -33,6 +33,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     <param.demosxml />
     <param.apps />
     <param.docs>${PROJECT_ROOT}\tbx\layoutdoc\info.xml</param.docs>
+    <param.matlabpath.excludes />
     <unset>
       <param.email />
       <param.company />
@@ -40,6 +41,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <param.platforms />
       <param.demosxml />
       <param.apps />
+      <param.matlabpath.excludes />
     </unset>
     <fileset.rootdir>
       <file>${PROJECT_ROOT}\tbx</file>
@@ -56,20 +58,20 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2015b</root>
+      <root>C:\Program Files\MATLAB\R2016a</root>
       <toolboxes>
-        <toolbox name="embeddedcoder" />
         <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
       </toolboxes>
-      <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
       </toolbox>
     </matlab>
     <platform>
