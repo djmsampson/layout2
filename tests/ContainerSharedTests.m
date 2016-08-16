@@ -23,6 +23,15 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     methods(TestClassSetup)
+        function addInitialTestPaths(testcase)
+            import matlab.unittest.fixtures.PathFixture;
+            
+             addFolder1 = fullfile('..', 'tbx', 'layout');
+             addFolder2 = fullfile('..', 'docsrc');
+             
+             testcase.applyFixture(PathFixture(addFolder1));
+             testcase.applyFixture(PathFixture(addFolder2));
+        end
         function setParentedField(testcase, IsParentedOptions)
             testcase.isParented = IsParentedOptions;
             if IsParentedOptions
@@ -196,6 +205,28 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             % equivalent of selecting the rotate button on figure window:
             rotate3d;
             testcase.verifyEqual(ax.Visible, 'on');
+        end
+        
+        function testCheckDataCursorCanBeUsed( testcase, ContainerType )
+            obj = testcase.hCreateObj(ContainerType);
+            if isempty( obj.Parent )
+                % Auto success on unparented
+                return;
+            end
+            ax = axes( 'Parent', obj );
+            h = plot( ax, 1:10, rand(1,10) );
+            dcm = datacursormode( obj.Parent );
+            dcm.Enable = 'on';
+            
+            drawnow
+            positionBefore = ax.Position;
+            drawnow
+            dcm.createDatatip( h );
+            drawnow
+            positionAfter = ax.Position;
+            
+            testcase.verifyEqual( positionBefore, positionAfter,...
+                'Data cursor messed the layout' )
         end
     end
     
