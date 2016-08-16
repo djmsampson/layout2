@@ -8,7 +8,8 @@ function varargout = tracking( varargin )
 %  r = tracking(...) returns the server response r, for debugging purposes.
 %
 %  tracking('on') turns tracking on.  tracking('off') turns tracking off.
-%  tracking('query') returns the tracking state.
+%  tracking('snooze') turns tracking off for 30 days.  tracking('query')
+%  returns the tracking state.
 
 %  tracking('spoof') sets the tracking settings -- domain, language,
 %  client, MATLAB version, operating system version -- to spoof values.
@@ -19,9 +20,9 @@ function varargout = tracking( varargin )
 %  Copyright 2016 The MathWorks, Inc.
 %  $Revision: 1262 $ $Date: 2016-02-25 01:13:37 +0000 (Thu, 25 Feb 2016) $
 
-persistent ENABLED DATE USERNAME DOMAIN LANGUAGE CLIENT MATLAB OS
-if isempty( ENABLED )
-    ENABLED = getpref( 'Tracking', 'Enabled', 'off' );
+persistent STATE DATE USERNAME DOMAIN LANGUAGE CLIENT MATLAB OS
+if isempty( STATE )
+    STATE = getpref( 'Tracking', 'State', 'snooze' );
     DATE = getpref( 'Tracking', 'Date', -Inf );
     USERNAME = getenv( 'USERNAME' );
     reset()
@@ -34,37 +35,47 @@ switch nargin
                 enable()
             case 'off'
                 disable()
+            case 'snooze'
+                snooze()
             case 'spoof'
                 spoof()
             case 'reset'
                 reset()
             case 'query'
-                varargout{1} = ENABLED;
+                varargout{1} = STATE;
                 varargout{2} = query();
             otherwise
                 assert( ischar( varargin{1} ) && ...
-                    any( strcmp( varargin{1}, {'on','off','query','spoof','reset'} ) ), ...
+                    any( strcmp( varargin{1}, {'on','off','snooze','query','spoof','reset'} ) ), ...
                     'tracking:InvalidArgument', ...
-                    'Valid options are ''on'', ''off'' and ''query''.' )
+                    'Valid options are ''on'', ''off'', ''snooze'' and ''query''.' )
         end
     case 4
         switch nargout
             case 0
-                if ~strcmp( ENABLED, 'on' ) % tracking disabled
-                    if now() - 30 < DATE
-                        return % tracking recently disabled
-                    else
-                        switch enabledlg( varargin{2} )
-                            case 'Yes'
-                                enable()
-                            case 'No'
-                                disable()
-                                return
-                            otherwise % cancel
-                                return
-                        end % switch
-                    end
-                end
+                switch STATE
+                    case 'on' % enabled
+                        % continue
+                    case 'off' % disabled
+                        return
+                    case 'snooze' % snoozed
+                        if now() - 30 > DATE % disabled long ago
+                            switch enabledlg( varargin{2} )
+                                case 'Yes'
+                                    enable()
+                                case 'Later'
+                                    snooze()
+                                    return
+                                case 'No'
+                                    disable()
+                                    return
+                                otherwise % cancel
+                                    return
+                            end % switch
+                        else % disabled recently
+                            return
+                        end
+                end % switch
                 uri = 'https://www.google-analytics.com/collect';
                 track( uri, varargin{[1 3 4]} );
             case 1
@@ -114,9 +125,9 @@ end % switch
     function enable()
         %enable  Enable tracking
         
-        ENABLED = 'on';
+        STATE = 'on';
         DATE = now();
-        setpref( 'Tracking', 'Enabled', ENABLED ) % persist
+        setpref( 'Tracking', 'State', STATE ) % persist
         setpref( 'Tracking', 'Date', DATE ) % persist
         
     end % enable
@@ -124,9 +135,19 @@ end % switch
     function disable()
         %disable  Disable tracking
         
-        ENABLED = 'off';
+        STATE = 'off';
         DATE = now();
-        setpref( 'Tracking', 'Enabled', ENABLED ) % persist
+        setpref( 'Tracking', 'State', STATE ) % persist
+        setpref( 'Tracking', 'Date', DATE ) % persist
+        
+    end % disable
+
+    function snooze()
+        %snooze  Snooze tracking
+        
+        STATE = 'snooze';
+        DATE = now();
+        setpref( 'Tracking', 'State', STATE ) % persist
         setpref( 'Tracking', 'Date', DATE ) % persist
         
     end % disable
@@ -267,6 +288,6 @@ msg = sprintf( '%s%s%s', ...
     'Help us prioritize improvements we should work on by allowing ', ...
     'us to capture anonymous version, operating system and usage ', ...
     'information.' );
-b = questdlg( msg, n, 'Yes', 'No', 'No' );
+b = questdlg( msg, n, 'Yes', 'Later', 'No', 'Later' );
 
 end % enabledlg
