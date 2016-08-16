@@ -1,5 +1,5 @@
 function varargout = tracking( varargin )
-%tracking  Track anonymized usage data using Google Analytics
+%tracking  Track anonymized usage data
 %
 %  tracking(p,n,v,s) tracks usage to the property p for the product name n,
 %  product version v and tracking site s.  No personally identifiable
