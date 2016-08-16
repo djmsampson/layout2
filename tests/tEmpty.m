@@ -12,8 +12,9 @@ classdef tEmpty < matlab.unittest.TestCase
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
             
-             addFolder1 = fullfile('..', 'tbx', 'layout');
-             addFolder2 = fullfile('..', 'docsrc');
+            thisFolder = fileparts( mfilename( 'fullpath' ) );
+            addFolder1 = layoutRoot();
+            addFolder2 = fullfile( thisFolder, '..', 'docsrc' );
              
              testcase.applyFixture(PathFixture(addFolder1));
              testcase.applyFixture(PathFixture(addFolder2));

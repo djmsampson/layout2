@@ -5,15 +5,16 @@ classdef tExamples <  matlab.unittest.TestCase
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
             
-             addFolder1 = fullfile('..', 'tbx', 'layout');
-             addFolder2 = fullfile('..', 'docsrc');
-             
-             testcase.applyFixture(PathFixture(addFolder1));
-             testcase.applyFixture(PathFixture(addFolder2));
-             
-             addFolder3 = testcase.demoroot();
-             
-             testcase.applyFixture(PathFixture(addFolder3));
+            thisFolder = fileparts( mfilename( 'fullpath' ) );
+            addFolder1 = layoutRoot();
+            addFolder2 = fullfile( thisFolder, '..', 'docsrc' );
+            
+            testcase.applyFixture(PathFixture(addFolder1));
+            testcase.applyFixture(PathFixture(addFolder2));
+            
+            addFolder3 = testcase.demoroot();
+            
+            testcase.applyFixture(PathFixture(addFolder3));
         end
     end
     
