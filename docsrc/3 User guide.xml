@@ -558,8 +558,8 @@ for simple applications.</p>
         <comment>% A panel has been maximized/minimized</comment>
         s = <matlabfcn>get</matlabfcn>( box, <string>'Heights'</string> );
         pos = <matlabfcn>get</matlabfcn>( fig, <string>'Position'</string> );
-        panel{whichpanel}.IsMinimized = ~panel{whichpanel}.IsMinimized;
-        <matlabfcn>if</matlabfcn> panel{whichpanel}.IsMinimized
+        panel{whichpanel}.Minimized = ~panel{whichpanel}.Minimized;
+        <matlabfcn>if</matlabfcn> panel{whichpanel}.Minimized
             s(whichpanel) = pheightmin;
         <matlabfcn>else</matlabfcn>
             s(whichpanel) = pheightmax;
