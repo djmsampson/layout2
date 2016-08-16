@@ -4,7 +4,7 @@
 import matlab.unittest.plugins.CodeCoveragePlugin
 
 % add Layouts2/code/layout to path
-addpath( fullfile('..', 'code', 'layout'));
+addpath( fullfile('..', 'tbx', 'layout'));
 
 % build test suite and test runner
 ts = matlab.unittest.TestSuite.fromFolder(pwd);
