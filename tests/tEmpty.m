@@ -8,6 +8,18 @@ classdef tEmpty < matlab.unittest.TestCase
         end
     end
     
+    methods(TestClassSetup)
+        function addInitialTestPaths(testcase)
+            import matlab.unittest.fixtures.PathFixture;
+            
+             addFolder1 = fullfile('..', 'tbx', 'layout');
+             addFolder2 = fullfile('..', 'docsrc');
+             
+             testcase.applyFixture(PathFixture(addFolder1));
+             testcase.applyFixture(PathFixture(addFolder2));
+        end
+    end
+    
     methods (Test)  
         function testDefaultConstructor(testcase)
             %testDefaultConstructor  Test constructing the widget with no arguments

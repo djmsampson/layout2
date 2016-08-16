@@ -1,14 +1,19 @@
 classdef tExamples <  matlab.unittest.TestCase
     %tExamples  Unit tests for the layout example applications
     
-    properties
-        oldDir;
-    end
-    
     methods(TestMethodSetup)
-        function changeDirToDemoRoot(testcase)
-            testcase.oldDir = pwd();
-            cd( testcase.demoroot() );
+        function addInitialTestPaths(testcase)
+            import matlab.unittest.fixtures.PathFixture;
+            
+             addFolder1 = fullfile('..', 'tbx', 'layout');
+             addFolder2 = fullfile('..', 'docsrc');
+             
+             testcase.applyFixture(PathFixture(addFolder1));
+             testcase.applyFixture(PathFixture(addFolder2));
+             
+             addFolder3 = testcase.demoroot();
+             
+             testcase.applyFixture(PathFixture(addFolder3));
         end
     end
     
@@ -16,8 +21,11 @@ classdef tExamples <  matlab.unittest.TestCase
         function closeAllOpenFigures(~)
             close all force;
         end
-        function changeDirToOriginalLocation(testcase)
-            cd( testcase.oldDir );
+    end
+    
+    methods(TestClassTeardown)
+        function cleanWorkspace(testcase)
+            evalin('base','clear all');
         end
     end
     
@@ -103,7 +111,7 @@ classdef tExamples <  matlab.unittest.TestCase
         
         function testTabPanelExample(testcase)
             try
-                tabpanelexample;
+                paneltabexample;
             catch e
                 errstr = ['the "tabpanelexample" demo threw error ', e.message, ...
                     ' with the identifier: ', e.identifier];
@@ -127,9 +135,7 @@ classdef tExamples <  matlab.unittest.TestCase
     
     methods
         function d = demoroot(~)
-            t = fileparts( mfilename( 'fullpath' ) );
-            r = fileparts( t );
-            d = fullfile( r, 'docsrc', 'Examples' );
+            d = fullfile( layoutDocRoot(), 'Examples' );
         end % helper function
     end
 end
