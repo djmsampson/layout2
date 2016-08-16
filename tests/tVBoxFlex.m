@@ -1,5 +1,4 @@
-classdef tVBoxFlex < ContainerSharedTests ...
-                   & VBoxTests
+classdef tVBoxFlex < FlexSharedTests & VBoxTests
     %TVBOX Runs parameterised tests for VBox.
     
     properties (TestParameter)
@@ -20,7 +19,6 @@ classdef tVBoxFlex < ContainerSharedTests ...
             'ShowMarkings',    'off' ...
             }};
     end
-    
     
 end
 

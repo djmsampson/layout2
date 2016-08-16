@@ -1,5 +1,4 @@
-classdef tHBoxFlex < ContainerSharedTests ...
-                   & HBoxTests
+classdef tHBoxFlex < FlexSharedTests & HBoxTests
     %THBOX Runs parameterised tests for HBox.
     
     properties (TestParameter)
@@ -20,7 +19,6 @@ classdef tHBoxFlex < ContainerSharedTests ...
             'ShowMarkings',    'off' ...
             }};
     end
-    
     
 end
 
