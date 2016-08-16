@@ -140,6 +140,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1175938 "Cannot use data cursor mode with GUI Layout Toolbox containers"</li>
             <li>Fixed G1367337 "Update flex container pointer on mouse press event"</li>
             <li>Fixed G1380756 "Space behind TabPanel tabs should match parent color"</li>
+            <li>Updates to documentation</li>
             <li>Added optional, anonymous tracking of version, operating system and usage to help us prioritize the improvements we should work on</li>
         </ul>
     </inlinesubsection> 
