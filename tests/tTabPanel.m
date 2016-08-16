@@ -15,7 +15,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             'HighlightColor',      [1 0 1], ...
             'ShadowColor',         [0 0 0], ...
             'FontAngle',           'normal', ...
-            'FontName',            'Arial', ...
+            'FontName',            'SansSerif', ...
             'FontSize',            20, ...
             'FontUnits',           'points', ...
             'FontWeight',          'bold'
@@ -27,7 +27,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             'Tag',             'Test', ...
             'Visible',         'on', ...
             'FontAngle',   'normal', ...
-            'FontName',    'Arial', ...
+            'FontName',    'SansSerif', ...
             'FontSize',    20, ...
             'FontUnits',   'points', ...
             'FontWeight',  'bold'
@@ -246,6 +246,46 @@ classdef tTabPanel  < ContainerSharedTests ...
             
             testcase.verifyEqual(oldSelection, tp.Selection);
         end
+        
+        function testParentBackgroundColor(testcase)
+            % g1380756 Test to make sure that the some elements match the
+            % parent (background)color
+            
+            % Create
+            fig = figure;
+            tabs = uiextras.TabPanel( 'Parent', fig );
+            uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
+            uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
+            
+            % Get the divider
+            children = hgGetTrueChildren( tabs );
+            dividers = findobj( children, 'Tag', 'TabPanelDividers' );
+            
+            checkDividersBackgroundColor( testcase, dividers, fig.Color );
+            
+            % Change figure color
+            fig.Color = [1 0 0];
+            checkDividersBackgroundColor( testcase, dividers, fig.Color );
+            
+            % Reparent
+            container = uix.VBox( 'BackgroundColor', [0 1 0], 'Parent', fig );
+            tabs.Parent = container;
+            checkDividersBackgroundColor( testcase, dividers, container.BackgroundColor );
+            
+            % Change container's color
+            container.BackgroundColor = [0 0 1];
+            checkDividersBackgroundColor( testcase, dividers, container.BackgroundColor );
+            
+            % Nested
+            function checkDividersBackgroundColor( testcase, dividers, color )
+                % Check both CData and BackgroundColor
+                testcase.verifyEqual( color, dividers.BackgroundColor,...
+                    'The divider BackgroundColor does not match.' );
+                testcase.verifyEqual( color, permute( dividers.CData(1, 1, :), [1 3 2] ),...
+                    'The divider CData (mask) does not match.' );
+            end
+        end
+        
     end
     
     methods (Access = private)
