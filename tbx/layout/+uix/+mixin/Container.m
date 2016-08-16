@@ -285,7 +285,8 @@ classdef Container < handle
             if isempty( TRACKED )
                 v = ver( 'layout' );
                 try %#ok<TRYNC>
-                    uix.tracking( 'UA-82270656-2', v.Name, v.Version, class( obj ) )
+                    uix.tracking( 'UA-82270656-2', v(1).Name, ...
+                        v(1).Version, class( obj ) )
                 end
                 TRACKED = true;
             end
