@@ -2,24 +2,24 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        IsParentedOptions = struct('Parented', true, 'Unparented', false);
+        IsParentedOptions = struct('Parented', true, 'Unparented', false)
     end
     
     properties (TestParameter, Abstract)
-%         DefaultConstructionArgs;
-        ContainerType;
-        ConstructorArgs;
-        GetSetArgs;
+        ContainerType
+        ConstructorArgs
+        GetSetArgs
     end
     
     properties(Constant)
         % tells testrunner whether to run testAxesLegend and testAxesColorbar
-        runAxesLegendAndColorbarTests = false;
+        runAxesLegendAndColorbarTests = false
     end
     
     properties
-        isParented;
-        parentStr;
+        isParented
+        parentStr
+        oldTracking = 'unset'
     end
     
     methods(TestClassSetup)
@@ -33,6 +33,10 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.applyFixture(PathFixture(addFolder1));
             testcase.applyFixture(PathFixture(addFolder2));
         end
+        function disableTracking(testcase)
+            testcase.oldTracking = uix.tracking( 'query' );
+            uix.tracking( 'off' )
+        end
         function setParentedField(testcase, IsParentedOptions)
             testcase.isParented = IsParentedOptions;
             if IsParentedOptions
@@ -42,6 +46,13 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             end
         end
     end
+    
+    methods(TestClassTeardown)
+        function resetTracking(testcase)
+            uix.tracking(testcase.oldTracking)
+            testcase.oldTracking = 'unset';
+        end
+    end    
     
     methods(TestMethodTeardown)
         function closeAllOpenFigures(~)
