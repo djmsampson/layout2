@@ -7,7 +7,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % does not work for docked figures in R2015b
             %
             % Pass for unparented tests, since this is not applicable
-            if strcmp( testcase.parentStr, '[]' )
+            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
                 return;
             end
             % Create a docked figure front and center
@@ -89,10 +89,10 @@ classdef FlexSharedTests < ContainerSharedTests
         end
         function testMousePointerUpdateOnFlexChange( testcase, ContainerType )
             % g1367326: Add test for g1346921: Mouse pointer gets confused
-            % when moving between adjacent flex containers 
+            % when moving between adjacent flex containers
             %
             % Only makes sense in parented case
-            if strcmp( testcase.parentStr, '[]' )
+            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
                 return;
             end
             % Build
@@ -115,7 +115,7 @@ classdef FlexSharedTests < ContainerSharedTests
             h1Buttons = gobjects( 1, nChildren );
             for ii = 1:nChildren
                 h1Buttons(ii) = uicontrol( 'Parent', h1 );
-            end 
+            end
             h2 = uiextras.(testedContainer)( 'Parent', layout, 'Spacing', 10 );
             h2Buttons = gobjects( 1, nChildren );
             for ii = 1:nChildren
@@ -155,10 +155,10 @@ classdef FlexSharedTests < ContainerSharedTests
             testcase.verifyEqual( fig.Pointer, 'arrow' );
         end
         function testMousePointerUpdateOnFlexClick( testcase, ContainerType )
-            % g1367337: Update flex container pointer on mouse press event 
+            % g1367337: Update flex container pointer on mouse press event
             %
             % Only makes sense in parented case
-            if strcmp( testcase.parentStr, '[]' )
+            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
                 return;
             end
             temp = strsplit( ContainerType, '.' );
@@ -218,7 +218,7 @@ classdef FlexSharedTests < ContainerSharedTests
                 for i = 1:nSteps
                     root.PointerLocation = interpolatedPosition( i, nSteps );
                     % Uncomment next line to see the test in action
-    %                 pause( 0.1 )
+                    %                 pause( 0.1 )
                     drawnow;
                 end
                 % It seems that drawnow might not be enough for the pointer
@@ -230,6 +230,10 @@ classdef FlexSharedTests < ContainerSharedTests
                 drawnow;
             end
         end
+        function tf = isheadless()
+            tf = ~isempty( java.lang.System.getProperty( 'java.awt.headless' ) );
+        end
+        
     end % helpers
     
 end
