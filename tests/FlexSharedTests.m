@@ -7,7 +7,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % does not work for docked figures in R2015b
             %
             % Pass for unparented tests, since this is not applicable
-            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
+            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
                 return;
             end
             % Create a docked figure front and center
@@ -92,7 +92,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % when moving between adjacent flex containers
             %
             % Only makes sense in parented case
-            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
+            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
                 return;
             end
             % Build
@@ -158,7 +158,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % g1367337: Update flex container pointer on mouse press event
             %
             % Only makes sense in parented case
-            if testcase.isheadless() || strcmp( testcase.parentStr, '[]' )
+            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
                 return;
             end
             temp = strsplit( ContainerType, '.' );
@@ -230,11 +230,11 @@ classdef FlexSharedTests < ContainerSharedTests
                 drawnow;
             end
         end
-        function tf = isheadless()
-            tf = ~isempty( java.lang.System.getProperty( 'java.awt.headless' ) );
-        end
         
     end % helpers
     
 end
 
+function tf = isjenkins()
+tf = strcmp( getenv( 'JOB_NAME' ), 'GUI_Layout-Toolbox-v2' );
+end
