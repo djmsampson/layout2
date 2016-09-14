@@ -1,9 +1,8 @@
 function varargout = tracking( varargin )
 %tracking  Track anonymized usage data
 %
-%  tracking(p,n,v,s) tracks usage to the property p for the product name n,
-%  product version v and tracking site s.  No personally identifiable
-%  information is tracked.
+%  tracking(p,v,id) tracks usage to the property p for the product version
+%  v and identifier id.  No personally identifiable information is tracked.
 %
 %  r = tracking(...) returns the server response r, for debugging purposes.
 %
@@ -44,7 +43,7 @@ switch nargin
                 error( 'tracking:InvalidArgument', ...
                     'Valid options are ''on'', ''off'' and ''query''.' )
         end
-    case 4
+    case 3
         switch nargout
             case 0
                 switch STATE
@@ -57,15 +56,15 @@ switch nargin
                         STATE = 'on';
                 end % switch
                 uri = 'https://www.google-analytics.com/collect';
-                track( uri, varargin{[1 3 4]} );
+                track( uri, varargin{:} );
             case 1
                 uri = 'https://www.google-analytics.com/debug/collect';
-                varargout{1} = track( uri, varargin{[1 3 4]} );
+                varargout{1} = track( uri, varargin{:} );
             otherwise
                 nargoutchk( 0, 1 )
         end
     otherwise
-        narginchk( 4, 4 )
+        narginchk( 3, 3 )
 end % switch
 
     function reset()
