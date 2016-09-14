@@ -8,8 +8,7 @@ function varargout = tracking( varargin )
 %  r = tracking(...) returns the server response r, for debugging purposes.
 %
 %  tracking('on') turns tracking on.  tracking('off') turns tracking off.
-%  tracking('snooze') turns tracking off for 30 days.  tracking('query')
-%  returns the tracking state.
+%  tracking('query') returns the tracking state.
 
 %  tracking('spoof') sets the tracking settings -- domain, language,
 %  client, MATLAB version, operating system version -- to spoof values.
@@ -20,10 +19,10 @@ function varargout = tracking( varargin )
 %  Copyright 2016 The MathWorks, Inc.
 %  $Revision: 1262 $ $Date: 2016-02-25 01:13:37 +0000 (Thu, 25 Feb 2016) $
 
-persistent STATE DATE USERNAME DOMAIN LANGUAGE CLIENT MATLAB OS
+persistent STATE USERNAME DOMAIN LANGUAGE CLIENT MATLAB OS
 if isempty( STATE )
-    STATE = getpref( 'Tracking', 'State', 'snooze' );
-    DATE = getpref( 'Tracking', 'Date', -Inf );
+    STATE = getpref( 'Tracking', 'State', 'on' );
+    if ispref( 'Tracking', 'Date' ), rmpref( 'Tracking', 'Date' ), end
     USERNAME = getenv( 'USERNAME' );
     reset()
 end % initialize
@@ -31,12 +30,9 @@ end % initialize
 switch nargin
     case 1
         switch varargin{1}
-            case 'on'
-                enable()
-            case 'off'
-                disable()
-            case 'snooze'
-                snooze()
+            case {'on','off'}
+                STATE = varargin{1};
+                setpref( 'Tracking', 'State', varargin{1} ) % persist
             case 'spoof'
                 spoof()
             case 'reset'
@@ -45,10 +41,8 @@ switch nargin
                 varargout{1} = STATE;
                 varargout{2} = query();
             otherwise
-                assert( ischar( varargin{1} ) && ...
-                    any( strcmp( varargin{1}, {'on','off','snooze','query','spoof','reset'} ) ), ...
-                    'tracking:InvalidArgument', ...
-                    'Valid options are ''on'', ''off'', ''snooze'' and ''query''.' )
+                error( 'tracking:InvalidArgument', ...
+                    'Valid options are ''on'', ''off'' and ''query''.' )
         end
     case 4
         switch nargout
@@ -59,22 +53,8 @@ switch nargin
                     case 'off' % disabled
                         return
                     case 'snooze' % snoozed
-                        if now() - 30 > DATE % disabled long ago
-                            switch enabledlg( varargin{2} )
-                                case 'Yes'
-                                    enable()
-                                case 'Later'
-                                    snooze()
-                                    return
-                                case 'No'
-                                    disable()
-                                    return
-                                otherwise % cancel
-                                    return
-                            end % switch
-                        else % disabled recently
-                            return
-                        end
+                        setpref( 'Tracking', 'State', 'on' )
+                        STATE = 'on';
                 end % switch
                 uri = 'https://www.google-analytics.com/collect';
                 track( uri, varargin{[1 3 4]} );
@@ -121,36 +101,6 @@ end % switch
         s.Os = OS;
         
     end % query
-
-    function enable()
-        %enable  Enable tracking
-        
-        STATE = 'on';
-        DATE = now();
-        setpref( 'Tracking', 'State', STATE ) % persist
-        setpref( 'Tracking', 'Date', DATE ) % persist
-        
-    end % enable
-
-    function disable()
-        %disable  Disable tracking
-        
-        STATE = 'off';
-        DATE = now();
-        setpref( 'Tracking', 'State', STATE ) % persist
-        setpref( 'Tracking', 'Date', DATE ) % persist
-        
-    end % disable
-
-    function snooze()
-        %snooze  Snooze tracking
-        
-        STATE = 'snooze';
-        DATE = now();
-        setpref( 'Tracking', 'State', STATE ) % persist
-        setpref( 'Tracking', 'Date', DATE ) % persist
-        
-    end % disable
 
     function varargout = track( uri, p, v, s )
         %track  Do tracking
@@ -280,14 +230,3 @@ function s = uuid()
 s = char( java.util.UUID.randomUUID() );
 
 end % uuid
-
-function b = enabledlg( n )
-%enabledlg  Enable dialog
-
-msg = sprintf( '%s%s%s', ...
-    'Help us prioritize improvements we should work on by allowing ', ...
-    'us to capture anonymous version, operating system and usage ', ...
-    'information.' );
-b = questdlg( msg, n, 'Yes', 'Later', 'No', 'Later' );
-
-end % enabledlg
