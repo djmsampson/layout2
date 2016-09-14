@@ -43,7 +43,7 @@
     <indexitem target="Function_reference2_3.html">uix.HBoxFlex (Function reference: 2.3)</indexitem>
     <indexitem target="Function_reference2_4.html">uix.VBoxFlex (Function reference: 2.4)</indexitem>
 </indexitem>
-<indexitem target="Function_reference4_2.html">Folder</indexitem>
+<indexitem target="Function_reference4_3.html">Folder</indexitem>
 <indexitem target="Function_reference.html">Function reference</indexitem>
 <indexitem target="Getting_Started.html">Getting Started</indexitem>
 <indexitem target="Function_reference3_1.html">Grid</indexitem>
@@ -60,10 +60,10 @@
     <indexitem target="Function_reference2_3.html">uix.HBoxFlex (Function reference: 2.3)</indexitem>
 </indexitem>
 <indexitem target="Getting_Started4.html">Installation</indexitem>
-<indexitem target="Function_reference4_2.html">Installation folder</indexitem>
+<indexitem target="Function_reference4_3.html">Installation folder</indexitem>
 <indexitem target="User_guide1_1.html">Layout basics</indexitem>
 <indexitem target="User_guide1_4.html">Layout hierarchies</indexitem>
-<indexitem target="Function_reference4_2.html">layoutRoot</indexitem>
+<indexitem target="Function_reference4_3.html">layoutRoot</indexitem>
 <indexitem target="User_guide6.html">MATLAB Compiler</indexitem>
 <indexitem target="User_guide4_2.html">Minimize and maximize</indexitem>
 <indexitem target="User_guide1_3.html#1.3.1">Minimum sizes</indexitem>
@@ -74,12 +74,13 @@
 <indexitem target="User_guide2_1.html">Position vs OuterPosition</indexitem>
 <indexitem target="User_guide2.html">Positioning axes</indexitem>
 <indexitem target="Getting_Started3.html">Release notes</indexitem>
-<indexitem target="Function_reference4_2.html">Root</indexitem>
+<indexitem target="Function_reference4_3.html">Root</indexitem>
 <indexitem target="User_guide7_5.html">Running it</indexitem>
 <indexitem target="User_guide7_6.html">Scalability</indexitem>
 <indexitem target="User_guide1_3.html">Sizes and units</indexitem>
 <indexitem target="Getting_Started5.html">Support</indexitem>
 <indexitem target="Function_reference1_4.html">TabPanel</indexitem>
+<indexitem target="Function_reference4_2.html">Tracking</indexitem>
 <indexitem target="User_guide1_2.html">Types of layout</indexitem>
 <indexitem target="Function_reference1_3.html">uix.BoxPanel</indexitem>
 <indexitem target="Function_reference1_2.html">uix.CardPanel</indexitem>
@@ -91,6 +92,7 @@
 <indexitem target="Function_reference2_5.html">uix.HButtonBox</indexitem>
 <indexitem target="Function_reference1_1.html">uix.Panel</indexitem>
 <indexitem target="Function_reference1_4.html">uix.TabPanel</indexitem>
+<indexitem target="Function_reference4_2.html">uix.tracking</indexitem>
 <indexitem target="Function_reference2_2.html">uix.VBox</indexitem>
 <indexitem target="Function_reference2_4.html">uix.VBoxFlex</indexitem>
 <indexitem target="Function_reference2_6.html">uix.VButtonBox</indexitem>

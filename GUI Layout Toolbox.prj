@@ -14,7 +14,7 @@
 
 This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.2.2</param.version>
+    <param.version>2.2.3</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -27,7 +27,8 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     </param.products.version>
     <param.platforms />
     <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
-    <param.exclude.filters />
+    <param.exclude.filters>layout/+uix/ScrollingPanel.m
+layout/+uix/Viewport.m</param.exclude.filters>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples/&gt;</param.examples>
     <param.demosxml />
