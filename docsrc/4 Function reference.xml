@@ -2045,6 +2045,48 @@
         </subsection>
 
         <subsection
+            name="uix.tracking" 
+            description="Track usage"
+            staticref="uix.tracking">
+                 <keywords>Tracking</keywords>
+            <p>tracks anonymized usage data</p>
+                        <dl>
+                 <dt><function>
+                         <name>uix.tracking</name>
+                         <inputarg>p</inputarg>
+                         <inputarg>v</inputarg>
+                         <inputarg>id</inputarg>
+                 </function></dt>
+                 <dd>tracks usage to the property p for the version v and identifier id using Google Analytics.</dd>
+                 <dt><function>
+                         <name>uix.tracking</name>
+                         <inputarg>state</inputarg>
+                 </function></dt>
+                 <dd>turns tracking on or off.</dd>
+                 <dt><function>
+                         <name>uix.tracking</name>
+                         <inputarg>'query'</inputarg>
+                         <outputarg>state</outputarg>
+                 </function></dt>
+                 <dd>queries whether tracking is on or off.</dd>
+                 
+             </dl>
+             
+             <examples>
+             	   <example>
+             	   	   <code><fcnref>uix.tracking</fcnref>(<string>'UA-45678-9'</string>,<string>'1.2.3'</string>,<string>'featurename'</string>)</code>
+             	   </example>
+                 <example>
+                     <code><fcnref>uix.tracking</fcnref>(<string>'on'</string>)</code>
+                 </example>
+                 <example>
+                     <code>state = <fcnref>uix.tracking</fcnref>(<string>'query'</string>)</code>
+                     <result><code>state = <string>'on'</string></code></result>
+                 </example>
+             </examples>
+        </subsection>
+
+        <subsection
             name="layoutRoot" 
             description="Return the folder containing the GUI layout toolbox"
             staticref="layoutRoot">
