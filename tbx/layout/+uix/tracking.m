@@ -21,7 +21,13 @@ function varargout = tracking( varargin )
 persistent STATE USERNAME DOMAIN LANGUAGE CLIENT MATLAB OS
 if isempty( STATE )
     STATE = getpref( 'Tracking', 'State', 'on' );
-    if ispref( 'Tracking', 'Date' ), rmpref( 'Tracking', 'Date' ), end
+    if strcmp( STATE, 'snooze' ) % deprecated
+        setpref( 'Tracking', 'State', 'on' )
+        STATE = 'on';
+    end
+    if ispref( 'Tracking', 'Date' ) % deprecated
+        rmpref( 'Tracking', 'Date' )
+    end
     USERNAME = getenv( 'USERNAME' );
     reset()
 end % initialize
@@ -46,15 +52,7 @@ switch nargin
     case 3
         switch nargout
             case 0
-                switch STATE
-                    case 'on' % enabled
-                        % continue
-                    case 'off' % disabled
-                        return
-                    case 'snooze' % snoozed
-                        setpref( 'Tracking', 'State', 'on' )
-                        STATE = 'on';
-                end % switch
+                if strcmp( STATE, 'off' ), return, end
                 uri = 'https://www.google-analytics.com/collect';
                 track( uri, varargin{:} );
             case 1
