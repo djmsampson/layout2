@@ -26,7 +26,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <item>9.0</item>
     </param.products.version>
     <param.platforms />
-    <param.guid>5f76698f-ea4b-4215-b7d6-e852244874b9</param.guid>
+    <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
     <param.exclude.filters>layout/+uix/ScrollingPanel.m
 layout/+uix/Viewport.m</param.exclude.filters>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
