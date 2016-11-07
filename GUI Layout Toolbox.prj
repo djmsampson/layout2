@@ -23,7 +23,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.0</item>
+      <item>9.1</item>
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
@@ -35,6 +35,7 @@ layout/+uix/Viewport.m</param.exclude.filters>
     <param.apps />
     <param.docs>${PROJECT_ROOT}\tbx\layoutdoc\info.xml</param.docs>
     <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
     <unset>
       <param.email />
       <param.company />
@@ -43,6 +44,7 @@ layout/+uix/Viewport.m</param.exclude.filters>
       <param.demosxml />
       <param.apps />
       <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
     </unset>
     <fileset.rootdir>
       <file>${PROJECT_ROOT}\tbx</file>
@@ -59,7 +61,7 @@ layout/+uix/Viewport.m</param.exclude.filters>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2016a</root>
+      <root>C:\Program Files\MATLAB\R2016b</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
