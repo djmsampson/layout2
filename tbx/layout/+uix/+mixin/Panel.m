@@ -144,6 +144,9 @@ classdef Panel < uix.mixin.Container
         
         function showChild( obj, selection )
             %showChild  Show one child, hide the others
+            %
+            %  c.showChild(i) shows the ith child of the container c, and
+            %  hides the others.
             
             % Set positions and visibility
             children = obj.Contents_;
