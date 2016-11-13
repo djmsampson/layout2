@@ -213,6 +213,10 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         function redraw( obj )
             %redraw  Redraw
             
+            % Return if no contents
+            selection = obj.Selection_;
+            if selection == 0, return, end
+            
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
@@ -220,39 +224,24 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             height = bounds(4);
             padding = obj.Padding_;
             sliderSize = obj.SliderSize; % slider size
-            n = numel( obj.Contents_ );
-            selection = obj.Selection_;
-            vSliders = obj.VerticalSliders;
-            hSliders = obj.HorizontalSliders;
-            for ii = 1:n
-                vSlider = vSliders(ii);
-                hSlider = hSliders(ii);
-                if ii == selection
-                    % Compute properties
-                    contentsWidth = obj.Widths_(ii);
-                    contentsHeight = obj.Heights_(ii);
-                    vSliderWidth = sliderSize * (contentsHeight > height);
-                    hSliderHeight = sliderSize * (contentsWidth > width );
-                    vSliderHeight = height - 2 * padding - hSliderHeight;
-                    hSliderWidth = width - 2 * padding - vSliderWidth;
-                    widths = uix.calcPixelSizes( width, [contentsWidth; vSliderWidth], [1; 1], padding, 0 );
-                    heights = uix.calcPixelSizes( height, [contentsHeight; hSliderHeight], [1; 1], padding, 0 );
-                    contentsWidth = widths(1);
-                    contentsHeight = heights(1);
-                    contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
-                    vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
-                    hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
-                    % Set properties
-                    uix.setPosition( obj.Contents_(ii), contentsPosition, 'pixels' )
-                    vSlider.Position = vSliderPosition;
-                    vSlider.Visible = 'on';
-                    hSlider.Position = hSliderPosition;
-                    hSlider.Visible = 'on';
-                else
-                    vSlider.Visible = 'off';
-                    hSlider.Visible = 'off';
-                end
-            end
+            contentsWidth = obj.Widths_(selection);
+            contentsHeight = obj.Heights_(selection);
+            vSliderWidth = sliderSize * (contentsHeight > height);
+            hSliderHeight = sliderSize * (contentsWidth > width );
+            vSliderHeight = height - 2 * padding - hSliderHeight;
+            hSliderWidth = width - 2 * padding - vSliderWidth;
+            widths = uix.calcPixelSizes( width, [contentsWidth; vSliderWidth], [1; 1], padding, 0 );
+            heights = uix.calcPixelSizes( height, [contentsHeight; hSliderHeight], [1; 1], padding, 0 );
+            contentsWidth = widths(1);
+            contentsHeight = heights(1);
+            contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
+            vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
+            hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
+            
+            % Set positions
+            uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+            obj.VerticalSliders(selection).Position = vSliderPosition;
+            obj.HorizontalSliders(selection).Position = hSliderPosition;
             
         end % redraw
         
@@ -309,6 +298,29 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             reorder@uix.mixin.Panel( obj, indices )
             
         end % reorder
+        
+        function showSelection( obj )
+            %showSelection  Show selected child, hide the others
+            %
+            %  c.showSelection() shows the selected child of the container
+            %  c, and hides the others.
+            
+            % Call superclass method
+            showSelection@uix.mixin.Panel( obj )
+            
+            % Show and hide sliders based on selection
+            selection = obj.Selection_;
+            for ii = 1:numel( obj.Contents_ )
+                if ii == selection
+                    obj.VerticalSliders(ii).Visible = 'on';
+                    obj.HorizontalSliders(ii).Visible = 'on';
+                else
+                    obj.VerticalSliders(ii).Visible = 'off';
+                    obj.HorizontalSliders(ii).Visible = 'off';
+                end
+            end
+            
+        end % showSelection
         
     end % template methods
     
