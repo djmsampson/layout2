@@ -258,6 +258,9 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Set
             obj.Minimized_ = value;
             
+            % Show and hide
+            obj.showChild( obj.Selection_ )
+            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -406,11 +409,9 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             %
             %  See also: redrawButtons
             
-            % Compute bounds
+            % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            
-            % Position decorations
             tX = 1;
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
@@ -419,43 +420,50 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 obj.TitleHeight_ = tH; % store
             end
             tY = 1 + bounds(4) - tH;
-            obj.TitleBox.Position = [tX tY tW tH];
-            obj.redrawButtons()
-            
-            % Position contents
             p = obj.Padding_;
             cX = 1 + p;
             cW = max( bounds(3) - 2 * p, 1 );
             cH = max( bounds(4) - tH - 2 * p, 1 );
             cY = tY - p - cH;
             contentsPosition = [cX cY cW cH];
-            obj.redrawContents( contentsPosition )
+            
+            % Redraw contents
+            selection = obj.Selection_;
+            if selection ~= 0
+                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+            end
+            obj.TitleBox.Position = [tX tY tW tH];
+            obj.redrawButtons()
             
         end % redraw
         
-        function redrawContents( obj, position )
-            %redrawContents  Redraw contents
+        function showChild( obj, selection )
+            %showChild  Show one child, hide the others
+            %
+            %  c.showChild(i) shows the ith child of the container c, and
+            %  hides the others.
             
             % Call superclass method
-            redrawContents@uix.mixin.Panel( obj, position )
+            showChild@uix.mixin.Panel( obj, selection )
             
             % If minimized, hide selected contents too
-            if obj.Selection_ ~= 0 && obj.Minimized_
-                child = obj.Contents_(obj.Selection_);
+            if selection ~= 0 && obj.Minimized_
+                child = obj.Contents_(selection);
                 child.Visible = 'off';
                 if isa( child, 'matlab.graphics.axis.Axes' )
                     child.ContentsVisible = 'off';
                 end
                 % As a remedy for g1100294, move off-screen too
+                margin = 1000;
                 if isa( child, 'matlab.graphics.axis.Axes' ) ...
                         && strcmp(child.ActivePositionProperty, 'outerposition' )
-                    child.OuterPosition(1) = -child.OuterPosition(3)-20;
+                    child.OuterPosition(1) = -child.OuterPosition(3)-margin;
                 else
-                    child.Position(1) = -child.Position(3)-20;
+                    child.Position(1) = -child.Position(3)-margin;
                 end
             end
             
-        end % redrawContents
+        end % showChild
         
     end % template methods
     
