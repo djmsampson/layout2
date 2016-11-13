@@ -35,6 +35,7 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
     methods( Access = protected )
         
         function redraw( obj )
+            %redraw  Redraw
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -45,7 +46,11 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
             position = [padding+1 padding+1 xSizes ySizes];
             
             % Redraw contents
-            obj.redrawContents( position )
+            selection = obj.Selection_;
+            obj.select( selection )
+            if selection ~= 0
+                uix.setPosition( obj.Contents_(selection), position, 'pixels' )
+            end
             
         end % redraw
         

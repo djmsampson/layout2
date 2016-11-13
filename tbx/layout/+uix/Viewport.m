@@ -228,6 +228,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 vSlider = vSliders(ii);
                 hSlider = hSliders(ii);
                 if ii == selection
+                    % Compute properties
                     contentsWidth = obj.Widths_(ii);
                     contentsHeight = obj.Heights_(ii);
                     vSliderWidth = sliderSize * (contentsHeight > height);
@@ -241,7 +242,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                     contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
                     vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
                     hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
-                    obj.redrawContents( contentsPosition )
+                    % Set properties
+                    uix.setPosition( obj.Contents_(ii), contentsPosition, 'pixels' )
                     vSlider.Position = vSliderPosition;
                     vSlider.Visible = 'on';
                     hSlider.Position = hSliderPosition;

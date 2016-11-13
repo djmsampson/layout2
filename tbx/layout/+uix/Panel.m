@@ -45,7 +45,11 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
             position = [padding+1 padding+1 xSizes ySizes];
             
             % Redraw contents
-            obj.redrawContents( position )
+            selection = obj.Selection_;
+            obj.select( selection )
+            if selection ~= 0
+                uix.setPosition( obj.Contents_(selection), position, 'pixels' )
+            end
             
         end % redraw
         

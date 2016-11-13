@@ -56,6 +56,9 @@ classdef Panel < uix.mixin.Container
             newSelection = value;
             obj.Selection_ = newSelection;
             
+            % Call template method
+            obj.select( value )
+            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -68,18 +71,6 @@ classdef Panel < uix.mixin.Container
     end % accessors
     
     methods( Access = protected )
-        
-        function redrawContents( obj, position )
-            %redrawContents  Redraw contents
-            
-            % Select
-            selection = obj.Selection_;
-            obj.select( selection )
-            if selection ~= 0
-                uix.setPosition( obj.Contents_(selection), position, 'pixels' )
-            end
-            
-        end % redrawContents
         
         function addChild( obj, child )
             
@@ -98,6 +89,7 @@ classdef Panel < uix.mixin.Container
             
             % Notify selection change
             if oldSelection ~= newSelection
+                obj.select( newSelection )
                 obj.notify( 'SelectionChanged', ...
                     uix.SelectionData( oldSelection, newSelection ) )
             end
@@ -124,6 +116,7 @@ classdef Panel < uix.mixin.Container
             
             % Notify selection change
             if oldSelection ~= newSelection
+                obj.select( newSelection )
                 obj.notify( 'SelectionChanged', ...
                     uix.SelectionData( oldSelection, newSelection ) )
             end
