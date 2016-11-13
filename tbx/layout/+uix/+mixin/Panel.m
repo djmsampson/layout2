@@ -165,11 +165,12 @@ classdef Panel < uix.mixin.Container
                         child.ContentsVisible = 'off';
                     end
                     % As a remedy for g1100294, move off-screen too
+                    margin = 1000;
                     if isa( child, 'matlab.graphics.axis.Axes' ) ...
                             && strcmp(child.ActivePositionProperty, 'outerposition' )
-                        child.OuterPosition(1) = -child.OuterPosition(3)-20;
+                        child.OuterPosition(1) = -child.OuterPosition(3)-margin;
                     else
-                        child.Position(1) = -child.Position(3)-20;
+                        child.Position(1) = -child.Position(3)-margin;
                     end
                 end
             end
