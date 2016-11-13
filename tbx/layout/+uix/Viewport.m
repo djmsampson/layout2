@@ -14,18 +14,18 @@ classdef Viewport < uix.Container & uix.mixin.Panel
     
     properties( Dependent )
         Heights % heights of contents, in pixels and/or weights
-        VerticalOffset
-        VerticalStep
+        VerticalOffsets % vertical offsets of contents, in pixels
+        VerticalSteps % vertical slider steps, in pixels
         Widths % widths of contents, in pixels and/or weights
-        HorizontalOffset
-        HorizontalStep
+        HorizontalOffsets % horizontal offsets of contents, in pixels
+        HorizontalSteps % horizontal slider steps, in pixels
     end
     
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
         Widths_ = zeros( [0 1] ) % backing for Widths
-        HorizontalSlider % slider
-        VerticalSlider % slider
+        HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
+        VerticalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
     end
     
     properties( Constant, Access = protected )
@@ -41,16 +41,6 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             %
             %  p = uix.Viewport(p1,v1,p2,v2,...) sets parameter p1 to
             %  value v1, etc.
-            
-            % Create sliders
-            horizontalSlider = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Style', 'slider', 'Callback', @obj.onSliderClicked );
-            verticalSlider = uicontrol( 'Internal', true, 'Parent', obj, ...
-                'Style', 'slider', 'Callback', @obj.onSliderClicked );
-            
-            % Store properties
-            obj.HorizontalSlider = horizontalSlider;
-            obj.VerticalSlider = verticalSlider;
             
             % Set properties
             if nargin > 0
@@ -95,40 +85,50 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             
         end % set.Heights
         
-        function value = get.VerticalOffset( obj )
+        function value = get.VerticalOffsets( obj )
             
-            value = obj.VerticalSlider.Value;
+            sliders = obj.VerticalSliders;
+            if isempty( sliders )
+                value = zeros( size( sliders ) );
+            else
+                value = vertcat( sliders.Value );
+            end
             
-        end % get.VerticalOffset
+        end % get.VerticalOffsets
         
-        function set.VerticalOffset( obj, value )
+        function set.VerticalOffsets( obj, value )
             
             % Check
             % TODO
             
             % Set
-            obj.VerticalSlider.Value = value;
+            % TODO
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.VerticalOffset
+        end % set.VerticalOffsets
         
-        function value = get.VerticalStep( obj )
+        function value = get.VerticalSteps( obj )
             
-            value = obj.VerticalSlider.SliderStep(2);
+            sliders = obj.VerticalSliders;
+            if isempty( sliders )
+                value = zeros( size( sliders ) );
+            else
+                value = vertcat( sliders.SliderStep(2) );
+            end
             
-        end % get.VerticalStep
+        end % get.VerticalSteps
         
-        function set.VerticalStep( obj, value )
+        function set.VerticalSteps( obj, value )
             
             % Check
             % TODO
             
             % Set
-            obj.VerticalSlider.SliderStep(2) = value;
+            % TODO
             
-        end % set.VerticalStep
+        end % set.VerticalSteps
         
         function value = get.Widths( obj )
             
@@ -161,32 +161,42 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             
         end % set.Widths
         
-        function value = get.HorizontalOffset( obj )
+        function value = get.HorizontalOffsets( obj )
             
-            value = obj.HorizontalSlider.Value;
+            sliders = obj.HorizontalSliders;
+            if isempty( sliders )
+                value = zeros( size( sliders ) );
+            else
+                value = vertcat( sliders.Value );
+            end
             
-        end % get.HorizontalOffset
+        end % get.HorizontalOffsets
         
-        function set.HorizontalOffset( obj, value )
+        function set.HorizontalOffsets( obj, value )
             
             % Check
             % TODO
             
             % Set
-            obj.HorizontalSlider.Value = value;
+            % TODO
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.HorizontalOffset
+        end % set.HorizontalOffsets
         
-        function value = get.HorizontalStep( obj )
+        function value = get.HorizontalSteps( obj )
             
-            value = obj.HorizontalSlider.SliderStep(2);
+            sliders = obj.HorizontalSliders;
+            if isempty( sliders )
+                value = zeros( size( sliders ) );
+            else
+                value = vertcat( sliders.SliderStep(2) );
+            end
             
-        end % get.HorizontalStep
+        end % get.HorizontalSteps
         
-        function set.HorizontalStep( obj, value )
+        function set.HorizontalSteps( obj, value )
             
             % Check
             % TODO
@@ -194,7 +204,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % Set
             obj.HorizontalSlider.SliderStep(2) = value;
             
-        end % set.HorizontalStep
+        end % set.HorizontalSteps
         
     end % accessors
     
@@ -206,45 +216,40 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            w = bounds(3);
-            h = bounds(4);
-            p = obj.Padding_;
-            sS = obj.SliderSize; % slider size
-            i = obj.Selection_;
-            if i == 0, return, end
-            cmW = obj.Widths_(i);
-            cmH = obj.Heights_(i);
-            vpW = sS * (cmH > h);
-            hpH = sS * (cmW > w);
-            vpH = h - 2*p - hpH;
-            hpW = w - 2*p - vpW;
-            pW = uix.calcPixelSizes( w, [cmW;vpW], [1;vpW], p, 0 );
-            pH = uix.calcPixelSizes( h, [cmH;hpH], [1;hpH], p, 0 );
-            cpW = pW(1);
-            cpH = pH(1);
-            contentsPosition = [p+1 h-p-cpH+1 cpW cpH];
-            verticalSliderPosition = [w-p-vpW+1 h-p-vpH+1 vpW vpH];
-            horizontalSliderPosition = [p+1 p+1 hpW hpH];
-            
-            % Redraw contents
-            obj.redrawContents( contentsPosition )
-            
-            % Redraw sliders
-            vs = obj.VerticalSlider;
-            if vpW > 0
-                vs.Visible = 'on';
-                uistack( vs, 'top' )
-                vs.Position = verticalSliderPosition;
-            else
-                vs.Visible = 'off';
-            end
-            hs = obj.HorizontalSlider;
-            if hpH > 0
-                hs.Visible = 'on';
-                uistack( hs, 'top' )
-                hs.Position = horizontalSliderPosition;
-            else
-                hs.Visible = 'off';
+            width = bounds(3);
+            height = bounds(4);
+            padding = obj.Padding_;
+            sliderSize = obj.SliderSize; % slider size
+            n = numel( obj.Contents_ );
+            selection = obj.Selection_;
+            vSliders = obj.VerticalSliders;
+            hSliders = obj.HorizontalSliders;
+            for ii = 1:n
+                vSlider = vSliders(ii);
+                hSlider = hSliders(ii);
+                if ii == selection
+                    contentsWidth = obj.Widths_(ii);
+                    contentsHeight = obj.Heights_(ii);
+                    vSliderWidth = sliderSize * (contentsHeight > height);
+                    hSliderHeight = sliderSize * (contentsWidth > width );
+                    vSliderHeight = height - 2 * padding - hSliderHeight;
+                    hSliderWidth = width - 2 * padding - vSliderWidth;
+                    widths = uix.calcPixelSizes( width, [contentsWidth; vSliderWidth], [1; 1], padding, 0 );
+                    heights = uix.calcPixelSizes( height, [contentsHeight; hSliderHeight], [1; 1], padding, 0 );
+                    contentsWidth = widths(1);
+                    contentsHeight = heights(1);
+                    contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
+                    vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
+                    hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
+                    obj.redrawContents( contentsPosition )
+                    vSlider.Position = vSliderPosition;
+                    vSlider.Visible = 'on';
+                    hSlider.Position = hSliderPosition;
+                    hSlider.Visible = 'on';
+                else
+                    vSlider.Visible = 'off';
+                    hSlider.Visible = 'off';
+                end
             end
             
         end % redraw
@@ -257,6 +262,12 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
             obj.Heights_(end+1,:) = -1;
+            obj.VerticalSliders(end+1,:) = uicontrol( ...
+                'Internal', true, 'Parent', obj, ...
+                'Style', 'slider', 'Callback', @obj.onSliderClicked );
+            obj.HorizontalSliders(end+1,:) = uicontrol( ...
+                'Internal', true, 'Parent', obj, ...
+                'Style', 'slider', 'Callback', @obj.onSliderClicked );
             
             % Call superclass method
             addChild@uix.mixin.Panel( obj, child )
@@ -272,6 +283,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             tf = obj.Contents_ == child;
             obj.Widths_(tf,:) = [];
             obj.Heights_(tf,:) = [];
+            obj.VerticalSliders(tf,:) = [];
+            obj.HorizontalSliders(tf,:) = [];
             
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -287,6 +300,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % Reorder
             obj.Widths_ = obj.Widths_(indices,:);
             obj.Heights_ = obj.Heights_(indices,:);
+            obj.VerticalSliders = obj.VerticalSliders(indices,:);
+            obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
             
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
