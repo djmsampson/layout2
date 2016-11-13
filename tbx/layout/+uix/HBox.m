@@ -134,22 +134,7 @@ classdef HBox < uix.Box
             % Set positions
             children = obj.Contents_;
             for ii = 1:numel( children )
-                child = children(ii);
-                child.Units = 'pixels';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    switch child.ActivePositionProperty
-                        case 'position'
-                            child.Position = positions(ii,:);
-                        case 'outerposition'
-                            child.OuterPosition = positions(ii,:);
-                        otherwise
-                            error( 'uix:InvalidState', ...
-                                'Unknown value ''%s'' for property ''ActivePositionProperty'' of %s.', ...
-                                child.ActivePositionProperty, class( child ) )
-                    end
-                else
-                    child.Position = positions(ii,:);
-                end
+                uix.setPosition( children(ii), positions(ii,:), 'pixels' )
             end
             
         end % redraw
