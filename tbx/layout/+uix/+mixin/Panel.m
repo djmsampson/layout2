@@ -141,7 +141,7 @@ classdef Panel < uix.mixin.Container
         end % reorder
         
         function select( obj, selection )
-            %select  Select contents
+            %select  Show selected contents, hide unselected contents
             
             % Set positions and visibility
             children = obj.Contents_;
