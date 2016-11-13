@@ -424,6 +424,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 tabListeners(ii).Enabled = tf(ii);
             end
             
+            % Show and hide
+            obj.showChild( obj.Selection_ )
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
         end % set.TabEnables
         
         function value = get.TabLocation( obj )
@@ -586,6 +592,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % redraw
         
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
             
             % Create new tab
             n = numel( obj.Tabs );
@@ -632,6 +641,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % addChild
         
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
             
             % Find index of removed child
             contents = obj.Contents_;
@@ -682,6 +694,34 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             reparent@uix.mixin.Panel( obj, oldFigure, newFigure )
             
         end % reparent
+        
+        function showChild( obj, selection )
+            %showChild  Show one child, hide the others
+            %
+            %  c.showChild(i) shows the ith child of the container c, and
+            %  hides the others.
+            
+            % Call superclass method
+            showChild@uix.mixin.Panel( obj, selection )
+            
+            % If not enabled, hide selected contents too
+            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'off' )
+                child = obj.Contents_(selection);
+                child.Visible = 'off';
+                if isa( child, 'matlab.graphics.axis.Axes' )
+                    child.ContentsVisible = 'off';
+                end
+                % As a remedy for g1100294, move off-screen too
+                margin = 1000;
+                if isa( child, 'matlab.graphics.axis.Axes' ) ...
+                        && strcmp(child.ActivePositionProperty, 'outerposition' )
+                    child.OuterPosition(1) = -child.OuterPosition(3)-margin;
+                else
+                    child.Position(1) = -child.Position(3)-margin;
+                end
+            end
+            
+        end % showChild
         
     end % template methods
     
@@ -773,6 +813,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             newSelection = find( source == obj.Tabs );
             if oldSelection == newSelection, return, end % abort set
             obj.Selection_ = newSelection;
+            
+            % Show and hide
+            obj.showChild( newSelection )
             
             % Mark as dirty
             obj.Dirty = true;
