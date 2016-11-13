@@ -425,7 +425,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             
             % Show selected child
-            obj.showSelectedChild()
+            obj.showSelection()
             
             % Mark as dirty
             obj.Dirty = true;
@@ -630,7 +630,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             addChild@uix.mixin.Container( obj, child )
             
             % Show selected child
-            obj.showSelectedChild()
+            obj.showSelection()
             
             % Notify selection change
             if oldSelection ~= newSelection
@@ -695,14 +695,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % reparent
         
-        function showSelectedChild( obj )
-            %showSelectedChild  Show selected child, hide the others
+        function showSelection( obj )
+            %showSelection  Show selected child, hide the others
             %
-            %  c.showSelectedChild shows the selected child of the
-            %  container c, and hides the others.
+            %  c.showSelection() shows the selected child of the container
+            %  c, and hides the others.
             
             % Call superclass method
-            showSelectedChild@uix.mixin.Panel( obj )
+            showSelection@uix.mixin.Panel( obj )
             
             % If not enabled, hide selected contents too
             selection = obj.Selection_;
@@ -722,7 +722,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 end
             end
             
-        end % showSelectedChild
+        end % showSelection
         
     end % template methods
     
@@ -816,7 +816,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.Selection_ = newSelection;
             
             % Show selected child
-            obj.showSelectedChild()
+            obj.showSelection()
             
             % Mark as dirty
             obj.Dirty = true;

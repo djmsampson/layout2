@@ -259,7 +259,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             obj.Minimized_ = value;
             
             % Show selected child
-            obj.showSelectedChild()
+            obj.showSelection()
             
             % Mark as dirty
             obj.Dirty = true;
@@ -437,14 +437,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
         end % redraw
         
-        function showSelectedChild( obj )
-            %showSelectedChild  Show selected child, hide the others
+        function showSelection( obj )
+            %showSelection  Show selected child, hide the others
             %
-            %  c.showSelectedChild shows the selected child of the
-            %  container c, and hides the others.
+            %  c.showSelection() shows the selected child of the container
+            %  c, and hides the others.
             
             % Call superclass method
-            showSelectedChild@uix.mixin.Panel( obj )
+            showSelection@uix.mixin.Panel( obj )
             
             % If minimized, hide selected contents too
             selection = obj.Selection_;
@@ -464,7 +464,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 end
             end
             
-        end % showSelectedChild
+        end % showSelection
         
     end % template methods
     
