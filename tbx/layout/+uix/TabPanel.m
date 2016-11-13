@@ -424,8 +424,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 tabListeners(ii).Enabled = tf(ii);
             end
             
-            % Show and hide
-            obj.showChild( obj.Selection_ )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Mark as dirty
             obj.Dirty = true;
@@ -629,8 +629,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
             
-            % Show and hide
-            obj.showChild( newSelection )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Notify selection change
             if oldSelection ~= newSelection
@@ -695,16 +695,17 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % reparent
         
-        function showChild( obj, selection )
-            %showChild  Show one child, hide the others
+        function showSelectedChild( obj )
+            %showSelectedChild  Show selected child, hide the others
             %
-            %  c.showChild(i) shows the ith child of the container c, and
-            %  hides the others.
+            %  c.showSelectedChild shows the selected child of the
+            %  container c, and hides the others.
             
             % Call superclass method
-            showChild@uix.mixin.Panel( obj, selection )
+            showSelectedChild@uix.mixin.Panel( obj )
             
             % If not enabled, hide selected contents too
+            selection = obj.Selection_;
             if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'off' )
                 child = obj.Contents_(selection);
                 child.Visible = 'off';
@@ -721,7 +722,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 end
             end
             
-        end % showChild
+        end % showSelectedChild
         
     end % template methods
     
@@ -814,8 +815,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             if oldSelection == newSelection, return, end % abort set
             obj.Selection_ = newSelection;
             
-            % Show and hide
-            obj.showChild( newSelection )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Mark as dirty
             obj.Dirty = true;

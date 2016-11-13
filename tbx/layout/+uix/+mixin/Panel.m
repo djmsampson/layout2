@@ -56,8 +56,8 @@ classdef Panel < uix.mixin.Container
             newSelection = value;
             obj.Selection_ = newSelection;
             
-            % Show and hide
-            obj.showChild( value )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Mark as dirty
             obj.Dirty = true;
@@ -87,8 +87,8 @@ classdef Panel < uix.mixin.Container
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
             
-            % Show and hide
-            obj.showChild( newSelection )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Notify selection change
             obj.notify( 'SelectionChanged', ...
@@ -114,8 +114,8 @@ classdef Panel < uix.mixin.Container
             % Call superclass method
             removeChild@uix.mixin.Container( obj, child )
             
-            % Show and hide
-            obj.showChild( newSelection )
+            % Show selected child
+            obj.showSelectedChild()
             
             % Notify selection change
             if oldSelection ~= newSelection
@@ -142,13 +142,14 @@ classdef Panel < uix.mixin.Container
             
         end % reorder
         
-        function showChild( obj, selection )
-            %showChild  Show one child, hide the others
+        function showSelectedChild( obj )
+            %showSelectedChild  Show selected child, hide the others
             %
-            %  c.showChild(i) shows the ith child of the container c, and
-            %  hides the others.
+            %  c.showSelectedChild shows the selected child of the
+            %  container c, and hides the others.
             
             % Set positions and visibility
+            selection = obj.Selection_;
             children = obj.Contents_;
             for ii = 1:numel( children )
                 child = children(ii);
@@ -180,7 +181,7 @@ classdef Panel < uix.mixin.Container
                 end
             end
             
-        end % select
+        end % showSelectedChild
         
     end % template methods
     
