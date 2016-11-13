@@ -47,7 +47,6 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
             
             % Redraw contents
             selection = obj.Selection_;
-            obj.select( selection )
             if selection ~= 0
                 uix.setPosition( obj.Contents_(selection), position, 'pixels' )
             end
