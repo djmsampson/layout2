@@ -56,8 +56,8 @@ classdef Panel < uix.mixin.Container
             newSelection = value;
             obj.Selection_ = newSelection;
             
-            % Call template method
-            obj.select( value )
+            % Show and hide
+            obj.showChild( value )
             
             % Mark as dirty
             obj.Dirty = true;
@@ -87,12 +87,12 @@ classdef Panel < uix.mixin.Container
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
             
+            % Show and hide
+            obj.showChild( newSelection )
+            
             % Notify selection change
-            if oldSelection ~= newSelection
-                obj.select( newSelection )
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
+            obj.notify( 'SelectionChanged', ...
+                uix.SelectionData( oldSelection, newSelection ) )
             
         end % addChild
         
@@ -114,9 +114,11 @@ classdef Panel < uix.mixin.Container
             % Call superclass method
             removeChild@uix.mixin.Container( obj, child )
             
+            % Show and hide
+            obj.showChild( newSelection )
+            
             % Notify selection change
             if oldSelection ~= newSelection
-                obj.select( newSelection )
                 obj.notify( 'SelectionChanged', ...
                     uix.SelectionData( oldSelection, newSelection ) )
             end
@@ -140,8 +142,8 @@ classdef Panel < uix.mixin.Container
             
         end % reorder
         
-        function select( obj, selection )
-            %select  Show selected contents, hide unselected contents
+        function showChild( obj, selection )
+            %showChild  Show one child, hide the others
             
             % Set positions and visibility
             children = obj.Contents_;

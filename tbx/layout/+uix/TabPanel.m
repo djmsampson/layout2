@@ -578,34 +578,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.redrawTabs()
             
             % Redraw contents
-            obj.redrawContents( contentsPosition )
-            
-        end % redraw
-        
-        function redrawContents( obj, position )
-            %redrawContents  Redraw contents
-            
-            % Call superclass method
-            redrawContents@uix.mixin.Panel( obj, position )
-            
-            % If not enabled, hide selected contents too
             selection = obj.Selection_;
-            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'off' )
-                child = obj.Contents_(selection);
-                child.Visible = 'off';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    child.ContentsVisible = 'off';
-                end
-                % As a remedy for g1100294, move off-screen too
-                if isa( child, 'matlab.graphics.axis.Axes' ) ...
-                        && strcmp(child.ActivePositionProperty, 'outerposition' )
-                    child.OuterPosition(1) = -child.OuterPosition(3)-20;
-                else
-                    child.Position(1) = -child.Position(3)-20;
-                end
+            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
+                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
             end
             
-        end % redrawContents
+        end % redraw
         
         function addChild( obj, child )
             
@@ -641,6 +619,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
+            
+            % Show and hide
+            obj.showChild( newSelection )
             
             % Notify selection change
             if oldSelection ~= newSelection
