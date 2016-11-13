@@ -185,6 +185,42 @@ classdef Panel < uix.mixin.Container
             
         end % reorder
         
+        function select( obj, selection )
+            %select  Select contents
+            
+            % Set positions and visibility
+            children = obj.Contents_;
+            for ii = 1:numel( children )
+                child = children(ii);
+                if ii == selection
+                    if obj.G1218142
+                        warning( 'uix:G1218142', ...
+                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
+                            class( obj ) )
+                        obj.G1218142 = false;
+                    else
+                        child.Visible = 'on';
+                    end
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'on';
+                    end
+                else
+                    child.Visible = 'off';
+                    if isa( child, 'matlab.graphics.axis.Axes' )
+                        child.ContentsVisible = 'off';
+                    end
+                    % As a remedy for g1100294, move off-screen too
+                    if isa( child, 'matlab.graphics.axis.Axes' ) ...
+                            && strcmp(child.ActivePositionProperty, 'outerposition' )
+                        child.OuterPosition(1) = -child.OuterPosition(3)-20;
+                    else
+                        child.Position(1) = -child.Position(3)-20;
+                    end
+                end
+            end
+            
+        end % select
+        
     end % template methods
     
 end % classdef
