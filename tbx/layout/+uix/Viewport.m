@@ -130,6 +130,9 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % Set
             % TODO
             
+            % Mark as dirty
+            obj.Dirty = true;
+            
         end % set.VerticalSteps
         
         function value = get.Widths( obj )
@@ -205,7 +208,10 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % TODO
             
             % Set
-            obj.HorizontalSlider.SliderStep(2) = value;
+            % TODO
+            
+            % Mark as dirty
+            obj.Dirty = true;
             
         end % set.HorizontalSteps
         
@@ -315,7 +321,6 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                     'Min', hSliderMin, 'Max', hSliderMax, ...
                     'Value', hSliderValue, 'SliderStep', hSliderStep )
             end
-            platePosition
             set( plate, 'Position', platePosition )
             
         end % redraw
