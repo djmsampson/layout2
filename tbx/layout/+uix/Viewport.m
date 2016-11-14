@@ -255,10 +255,12 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             else
                 viewportHeight = height - 2 * padding - hSliderHeight;
                 vSliderMin = 1;
-                vSliderMax = contentsHeight - viewportHeight;
+                vSliderMax = contentsHeight - viewportHeight + 1;
+                vSliderRange = vSliderMax - vSliderMin;
                 vSliderValue = vSlider.Value;
                 if vSliderValue < 0, vSliderValue = vSliderMax; end
-                vSliderStep = [10 viewportHeight] ./ vSliderMax;
+                vSliderStep(1) = min( 10 / vSliderRange, 1 );
+                vSliderStep(2) = viewportHeight / vSliderRange;
             end
             if hSliderHeight == 0
                 hSliderMin = -1;
