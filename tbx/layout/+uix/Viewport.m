@@ -293,6 +293,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             end
             
             % Set positions and slider properties
+            contentsPosition(1) = contentsPosition(1) - hSliderValue + 1;
+            contentsPosition(2) = contentsPosition(2) - vSliderValue - 1;
             uix.setPosition( child, contentsPosition, 'pixels' )
             set( vSlider, 'Position', vSliderPosition, ...
                 'Min', vSliderMin, 'Max', vSliderMax, ...
