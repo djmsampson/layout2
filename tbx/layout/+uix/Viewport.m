@@ -27,10 +27,13 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
         VerticalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
         BlankingPlates = matlab.ui.control.UIControl.empty( [0 1] ) % blanking plates
+        HorizontalSteps_ = zeros( [0 1] ) % steps
+        VerticalSteps_ = zeros( [0 1] ) % steps
     end
     
     properties( Constant, Access = protected )
         SliderSize = 20 % slider size, in pixels
+        SliderStep = 10 % slider step, in pixels
     end
     
     methods
@@ -113,12 +116,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         
         function value = get.VerticalSteps( obj )
             
-            sliders = obj.VerticalSliders;
-            if isempty( sliders )
-                value = zeros( size( sliders ) );
-            else
-                value = vertcat( sliders.SliderStep(2) );
-            end
+            value = obj.VerticalSteps_;
             
         end % get.VerticalSteps
         
@@ -128,7 +126,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % TODO
             
             % Set
-            % TODO
+            obj.VerticalSteps_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -193,12 +191,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         
         function value = get.HorizontalSteps( obj )
             
-            sliders = obj.HorizontalSliders;
-            if isempty( sliders )
-                value = zeros( size( sliders ) );
-            else
-                value = vertcat( sliders.SliderStep(2) );
-            end
+            value = obj.HorizontalSteps_;
             
         end % get.HorizontalSteps
         
@@ -208,7 +201,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             % TODO
             
             % Set
-            % TODO
+            obj.HorizontalSteps_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -276,7 +269,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 else
                     vSliderValue = oldVSliderValue;
                 end
-                vSliderStep(1) = min( 10 / vSliderRange, 1 );
+                vStep = obj.VerticalSteps_(selection);
+                vSliderStep(1) = min( vStep / vSliderRange, 1 );
                 vSliderStep(2) = max( viewportHeight / vSliderRange, vSliderStep(1) );
             end
             if hSliderHeight == 0
@@ -297,7 +291,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 else
                     hSliderValue = oldHSliderValue;
                 end
-                hSliderStep(1) = min( 10 / hSliderRange, 1 );
+                hStep = obj.HorizontalSteps_(selection);
+                hSliderStep(1) = min( hStep / hSliderRange, 1 );
                 hSliderStep(2) = max( viewportWidth / hSliderRange, hSliderStep(1) );
             end
             
@@ -342,6 +337,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.BlankingPlates(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'text', 'Enable', 'inactive' );
+            obj.VerticalSteps_(end+1,:) = obj.SliderStep;
+            obj.HorizontalSteps_(end+1,:) = obj.SliderStep;
             
             % Call superclass method
             addChild@uix.mixin.Panel( obj, child )
@@ -360,6 +357,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.VerticalSliders(tf,:) = [];
             obj.HorizontalSliders(tf,:) = [];
             obj.BlankingPlates(tf,:) = [];
+            obj.VerticalSteps_(tf,:) = [];
+            obj.HorizontalSteps_(tf,:) = [];
             
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -378,6 +377,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.VerticalSliders = obj.VerticalSliders(indices,:);
             obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
             obj.BlankingPlates = obj.BlankingPlates(indices,:);
+            obj.VerticalSteps_ = obj.VerticalSteps_(indices,:);
+            obj.HorizontalSteps_ = obj.HorizontalSteps_(indices,:);
             
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
