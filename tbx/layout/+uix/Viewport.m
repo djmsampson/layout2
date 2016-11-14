@@ -248,26 +248,22 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             
             % Compute slider properties
             if vSliderWidth == 0
-                vSliderMin = -1;
-                vSliderMax = 0;
-                vSliderValue = -1;
+                vSliderMin = 0;
+                vSliderMax = 1;
+                vSliderValue = 1;
                 vSliderStep = [1 1];
             else
                 viewportHeight = height - 2 * padding - hSliderHeight;
-                vSliderMin = 1;
-                vSliderMax = contentsHeight - viewportHeight + 1;
+                vSliderMax = -1;
+                vSliderMin = -( contentsWidth - viewportHeight + 1 );
                 vSliderRange = vSliderMax - vSliderMin;
                 oldVSliderValue = vSlider.Value;
-                if oldVSliderValue < 0
-                    vSliderValue = contentsHeight - viewportHeight + 1;
+                if oldVSliderValue > 0
+                    vSliderValue = vSliderMax;
+                elseif oldVSliderValue < vSliderMin
+                    vSliderValue = vSliderMin;
                 else
-                    vSliderValue = contentsHeight - viewportHeight - ...
-                        vSlider.Max + oldVSliderValue + 1;
-                    if vSliderValue > vSliderMax
-                        vSliderValue = vSliderMax;
-                    elseif vSliderValue < vSliderMin
-                        vSliderValue = vSliderMin;
-                    end
+                    vSliderValue = oldVSliderValue;
                 end
                 vSliderStep(1) = min( 10 / vSliderRange, 1 );
                 vSliderStep(2) = viewportHeight / vSliderRange;
