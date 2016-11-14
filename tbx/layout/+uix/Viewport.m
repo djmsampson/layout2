@@ -271,7 +271,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                     vSliderValue = oldVSliderValue;
                 end
                 vSliderStep(1) = min( 10 / vSliderRange, 1 );
-                vSliderStep(2) = viewportHeight / vSliderRange;
+                vSliderStep(2) = max( viewportHeight / vSliderRange, vSliderStep(1) );
             end
             if hSliderHeight == 0
                 hSliderMin = -1;
@@ -292,19 +292,30 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                     hSliderValue = oldHSliderValue;
                 end
                 hSliderStep(1) = min( 10 / hSliderRange, 1 );
-                hSliderStep(2) = viewportWidth / hSliderRange;
+                hSliderStep(2) = max( viewportWidth / hSliderRange, hSliderStep(1) );
             end
             
             % Set positions and slider properties
             contentsPosition(1) = contentsPosition(1) - hSliderValue + 1;
             contentsPosition(2) = contentsPosition(2) - vSliderValue - 1;
             uix.setPosition( child, contentsPosition, 'pixels' )
-            set( vSlider, 'Position', vSliderPosition, ...
-                'Min', vSliderMin, 'Max', vSliderMax, ...
-                'Value', vSliderValue, 'SliderStep', vSliderStep )
-            set( hSlider, 'Position', hSliderPosition, ...
-                'Min', hSliderMin, 'Max', hSliderMax, ...
-                'Value', hSliderValue, 'SliderStep', hSliderStep )
+            if vSliderPosition(4) < vSliderPosition(3)
+                set( vSlider, 'Visible', 'off' )
+            else
+                set( vSlider, 'Visible', 'on', ...
+                    'Position', vSliderPosition, ...
+                    'Min', vSliderMin, 'Max', vSliderMax, ...
+                    'Value', vSliderValue, 'SliderStep', vSliderStep )
+            end
+            if hSliderPosition(3) < hSliderPosition(4)
+                set( hSlider, 'Visible', 'off' )
+            else
+                set( hSlider, 'Visible', 'on', ...
+                    'Position', hSliderPosition, ...
+                    'Min', hSliderMin, 'Max', hSliderMax, ...
+                    'Value', hSliderValue, 'SliderStep', hSliderStep )
+            end
+            platePosition
             set( plate, 'Position', platePosition )
             
         end % redraw
