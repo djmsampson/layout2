@@ -104,10 +104,23 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         function set.VerticalOffsets( obj, value )
             
             % Check
-            % TODO
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Property ''VerticalOffsets'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''VerticalOffsets'' must be real and finite.' )
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''VerticalOffsets'' must match size of contents.' )
             
             % Set
-            % TODO
+            sliders = obj.VerticalSliders;
+            heights = obj.Heights_;
+            for ii = 1:numel( sliders )
+                if heights(ii) > 0
+                    sliders(ii).Value = -value(ii) - 1;
+                end
+            end
             
             % Mark as dirty
             obj.Dirty = true;
@@ -192,10 +205,23 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         function set.HorizontalOffsets( obj, value )
             
             % Check
-            % TODO
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Property ''HorizontalOffsets'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''HorizontalOffsets'' must be real and finite.' )
+            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''HorizontalOffsets'' must match size of contents.' )
             
             % Set
-            % TODO
+            sliders = obj.HorizontalSliders;
+            widths = obj.Widths_;
+            for ii = 1:numel( sliders )
+                if widths(ii) > 0
+                    sliders(ii).Value = value(ii) + 1;
+                end
+            end
             
             % Mark as dirty
             obj.Dirty = true;
