@@ -91,7 +91,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             if isempty( sliders )
                 value = zeros( size( sliders ) );
             else
-                value = vertcat( sliders.Value );
+                value = -vertcat( sliders.Value ) - 1;
+                value(value<0) = 0;
             end
             
         end % get.VerticalOffsets
@@ -167,7 +168,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             if isempty( sliders )
                 value = zeros( size( sliders ) );
             else
-                value = vertcat( sliders.Value );
+                value = vertcat( sliders.Value ) - 1;
+                value(value<0) = 0;
             end
             
         end % get.HorizontalOffsets
