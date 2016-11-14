@@ -259,11 +259,15 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 vSliderRange = vSliderMax - vSliderMin;
                 oldVSliderValue = vSlider.Value;
                 if oldVSliderValue < 0
-                    vSliderValue = vSliderMax;
+                    vSliderValue = contentsHeight - viewportHeight + 1;
                 else
-                    oldVSliderRange = vSlider.Max - vSlider.Min;
-                    vSliderValue = oldVSliderValue - ...
-                        oldVSliderRange + vSliderRange;
+                    vSliderValue = contentsHeight - viewportHeight - ...
+                        vSlider.Max + oldVSliderValue + 1;
+                    if vSliderValue > vSliderMax
+                        vSliderValue = vSliderMax;
+                    elseif vSliderValue < vSliderMin
+                        vSliderValue = vSliderMin;
+                    end
                 end
                 vSliderStep(1) = min( 10 / vSliderRange, 1 );
                 vSliderStep(2) = viewportHeight / vSliderRange;
@@ -281,6 +285,8 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 oldHSliderValue = hSlider.Value;
                 if oldHSliderValue < 0
                     hSliderValue = hSliderMin;
+                elseif oldHSliderValue > hSliderMax
+                    hSliderValue = hSliderMax;
                 else
                     hSliderValue = oldHSliderValue;
                 end
