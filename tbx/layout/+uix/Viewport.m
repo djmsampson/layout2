@@ -26,6 +26,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
         Widths_ = zeros( [0 1] ) % backing for Widths
         HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
         VerticalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
+        BlankingPlates = matlab.ui.control.UIControl.empty( [0 1] ) % blanking plates
     end
     
     properties( Constant, Access = protected )
@@ -227,6 +228,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             child = obj.Contents_(selection);
             vSlider = obj.VerticalSliders(selection);
             hSlider = obj.HorizontalSliders(selection);
+            plate = obj.BlankingPlates(selection);
             
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -247,6 +249,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
             vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
             hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
+            platePosition = [width-padding-vSliderWidth+1 padding+1 vSliderWidth hSliderHeight];
             
             % Compute slider properties
             if vSliderWidth == 0
@@ -302,6 +305,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             set( hSlider, 'Position', hSliderPosition, ...
                 'Min', hSliderMin, 'Max', hSliderMax, ...
                 'Value', hSliderValue, 'SliderStep', hSliderStep )
+            set( plate, 'Position', platePosition )
             
         end % redraw
         
@@ -314,11 +318,14 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.Widths_(end+1,:) = -1;
             obj.Heights_(end+1,:) = -1;
             obj.VerticalSliders(end+1,:) = uicontrol( ...
-                'Internal', true, 'Parent', obj, ...
+                'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'slider', 'Callback', @obj.onSliderClicked );
             obj.HorizontalSliders(end+1,:) = uicontrol( ...
-                'Internal', true, 'Parent', obj, ...
+                'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'slider', 'Callback', @obj.onSliderClicked );
+            obj.BlankingPlates(end+1,:) = uicontrol( ...
+                'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
+                'Style', 'text', 'Enable', 'inactive' );
             
             % Call superclass method
             addChild@uix.mixin.Panel( obj, child )
@@ -336,6 +343,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.Heights_(tf,:) = [];
             obj.VerticalSliders(tf,:) = [];
             obj.HorizontalSliders(tf,:) = [];
+            obj.BlankingPlates(tf,:) = [];
             
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -353,6 +361,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             obj.Heights_ = obj.Heights_(indices,:);
             obj.VerticalSliders = obj.VerticalSliders(indices,:);
             obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
+            obj.BlankingPlates = obj.BlankingPlates(indices,:);
             
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
@@ -374,9 +383,11 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 if ii == selection
                     obj.VerticalSliders(ii).Visible = 'on';
                     obj.HorizontalSliders(ii).Visible = 'on';
+                    obj.BlankingPlates(ii).Visible = 'on';
                 else
                     obj.VerticalSliders(ii).Visible = 'off';
                     obj.HorizontalSliders(ii).Visible = 'off';
+                    obj.BlankingPlates(ii).Visible = 'off';
                 end
             end
             
