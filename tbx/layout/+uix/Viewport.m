@@ -260,7 +260,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 [0 0 1 1], 'normalized', 'pixels', obj );
             width = bounds(3);
             height = bounds(4);
-            padding = obj.Padding_;
+            padding = 0; % ignore padding
             sliderSize = obj.SliderSize; % slider size
             vSliderWidth = sliderSize * (contentsHeight > height); % first pass
             hSliderHeight = sliderSize * (contentsWidth > width - vSliderWidth);
