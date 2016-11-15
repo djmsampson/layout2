@@ -134,6 +134,18 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3">
+        <ul>
+            <li>Released 24 November 2016</li>
+            <li>Added scrolling panel</li>
+            <li>Expand and collapse box panel by clicking on title</li>
+            <li>Fixed G1493103 "Error on construction behavior is inconstistent with builtin objects"</li>
+            <li>Updates to documentation</li>
+            <li>Added anonymous tracking of version, operating system and usage to help 
+                us prioritize the improvements we should work on</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.2.2">
         <ul>
             <li>Released 22 August 2016</li>
