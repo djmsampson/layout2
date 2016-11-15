@@ -141,8 +141,6 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Expand and collapse box panel by clicking on title</li>
             <li>Fixed G1493103 "Error on construction behavior is inconstistent with builtin objects"</li>
             <li>Updates to documentation</li>
-            <li>Added anonymous tracking of version, operating system and usage to help 
-                us prioritize the improvements we should work on</li>
         </ul>
     </inlinesubsection> 
     
