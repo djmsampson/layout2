@@ -1,10 +1,10 @@
 function buildDoc()
-%buildDoc: Builds the documentation for layouts
+%buildDoc  Build documentation for GUI Layout Toolbox
 %
-%   buildDoc() uses DocTools to create toolbox documentation for the
-%   layout toolbox
+%   buildDoc() uses DocTools to create toolbox documentation for GUI Layout
+%   Toolbox.
 
-%  Copyright 2009-2014 The MathWorks, Inc.
+%  Copyright 2009-2016 The MathWorks, Inc.
 %  $Revision: 155 $ $Date: 2010-05-27 08:40:03 +0100 (Thu, 27 May 2010) $
 
 % Set the type ('toolbox', 'blockset', 'link' or 'other')
@@ -32,9 +32,11 @@ dstDir = fullfile( tbxDir, 'layoutdoc' );
 % Now build the doc
 docBuild( name, verStr, srcDir, dstDir, type );
 
-% We want to alias the toolbox name to "Layout"
-copyfile( fullfile( dstDir, [name,'.html'] ), fullfile( dstDir, 'layout.html' ) );
-copyfile( fullfile( dstDir, [name,'.html'] ), fullfile( dstDir, 'layouts.html' ) );
-
 % Copy some extra bits
 copyfile( fullfile( srcDir, 'layoutDocRoot.m' ), dstDir );
+
+% Delete some files
+delete( fullfile( dstDir, 'doc.m' ) )
+delete( fullfile( dstDir, 'uix.*.html' ) )
+
+end % buildDoc
