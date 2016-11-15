@@ -3,7 +3,7 @@ classdef tScrollingPanel < ContainerSharedTests ...
     %TSCROLLINGPANEL unit tests for uix.ScrollingPanel
     
     properties (TestParameter)
-        ContainerType   = {'uix.Viewport'};
+        ContainerType   = {'uix.ScrollingPanel'};
         GetSetArgs = {
             {'BackgroundColor', [1 1 0] ...
             }};
