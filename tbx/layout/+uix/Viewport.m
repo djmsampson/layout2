@@ -300,7 +300,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             contentsHeight = heights(1); % to be offset
             
             % Compute positions
-            contentsPosition = [1 1+hSliderHeight contentsWidth contentsHeight];
+            contentsPosition = [1 1+hSliderHeight+vSliderHeight-contentsHeight contentsWidth contentsHeight];
             vSliderPosition = [1+hSliderWidth 1+hSliderHeight vSliderWidth vSliderHeight];
             hSliderPosition = [1 1 hSliderWidth hSliderHeight];
             platePosition = [1+hSliderWidth 1 vSliderWidth hSliderHeight];
@@ -321,7 +321,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
                 vStep = obj.VerticalSteps_(selection);
                 vSliderStep(1) = min( vStep / vSliderMax, 1 );
                 vSliderStep(2) = max( vSliderHeight / vSliderMax, vSliderStep(1) );
-                contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderValue;
+                contentsPosition(2) = contentsPosition(2) + vSliderValue;
                 % Set properties
                 set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
                     'Position', vSliderPosition, ...
