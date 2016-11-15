@@ -1,11 +1,12 @@
 % GUI Layout Toolbox
-% Version 2.2.3 (R2016b) 16-December-2016
+% Version 2.2.3 (R2016b) 15-November-2016
 %
 % Panels
 %   uix.Panel      - arrange a single element inside a standard panel
 %   uix.CardPanel  - show one element from a list
 %   uix.BoxPanel   - arrange a single element inside a panel with a boxed title
 %   uix.TabPanel   - arrange elements in a panel with tabs for selecting which is visible
+%   uix.Viewport   - arrange a single element inside a scrollable panel
 %
 % Boxes
 %   uix.HBox       - arrange elements horizontally in a single row
