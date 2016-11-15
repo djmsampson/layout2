@@ -27,10 +27,26 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
-    <param.exclude.filters>layout/+uix/ScrollingPanel.m
-layout/+uix/Viewport.m</param.exclude.filters>
-    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;examples/&gt;</param.examples>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
+    <param.examples />
     <param.demosxml />
     <param.apps />
     <param.docs>${PROJECT_ROOT}\tbx\layoutdoc\info.xml</param.docs>
@@ -41,6 +57,7 @@ layout/+uix/Viewport.m</param.exclude.filters>
       <param.company />
       <param.output />
       <param.platforms />
+      <param.examples />
       <param.demosxml />
       <param.apps />
       <param.matlabpath.excludes />
