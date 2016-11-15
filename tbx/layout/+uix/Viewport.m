@@ -196,7 +196,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             if isempty( sliders )
                 value = zeros( size( sliders ) );
             else
-                value = vertcat( sliders.Value ) - 1;
+                value = vertcat( sliders.Value );
                 value(value<0) = 0;
             end
             
@@ -219,7 +219,7 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             widths = obj.Widths_;
             for ii = 1:numel( sliders )
                 if widths(ii) > 0
-                    sliders(ii).Value = value(ii) + 1;
+                    sliders(ii).Value = value(ii);
                 end
             end
             
@@ -281,93 +281,80 @@ classdef Viewport < uix.Container & uix.mixin.Panel
             hSlider = obj.HorizontalSliders(selection);
             plate = obj.BlankingPlates(selection);
             
-            % Compute positions
+            % Compute dimensions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
             width = bounds(3);
             height = bounds(4);
-            padding = 0; % ignore padding
             sliderSize = obj.SliderSize; % slider size
             vSliderWidth = sliderSize * (contentsHeight > height); % first pass
             hSliderHeight = sliderSize * (contentsWidth > width - vSliderWidth);
             vSliderWidth = sliderSize * (contentsHeight > height - hSliderHeight); % second pass
-            vSliderHeight = height - 2 * padding - hSliderHeight;
-            hSliderWidth = width - 2 * padding - vSliderWidth;
-            widths = uix.calcPixelSizes( width, [contentsWidth; vSliderWidth], [1; 1], padding, 0 );
-            heights = uix.calcPixelSizes( height, [contentsHeight; hSliderHeight], [1; 1], padding, 0 );
-            contentsWidth = widths(1);
-            contentsHeight = heights(1);
-            contentsPosition = [padding+1 height-padding-contentsHeight+1 contentsWidth contentsHeight];
-            vSliderPosition = [width-padding-vSliderWidth+1 height-padding-vSliderHeight+1 vSliderWidth vSliderHeight];
-            hSliderPosition = [padding+1 padding+1 hSliderWidth hSliderHeight];
-            platePosition = [width-padding-vSliderWidth+1 padding+1 vSliderWidth hSliderHeight];
+            vSliderWidth = min( vSliderWidth, width ); % limit
+            hSliderHeight = min( hSliderHeight, height ); % limit
+            vSliderHeight = height - hSliderHeight;
+            hSliderWidth = width - vSliderWidth;
+            widths = uix.calcPixelSizes( width, [contentsWidth;vSliderWidth], [0;0], 0, 0 );
+            contentsWidth = widths(1); % to be offset
+            heights = uix.calcPixelSizes( height, [contentsHeight;hSliderHeight], [0;0], 0, 0 );
+            contentsHeight = heights(1); % to be offset
             
-            % Compute slider properties
-            if vSliderWidth == 0
-                vSliderMin = 0;
-                vSliderMax = 1;
-                vSliderValue = 1;
-                vSliderStep = [1 1];
-            else
-                viewportHeight = height - 2 * padding - hSliderHeight;
-                vSliderMax = -1;
-                vSliderMin = -( contentsWidth - viewportHeight + 1 );
-                vSliderRange = vSliderMax - vSliderMin;
-                oldVSliderValue = vSlider.Value;
-                if oldVSliderValue > 0
-                    vSliderValue = vSliderMax;
-                elseif oldVSliderValue < vSliderMin
-                    vSliderValue = vSliderMin;
-                else
-                    vSliderValue = oldVSliderValue;
-                end
-                vStep = obj.VerticalSteps_(selection);
-                vSliderStep(1) = min( vStep / vSliderRange, 1 );
-                vSliderStep(2) = max( viewportHeight / vSliderRange, vSliderStep(1) );
-            end
-            if hSliderHeight == 0
-                hSliderMin = -1;
-                hSliderMax = 0;
-                hSliderValue = -1;
-                hSliderStep = [1 1];
-            else
-                viewportWidth = width - 2 * padding - vSliderWidth;
-                hSliderMin = 1;
-                hSliderMax = contentsWidth - viewportWidth + 1;
-                hSliderRange = hSliderMax - hSliderMin;
-                oldHSliderValue = hSlider.Value;
-                if oldHSliderValue < 0
-                    hSliderValue = hSliderMin;
-                elseif oldHSliderValue > hSliderMax
-                    hSliderValue = hSliderMax;
-                else
-                    hSliderValue = oldHSliderValue;
-                end
-                hStep = obj.HorizontalSteps_(selection);
-                hSliderStep(1) = min( hStep / hSliderRange, 1 );
-                hSliderStep(2) = max( viewportWidth / hSliderRange, hSliderStep(1) );
-            end
+            % Compute positions
+            contentsPosition = [1 1+hSliderHeight contentsWidth contentsHeight];
+            vSliderPosition = [1+hSliderWidth 1+hSliderHeight vSliderWidth vSliderHeight];
+            hSliderPosition = [1 1 hSliderWidth hSliderHeight];
+            platePosition = [1+hSliderWidth 1 vSliderWidth hSliderHeight];
             
-            % Set positions and slider properties
-            contentsPosition(1) = contentsPosition(1) - hSliderValue + 1;
-            contentsPosition(2) = contentsPosition(2) - vSliderValue - 1;
-            uix.setPosition( child, contentsPosition, 'pixels' )
-            if vSliderPosition(4) < vSliderPosition(3)
-                set( vSlider, 'Visible', 'off' )
-            else
-                set( vSlider, 'Visible', 'on', ...
+            % Compute and set vertical slider properties
+            if vSliderWidth == 0 || vSliderHeight == 0 || vSliderHeight <= vSliderWidth
+                % Slider is invisible or incorrectly oriented
+                set( vSlider, 'Style', 'text', 'Enable', 'inactive', ...
                     'Position', vSliderPosition, ...
-                    'Min', vSliderMin, 'Max', vSliderMax, ...
-                    'Value', vSliderValue, 'SliderStep', vSliderStep )
-            end
-            if hSliderPosition(3) < hSliderPosition(4)
-                set( hSlider, 'Visible', 'off' )
+                    'Min', 0, 'Max', 1, 'Value', 1 )
             else
-                set( hSlider, 'Visible', 'on', ...
+                % Compute properties
+                vSliderMin = 0;
+                vSliderMax = contentsHeight - vSliderHeight;
+                vSliderValue = -vSlider.Value; % negative sign convention
+                vSliderValue = max( vSliderValue, vSliderMin ); % limit
+                vSliderValue = min( vSliderValue, vSliderMax ); % limit
+                vStep = obj.VerticalSteps_(selection);
+                vSliderStep(1) = min( vStep / vSliderMax, 1 );
+                vSliderStep(2) = max( vSliderHeight / vSliderMax, vSliderStep(1) );
+                contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderValue;
+                % Set properties
+                set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
+                    'Position', vSliderPosition, ...
+                    'Min', -vSliderMax, 'Max', -vSliderMin, ...
+                    'Value', -vSliderValue, 'SliderStep', vSliderStep )
+            end
+            
+            % Compute and set horizontal slider properties
+            if hSliderHeight == 0 || hSliderWidth == 0 || hSliderWidth <= hSliderHeight
+                % Slider is invisible or incorrectly oriented
+                set( hSlider, 'Style', 'text', 'Enable', 'inactive', ...
+                    'Position', hSliderPosition, ...
+                    'Min', -1, 'Max', 0, 'Value', -1 )
+            else
+                % Compute properties
+                hSliderMin = 0;
+                hSliderMax = contentsWidth - hSliderWidth;
+                hSliderValue = hSlider.Value; % positive sign convention
+                hSliderValue = max( hSliderValue, hSliderMin ); % limit
+                hSliderValue = min( hSliderValue, hSliderMax ); % limit
+                hStep = obj.HorizontalSteps_(selection);
+                hSliderStep(1) = min( hStep / hSliderMax, 1 );
+                hSliderStep(2) = max( hSliderWidth / hSliderMax, hSliderStep(1) );
+                contentsPosition(1) = contentsPosition(1) - hSliderValue;
+                % Set properties
+                set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
                     'Position', hSliderPosition, ...
                     'Min', hSliderMin, 'Max', hSliderMax, ...
                     'Value', hSliderValue, 'SliderStep', hSliderStep )
             end
+            
+            % Set contents and blanking plate positions
+            uix.setPosition( child, contentsPosition, 'pixels' )
             set( plate, 'Position', platePosition )
             
         end % redraw
