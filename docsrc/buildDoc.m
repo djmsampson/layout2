@@ -37,6 +37,5 @@ copyfile( fullfile( srcDir, 'layoutDocRoot.m' ), dstDir );
 
 % Delete some files
 delete( fullfile( dstDir, 'doc.m' ) )
-delete( fullfile( dstDir, 'uix.*.html' ) )
 
 end % buildDoc
