@@ -14,6 +14,7 @@
          <a href="uix.CardPanel.html"><img src="Images/bigicon_CardPanel.png" border="1"/></a>
          <a href="uix.BoxPanel.html"><img src="Images/bigicon_BoxPanel.png" border="1"/></a>
          <a href="uix.TabPanel.html"><img src="Images/bigicon_TabPanel.png" border="1"/></a>
+         <a href="uix.ScrollingPanel.html"><img src="Images/bigicon_ScrollingPanel.png" border="1"/></a>
 
      <subsection 
          name="uix.Panel" 
@@ -762,6 +763,140 @@
                  <item>
                      <name>uix.BoxPanel</name>
                      <desc>for creating a panel with boxed title</desc>
+                 </item>
+             </seealso>
+     </subsection>
+
+     <subsection 
+         name="uix.ScrollingPanel" 
+         description="Show one element (card) from a list"
+         staticref="uix.ScrollingPanel">
+             <keywords>ScrollingPanel</keywords>
+             <img src="Images/bigicon_ScrollingPanel.png" align="left"/>
+             <br clear="all"/>
+             <p>Show one element (card) from a list</p>
+                          <dl>
+                 <dt><function>
+                         <name>uix.ScrollingPanel</name>
+                         <outputarg>obj</outputarg>
+                 </function></dt>
+                 <dd>creates a new card panel which allows
+    selection between the different child objects contained, making the
+    selected child fill the space available and all other children
+    invisible. This is commonly used for creating wizards or quick
+    switching between different views of a single data-set.</dd>
+                 
+                 <dt><function>
+                         <name>uix.ScrollingPanel</name>
+                         <outputarg>obj</outputarg>
+                         <inputarg>prop</inputarg>
+                         <inputarg>value</inputarg>
+                         <inputarg>...</inputarg>
+                 </function></dt>
+                 <dd>also sets one or more property values.</dd>
+                 
+             </dl>
+             
+                    
+             <h3>uix.ScrollingPanel properties</h3>
+                 <propertytable>
+                     <property>
+                         <name>BackgroundColor</name>
+                         <value><matlabfcn>colorspec</matlabfcn></value>
+                         <description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description>
+                     </property>
+                     <property>
+                         <name>BeingDeleted</name>
+                         <value>on | off</value>
+                         <description>Deletion status.</description>
+                     </property>
+                     <property>
+                         <name>Contents</name>
+                         <value>empty GraphicsPlaceholder array | array of graphics objects</value>
+                         <description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description>
+                     </property>
+                     <property>
+                         <name>DeleteFcn</name>
+                         <value><matlabfcn>function_handle</matlabfcn></value>
+                         <description>Function to call when the layout is being deleted.</description>
+                     </property>
+                     <!--
+                     <property>
+                         <name>Enable</name>
+                         <value>on | off</value>
+                         <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
+                     </property>
+                     -->
+                     <property>
+                         <name>Padding</name>
+                         <value>positive integer</value>
+                         <description>Number of pixels of extra space around the outside of the layout.</description>
+                     </property>
+                     <property>
+                         <name>Parent</name>
+                         <value>empty GraphicsPlaceholder array | figure | container</value>
+                         <description>Parent of the layout.</description>
+                     </property>
+                     <property>
+                         <name>Position</name>
+                         <value>[x y w h]</value>
+                         <description>Position (x,y) and size (w,h) within figure or container.</description>
+                     </property>
+                     <property>
+                         <name>Selection</name>
+                         <value>positive integer or empty</value>
+                         <description>Which child is visible.</description>
+                     </property>
+                     <property>
+                         <name>Tag</name>
+                         <value>string</value>
+                         <description>Tag to associate with layout.</description>
+                     </property>
+                     <property>
+                         <name>Type</name>
+                         <value>string</value>
+                         <description>Type of graphics object.</description>
+                     </property>
+                     <property>
+                         <name>Units</name>
+                         <value>inches | centimeters | normalized | points | pixels | characters</value>
+                         <description>Position units.</description>
+                     </property>
+                     <property>
+                         <name>Visible</name>
+                         <value>on | off</value>
+                         <description>Visibility.</description>
+                     </property>
+                 </propertytable>                 
+             
+             <examples>
+                 <example>
+                 	   <code>f = <matlabfcn>figure</matlabfcn>( 'Name', 'uix.ScrollingPanel Help Example' );
+f.Position(3:4) = 400;
+p = <fcnref>uix.ScrollingPanel</fcnref>( 'Parent', f );
+a = <matlabfcn>axes</matlabfcn>( 'Parent', p );
+[x, y, z] = <matlabfcn>peaks</matlabfcn>();
+surf( a, x, y, z )
+a.ActivePositionProperty = 'position';
+<matlabfcn>set</matlabfcn>( p, 'Widths', 600, 'Heights', 600, 'HorizontalOffsets', 100, 'VerticalOffsets', 100 )</code>
+                     <result>
+                         <center><img src="Images/ScrollingPanel.png"/></center>
+                     </result>
+                 </example>
+             </examples>
+             
+             <seealso>
+                 <item>
+                     <name>uix.Panel</name>
+                     <desc>for creating a standard panel</desc>
+                 </item>
+                 <item>
+                     <name>uix.BoxPanel</name>
+                     <desc>for creating a more boxy panel</desc>
+                 </item>
+                 <item>
+                     <name>uix.TabPanel</name>
+                     <desc>for a panel with tabs for selecting the visible child</desc>
                  </item>
              </seealso>
      </subsection>
