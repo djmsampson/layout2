@@ -215,6 +215,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
             % Set
             obj.MinimizeButton.Callback = value;
+            obj.TitleText.Callback = value;
+            if isempty( value )
+                obj.TitleText.Enable = 'inactive';
+            else
+                obj.TitleText.Enable = 'on';
+            end
             
             % Mark as dirty
             obj.redrawButtons()
@@ -480,18 +486,21 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
             % Retrieve button box and buttons
             box = obj.TitleBox;
+            titleText = obj.TitleText;
             minimizeButton = obj.MinimizeButton;
             dockButton = obj.DockButton;
             helpButton = obj.HelpButton;
             closeButton = obj.CloseButton;
             
             % Detach all buttons
+            titleText.Parent = [];
             minimizeButton.Parent = [];
             dockButton.Parent = [];
             helpButton.Parent = [];
             closeButton.Parent = [];
             
             % Attach active buttons
+            titleText.Parent = box;
             minimize = ~isempty( obj.MinimizeFcn );
             if minimize
                 minimizeButton.Parent = box;
