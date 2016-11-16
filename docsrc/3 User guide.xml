@@ -462,12 +462,6 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
         layouts. In particular, the sections below illustrate how to create
         interfaces with context help, and panels that can be minimized or undocked.
     </p>
-    <p>
-        The <fcnref>uix.ScrollingPanel</fcnref> provides a scrollable view of
-        panel contents.  When screen real estate is limited, use a scrollable
-        panel to display a component that is large or whose size can change
-        dynamically.
-    </p>
     
     <subsection name="Context help" staticref="PanelHelp">
         <p>
@@ -708,34 +702,6 @@ for simple applications.</p>
             cause it to be appended to the right of the list in the original window. Closing the main window
         causes all panels, docked or undocked, and their enclosing windows to be closed.</p>
 </subsection>
-    
-    <subsection name="Scrolling" staticref="PanelScroll">
-        <p>
-            When a <fcnref>uix.ScrollingPanel</fcnref> has the <code>Widths</code> 
-            and/or <code>Heights</code> of its contents set to absolute values 
-            (positive), and is resized to be smaller than those values, scrollbars 
-            are shown to enable the user to scroll around the contents.
-        </p>
-        <examples>
-            <example>
-                <description>Here we embed large axes within a scrollable panel.</description>
-                <code>f = <matlabfcn>figure</matlabfcn>( 'Name', 'uix.ScrollingPanel Help Example' );
-f.Position(3:4) = 400;
-p = <fcnref>uix.ScrollingPanel</fcnref>( 'Parent', f );
-a = <matlabfcn>axes</matlabfcn>( 'Parent', p );
-[x, y, z] = <matlabfcn>peaks</matlabfcn>();
-surf( a, x, y, z )
-a.ActivePositionProperty = 'position';
-p.Widths = 600;
-p.Heights = 600;
-p.HorizontalOffsets = 100;
-p.VerticalOffsets = 100;
-</code>
-                <result><center><img src="Images/ScrollingPanel.png"/></center></result>
-            </example>
-        </examples>
-        
-    </subsection>
     
 </section>
 
