@@ -769,22 +769,18 @@
 
      <subsection 
          name="uix.ScrollingPanel" 
-         description="Show one element (card) from a list"
+         description="Arrange a single element inside a scrollable panel"
          staticref="uix.ScrollingPanel">
              <keywords>ScrollingPanel</keywords>
              <img src="Images/bigicon_ScrollingPanel.png" align="left"/>
              <br clear="all"/>
-             <p>Show one element (card) from a list</p>
+             <p>Arrange a single element inside a panel and provide scrollbars if the panel is smaller than the element</p>
                           <dl>
                  <dt><function>
                          <name>uix.ScrollingPanel</name>
                          <outputarg>obj</outputarg>
                  </function></dt>
-                 <dd>creates a new card panel which allows
-    selection between the different child objects contained, making the
-    selected child fill the space available and all other children
-    invisible. This is commonly used for creating wizards or quick
-    switching between different views of a single data-set.</dd>
+                 <dd>creates a new scrolling panel.</dd>
                  
                  <dt><function>
                          <name>uix.ScrollingPanel</name>
@@ -828,9 +824,24 @@
                      </property>
                      -->
                      <property>
+                         <name>Heights</name>
+                         <value>double vector</value>
+                         <description>Height of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     <property>
+                         <name>HorizontalOffsets</name>
+                         <value>double vector</value>
+                         <description>Horizontal offset of each of the children. Each value is limited to between 0 and the difference between the width of child and the width of the panel. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     <property>
+                         <name>HorizontalSteps</name>
+                         <value>positive double vector</value>
+                         <description>Horizontal slider step for each of the children. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     <property>
                          <name>Padding</name>
                          <value>positive integer</value>
-                         <description>Number of pixels of extra space around the outside of the layout.</description>
+                         <description>This property is not honored by this class.</description>
                      </property>
                      <property>
                          <name>Parent</name>
@@ -863,9 +874,24 @@
                          <description>Position units.</description>
                      </property>
                      <property>
+                         <name>VerticalOffsets</name>
+                         <value>double vector</value>
+                         <description>Vertical offset of each of the children. Each value is limited to between 0 and the difference between the height of child and the height of the panel. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     <property>
+                         <name>VerticalSteps</name>
+                         <value>positive double vector</value>
+                         <description>Vertical slider step for each of the children. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     <property>
                          <name>Visible</name>
                          <value>on | off</value>
                          <description>Visibility.</description>
+                     </property>
+                     <property>
+                         <name>Widths</name>
+                         <value>double vector</value>
+                         <description>Width of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
                  </propertytable>                 
              
