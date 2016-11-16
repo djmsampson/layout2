@@ -201,16 +201,16 @@
              
              <seealso>
                  <item>
+                     <name>uix.CardPanel</name>
+                     <desc>for creating an undecorated panel</desc>
+                 </item>
+                 <item>
                      <name>uix.BoxPanel</name>
                      <desc>for creating a more boxy panel</desc>
                  </item>
                  <item>
                      <name>uix.TabPanel</name>
                      <desc>for a panel with tabs for selecting the visible child</desc>
-                 </item>
-                 <item>
-                     <name>uix.HBox</name>
-                     <desc>for creating a horizontal arrangement within a panel</desc>
                  </item>
              </seealso>
      </subsection>
@@ -566,12 +566,12 @@
                      <desc>for creating a more standard panel</desc>
                  </item>
                  <item>
-                     <name>uix.TabPanel</name>
-                     <desc>for a panel with tabs for selecting the visible child</desc>
+                     <name>uix.CardPanel</name>
+                     <desc>for creating an undecorated panel</desc>
                  </item>
                  <item>
-                     <name>uix.HBox</name>
-                     <desc>for creating a horizontal arrangement within a panel</desc>
+                     <name>uix.TabPanel</name>
+                     <desc>for a panel with tabs for selecting the visible child</desc>
                  </item>
              </seealso>
      </subsection>
@@ -761,6 +761,10 @@
                      <desc>for creating a more standard panel</desc>
                  </item>
                  <item>
+                     <name>uix.CardPanel</name>
+                     <desc>for creating an undecorated panel</desc>
+                 </item>
+                 <item>
                      <name>uix.BoxPanel</name>
                      <desc>for creating a panel with boxed title</desc>
                  </item>
@@ -917,12 +921,12 @@ a.ActivePositionProperty = 'position';
                      <desc>for creating a standard panel</desc>
                  </item>
                  <item>
-                     <name>uix.BoxPanel</name>
-                     <desc>for creating a more boxy panel</desc>
+                     <name>uix.CardPanel</name>
+                     <desc>for creating an undecorated panel</desc>
                  </item>
                  <item>
-                     <name>uix.TabPanel</name>
-                     <desc>for a panel with tabs for selecting the visible child</desc>
+                     <name>uix.BoxPanel</name>
+                     <desc>for creating a more boxy panel</desc>
                  </item>
              </seealso>
      </subsection>
