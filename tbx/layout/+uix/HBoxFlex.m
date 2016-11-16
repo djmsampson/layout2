@@ -56,8 +56,14 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             
             % Set properties
             if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
+                try
+                    assert( rem( nargin, 2 ) == 0, 'uix:InvalidArgument', ...
+                        'Parameters and values must be provided in pairs.' )
+                    set( obj, varargin{:} )
+                catch e
+                    delete( obj )
+                    e.throwAsCaller()
+                end
             end
             
         end % constructor
@@ -335,7 +341,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
                 otherwise % change, set
                     obj.setPointer( source, newPointer )
             end
-                
+            
         end % updateMousePointer
         
     end % helpers methods

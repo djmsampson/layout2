@@ -102,8 +102,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
             % Set properties
             if nargin > 0
-                uix.pvchk( varargin )
-                set( obj, varargin{:} )
+                try
+                    assert( rem( nargin, 2 ) == 0, 'uix:InvalidArgument', ...
+                        'Parameters and values must be provided in pairs.' )
+                    set( obj, varargin{:} )
+                catch e
+                    delete( obj )
+                    e.throwAsCaller()
+                end
             end
             
         end % constructor

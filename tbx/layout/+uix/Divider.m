@@ -1,4 +1,4 @@
-classdef Divider < hgsetget
+classdef Divider < matlab.mixin.SetGet
     %uix.Divider  Draggable divider
     %
     %  d = uix.Divider() creates a divider.
@@ -52,7 +52,14 @@ classdef Divider < hgsetget
             
             % Set properties
             if nargin > 0
-                set( obj, varargin{:} );
+                try
+                    assert( rem( nargin, 2 ) == 0, 'uix:InvalidArgument', ...
+                        'Parameters and values must be provided in pairs.' )
+                    set( obj, varargin{:} )
+                catch e
+                    delete( obj )
+                    e.throwAsCaller()
+                end
             end
             
             % Force update
