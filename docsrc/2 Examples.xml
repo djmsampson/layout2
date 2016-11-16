@@ -39,6 +39,9 @@
          <dt><ref link="PanelDock"><b>Dock and undock</b></ref></dt>
          <dd>Creating a user interface with panels that can be undocked into
          separate windows.</dd>
+         
+         <dt><ref link="PanelScroll"><b>Scrolling</b></ref></dt>
+         <dd>Scrolling around large panel contents.</dd>
      </dl>
      
      <h4>Visible</h4>

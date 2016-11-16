@@ -334,6 +334,19 @@ p.TabTitles = {'Red', 'Blue', 'Green'};
 p.Selection = 2;
 iCaptureFigure( f, 'TabPanel' );
 
+%% uix.ScrollingPanel
+f = iFigure( 'uix.ScrollingPanel example' );
+f.Position(3:4) = 400;
+p = uix.ScrollingPanel( 'Parent', f );
+a = axes( 'Parent', p );
+[x, y, z] = peaks();
+surf( a, x, y, z )
+a.ActivePositionProperty = 'position';
+p.Widths = 600;
+p.Heights = 600;
+p.HorizontalOffsets = 100;
+p.VerticalOffsets = 100;
+iCaptureFigure( f, 'ScrollingPanel' );
 
 %% uix.HBox
 f = iFigure( 'uix.HBox example' );
