@@ -31,6 +31,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         VerticalSteps_ = zeros( [0 1] ) % steps
     end
     
+    properties( Access = private )
+        SliderListener = [] % slider listener
+    end
+    
     properties( Constant, Access = protected )
         SliderSize = 20 % slider size, in pixels
         SliderStep = 10 % slider step, in pixels
@@ -375,15 +379,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.Heights_(end+1,:) = -1;
             obj.VerticalSliders(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
-                'Style', 'slider', 'Callback', @obj.onSliderClicked );
+                'Style', 'slider' );
             obj.HorizontalSliders(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
-                'Style', 'slider', 'Callback', @obj.onSliderClicked );
+                'Style', 'slider' );
             obj.BlankingPlates(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'text', 'Enable', 'inactive' );
             obj.VerticalSteps_(end+1,:) = obj.SliderStep;
             obj.HorizontalSteps_(end+1,:) = obj.SliderStep;
+            obj.updateSliderListener()
             
             % Call superclass method
             addChild@uix.mixin.Panel( obj, child )
@@ -404,6 +409,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.BlankingPlates(tf,:) = [];
             obj.VerticalSteps_(tf,:) = [];
             obj.HorizontalSteps_(tf,:) = [];
+            obj.updateSliderListener()
             
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -459,14 +465,31 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     methods( Access = private )
         
-        function onSliderClicked( obj, ~, ~ )
-            %onSliderClicked  Event handler
+        function onSliderValueChanged( obj, ~, ~ )
+            %onSliderValueChanged  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % onSliderClicked
+        end % onSliderValueChanged
         
     end % event handlers
+    
+    methods( Access = private )
+        
+        function updateSliderListener( obj )
+            %updateSliderListener  Update listener to slider events
+            
+            if isempty( obj.VerticalSliders )
+                obj.SliderListener = [];
+            else
+                obj.SliderListener = event.listener( ...
+                    [obj.VerticalSliders; obj.HorizontalSliders], ...
+                    'ContinuousValueChange', @obj.onSliderValueChanged );
+            end
+            
+        end % updateSliderListener
+        
+    end % helpers
     
 end % classdef
