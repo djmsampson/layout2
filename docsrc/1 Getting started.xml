@@ -134,6 +134,14 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.1">
+        <ul>
+            <li>Released ???</li>
+            <li>Update contents position while dragging uix.ScrollingPanel scrollbox</li>
+            <li>Updates to documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3">
         <ul>
             <li>Released 24 November 2016</li>
@@ -185,7 +193,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1250248 "uix.Empty becomes visible in a panel"</li>
             <li>Fixed G1250249 "missing property Selection of uix.BoxPanel"</li>
             <li>Fixed G1250808 "uix.TabPanel context menus are orphaned when reparenting to a different figure"</li>
-            <li>Minor updates to documentation</li>
+            <li>Updates to documentation</li>
         </ul>
     </inlinesubsection> 
     
@@ -199,7 +207,7 @@ package "uiextras" provides support for legacy property values.</p>
                 MinimumColumnSizes of uiextras.Grid, uiextras.GridFlex"</li>
             <li>Fixed G1218142 "contents are lost when reordering via property Children"</li>
             <li>Protected against G1136196 "segv when setting child visibility from 'off' to 'on' in response to being reparented</li>
-            <li>Minor fixes to documentation</li>
+            <li>Updates to documentation</li>
         </ul>
     </inlinesubsection> 
     
