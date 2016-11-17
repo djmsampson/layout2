@@ -5,7 +5,7 @@ classdef Flex < handle
     %  various properties and helper methods.
     
     %  Copyright 2016 The MathWorks, Inc.
-    %  $Revision: 1077 $ $Date: 2015-03-19 16:44:14 +0000 (Thu, 19 Mar 2015) $
+    %  $Revision$ $Date$
     
     properties( GetAccess = protected, SetAccess = private )
         Pointer = 'unset' % mouse pointer

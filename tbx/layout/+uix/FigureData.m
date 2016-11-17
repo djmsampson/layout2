@@ -1,8 +1,8 @@
 classdef ( Hidden, Sealed ) FigureData < event.EventData
     %uix.FigureData  Event data for FigureChanged on uix.FigureObserver
     
-    %  Copyright 2014 The MathWorks, Inc.
-    %  $Revision: 115 $ $Date: 2015-07-29 05:03:09 +0100 (Wed, 29 Jul 2015) $
+    %  Copyright 2014-2015 The MathWorks, Inc.
+    %  $Revision$ $Date$
     
     properties( SetAccess = private )
         OldFigure % old figure

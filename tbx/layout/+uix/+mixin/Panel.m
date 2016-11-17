@@ -5,7 +5,7 @@ classdef Panel < uix.mixin.Container
     %  properties and template methods.
     
     %  Copyright 2009-2015 The MathWorks, Inc.
-    %  $Revision: 1077 $ $Date: 2015-03-19 16:44:14 +0000 (Thu, 19 Mar 2015) $
+    %  $Revision$ $Date$
     
     properties( Access = public, Dependent, AbortSet )
         Selection % selected contents

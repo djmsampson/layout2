@@ -10,7 +10,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
     
     %  Copyright 2009-2016 The MathWorks, Inc.
-    %  $Revision: 1165 $ $Date: 2015-12-06 03:09:17 -0500 (Sun, 06 Dec 2015) $
+    %  $Revision$ $Date$
     
     properties( Dependent )
         Heights % heights of contents, in pixels and/or weights

@@ -8,7 +8,7 @@ function setPosition( o, p, u )
 %  honors the ActivePositionProperty of axes.
 
 %  Copyright 2009-2016 The MathWorks, Inc.
-%  $Revision: 1165 $ $Date: 2015-12-06 03:09:17 -0500 (Sun, 06 Dec 2015) $
+%  $Revision$ $Date$
 
 o.Units = u;
 if isa( o, 'matlab.graphics.axis.Axes' )
