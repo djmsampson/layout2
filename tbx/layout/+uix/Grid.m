@@ -8,7 +8,7 @@ classdef Grid < uix.Box
     %
     %  See also: uix.HBox, uix.VBox, uix.GridFlex
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
+    %  Copyright 2009-2016 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     properties( Access = public, Dependent, AbortSet )

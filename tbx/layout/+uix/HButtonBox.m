@@ -9,7 +9,7 @@ classdef HButtonBox < uix.ButtonBox
     %
     %  See also: uix.VButtonBox
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
+    %  Copyright 2009-2016 The MathWorks, Inc.
     %  $Revision$ $Date$
     
     methods
