@@ -32,6 +32,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     end
     
     properties( Access = private )
+        MouseWheelListener = [] % mouse listener
         SliderListener = [] % slider listener
     end
     
@@ -416,6 +417,21 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
         end % removeChild
         
+        function reparent( obj, oldFigure, newFigure ) %#ok<INUSD>
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
+            
+            if isempty( newFigure )
+                obj.MouseWheelListener = [];
+            else
+                obj.MouseWheelListener = event.listener( newFigure, ...
+                    'WindowScrollWheel', @obj.onMouseScrolled );
+            end
+            
+        end % reparent
+        
         function reorder( obj, indices )
             %reorder  Reorder contents
             %
@@ -472,6 +488,25 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.Dirty = true;
             
         end % onSliderValueChanged
+        
+        function onMouseScrolled( obj, ~, eventData )
+            %onMouseScrolled  Event handler
+            
+            sel = obj.Selection_;
+            if sel == 0
+                return
+            else
+                pp = getpixelposition( obj, true );
+                f = ancestor( obj, 'figure' );
+                cp = f.CurrentPoint;
+                if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
+                        cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end
+                delta = eventData.VerticalScrollCount * ...
+                    eventData.VerticalScrollAmount * obj.VerticalSteps(sel);
+                obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
+            end
+            
+        end % onMouseScrolled
         
     end % event handlers
     
