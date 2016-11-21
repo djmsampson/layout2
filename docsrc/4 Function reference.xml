@@ -843,6 +843,11 @@
                          <description>Horizontal slider step for each of the children. The size of this vector must always match the size of Contents.</description>
                      </property>
                      <property>
+                         <name>MouseWheelEnabled</name>
+                         <value>on | off</value>
+                         <description>Mouse wheel scrolling status (default 'on').</description>
+                     </property>
+                     <property>
                          <name>Padding</name>
                          <value>positive integer</value>
                          <description>This property is not honored by this class.</description>
@@ -2271,7 +2276,7 @@ a.ActivePositionProperty = 'position';
              <examples>
                  <example>
                      <code>folder = <fcnref>layoutRoot</fcnref>()</code>
-                     <result><code>folder = <string>'C:\Temp\LayoutToolbox1.0'</string></code></result>
+                     <result><code>folder = <string>'C:\tools\glt2'</string></code></result>
                  </example>
              </examples>
         </subsection>
