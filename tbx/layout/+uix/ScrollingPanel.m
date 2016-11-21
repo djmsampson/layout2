@@ -19,6 +19,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         Widths % widths of contents, in pixels and/or weights
         HorizontalOffsets % horizontal offsets of contents, in pixels
         HorizontalSteps % horizontal slider steps, in pixels
+        MouseWheelEnabled % mouse wheel scrolling enabled [on|off]
     end
     
     properties( Access = protected )
@@ -33,6 +34,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     properties( Access = private )
         MouseWheelListener = [] % mouse listener
+        MouseWheelEnabled_ = 'on' %
         SliderListener = [] % slider listener
     end
     
@@ -271,6 +273,25 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
         end % set.HorizontalSteps
         
+        function value = get.MouseWheelEnabled( obj )
+            
+            value = obj.MouseWheelEnabled_;
+            
+        end % get.MouseWheelEnabled
+        
+        function set.MouseWheelEnabled( obj, value )
+            
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uix:InvalidArgument', ...
+                'Property ''MouseWheelEnabled'' must ''on'' or ''off''.' )
+            listener = obj.MouseWheelListener;
+            if ~isempty( listener )
+                listener.Enabled = strcmp( value, 'on' );
+            end
+            obj.MouseWheelEnabled_ = value;
+            
+        end % set.MouseWheelEnabled
+        
     end % accessors
     
     methods( Access = protected )
@@ -417,7 +438,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
         end % removeChild
         
-        function reparent( obj, oldFigure, newFigure ) %#ok<INUSD>
+        function reparent( obj, ~, newFigure )
             %reparent  Reparent container
             %
             %  c.reparent(a,b) reparents the container c from the figure a
@@ -426,8 +447,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             if isempty( newFigure )
                 obj.MouseWheelListener = [];
             else
-                obj.MouseWheelListener = event.listener( newFigure, ...
+                listener = event.listener( newFigure, ...
                     'WindowScrollWheel', @obj.onMouseScrolled );
+                listener.Enabled = strcmp( obj.MouseWheelEnabled_, 'on' );
+                obj.MouseWheelListener = listener;
             end
             
         end % reparent
