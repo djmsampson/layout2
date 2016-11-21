@@ -138,6 +138,7 @@ package "uiextras" provides support for legacy property values.</p>
         <ul>
             <li>Released ???</li>
             <li>Update contents position while dragging uix.ScrollingPanel scrollbox</li>
+            <li>Scroll uix.ScrollingPanel using mouse wheel</li>
             <li>Updates to documentation</li>
         </ul>
     </inlinesubsection> 
