@@ -519,14 +519,22 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             if sel == 0
                 return
             else
+                % Get pointer position and panel bounds
                 pp = getpixelposition( obj, true );
                 f = ancestor( obj, 'figure' );
                 cp = f.CurrentPoint;
+                % Check that pointer is over panel
                 if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
                         cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end
+                % Compute delta
                 delta = eventData.VerticalScrollCount * ...
                     eventData.VerticalScrollAmount * obj.VerticalSteps(sel);
-                obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
+                % Scroll
+                if obj.Heights_(sel) > 0 % scroll vertically
+                    obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
+                elseif obj.Widths_(sel) > 0 % scroll horizontally
+                    obj.HorizontalOffsets(sel) = obj.HorizontalOffsets(sel) + delta;
+                end
             end
             
         end % onMouseScrolled
