@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3000730109" file="\\central-uk\home$\slacaze\Documents\MATLAB\ConsultingProjects\GuiLayoutToolbox_BaTIntegration\GUI Layout Toolbox.prj" location="\\central-uk\home$\slacaze\Documents\MATLAB\ConsultingProjects\GuiLayoutToolbox_BaTIntegration" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3000730109" file="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest\GUI Layout Toolbox.prj" location="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email />
@@ -45,7 +45,9 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
 %
 % All files matching a pattern in all subfolders of the toolbox folder:
 % **/*.bak
-%</param.exclude.filters>
+%
+% Exclude all TEST_REQUIREMENTS.xml
+**/TEST_REQUIREMENTS.xml</param.exclude.filters>
     <param.examples />
     <param.demosxml />
     <param.apps />
@@ -74,7 +76,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="\\central-uk\home$\slacaze\Documents\MATLAB\ConsultingProjects\GuiLayoutToolbox_BaTIntegration" name="GUI Layout Toolbox.mltbx" optional="false">\\central-uk\home$\slacaze\Documents\MATLAB\ConsultingProjects\GuiLayoutToolbox_BaTIntegration\GUI Layout Toolbox.mltbx</file>
+      <file location="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest" name="GUI Layout Toolbox.mltbx" optional="false">C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest\GUI Layout Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
