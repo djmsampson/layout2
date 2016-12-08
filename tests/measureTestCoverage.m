@@ -10,6 +10,7 @@ addpath( layoutRoot() );
 ts = matlab.unittest.TestSuite.fromFolder(pwd);
 % ts = matlab.unittest.TestSuite.fromClass(?tTabPanel);
 runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput;
+% runner = matlab.unittest.TestRunner.withTextOutput; %withTextOutput;
 
 % Tell the test runner to report code coverage for the code/layout folder
 runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uiextras')));
@@ -28,6 +29,3 @@ numFails            = size(failedResultsTable, 1);
 %     disp('Tests that didn''t pass:')
 %     disp(failedResultsTable);
 % end
-    
-
-

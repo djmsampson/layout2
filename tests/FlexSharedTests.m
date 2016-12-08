@@ -1,13 +1,19 @@
 classdef FlexSharedTests < ContainerSharedTests
     %FLEXSHAREDTESTS Shared test accross all Flex classes
     
+    properties
+        VisualInspection = false;
+    end
+    
     methods ( Test )
         function testMouseOverDividerInDockedFigure( testcase, ContainerType )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
             %
             % Pass for unparented tests, since this is not applicable
-            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
+            import matlab.unittest.constraints.Eventually
+            import matlab.unittest.constraints.Matches
+            if testcase.cannotRunInteractiveTests()
                 return;
             end
             % Create a docked figure front and center
@@ -41,6 +47,7 @@ classdef FlexSharedTests < ContainerSharedTests
                     % Scour the screens
                     steps = 10;
                     mousePosition = [0 0];
+                    foundFigure = false;
                     for screenPosition = root.MonitorPositions'
                         [X,Y] = meshgrid(...
                             linspace( screenPosition(1), screenPosition(1)+screenPosition(3), steps ),...
@@ -57,8 +64,12 @@ classdef FlexSharedTests < ContainerSharedTests
                                 relativePosition = fig.CurrentPoint;
                                 figureLeftBottom = absolutePosition - relativePosition;
                                 fig.WindowButtonMotionFcn = [];
+                                foundFigure = true;
                                 break;
                             end
+                        end
+                        if foundFigure
+                            break;
                         end
                     end
                 case 2
@@ -83,7 +94,7 @@ classdef FlexSharedTests < ContainerSharedTests
             for i = 1:numel( dividers )
                 midDivider = dividers(i).Position(1:2) + figureLeftBottom  + dividers(i).Position(3:4)/2;
                 testcase.mouseMove( root, midDivider );
-                testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)',...
+                testcase.verifyThat( @()fig.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
                     sprintf( 'Wrong pointer in divider %d, placed at [%d,%d]', i, midDivider ) );
             end
         end
@@ -92,7 +103,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % when moving between adjacent flex containers
             %
             % Only makes sense in parented case
-            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
+            if testcase.cannotRunInteractiveTests()
                 return;
             end
             % Build
@@ -158,7 +169,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % g1367337: Update flex container pointer on mouse press event
             %
             % Only makes sense in parented case
-            if strcmp( testcase.parentStr, '[]' ) || isjenkins()
+            if testcase.cannotRunInteractiveTests()
                 return;
             end
             temp = strsplit( ContainerType, '.' );
@@ -198,6 +209,9 @@ classdef FlexSharedTests < ContainerSharedTests
         end
     end
     
+    methods( Access = private )
+    end
+    
     methods ( Static, Access = private )
         function location = midComponentAbsolutePosition( component )
             location = component.Position(3:4)/2;
@@ -206,8 +220,13 @@ classdef FlexSharedTests < ContainerSharedTests
                 component = component.Parent;
             end
         end
-        function mouseMove( root, newPosition, slow )
-            if nargin==2
+        function tf = isjenkins()
+            tf = strcmp( getenv( 'JOB_NAME' ), 'GUI_Layout-Toolbox-v2' );
+        end
+    end
+    methods ( Access = private )
+        function mouseMove( testcase, root, newPosition, slow )
+            if nargin==3
                 slow = true;
             end
             if slow
@@ -217,8 +236,9 @@ classdef FlexSharedTests < ContainerSharedTests
                 nSteps=6;
                 for i = 1:nSteps
                     root.PointerLocation = interpolatedPosition( i, nSteps );
-                    % Uncomment next line to see the test in action
-                    %                 pause( 0.1 )
+                    if testcase.VisualInspection
+                        pause( 0.1 )
+                    end
                     drawnow;
                 end
                 % It seems that drawnow might not be enough for the pointer
@@ -230,11 +250,9 @@ classdef FlexSharedTests < ContainerSharedTests
                 drawnow;
             end
         end
-        
+        function decision = cannotRunInteractiveTests( testcase )
+            decision = strcmp( testcase.parentStr, '[]' ) || testcase.isjenkins() || testcase.isBaT();
+        end
     end % helpers
     
-end
-
-function tf = isjenkins()
-tf = strcmp( getenv( 'JOB_NAME' ), 'GUI_Layout-Toolbox-v2' );
 end

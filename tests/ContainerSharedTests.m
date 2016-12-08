@@ -26,7 +26,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
             % If not BaT, assume MATLAB path is setup correctly
-            if isBaT()
+            if testcase.isBaT()
                 % Add path using fixtures for BaT
                 thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
                 testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
@@ -273,14 +273,13 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 testcase.verifyEqual(actual, expected);
             end
         end
+        function decision = isBaT( ~ )
+            % Test if in BaT.
+            % For now, compare the location of this file with the MATLAB install
+            thisFolder = fileparts( mfilename( 'fullpath' ) );
+            batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+            decision = strcmp( thisFolder, batTestFolder );
+        end
     end
     
-end
-
-function decision = isBaT()
-% Test if in BaT.
-% For now, compare the location of this file with the MATLAB install
-thisFolder = fileparts( mfilename( 'fullpath' ) );
-batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-decision = strcmp( thisFolder, batTestFolder );
 end
