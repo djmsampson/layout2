@@ -25,12 +25,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     methods(TestClassSetup)
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
-            thisFolder = fileparts( mfilename( 'fullpath' ) );
-            batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            if strcmp( thisFolder, batTestFolder )
-                tbxFolder = fullfile( fileparts( thisFolder ), 'tbx' );
-                testcase.applyFixture( PathFixture( fullfile( tbxFolder, 'layout' ) ) );
-                testcase.applyFixture( PathFixture( fullfile( tbxFolder, 'layoutdoc' ) ) );
+            % If not BaT, assume MATLAB path is setup correctly
+            if isBaT()
+                % Add path using fixtures for BaT
+                thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
+                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
             end
         end
         function disableTracking(testcase)
@@ -276,4 +275,12 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
     end
     
+end
+
+function decision = isBaT()
+% Test if in BaT.
+% For now, compare the location of this file with the MATLAB install
+thisFolder = fileparts( mfilename( 'fullpath' ) );
+batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+decision = strcmp( thisFolder, batTestFolder );
 end

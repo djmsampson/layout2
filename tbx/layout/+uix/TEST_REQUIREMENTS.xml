@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!-- Copyright 2016 The MathWorks, Inc. -->
+<!-- Test requirements for GUI Layout Toolbox code folders -->
+<!-- No actual test -->
+
+<test_requirements version="1.0">
+    
+    <dir>
+        <macroref id="global.EXCLUDE_ALL_UNIX"/>
+        <macroref id="global.EXCLUDE_ALL_WINDOWS"/>
+        <macroref id="global.EXCLUDE_ALL_MAC"/>
+    </dir>
+    
+</test_requirements>

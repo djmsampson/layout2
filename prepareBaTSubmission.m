@@ -1,25 +1,24 @@
-close all
-clear
-clc
-
-% Prepare package
-
-tempDir = 'BaT';
-testDir = 'tests';
-copyfile( testDir , fullfile( tempDir, testDir ) );
-layoutDir = fullfile( 'tbx', 'layout' );
-copyfile( layoutDir, fullfile( tempDir, layoutDir ) );
-docDir = fullfile( 'docsrc', 'Examples' );
-copyfile( docDir, fullfile( tempDir, docDir ) );
-file = fullfile( 'docsrc', 'layoutDocRoot.m' );
-copyfile( file, fullfile( tempDir, file ) );
-
-% ZIP
-
-cd BaT
-zip('../ForSubmissionInBaT.zip',{'tests' 'tbx' 'docsrc'})
-cd ../
-
-% Clean
-
-rmdir('BaT','s')
+function prepareBaTSubmission
+    %TODO All TEST_REQUIREMENTS.xml should be removed from the release
+    % process
+    BaTElements = {...
+        fullfile( 'tbx', 'layout' );...
+        fullfile( 'docsrc', 'Examples' );...
+        fullfile( 'docsrc', 'layoutDocRoot.m' );...
+        'tests'};
+    
+    % Prepare a temp folder for submission
+    tempDir = fullfile( tempname, 'BaT' );
+    mkdir( tempDir );
+    
+    % Copy all BaTElements
+    for i = 1:numel( BaTElements )
+        copyfile( BaTElements{i}, fullfile( tempDir, BaTElements{i} ) );
+    end
+    
+    % Create the zip file for submission
+    zip( 'forSubmissionInBaT.zip', tempDir )
+    
+    % Clean
+    rmdir( tempDir , 's' )
+end

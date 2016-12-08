@@ -11,13 +11,12 @@ classdef tEmpty < matlab.unittest.TestCase
     methods(TestClassSetup)
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
-            
-            thisFolder = fileparts( mfilename( 'fullpath' ) );
-            addFolder1 = layoutRoot();
-            addFolder2 = fullfile( thisFolder, '..', 'docsrc' );
-             
-             testcase.applyFixture(PathFixture(addFolder1));
-             testcase.applyFixture(PathFixture(addFolder2));
+            % If not BaT, assume MATLAB path is setup correctly
+            if isBaT()
+                % Add path using fixtures for BaT
+                thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
+                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
+            end
         end
     end
     
@@ -88,4 +87,12 @@ classdef tEmpty < matlab.unittest.TestCase
             testcase.verifyEqual( e.BackgroundColor, c );
         end    
     end
+end
+
+function decision = isBaT()
+% Test if in BaT.
+% For now, compare the location of this file with the MATLAB install
+thisFolder = fileparts( mfilename( 'fullpath' ) );
+batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+decision = strcmp( thisFolder, batTestFolder );
 end
