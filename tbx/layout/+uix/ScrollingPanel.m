@@ -17,6 +17,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         VerticalOffsets % vertical offsets of contents, in pixels
         VerticalSteps % vertical slider steps, in pixels
         Widths % widths of contents, in pixels and/or weights
+        MinimumWidths % minimum widths of contents, in pixels
         HorizontalOffsets % horizontal offsets of contents, in pixels
         HorizontalSteps % horizontal slider steps, in pixels
         MouseWheelEnabled % mouse wheel scrolling enabled [on|off]
@@ -25,6 +26,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
         Widths_ = zeros( [0 1] ) % backing for Widths
+        MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
         HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
         VerticalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
         BlankingPlates = matlab.ui.control.UIControl.empty( [0 1] ) % blanking plates
@@ -203,6 +205,37 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
         end % set.Widths
         
+        function value = get.MinimumWidths( obj )
+            
+            value = obj.MinimumWidths_;
+            
+        end % get.MinimumWidths
+        
+        function set.MinimumWidths( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
+            % Check
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Property ''MinimumWidths'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                all( value >= 0 ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''MinimumWidths'' must be non-negative.' )
+            assert( isequal( size( value ), size( obj.Widths_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumWidths'' must match size of contents.' )
+            
+            % Set
+            obj.MinimumWidths_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.MinimumWidths
+        
         function value = get.HorizontalOffsets( obj )
             
             sliders = obj.HorizontalSliders;
@@ -306,6 +339,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             % Retrieve width and height of selected contents
             contentsWidth = obj.Widths_(selection);
             contentsHeight = obj.Heights_(selection);
+            minimumWidth = obj.MinimumWidths_(selection);
             
             % Retrieve selected contents and corresponding decorations
             child = obj.Contents_(selection);
@@ -320,13 +354,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             height = bounds(4);
             sliderSize = obj.SliderSize; % slider size
             vSliderWidth = sliderSize * (contentsHeight > height); % first pass
-            hSliderHeight = sliderSize * (contentsWidth > width - vSliderWidth);
+            hSliderHeight = sliderSize * (contentsWidth > width - vSliderWidth | minimumWidth > width - vSliderWidth);
             vSliderWidth = sliderSize * (contentsHeight > height - hSliderHeight); % second pass
             vSliderWidth = min( vSliderWidth, width ); % limit
             hSliderHeight = min( hSliderHeight, height ); % limit
             vSliderHeight = height - hSliderHeight;
             hSliderWidth = width - vSliderWidth;
-            widths = uix.calcPixelSizes( width, [contentsWidth;vSliderWidth], [0;0], 0, 0 );
+            widths = uix.calcPixelSizes( width, [contentsWidth;vSliderWidth], [minimumWidth;vSliderWidth], 0, 0 );
             contentsWidth = widths(1); % to be offset
             heights = uix.calcPixelSizes( height, [contentsHeight;hSliderHeight], [0;0], 0, 0 );
             contentsHeight = heights(1); % to be offset
@@ -399,6 +433,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
             obj.Heights_(end+1,:) = -1;
+            obj.MinimumWidths_(end+1,:) = -1;
             obj.VerticalSliders(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'slider' );
@@ -426,6 +461,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             tf = obj.Contents_ == child;
             obj.Widths_(tf,:) = [];
             obj.Heights_(tf,:) = [];
+            obj.MinimumWidths_(tf,:) = [];
             obj.VerticalSliders(tf,:) = [];
             obj.HorizontalSliders(tf,:) = [];
             obj.BlankingPlates(tf,:) = [];
@@ -464,6 +500,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             % Reorder
             obj.Widths_ = obj.Widths_(indices,:);
             obj.Heights_ = obj.Heights_(indices,:);
+            obj.MinimumWidths_ = obj.MinimumWidths_(indices,:);
             obj.VerticalSliders = obj.VerticalSliders(indices,:);
             obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
             obj.BlankingPlates = obj.BlankingPlates(indices,:);
