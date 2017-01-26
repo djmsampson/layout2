@@ -465,8 +465,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
-            obj.Heights_(end+1,:) = -1;
             obj.MinimumWidths_(end+1,:) = -1;
+            obj.Heights_(end+1,:) = -1;
+            obj.MinimumHeights_(end+1,:) = -1;
             obj.VerticalSliders(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'slider' );
@@ -493,8 +494,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             % Remove from sizes
             tf = obj.Contents_ == child;
             obj.Widths_(tf,:) = [];
-            obj.Heights_(tf,:) = [];
             obj.MinimumWidths_(tf,:) = [];
+            obj.Heights_(tf,:) = [];
+            obj.MinimumHeights_(tf,:) = [];
             obj.VerticalSliders(tf,:) = [];
             obj.HorizontalSliders(tf,:) = [];
             obj.BlankingPlates(tf,:) = [];
@@ -532,8 +534,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Reorder
             obj.Widths_ = obj.Widths_(indices,:);
-            obj.Heights_ = obj.Heights_(indices,:);
             obj.MinimumWidths_ = obj.MinimumWidths_(indices,:);
+            obj.Heights_ = obj.Heights_(indices,:);
+            obj.MinimumHeights_ = obj.MinimumWidths_(indices,:);
             obj.VerticalSliders = obj.VerticalSliders(indices,:);
             obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
             obj.BlankingPlates = obj.BlankingPlates(indices,:);
