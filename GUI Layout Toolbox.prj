@@ -1,9 +1,9 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3000730109" file="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest\GUI Layout Toolbox.prj" location="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3000730109" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
-    <param.email />
-    <param.company />
+    <param.email>david.sampson@mathworks.co.uk</param.email>
+    <param.company>MathWorks</param.company>
     <param.summary>Layout management objects for MATLAB GUIs, for the new graphics system introduced in R2014b</param.summary>
     <param.description>This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.  The classes supplied can be used in combination to produce virtually any user interface layout.
 
@@ -76,31 +76,19 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest" name="GUI Layout Toolbox.mltbx" optional="false">C:\ConsultingProjectsLocal\Z-Internal\GUI_Layout_Toolbox\latest\GUI Layout Toolbox.mltbx</file>
+      <file location="C:\Development\layouts2" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layouts2\GUI Layout Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
       <root>C:\Program Files\MATLAB\R2016b</root>
       <toolboxes>
-        <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
-        <toolbox name="matlabhdlcoder" />
         <toolbox name="embeddedcoder" />
       </toolboxes>
-      <toolbox>
-        <fixedpoint>
-          <enabled>true</enabled>
-        </fixedpoint>
-      </toolbox>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <matlabhdlcoder>
-          <enabled>true</enabled>
-        </matlabhdlcoder>
       </toolbox>
       <toolbox>
         <embeddedcoder>
