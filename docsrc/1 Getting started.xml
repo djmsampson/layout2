@@ -136,10 +136,12 @@ package "uiextras" provides support for legacy property values.</p>
     
     <inlinesubsection name="Version 2.3.1">
         <ul>
-            <li>Released ???</li>
+            <li>Released 1 February 2017</li>
+            <li>Specify minimum width and height of contents in uix.ScrollingPanel</li>
             <li>Update contents position while dragging uix.ScrollingPanel scrollbox</li>
             <li>Scroll uix.ScrollingPanel using mouse wheel</li>
-            <li>Updates to documentation</li>
+            <li>Updated toolbox logo</li>
+            <li>Updated documentation</li>
         </ul>
     </inlinesubsection> 
     
@@ -149,7 +151,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Added scrolling panel</li>
             <li>Expand and collapse box panel by clicking on title</li>
             <li>Fixed G1493103 "Error on construction behavior is inconstistent with builtin objects"</li>
-            <li>Updates to documentation</li>
+            <li>Updated documentation</li>
         </ul>
     </inlinesubsection> 
     
@@ -159,7 +161,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1175938 "Cannot use data cursor mode with GUI Layout Toolbox containers"</li>
             <li>Fixed G1367337 "Update flex container pointer on mouse press event"</li>
             <li>Fixed G1380756 "Space behind TabPanel tabs should match parent color"</li>
-            <li>Updates to documentation</li>
+            <li>Updated documentation</li>
             <li>Added anonymous tracking of version, operating system and usage to help 
             	  us prioritize the improvements we should work on</li>
         </ul>
@@ -184,7 +186,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1332109 "uix.Empty background color does not match that of its Parent" (all)</li>
             <li>Fixed G1334867 "cannot add axes to container" (R2016a prerelease)</li>
             <li>Removed internal helper classes uix.AncestryObserver, uix.LocationObserver, uix.VisibilityObserver</li>
-            <li>Updates to documentation</li>    
+            <li>Updated documentation</li>    
         </ul>
     </inlinesubsection> 
     
@@ -194,7 +196,7 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1250248 "uix.Empty becomes visible in a panel"</li>
             <li>Fixed G1250249 "missing property Selection of uix.BoxPanel"</li>
             <li>Fixed G1250808 "uix.TabPanel context menus are orphaned when reparenting to a different figure"</li>
-            <li>Updates to documentation</li>
+            <li>Updated documentation</li>
         </ul>
     </inlinesubsection> 
     
@@ -207,8 +209,8 @@ package "uiextras" provides support for legacy property values.</p>
             <li>Fixed G1165274 "missing properties RowSizes, MinimumRowSizes, ColumnSizes, 
                 MinimumColumnSizes of uiextras.Grid, uiextras.GridFlex"</li>
             <li>Fixed G1218142 "contents are lost when reordering via property Children"</li>
-            <li>Protected against G1136196 "segv when setting child visibility from 'off' to 'on' in response to being reparented</li>
-            <li>Updates to documentation</li>
+            <li>Protected against G1136196 "segv when setting child visibility from 'off' to 'on' in response to being reparented"</li>
+            <li>Updated documentation</li>
         </ul>
     </inlinesubsection> 
     
