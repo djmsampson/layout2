@@ -14,6 +14,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     properties( Dependent )
         Heights % heights of contents, in pixels and/or weights
+        MinimumHeights % minimum heights of contents, in pixels
         VerticalOffsets % vertical offsets of contents, in pixels
         VerticalSteps % vertical slider steps, in pixels
         Widths % widths of contents, in pixels and/or weights
@@ -25,6 +26,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
+        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
         HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
@@ -103,6 +105,37 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.Dirty = true;
             
         end % set.Heights
+        
+        function value = get.MinimumHeights( obj )
+            
+            value = obj.MinimumHeights_;
+            
+        end % get.MinimumHeights
+        
+        function set.MinimumHeights( obj, value )
+            
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+            
+            % Check
+            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
+                'Property ''MinimumHeights'' must be of type double.' )
+            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
+                all( value >= 0 ), 'uix:InvalidPropertyValue', ...
+                'Elements of property ''MinimumHeights'' must be non-negative.' )
+            assert( isequal( size( value ), size( obj.Heights_ ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Size of property ''MinimumHeights'' must match size of contents.' )
+            
+            % Set
+            obj.MinimumHeights_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.MinimumHeights
         
         function value = get.VerticalOffsets( obj )
             
