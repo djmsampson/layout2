@@ -3,10 +3,14 @@ function cdata = gltico
 padding = 8;
 background = uint8( 255 );
 main = pane( padding, background );
-blue = uint8( [0 75 135] );
-cdata = block( blue, size( main, 2 ), 35 );
+dblue = uint8( [0 75 135] );
+lblue = uint8( [47 126 178] );
+cdata = block( dblue, size( main, 2 ), 49 );
 cdata(end+1:end+padding,:) = background;
 cdata = cat( 1, cdata, main );
+cdata(end+1:end+padding,:) = background;
+cdata = cat( 1, cdata, block( lblue, size( main, 2 ), 49 ) );
+
 
 end
 
@@ -14,7 +18,7 @@ function cdata = pane( p, b )
 
 orange = uint8( [215 136 37] ); % orange
 membranes = grid( [2 2], p, b );
-cdata = block( orange, 110, size( membranes, 1 ) );
+cdata = block( orange, 200, size( membranes, 1 ) );
 cdata(:,end+1:end+p,:) = b;
 cdata = cat( 2, cdata, membranes );
 
