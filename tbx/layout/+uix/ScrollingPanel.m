@@ -371,8 +371,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Retrieve width and height of selected contents
             contentsWidth = obj.Widths_(selection);
-            contentsHeight = obj.Heights_(selection);
             minimumWidth = obj.MinimumWidths_(selection);
+            contentsHeight = obj.Heights_(selection);
+            minimumHeight = obj.MinimumHeights_(selection);
             
             % Retrieve selected contents and corresponding decorations
             child = obj.Contents_(selection);
@@ -386,16 +387,26 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             width = bounds(3);
             height = bounds(4);
             sliderSize = obj.SliderSize; % slider size
-            vSliderWidth = sliderSize * (contentsHeight > height); % first pass
-            hSliderHeight = sliderSize * (contentsWidth > width - vSliderWidth | minimumWidth > width - vSliderWidth);
-            vSliderWidth = sliderSize * (contentsHeight > height - hSliderHeight); % second pass
+            vSliderWidth = sliderSize * ...
+                (contentsHeight > height | ...
+                minimumHeight > height); % first pass
+            hSliderHeight = sliderSize * ...
+                (contentsWidth > width - vSliderWidth | ...
+                minimumWidth > width - vSliderWidth);
+            vSliderWidth = sliderSize * ...
+                (contentsHeight > height - hSliderHeight | ...
+                minimumHeight > height - hSliderHeight); % second pass
             vSliderWidth = min( vSliderWidth, width ); % limit
             hSliderHeight = min( hSliderHeight, height ); % limit
             vSliderHeight = height - hSliderHeight;
             hSliderWidth = width - vSliderWidth;
-            widths = uix.calcPixelSizes( width, [contentsWidth;vSliderWidth], [minimumWidth;vSliderWidth], 0, 0 );
+            widths = uix.calcPixelSizes( width, ...
+                [contentsWidth;vSliderWidth], ...
+                [minimumWidth;vSliderWidth], 0, 0 );
             contentsWidth = widths(1); % to be offset
-            heights = uix.calcPixelSizes( height, [contentsHeight;hSliderHeight], [0;0], 0, 0 );
+            heights = uix.calcPixelSizes( height, ...
+                [contentsHeight;hSliderHeight], ...
+                [minimumHeight;hSliderHeight], 0, 0 );
             contentsHeight = heights(1); % to be offset
             
             % Compute positions
