@@ -843,6 +843,16 @@
                          <description>Horizontal slider step for each of the children. The size of this vector must always match the size of Contents.</description>
                      </property>
                      <property>
+                         <name>MinimumHeights</name>
+                         <value>double vector</value>
+                         <description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description>
+                     </property>
+                     <property>
+                         <name>MinimumWidths</name>
+                         <value>double vector</value>
+                         <description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description>
+                     </property>
+                     <property>
                          <name>MouseWheelEnabled</name>
                          <value>on | off</value>
                          <description>Mouse wheel scrolling status (default 'on').</description>
