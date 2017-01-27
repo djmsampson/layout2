@@ -8,9 +8,7 @@ addpath( layoutRoot() );
 
 % build test suite and test runner
 ts = matlab.unittest.TestSuite.fromFolder(pwd);
-% ts = matlab.unittest.TestSuite.fromClass(?tTabPanel);
-runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput;
-% runner = matlab.unittest.TestRunner.withTextOutput; %withTextOutput;
+runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput
 
 % Tell the test runner to report code coverage for the code/layout folder
 runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uiextras')));
