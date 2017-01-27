@@ -4,14 +4,15 @@ classdef tExamples <  matlab.unittest.TestCase
     methods(TestMethodSetup)
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
+            thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
             % If not BaT, assume MATLAB path is setup correctly
             if isBaT()
                 % Add path using fixtures for BaT
-                thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
                 testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
-                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc' ) ) );
-                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc', 'Examples' ) ) );
             end
+            % Add examples to path
+            testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc' ) ) );
+            testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc', 'Examples' ) ) );
         end
     end
     
