@@ -4,13 +4,14 @@
     <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
     <param.email>david.sampson@mathworks.co.uk</param.email>
     <param.company>MathWorks</param.company>
-    <param.summary>Layout management objects for MATLAB GUIs, for the new graphics system introduced in R2014b</param.summary>
+    <param.summary>Layout manager for MATLAB graphical user interfaces</param.summary>
     <param.description>This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.  The classes supplied can be used in combination to produce virtually any user interface layout.
 
-*   Arrange MATLAB user-interface components horizontally, vertically or in grids
-*   Ability to mix fixed size and variable size elements
-*   Dynamic resizing of elements by dragging dividers
-*   Use panels and tabs for switching interface pages
+* Arrange MATLAB user interface components horizontally, vertically or in grids
+* Mix fixed- and variable-size components
+* Resize components interactively by dragging dividers
+* Show and hide components using tabs and panels
+* Show part of a large component in a scrollable panel
 
 This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
