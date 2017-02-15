@@ -1,4 +1,4 @@
-classdef Container < uix.mixin.SetGet
+classdef Container < handle
     %uix.mixin.Container  Container mixin
     %
     %  uix.mixin.Container is a mixin class used by containers to provide
