@@ -18,11 +18,22 @@ classdef MouseObserver < handle
         PressListener
         ReleaseListener
         WasOver = false
+        ButtonDown = false
+        ButtonDownTime = -Inf
+        ClickTime = -Inf
+    end
+    
+    properties ( Constant, Access = private )
+        Toolkit = java.awt.Toolkit.getDefaultToolkit()
     end
     
     events ( NotifyAccess = private )
+        MouseDoubleClicked
+        MouseClicked
+%         MouseDragged
         MouseEntered
         MouseExited
+%         MouseMoved
         MousePressed
         MouseReleased
     end
@@ -64,7 +75,6 @@ classdef MouseObserver < handle
                     'WindowMousePress', @obj.onMousePress );
                 obj.ReleaseListener = event.listener( fo.Figure, ...
                     'WindowMouseRelease', @obj.onMouseRelease );
-                obj.ReleaseListener.Enabled = false;
             end
             
         end % createMouseListeners
@@ -87,17 +97,29 @@ classdef MouseObserver < handle
         
         function onMousePress( obj, ~, eventData )
             
-            if isancestorof( obj.Subject, eventData.HitObject )
+            if obj.Subject == eventData.HitObject
+                obj.ButtonDown = true;
+                obj.ButtonDownTime = now();
                 notify( obj, 'MousePressed' )
-                obj.ReleaseListener.Enabled = true;
             end
             
         end
         
-        function onMouseRelease( obj, ~, ~ )
+        function onMouseRelease( obj, ~, eventData )
             
-            notify( obj, 'MouseReleased' )
-            obj.ReleaseListener.Enabled = false;
+            if obj.ButtonDown
+                n = now();
+                obj.ButtonDown = false;
+                notify( obj, 'MouseReleased' )
+                if obj.Subject == eventData.HitObject
+                    notify( obj, 'MouseClicked' )
+                    dct = obj.Toolkit.getDesktopProperty( 'awt.multiClickInterval' )/86400000;
+                    if n - obj.ClickTime < dct
+                        notify( obj, 'MouseDoubleClicked' )
+                    end
+                    obj.ClickTime = n;
+                end
+            end
             
         end
         

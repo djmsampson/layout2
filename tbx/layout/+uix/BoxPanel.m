@@ -128,15 +128,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             obj.redrawButtons()
             
             % Set properties
-            if nargin > 0
-                try
-                    assert( rem( nargin, 2 ) == 0, 'uix:InvalidArgument', ...
-                        'Parameters and values must be provided in pairs.' )
-                    set( obj, varargin{:} )
-                catch e
-                    delete( obj )
-                    e.throwAsCaller()
-                end
+            try
+                pvset( obj, varargin{:} )
+            catch e
+                delete( obj )
+                e.throwAsCaller()
             end
             
         end % constructor

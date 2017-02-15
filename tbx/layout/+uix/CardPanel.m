@@ -23,15 +23,11 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
             %  value v1, etc.
             
             % Set properties
-            if nargin > 0
-                try
-                    assert( rem( nargin, 2 ) == 0, 'uix:InvalidArgument', ...
-                        'Parameters and values must be provided in pairs.' )
-                    set( obj, varargin{:} )
-                catch e
-                    delete( obj )
-                    e.throwAsCaller()
-                end
+            try
+                pvset( obj, varargin{:} )
+            catch e
+                delete( obj )
+                e.throwAsCaller()
             end
             
         end % constructor
