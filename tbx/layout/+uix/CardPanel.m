@@ -24,7 +24,7 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
             
             % Set properties
             try
-                pvset( obj, varargin{:} )
+                uix.set( obj, varargin{:} )
             catch e
                 delete( obj )
                 e.throwAsCaller()

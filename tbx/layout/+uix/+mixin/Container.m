@@ -278,16 +278,6 @@ classdef Container < handle
             
         end % isDrawable
         
-        function pvset( obj, varargin )
-            %pvset  Set
-            
-            if nargin == 1, return, end
-            assert( rem( nargin, 2 ) == 1, 'uix:InvalidArgument', ...
-                'Parameters and values must be provided in pairs.' )
-            set( obj, varargin{:} )
-            
-        end % pvset
-        
         function track( obj )
             %track  Track usage
             

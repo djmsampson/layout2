@@ -56,7 +56,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             
             % Set properties
             try
-                pvset( obj, varargin{:} )
+                uix.set( obj, varargin{:} )
             catch e
                 delete( obj )
                 e.throwAsCaller()

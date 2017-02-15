@@ -56,7 +56,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             
             % Set properties
             try
-                pvset( obj, varargin{:} )
+                uix.set( obj, varargin{:} )
             catch e
                 delete( obj )
                 e.throwAsCaller()
