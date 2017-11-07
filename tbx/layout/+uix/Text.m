@@ -1,4 +1,4 @@
-classdef Text < matlab.mixin.SetGet
+classdef ( Hidden ) Text < matlab.mixin.SetGet
     %uix.Text  Text control
     %
     %  t = uix.Text(p1,v1,p2,v2,...) constructs a text control and sets
