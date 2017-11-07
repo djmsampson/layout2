@@ -39,12 +39,18 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     properties( Access = private )
         MouseWheelListener = [] % mouse listener
         MouseWheelEnabled_ = 'on' %
-        SliderListener = [] % slider listener
+        ScrollingListener = [] % slider listener
+        ScrolledListener = [] % slider listener
     end
     
     properties( Constant, Access = protected )
         SliderSize = 20 % slider size, in pixels
         SliderStep = 10 % slider step, in pixels
+    end
+    
+    events( NotifyAccess = private )
+        Scrolling
+        Scrolled
     end
     
     methods
@@ -486,7 +492,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 'Style', 'text', 'Enable', 'inactive' );
             obj.VerticalSteps_(end+1,:) = obj.SliderStep;
             obj.HorizontalSteps_(end+1,:) = obj.SliderStep;
-            obj.updateSliderListener()
+            obj.updateSliderListeners()
             
             % Call superclass method
             addChild@uix.mixin.Panel( obj, child )
@@ -509,7 +515,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.BlankingPlates(tf,:) = [];
             obj.VerticalSteps_(tf,:) = [];
             obj.HorizontalSteps_(tf,:) = [];
-            obj.updateSliderListener()
+            obj.updateSliderListeners()
             
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -584,13 +590,27 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     methods( Access = private )
         
-        function onSliderValueChanged( obj, ~, ~ )
-            %onSliderValueChanged  Event handler
+        function onSliderScrolling( obj, ~, ~ )
+            %onSliderScrolling  Event handler
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % onSliderValueChanged
+            % Raise event
+            notify( obj, 'Scrolling' )
+            
+        end % onSliderScrolling
+        
+        function onSliderScrolled( obj, ~, ~ )
+            %onSliderScrolled  Event handler
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+            % Raise event
+            notify( obj, 'Scrolled' )
+            
+        end % onSliderScrolled
         
         function onMouseScrolled( obj, ~, eventData )
             %onMouseScrolled  Event handler
@@ -611,10 +631,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                     eventData.VerticalScrollAmount * obj.VerticalSteps(sel);
                 % Scroll
                 if obj.Heights_(sel) > 0 % scroll vertically
+                    % TODO
                     obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
                 elseif obj.Widths_(sel) > 0 % scroll horizontally
                     obj.HorizontalOffsets(sel) = obj.HorizontalOffsets(sel) + delta;
                 end
+                % Raise event
+                notify( obj, 'Scrolled' )
             end
             
         end % onMouseScrolled
@@ -623,18 +646,22 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     methods( Access = private )
         
-        function updateSliderListener( obj )
-            %updateSliderListener  Update listener to slider events
+        function updateSliderListeners( obj )
+            %updateSliderListeners  Update listeners to slider events
             
             if isempty( obj.VerticalSliders )
-                obj.SliderListener = [];
+                obj.ScrollingListener = [];
+                obj.ScrolledListener = [];
             else
-                obj.SliderListener = event.listener( ...
+                obj.ScrollingListener = event.listener( ...
                     [obj.VerticalSliders; obj.HorizontalSliders], ...
-                    'ContinuousValueChange', @obj.onSliderValueChanged );
+                    'ContinuousValueChange', @obj.onSliderScrolling );
+                obj.ScrolledListener = event.listener( ...
+                    [obj.VerticalSliders; obj.HorizontalSliders], ...
+                    'Action', @obj.onSliderScrolled );
             end
             
-        end % updateSliderListener
+        end % updateSliderListeners
         
     end % helpers
     
