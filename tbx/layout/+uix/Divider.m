@@ -252,8 +252,14 @@ classdef Divider < matlab.mixin.SetGet
             %  tf = d.isMouseOver(wmd) tests whether the WindowMouseData
             %  wmd is consistent with the mouse pointer being over the
             %  divider d.
+            %
+            %  This method returns false for dividers that are being
+            %  deleted.
             
-            tf = reshape( [obj.Control] == eventData.HitObject, size( obj ) );
+            tf = isvalid( obj ); % initialize
+            for ii = 1:numel( obj )
+                tf(ii) = tf(ii) && obj(ii).Control == eventData.HitObject;
+            end
             
         end % isMouseOver
         
