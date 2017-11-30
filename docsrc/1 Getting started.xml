@@ -134,9 +134,18 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.2">
+        <ul>
+            <li>Released 25 December 2017</li>
+            <li>Fixed G1358897 "BoxPanel title is truncated on Mac high DPI display"</li>
+            <li>Fixed G1695618 "Warning on mouse motion while deleting HBoxFlex, VBoxFlex or GridFlex"</li>
+            <li>Updated documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.1">
         <ul>
-            <li>Released 1 February 2017</li>
+            <li>Released 31 February 2017</li>
             <li>Specify minimum width and height of contents in uix.ScrollingPanel</li>
             <li>Update contents position while dragging uix.ScrollingPanel scrollbox</li>
             <li>Scroll uix.ScrollingPanel using mouse wheel</li>
