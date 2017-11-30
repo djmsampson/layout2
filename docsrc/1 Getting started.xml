@@ -145,7 +145,7 @@ package "uiextras" provides support for legacy property values.</p>
     
     <inlinesubsection name="Version 2.3.1">
         <ul>
-            <li>Released 31 February 2017</li>
+            <li>Released 31 January 2017</li>
             <li>Specify minimum width and height of contents in uix.ScrollingPanel</li>
             <li>Update contents position while dragging uix.ScrollingPanel scrollbox</li>
             <li>Scroll uix.ScrollingPanel using mouse wheel</li>
