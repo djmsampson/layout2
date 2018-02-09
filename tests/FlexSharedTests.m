@@ -193,6 +193,8 @@ classdef FlexSharedTests < ContainerSharedTests
             testcase.verifyEqual( fig.Pointer, 'arrow' );
             % Parent
             h1.Parent = fig;
+            % Bring figure back into focus
+            figure(fig);
             % Click and check pointer
             import java.awt.Robot;
             import java.awt.event.*;

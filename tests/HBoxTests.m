@@ -21,7 +21,7 @@ classdef HBoxTests < matlab.unittest.TestCase
         function testAxesPositionInHBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]}); %'Parent', figure, 
+                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');            
             
