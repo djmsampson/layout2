@@ -63,6 +63,12 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                 e.throwAsCaller()
             end
             
+            % Check if Spacing property has been set in arguments (else set to 5)
+            if ~any(contains(varargin(cellfun(@ischar, varargin)), 'Spacing'))
+                obj.Spacing = 5;
+            end
+            
+            
         end % constructor
         
     end % structors
