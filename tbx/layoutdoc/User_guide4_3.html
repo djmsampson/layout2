@@ -3,7 +3,7 @@
       <link rel="stylesheet" type="text/css" href="doc.css"/>
       <link rel="stylesheet" type="text/css" href=""/>
       <meta author="The MathWorks Ltd."/>
-      <meta copyright="2017 The MathWorks Ltd."/>
+      <meta copyright="2018 The MathWorks Ltd."/>
       <title>Dock and undock</title>
    </head>
 
@@ -81,8 +81,8 @@ for simple applications.</p>
 <code class="COMMENT">%-------------------------------------------------------------------------%</code><br/> 
     <a href="matlab:doc function"><code class="FUNCTION">function</code></a> nDock( eventSource, eventData, whichpanel )
         <code class="COMMENT">% Set the flag</code>
-        panel{whichpanel}.IsDocked = ~panel{whichpanel}.IsDocked;
-        <a href="matlab:doc if"><code class="FUNCTION">if</code></a> panel{whichpanel}.IsDocked
+        panel{whichpanel}.Docked = ~panel{whichpanel}.Docked;
+        <a href="matlab:doc if"><code class="FUNCTION">if</code></a> panel{whichpanel}.Docked
             <code class="COMMENT">% Put it back into the layout</code>
             newfig = <a href="matlab:doc get"><code class="FUNCTION">get</code></a>( panel{whichpanel}, <code class="STRING">'Parent'</code> );
             <a href="matlab:doc set"><code class="FUNCTION">set</code></a>( panel{whichpanel}, <code class="STRING">'Parent'</code>, box );
@@ -98,7 +98,7 @@ for simple applications.</p>
                 <code class="STRING">'CloseRequestFcn'</code>, {@nDock, whichpanel} );
             figpos = <a href="matlab:doc get"><code class="FUNCTION">get</code></a>( newfig, <code class="STRING">'Position'</code> );
             <a href="matlab:doc set"><code class="FUNCTION">set</code></a>( newfig, <code class="STRING">'Position'</code>, [figpos(1,1:2), pos(1,3:4)] );
-            <a href="matlab:doc set"><code class="FUNCTION">set</code></a>( p{whichpanel}, <code class="STRING">'Parent'</code>, newfig, ...
+            <a href="matlab:doc set"><code class="FUNCTION">set</code></a>( panel{whichpanel}, <code class="STRING">'Parent'</code>, newfig, ...
                 <code class="STRING">'Units'</code>, <code class="STRING">'Normalized'</code>, ...
                 <code class="STRING">'Position'</code>, [0 0 1 1] );
         <a href="matlab:doc end"><code class="FUNCTION">end</code></a>&nbsp;
@@ -143,7 +143,7 @@ for simple applications.</p>
             <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide5.html"><img src="images/rightarrow.png" border="0" alt="next page"/></a></td>
          </tr>
       </table>
-      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2017 The MathWorks Ltd</font>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2018 The MathWorks Ltd</font>
       <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
       <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
       <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>

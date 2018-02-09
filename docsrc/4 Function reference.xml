@@ -411,6 +411,11 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted.</description>
                      </property>
+					 <property>
+                         <name>Docked</name>
+                         <value>logical</value>
+                         <description>Is this panel in a docked state. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
+                     </property>
                      <property>
                          <name>DockFcn</name>
                          <value>function handle</value>
@@ -462,11 +467,6 @@
                          <name>HighlightColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>3-D frame highlight color.</description>
-                     </property>
-                     <property>
-                         <name>IsDocked</name>
-                         <value>logical</value>
-                         <description>Is this panel in a docked state. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
                      <property>
                          <name>Minimized</name>

@@ -651,8 +651,8 @@ for simple applications.</p>
 <comment>%-------------------------------------------------------------------------%</comment><br/> 
     <matlabfcn>function</matlabfcn> nDock( eventSource, eventData, whichpanel )
         <comment>% Set the flag</comment>
-        panel{whichpanel}.IsDocked = ~panel{whichpanel}.IsDocked;
-        <matlabfcn>if</matlabfcn> panel{whichpanel}.IsDocked
+        panel{whichpanel}.Docked = ~panel{whichpanel}.Docked;
+        <matlabfcn>if</matlabfcn> panel{whichpanel}.Docked
             <comment>% Put it back into the layout</comment>
             newfig = <matlabfcn>get</matlabfcn>( panel{whichpanel}, <string>'Parent'</string> );
             <matlabfcn>set</matlabfcn>( panel{whichpanel}, <string>'Parent'</string>, box );
@@ -668,7 +668,7 @@ for simple applications.</p>
                 <string>'CloseRequestFcn'</string>, {@nDock, whichpanel} );
             figpos = <matlabfcn>get</matlabfcn>( newfig, <string>'Position'</string> );
             <matlabfcn>set</matlabfcn>( newfig, <string>'Position'</string>, [figpos(1,1:2), pos(1,3:4)] );
-            <matlabfcn>set</matlabfcn>( p{whichpanel}, <string>'Parent'</string>, newfig, ...
+            <matlabfcn>set</matlabfcn>( panel{whichpanel}, <string>'Parent'</string>, newfig, ...
                 <string>'Units'</string>, <string>'Normalized'</string>, ...
                 <string>'Position'</string>, [0 0 1 1] );
         <matlabfcn>end</matlabfcn>AMPnbsp;

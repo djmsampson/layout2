@@ -11,11 +11,20 @@ function buildDoc()
 type = 'toolbox';
 
 % Get the version information
-v = ver('layout');
-if isempty(v)
+v_All = ver('layout');
+if isempty(v_All)
     error('layout:buildDoc:noVersion', ...
         'Could not find an installed version of layout toolbox. Please run ''install'' and try again.');
 end
+
+% If more than one version is found, use the highest path
+if size(v_All, 2) > 1
+    v = v_All(1);
+else
+    v = v_All;
+end
+
+
 verStr = v.Version;
 
 % Create a short name without the toolbox suffix
