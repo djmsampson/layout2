@@ -22,7 +22,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         HelpFcn % help callback
         CloseRequestFcn % close request callback
     end
-    
+      
     properties( Dependent, SetAccess = private )
         TitleHeight % title panel height [pixels]
     end
@@ -46,6 +46,17 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
     
+    properties (SetAccess = public)
+       % minimize button custom tooltip string
+       MinimizeTooltipString = {'Expand this panel', 'Collapse this panel'};
+       % dock button custom tooltip string
+       DockTooltipString = {'Undock this panel', 'Dock this panel'};
+       % help button custom tooltip string
+       HelpTooltipString = 'Get help on this panel';
+       % close button custom tooltip string
+       CloseTooltipString = 'Close this panel';
+    end
+    
     methods
         
         function obj = BoxPanel( varargin )
@@ -62,7 +73,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
             % Set default colors
             obj.ForegroundColor = foregroundColor;
-            
+                       
             % Create panels and decorations
             titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', backgroundColor );
@@ -84,12 +95,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'FontWeight', 'bold', 'String', '?', ...
-                'TooltipString', 'Get help on this panel', 'Enable', 'on' );
+                'TooltipString', obj.HelpTooltipString, 'Enable', 'on' );
             closeButton = uix.Text( ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'FontWeight', 'bold', 'String', char( 215 ), ...
-                'TooltipString', 'Close this panel', 'Enable', 'on' );
+                'TooltipString', obj.CloseTooltipString, 'Enable', 'on' );
             
             % Store properties
             obj.Title = obj.NullTitle;
@@ -279,6 +290,66 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             value = obj.TitleBox.Position(4);
             
         end % get.TitleHeight
+        
+        function set.MinimizeTooltipString( obj, value )
+            
+            % check value is a cell abd has 2 values for minimized and unminimized behaviour
+            assert(all(size(value) == [1 2]) & iscell(value), ...
+                'MinimizeTooltipString expecting 1x2 cell array');
+            
+            % check both values are a char array
+            assert(any(~cellfun(@ischar, value)) == false, ...
+                'MinimizeTooltipString must be a char array');
+            
+            obj.MinimizeTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.MinimizeTooltipString
+        
+        function set.DockTooltipString( obj, value )
+            
+            % check value is a cell and has 2 values for docked and undocked behaviour
+            assert(all(size(value) == [1 2]) & iscell(value), ...
+                'DockTooltipString expecting 1x2 cell array');
+            
+            % check both values are a char array
+            assert(any(~cellfun(@ischar, value)) == false, ...
+                'DockTooltipString must be a char array');
+            
+            obj.DockTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.DockTooltipString
+        
+        function set.HelpTooltipString( obj, value )
+            
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'HelpTooltipString must be a char array');
+            
+            obj.HelpTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.HelpTooltipString
+        
+        function set.CloseTooltipString( obj, value )
+            
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'CloseTooltipString must be a char array');
+            
+            obj.CloseTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.CloseTooltipString
         
     end % accessors
     
@@ -516,28 +587,30 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             help = ~isempty( obj.HelpFcn );
             if help
                 helpButton.Parent = box;
+                helpButton.TooltipString = obj.HelpTooltipString;
                 box.Widths(end) = helpButton.Extent(3);
             end
             close = ~isempty( obj.CloseRequestFcn );
             if close
                 closeButton.Parent = box;
+                closeButton.TooltipString = obj.CloseTooltipString;
                 box.Widths(end) = closeButton.Extent(3);
             end
             
             % Update icons
             if obj.Minimized_
                 minimizeButton.String = char( 9662 );
-                minimizeButton.TooltipString = 'Expand this panel';
+                minimizeButton.TooltipString = obj.MinimizeTooltipString{1};
             else
                 minimizeButton.String = char( 9652 );
-                minimizeButton.TooltipString = 'Collapse this panel';
+                minimizeButton.TooltipString = obj.MinimizeTooltipString{2};
             end
             if obj.Docked_
                 dockButton.String = char( 8599 );
-                dockButton.TooltipString = 'Undock this panel';
+                dockButton.TooltipString = obj.DockTooltipString{1};
             else
                 dockButton.String = char( 8600 );
-                dockButton.TooltipString = 'Dock this panel';
+                dockButton.TooltipString = obj.DockTooltipString{2};
             end
             
         end % redrawButtons

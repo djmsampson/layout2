@@ -406,6 +406,11 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the panel close icon is clicked. Note that if empty, no close button is shown.</description>
                      </property>
+					 <property>
+                         <name>CloseTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for close button. Note that if CloseRequestFcn is empty, no close button is shown.</description>
+                     </property>
                      <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
@@ -420,6 +425,11 @@
                          <name>DockFcn</name>
                          <value>function handle</value>
                          <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
+                     </property>
+					 <property>
+                         <name>DockTooltipString</name>
+                         <value>1x2 cell array of strings</value>
+                         <description>Custom tooltip string for dock button. Requires a 1x2 cell array of strings (first entry is displayed when panel is docked and second entry is displayed when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
                      </property>
                      <!--
                      <property>
@@ -463,6 +473,11 @@
                          <value>function handle</value>
                          <description>Function to call when the help icon is clicked. Note that if empty, no help button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
+					 <property>
+                         <name>HelpTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for help button. Note that if HelpFcn is empty, no help button is shown.</description>
+                     </property>
                      <property>
                          <name>HighlightColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
@@ -477,6 +492,11 @@
                          <name>MinimizeFcn</name>
                          <value>function handle</value>
                          <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
+                     </property>
+					 <property>
+                         <name>MinimizeTooltipString</name>
+                         <value>1x2 cell array of strings</value>
+                         <description>Custom tooltip string for minimize button. Requires a 1x2 cell array of strings (first entry is displayed when panel is minimized and second entry is displayed when panel is unminimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
                      </property>
                      <property>
                          <name>Padding</name>
