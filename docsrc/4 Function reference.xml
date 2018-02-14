@@ -427,9 +427,14 @@
                          <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
 					 <property>
-                         <name>DockTooltipString</name>
-                         <value>1x2 cell array of strings</value>
-                         <description>Custom tooltip string for dock button. Requires a 1x2 cell array of strings (first entry is displayed when panel is docked and second entry is displayed when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
+                         <name>DockedFalseTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for dock button (when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
+                     </property>
+					 <property>
+                         <name>DockedTrueTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for dock button (when panel is docked). Note that if DockFcn is empty, no dock button is shown.</description>
                      </property>
                      <!--
                      <property>
@@ -494,9 +499,14 @@
                          <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
 					 <property>
-                         <name>MinimizeTooltipString</name>
-                         <value>1x2 cell array of strings</value>
-                         <description>Custom tooltip string for minimize button. Requires a 1x2 cell array of strings (first entry is displayed when panel is minimized and second entry is displayed when panel is unminimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
+                         <name>MinimizedFalseTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for minimize button (when panel is unminimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
+                     </property>
+					 <property>
+                         <name>MinimizedTrueTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
                      </property>
                      <property>
                          <name>Padding</name>

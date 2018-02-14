@@ -55,19 +55,16 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             obj.FrontDivider = frontDivider;
             obj.BackgroundColorListener = backgroundColorListener;
             
+            % Set Spacing property (may be overwritten by uix.set)
+            obj.Spacing = 5;
+            
             % Set properties
             try
                 uix.set( obj, varargin{:} )
             catch e
                 delete( obj )
                 e.throwAsCaller()
-            end
-            
-            % Check if Spacing property has been set in arguments (else set to 5)
-            if ~any(contains(varargin(cellfun(@ischar, varargin)), 'Spacing'))
-                obj.Spacing = 5;
-            end
-            
+            end           
             
         end % constructor
         

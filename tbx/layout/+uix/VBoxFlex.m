@@ -54,6 +54,9 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             obj.FrontDivider = frontDivider;
             obj.BackgroundColorListener = backgroundColorListener;
             
+            % Set Spacing property to 5 (may be overwritten by uix.set)
+            obj.Spacing = 5;
+            
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -61,12 +64,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 delete( obj )
                 e.throwAsCaller()
             end
-            
-            % Check if Spacing property has been set in arguments (else set to 5)
-            if ~any(contains(varargin(cellfun(@ischar, varargin)), 'Spacing'))
-                obj.Spacing = 5;
-            end
-            
+                       
         end % constructor
         
     end % structors

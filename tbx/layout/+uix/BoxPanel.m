@@ -48,9 +48,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     
     properties (SetAccess = public)
        % minimize button custom tooltip string
-       MinimizeTooltipString = {'Expand this panel', 'Collapse this panel'};
+       MinimizedTrueTooltipString = 'Expand this panel';
+       MinimizedFalseTooltipString = 'Collapse this panel';
        % dock button custom tooltip string
-       DockTooltipString = {'Undock this panel', 'Dock this panel'};
+       DockedTrueTooltipString = 'Undock this panel';
+       DockedFalseTooltipString = 'Dock this panel';
        % help button custom tooltip string
        HelpTooltipString = 'Get help on this panel';
        % close button custom tooltip string
@@ -291,39 +293,57 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
         end % get.TitleHeight
         
-        function set.MinimizeTooltipString( obj, value )
+        function set.MinimizedTrueTooltipString( obj, value )
             
-            % check value is a cell abd has 2 values for minimized and unminimized behaviour
-            assert(all(size(value) == [1 2]) & iscell(value), ...
-                'MinimizeTooltipString expecting 1x2 cell array');
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'MinimizedTrueTooltipString must be a char array');
             
-            % check both values are a char array
-            assert(any(~cellfun(@ischar, value)) == false, ...
-                'MinimizeTooltipString must be a char array');
-            
-            obj.MinimizeTooltipString = value;
+            obj.MinimizedTrueTooltipString = value;
             
             % Mark as dirty
             obj.redrawButtons();         
             
-        end % set.MinimizeTooltipString
+        end % set.MinimizedFalseTooltipString
         
-        function set.DockTooltipString( obj, value )
+        function set.MinimizedFalseTooltipString( obj, value )
             
-            % check value is a cell and has 2 values for docked and undocked behaviour
-            assert(all(size(value) == [1 2]) & iscell(value), ...
-                'DockTooltipString expecting 1x2 cell array');
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'MinimizedFalseTooltipString must be a char array');
             
-            % check both values are a char array
-            assert(any(~cellfun(@ischar, value)) == false, ...
-                'DockTooltipString must be a char array');
-            
-            obj.DockTooltipString = value;
+            obj.MinimizedFalseTooltipString = value;
             
             % Mark as dirty
             obj.redrawButtons();         
             
-        end % set.DockTooltipString
+        end % set.MinimizedFalseTooltipString
+        
+        function set.DockedTrueTooltipString( obj, value )
+            
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'DockedTrueTooltipString must be a char array');
+            
+            obj.DockedTrueTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.DockedTrueTooltipString
+        
+        function set.DockedFalseTooltipString( obj, value )
+            
+            % assert that value is a char array
+            assert(ischar(value) == true, ...
+                'DockedFalseTooltipString must be a char array');
+            
+            obj.DockedFalseTooltipString = value;
+            
+            % Mark as dirty
+            obj.redrawButtons();         
+            
+        end % set.DockedFalseTooltipString
         
         function set.HelpTooltipString( obj, value )
             
@@ -600,17 +620,17 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Update icons
             if obj.Minimized_
                 minimizeButton.String = char( 9662 );
-                minimizeButton.TooltipString = obj.MinimizeTooltipString{1};
+                minimizeButton.TooltipString = obj.MinimizedTrueTooltipString;
             else
                 minimizeButton.String = char( 9652 );
-                minimizeButton.TooltipString = obj.MinimizeTooltipString{2};
+                minimizeButton.TooltipString = obj.MinimizedFalseTooltipString;
             end
             if obj.Docked_
                 dockButton.String = char( 8599 );
-                dockButton.TooltipString = obj.DockTooltipString{1};
+                dockButton.TooltipString = obj.DockedTrueTooltipString;
             else
                 dockButton.String = char( 8600 );
-                dockButton.TooltipString = obj.DockTooltipString{2};
+                dockButton.TooltipString = obj.DockedFalseTooltipString;
             end
             
         end % redrawButtons
