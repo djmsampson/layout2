@@ -57,6 +57,46 @@ classdef tScrollingPanel < ContainerSharedTests ...
             
         end
         
+        function testMinimumWidths(testcase, ContainerType)
+            
+            obj = testcase.hCreateObj(ContainerType, {'Parent', gcf()});
+            h = uix.HBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
+            for ii = 1:4
+                b(ii) = uicontrol( 'Parent', h, 'String', ii );
+            end
+            h.MinimumWidths(:) = 100;
+            obj.MinimumWidths = 450;
+            obj.MinimumHeights = 450;
+            set( obj, 'Units', 'pixels', 'Position', [10 10 200 200] );
+            
+            testcase.verifyEqual( h.Position(3), 450 )
+            testcase.verifyEqual( h.Position(4), 450 )
+            for ii = 1:4
+                testcase.verifyEqual( b(ii).Position(3), 100 )
+            end
+            
+        end
+        
+        function testMinimumHeights(testcase, ContainerType)
+            
+            obj = testcase.hCreateObj(ContainerType, {'Parent', gcf()});
+            v = uix.VBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
+            for ii = 1:4
+                b(ii) = uicontrol( 'Parent', v, 'String', ii );
+            end
+            v.MinimumHeights(:) = 100;
+            obj.MinimumWidths = 450;
+            obj.MinimumHeights = 450;
+            set( obj, 'Units', 'pixels', 'Position', [10 10 200 200] );
+            
+            testcase.verifyEqual( v.Position(3), 450 )
+            testcase.verifyEqual( v.Position(4), 450 )
+            for ii = 1:4
+                testcase.verifyEqual( b(ii).Position(4), 100 )
+            end
+            
+        end
+        
     end
     
 end
