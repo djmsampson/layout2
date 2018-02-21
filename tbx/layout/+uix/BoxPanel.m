@@ -48,11 +48,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     
     properties (SetAccess = public)
        % minimize button custom tooltip string
-       MinimizedTrueTooltipString = 'Expand this panel';
-       MinimizedFalseTooltipString = 'Collapse this panel';
+       MaximizeTooltipString = 'Expand this panel';
+       MinimizeTooltipString = 'Collapse this panel';
        % dock button custom tooltip string
-       DockedTrueTooltipString = 'Undock this panel';
-       DockedFalseTooltipString = 'Dock this panel';
+       UndockTooltipString = 'Undock this panel';
+       DockTooltipString = 'Dock this panel';
        % help button custom tooltip string
        HelpTooltipString = 'Get help on this panel';
        % close button custom tooltip string
@@ -293,81 +293,87 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
         end % get.TitleHeight
         
-        function set.MinimizedTrueTooltipString( obj, value )
-            
+        function set.MaximizeTooltipString( obj, value )
+                       
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'MinimizedTrueTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''MaximizeTooltipString'' must be a char array')
             
-            obj.MinimizedTrueTooltipString = value;
+            obj.MaximizeTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
-        end % set.MinimizedFalseTooltipString
+        end % set.MaximizeTooltipString
         
-        function set.MinimizedFalseTooltipString( obj, value )
+        function set.MinimizeTooltipString( obj, value )
             
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'MinimizedFalseTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''MinimizeTooltipString'' must be a char array')
             
-            obj.MinimizedFalseTooltipString = value;
+            obj.MinimizeTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
-        end % set.MinimizedFalseTooltipString
+        end % set.MinimizeTooltipString
         
-        function set.DockedTrueTooltipString( obj, value )
+        function set.UndockTooltipString( obj, value )
             
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'DockedTrueTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''UndockTooltipString'' must be a char array')
             
-            obj.DockedTrueTooltipString = value;
+            obj.UndockTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
-        end % set.DockedTrueTooltipString
+        end % set.UndockTooltipString
         
-        function set.DockedFalseTooltipString( obj, value )
+        function set.DockTooltipString( obj, value )
             
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'DockedFalseTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''DockTooltipString'' must be a char array')
             
-            obj.DockedFalseTooltipString = value;
+            obj.DockTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
-        end % set.DockedFalseTooltipString
+        end % set.DockTooltipString
         
         function set.HelpTooltipString( obj, value )
             
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'HelpTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''HelpTooltipString'' must be a char array')
             
             obj.HelpTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
         end % set.HelpTooltipString
         
         function set.CloseTooltipString( obj, value )
             
             % assert that value is a char array
-            assert(ischar(value) == true, ...
-                'CloseTooltipString must be a char array');
+            assert( ischar( value ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''CloseTooltipString'' must be a char array')
             
             obj.CloseTooltipString = value;
             
             % Mark as dirty
-            obj.redrawButtons();         
+            obj.redrawButtons()
             
         end % set.CloseTooltipString
         
@@ -620,17 +626,17 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Update icons
             if obj.Minimized_
                 minimizeButton.String = char( 9662 );
-                minimizeButton.TooltipString = obj.MinimizedTrueTooltipString;
+                minimizeButton.TooltipString = obj.MaximizeTooltipString;
             else
                 minimizeButton.String = char( 9652 );
-                minimizeButton.TooltipString = obj.MinimizedFalseTooltipString;
+                minimizeButton.TooltipString = obj.MinimizeTooltipString;
             end
             if obj.Docked_
                 dockButton.String = char( 8599 );
-                dockButton.TooltipString = obj.DockedTrueTooltipString;
+                dockButton.TooltipString = obj.UndockTooltipString;
             else
                 dockButton.String = char( 8600 );
-                dockButton.TooltipString = obj.DockedFalseTooltipString;
+                dockButton.TooltipString = obj.DockTooltipString;
             end
             
         end % redrawButtons

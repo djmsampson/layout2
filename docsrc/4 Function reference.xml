@@ -427,14 +427,9 @@
                          <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
 					 <property>
-                         <name>DockedFalseTooltipString</name>
+                         <name>DockTooltipString</name>
                          <value>string</value>
                          <description>Custom tooltip string for dock button (when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
-                     </property>
-					 <property>
-                         <name>DockedTrueTooltipString</name>
-                         <value>string</value>
-                         <description>Custom tooltip string for dock button (when panel is docked). Note that if DockFcn is empty, no dock button is shown.</description>
                      </property>
                      <!--
                      <property>
@@ -488,6 +483,11 @@
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>3-D frame highlight color.</description>
                      </property>
+					 <property>
+                         <name>MaximizeTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
+                     </property>					 
                      <property>
                          <name>Minimized</name>
                          <value>logical</value>
@@ -499,14 +499,9 @@
                          <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
 					 <property>
-                         <name>MinimizedFalseTooltipString</name>
+                         <name>MinimizeTooltipString</name>
                          <value>string</value>
                          <description>Custom tooltip string for minimize button (when panel is unminimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
-                     </property>
-					 <property>
-                         <name>MinimizedTrueTooltipString</name>
-                         <value>string</value>
-                         <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
                      </property>
                      <property>
                          <name>Padding</name>
@@ -553,6 +548,11 @@
                          <value>string</value>
                          <description>Type of graphics object.</description>
                      </property>
+					 <property>
+                         <name>UndockTooltipString</name>
+                         <value>string</value>
+                         <description>Custom tooltip string for dock button (when panel is docked). Note that if DockFcn is empty, no dock button is shown.</description>
+                     </property>					 
                      <property>
                          <name>Units</name>
                          <value>inches | centimeters | normalized | points | pixels | characters</value>
