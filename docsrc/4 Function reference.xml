@@ -486,7 +486,7 @@
 					 <property>
                          <name>MaximizeTooltipString</name>
                          <value>string</value>
-                         <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
+                         <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
                      </property>					 
                      <property>
                          <name>Minimized</name>
@@ -501,7 +501,7 @@
 					 <property>
                          <name>MinimizeTooltipString</name>
                          <value>string</value>
-                         <description>Custom tooltip string for minimize button (when panel is unminimized). Note that if MinimizeFcnFcn is empty, no minimize button is shown.</description>
+                         <description>Custom tooltip string for minimize button (when panel is maximized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
                      </property>
                      <property>
                          <name>Padding</name>
