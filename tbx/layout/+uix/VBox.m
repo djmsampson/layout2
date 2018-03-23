@@ -18,7 +18,11 @@ classdef VBox < uix.Box
     
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
-        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
+        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights        
+    end
+    
+    properties( GetAccess = public, SetAccess = private )
+        MinimumTotalHeight = 0;
     end
     
     methods
@@ -102,6 +106,9 @@ classdef VBox < uix.Box
             % Set
             obj.MinimumHeights_ = value;
             
+            % Update TotalMinimumHeight property
+            obj.updateMinimumTotalHeight;
+            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -184,6 +191,78 @@ classdef VBox < uix.Box
             reorder@uix.Box( obj, indices )
             
         end % reorder
+        
+                
+        function updateMinimumTotalHeight( obj )
+            
+            % See if this object has children with a MinimumHeights property
+            minHeightChildren = arrayfun( @(x) ...
+                isa( x, 'uix.VBox' ) || isa( x, 'uix.Grid' ), obj.Children );
+            tempMinimumTotalHeight = 0;
+            if any( minHeightChildren )
+                for ii = 1:numel( minHeightChildren )
+                    if true( minHeightChildren(ii) )
+                        % Update this child's total minimum height
+                        obj.Children(ii).updateMinimumTotalHeight;
+                                                
+                        % All lower tier children should be updated so get the total for that tier
+                        tempMinimumTotalHeight = tempMinimumTotalHeight ...
+                            + obj.Children(ii).MinimumTotalHeight;
+                    else
+                        tempMinimumTotalHeight = tempMinimumTotalHeight + ...
+                            obj.MinimumHeights(ii);
+                    end
+                end
+            end
+            
+            % Check whether the sum of my MinimumHeights is greater than the sum of my children's TotalMinimumHeights
+            if sum( obj.MinimumHeights ) < tempMinimumTotalHeight
+                obj.MinimumTotalHeight = tempMinimumTotalHeight;
+            else
+                obj.MinimumTotalHeight = sum( obj.MinimumHeights );
+            end
+            
+            % Now, propagate upstream
+            obj.checkParentMinimumTotalHeight;
+                      
+        end
+        
+        function checkParentMinimumTotalHeight( obj )
+            
+            % See if this object has a parent with a MinimumHeights property
+            if isa( obj.Parent, 'uix.VBox') || isa( obj.Parent, 'uix.Grid' )
+                % Loop through parent's children and sum up min Heights
+                tempMinimumTotalHeight = 0;
+                for ii = 1:numel( obj.Parent.Children )  
+                    if isa( obj.Parent.Children(ii), 'uix.VBox' ) ...
+                            || isa ( obj.Parent.Children(ii), 'uix.Grid' )
+                        tempMinimumTotalHeight = tempMinimumTotalHeight + ...
+                            obj.Parent.Children(ii).MinimumTotalHeight;
+                    else
+                        tempMinimumTotalHeight = tempMinimumTotalHeight + ...
+                            obj.Parent.MinimumHeights(ii);
+                    end
+                end
+                
+                % Check whether the sum of my MinimumHeights is greater than the sum of my children's TotalMinimumHeights
+                if sum( obj.Parent.MinimumHeights ) < tempMinimumTotalHeight
+                    obj.Parent.MinimumTotalHeight = tempMinimumTotalHeight;
+                else
+                    obj.Parent.MinimumTotalHeight = sum( obj.Parent.MinimumHeights );
+                end
+                
+                % Propagate upstream
+                obj.Parent.checkParentMinimumTotalHeight;
+                
+            else
+                % We have reached the top of the tree
+                % If parent is ScrollingPanel, trigger redraw
+                if isa( obj.Parent, 'uix.ScrollingPanel' )
+                   obj.Parent.redraw; 
+                end
+            end
+            
+        end
         
     end % template methods
     
