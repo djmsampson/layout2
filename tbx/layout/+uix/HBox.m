@@ -19,11 +19,6 @@ classdef HBox < uix.Box
     properties( Access = protected )
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
-        
-    end
-    
-    properties( GetAccess = public, SetAccess = private )
-        MinimumTotalWidth = 0;
     end
        
     methods
@@ -192,78 +187,7 @@ classdef HBox < uix.Box
             reorder@uix.Box( obj, indices )
             
         end % reorder
-        
-        function updateMinimumTotalWidth( obj )
-            
-            % See if this object has children with a MinimumWidths property
-            minWidthChildren = arrayfun( @(x) ...
-                isa( x, 'uix.HBox' ) || isa( x, 'uix.Grid' ), obj.Children );
-            tempMinimumTotalWidth = 0;
-            if any( minWidthChildren )
-                for ii = 1:numel( minWidthChildren )
-                    if true( minWidthChildren(ii) )
-                        % Update this child's total minimum width
-                        obj.Children(ii).updateMinimumTotalWidth;
-                                                
-                        % All lower tier children should be updated so get the total for that tier
-                        tempMinimumTotalWidth = tempMinimumTotalWidth ...
-                            + obj.Children(ii).MinimumTotalWidth;
-                    else
-                        tempMinimumTotalWidth = tempMinimumTotalWidth + ...
-                            obj.MinimumWidths(ii);
-                    end
-                end
-            end
-            
-            % Check whether the sum of my MinimumWidths is greater than the sum of my children's TotalMinimumWidths
-            if sum( obj.MinimumWidths ) < tempMinimumTotalWidth
-                obj.MinimumTotalWidth = tempMinimumTotalWidth;
-            else
-                obj.MinimumTotalWidth = sum( obj.MinimumWidths );
-            end
-            
-            % Now, propagate upstream
-            obj.checkParentMinimumTotalWidth;
-                      
-        end
-        
-        function checkParentMinimumTotalWidth( obj )
-            
-            % See if this object has a parent with a MinimumWidths property
-            if isa( obj.Parent, 'uix.HBox') || isa ( obj.Parent, 'uix.Grid' )
-                % Loop through parent's children and sum up min widths
-                tempMinimumTotalWidth = 0;
-                for ii = 1:numel( obj.Parent.Children )  
-                    if isa( obj.Parent.Children(ii), 'uix.HBox' ) ...
-                            || isa ( obj.Parent.Children(ii), 'uix.Grid' )
-                        tempMinimumTotalWidth = tempMinimumTotalWidth + ...
-                            obj.Parent.Children(ii).MinimumTotalWidth;
-                    else
-                        tempMinimumTotalWidth = tempMinimumTotalWidth + ...
-                            obj.Parent.MinimumWidths(ii);
-                    end
-                end
-                
-                % Check whether the sum of my MinimumWidths is greater than the sum of my children's TotalMinimumWidths
-                if sum( obj.Parent.MinimumWidths ) < tempMinimumTotalWidth
-                    obj.Parent.MinimumTotalWidth = tempMinimumTotalWidth;
-                else
-                    obj.Parent.MinimumTotalWidth = sum( obj.Parent.MinimumWidths );
-                end
-                
-                % Propagate upstream
-                obj.Parent.checkParentMinimumTotalWidth;
-                
-            else
-                % We have reached the top of the tree
-                % If parent is ScrollingPanel, trigger redraw
-                if isa( obj.Parent, 'uix.ScrollingPanel' )
-                   obj.Parent.redraw; 
-                end
-            end
-            
-        end
-        
+               
     end % template methods
     
 end % classdef
