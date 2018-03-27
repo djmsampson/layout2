@@ -377,23 +377,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             contentsHeight = obj.Heights_(selection);
             minimumHeight = obj.MinimumHeights_(selection);
             
-            % Check if child has a MinimumTotalWidth property
-            if( isa( obj.Children, 'uix.Box' ) )
-               % if child total width > minimumWidth, then override
-               if minimumWidth < obj.Children.MinimumTotalWidth
-                   minimumWidth = obj.Children.MinimumTotalWidth;
-               end
-            end
-            
-            % Check if child has a MinimumTotalheight property
-            if( isa( obj.Children, 'uix.Box' ) )
-               % if child total height > minimumHeight, then override
-               if minimumHeight < obj.Children.MinimumTotalHeight
-                   minimumHeight = obj.Children.MinimumTotalHeight;
-               end
-            end
-            
-            
             % Retrieve selected contents and corresponding decorations
             child = obj.Contents_(selection);
             vSlider = obj.VerticalSliders(selection);

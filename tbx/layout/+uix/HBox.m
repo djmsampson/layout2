@@ -20,7 +20,7 @@ classdef HBox < uix.Box
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
     end
-       
+    
     methods
         
         function obj = HBox( varargin )
@@ -102,9 +102,6 @@ classdef HBox < uix.Box
             % Set
             obj.MinimumWidths_ = value;
             
-            % Update TotalMinimumWidth property
-            obj.updateMinimumTotalWidth;
-           
             % Mark as dirty
             obj.Dirty = true;
             
@@ -187,7 +184,7 @@ classdef HBox < uix.Box
             reorder@uix.Box( obj, indices )
             
         end % reorder
-               
+        
     end % template methods
     
 end % classdef

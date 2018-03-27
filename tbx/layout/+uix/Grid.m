@@ -131,9 +131,6 @@ classdef Grid < uix.Box
             % Set
             obj.MinimumWidths_ = value;
             
-            % Update MinimumTotalWidth property
-            obj.updateMinimumTotalWidth;
-            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -217,9 +214,6 @@ classdef Grid < uix.Box
             
             % Set
             obj.MinimumHeights_ = value;
-            
-            % Update TotalMinimumHeight property
-            obj.updateMinimumTotalHeight;
             
             % Mark as dirty
             obj.Dirty = true;

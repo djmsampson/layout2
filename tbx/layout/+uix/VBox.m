@@ -18,7 +18,7 @@ classdef VBox < uix.Box
     
     properties( Access = protected )
         Heights_ = zeros( [0 1] ) % backing for Heights
-        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights        
+        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
     end
     
     methods
@@ -102,9 +102,6 @@ classdef VBox < uix.Box
             % Set
             obj.MinimumHeights_ = value;
             
-            % Update TotalMinimumHeight property
-            obj.updateMinimumTotalHeight;
-            
             % Mark as dirty
             obj.Dirty = true;
             
@@ -187,9 +184,6 @@ classdef VBox < uix.Box
             reorder@uix.Box( obj, indices )
             
         end % reorder
-        
-                
-
         
     end % template methods
     
