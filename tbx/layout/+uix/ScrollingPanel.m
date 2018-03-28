@@ -165,11 +165,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Set
             sliders = obj.VerticalSliders;
-            heights = obj.Heights_;
+            % heights = obj.Heights_;
             for ii = 1:numel( sliders )
-                if heights(ii) > 0
-                    sliders(ii).Value = -value(ii) - 1;
-                end
+                 % if heights(ii) > 0
+                 sliders(ii).Value = -value(ii) - 1;
+                 % end
             end
             
             % Mark as dirty
@@ -297,11 +297,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Set
             sliders = obj.HorizontalSliders;
-            widths = obj.Widths_;
+            % widths = obj.Widths_;
             for ii = 1:numel( sliders )
-                if widths(ii) > 0
-                    sliders(ii).Value = value(ii);
-                end
+                 % if widths(ii) > 0
+                 sliders(ii).Value = value(ii);
+                 % end
             end
             
             % Mark as dirty
@@ -630,12 +630,35 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 delta = eventData.VerticalScrollCount * ...
                     eventData.VerticalScrollAmount * obj.VerticalSteps(sel);
                 % Scroll
-                if obj.Heights_(sel) > 0 % scroll vertically
-                    % TODO
+%                 if obj.Heights_(sel) > 0 % scroll vertically
+%                     % TODO
+%                     obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
+%                     
+%                 elseif obj.MinimumHeights_ > 0 % scroll vertically
+%                     obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
+%                     
+%                 elseif obj.Widths_(sel) > 0 % scroll horizontally
+%                     obj.HorizontalOffsets(sel) = obj.HorizontalOffsets(sel) + delta;
+%                     
+%                 elseif obj.MinimumWidths_(sel) > 0 % scroll horizontally
+%                     obj.HorizontalOffsets(sel) = obj.HorizontalOffsets(sel) + delta; 
+% 
+%                 end
+                
+                % Get sliders
+                vSlider = obj.VerticalSliders(sel);
+                hSlider = obj.HorizontalSliders(sel);
+                
+                % If vSlider enable is active, then scroll vertically
+                if strcmp(vSlider.Enable, 'on')
                     obj.VerticalOffsets(sel) = obj.VerticalOffsets(sel) + delta;
-                elseif obj.Widths_(sel) > 0 % scroll horizontally
+                    
+                % Else check if there's a horizontal slider and scroll that
+                elseif strcmp(hSlider.Enable, 'on')
                     obj.HorizontalOffsets(sel) = obj.HorizontalOffsets(sel) + delta;
+                    
                 end
+                       
                 % Raise event
                 notify( obj, 'Scrolled' )
             end
