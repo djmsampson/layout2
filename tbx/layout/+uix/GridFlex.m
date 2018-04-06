@@ -64,7 +64,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             catch e
                 delete( obj )
                 e.throwAsCaller()
-            end           
+            end
             
         end % constructor
         

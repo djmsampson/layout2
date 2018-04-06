@@ -64,7 +64,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 delete( obj )
                 e.throwAsCaller()
             end
-                       
+            
         end % constructor
         
     end % structors

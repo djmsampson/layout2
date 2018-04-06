@@ -63,7 +63,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             catch e
                 delete( obj )
                 e.throwAsCaller()
-            end            
+            end
             
         end % constructor
         

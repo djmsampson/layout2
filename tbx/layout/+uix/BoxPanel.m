@@ -22,7 +22,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         HelpFcn % help callback
         CloseRequestFcn % close request callback
     end
-      
+    
     properties( Dependent, SetAccess = private )
         TitleHeight % title panel height [pixels]
     end
@@ -46,17 +46,13 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
     
-    properties (SetAccess = public)
-       % minimize button custom tooltip string
-       MaximizeTooltipString = 'Expand this panel';
-       MinimizeTooltipString = 'Collapse this panel';
-       % dock button custom tooltip string
-       UndockTooltipString = 'Undock this panel';
-       DockTooltipString = 'Dock this panel';
-       % help button custom tooltip string
-       HelpTooltipString = 'Get help on this panel';
-       % close button custom tooltip string
-       CloseTooltipString = 'Close this panel';
+    properties
+        MaximizeTooltipString = 'Expand this panel' % tooltip string
+        MinimizeTooltipString = 'Collapse this panel' % tooltip string
+        UndockTooltipString = 'Undock this panel' % tooltip string
+        DockTooltipString = 'Dock this panel' % tooltip string
+        HelpTooltipString = 'Get help on this panel' % tooltip string
+        CloseTooltipString = 'Close this panel' % tooltip string
     end
     
     methods
@@ -75,7 +71,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             
             % Set default colors
             obj.ForegroundColor = foregroundColor;
-                       
+            
             % Create panels and decorations
             titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', backgroundColor );
@@ -294,12 +290,13 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         end % get.TitleHeight
         
         function set.MaximizeTooltipString( obj, value )
-                       
-            % assert that value is a char array
+            
+            % Check
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''MaximizeTooltipString'' must be a char array')
+                'Property ''MaximizeTooltipString'' must be a string.' )
             
+            % Set
             obj.MaximizeTooltipString = value;
             
             % Mark as dirty
@@ -309,11 +306,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.MinimizeTooltipString( obj, value )
             
-            % assert that value is a char array
+            % Check
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''MinimizeTooltipString'' must be a char array')
+                'Property ''MinimizeTooltipString'' must be a string.' )
             
+            % Set
             obj.MinimizeTooltipString = value;
             
             % Mark as dirty
@@ -323,11 +321,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.UndockTooltipString( obj, value )
             
-            % assert that value is a char array
+            % Check
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''UndockTooltipString'' must be a char array')
+                'Property ''UndockTooltipString'' must be a string.' )
             
+            % Set
             obj.UndockTooltipString = value;
             
             % Mark as dirty
@@ -337,11 +336,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.DockTooltipString( obj, value )
             
-            % assert that value is a char array
+            % Check
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''DockTooltipString'' must be a char array')
+                'Property ''DockTooltipString'' must be a string.' )
             
+            % Set
             obj.DockTooltipString = value;
             
             % Mark as dirty
@@ -351,11 +351,12 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.HelpTooltipString( obj, value )
             
-            % assert that value is a char array
+            % Check
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''HelpTooltipString'' must be a char array')
+                'Property ''HelpTooltipString'' must be a string.' )
             
+            % Set
             obj.HelpTooltipString = value;
             
             % Mark as dirty
@@ -368,7 +369,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % assert that value is a char array
             assert( ischar( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''CloseTooltipString'' must be a char array')
+                'Property ''CloseTooltipString'' must be a string.' )
             
             obj.CloseTooltipString = value;
             
