@@ -9,7 +9,6 @@ classdef Container < handle
     
     properties( Dependent, Access = public )
         Contents % contents in layout order
-        RedrawEnabled % redraw enabled or disabled
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -27,7 +26,6 @@ classdef Container < handle
     
     properties( Access = private )
         Dirty_ = false % backing for Dirty
-        RedrawEnabled_ = true % backing for RedrawEnabled
         FigureObserver % observer
         FigureListener % listener
         ChildObserver % observer
@@ -121,38 +119,6 @@ classdef Container < handle
             
         end % set.Padding
         
-        function value = get.RedrawEnabled( obj )
-            
-            if obj.RedrawEnabled_
-                value = 'on';
-            else
-                value = 'off';
-            end
-            
-        end % get.RedrawEnabled
-        
-        function set.RedrawEnabled( obj, value )
-            
-            % Check
-            assert( ischar( value ), 'uix:InvalidPropertyValue', ...
-                'Property ''RedrawEnabled'' must be ''on'' or ''off''.' )
-            
-            % Set
-            switch value
-                case 'on'
-                    obj.RedrawEnabled_ = true;
-                    if obj.Dirty_
-                        obj.Dirty = true;
-                    end
-                case 'off'
-                    obj.RedrawEnabled_ = false;
-                otherwise
-                    error( 'uix:InvalidPropertyValue', ...
-                        'Property ''RedrawEnabled'' must be ''on'' or ''off''.' )
-            end
-            
-        end % set.RedrawEnabled
-        
         function value = get.Dirty( obj )
             
             value = obj.Dirty_;
@@ -162,7 +128,7 @@ classdef Container < handle
         function set.Dirty( obj, value )
             
             if value
-                if obj.RedrawEnabled_ && obj.isDrawable() % drawable
+                if obj.isDrawable() % drawable
                     obj.redraw() % redraw now
                 else % not drawable
                     obj.Dirty_ = true; % flag for future redraw
