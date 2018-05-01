@@ -1,4 +1,4 @@
-classdef Divider < matlab.mixin.SetGet
+classdef ( Hidden ) Divider < matlab.mixin.SetGet
     %uix.Divider  Draggable divider
     %
     %  d = uix.Divider() creates a divider.
