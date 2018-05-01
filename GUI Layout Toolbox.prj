@@ -24,7 +24,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.3</item>
+      <item>9.4</item>
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
@@ -49,6 +49,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
 %
 % Exclude all TEST_REQUIREMENTS.xml
 **/TEST_REQUIREMENTS.xml</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples />
     <param.demosxml />
     <param.apps />
@@ -57,11 +58,20 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     <param.getting.started.guide />
     <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.release.start>R2014b</param.release.start>
+    <param.release.end>latest</param.release.end>
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
     <unset>
       <param.email />
       <param.company />
       <param.output />
       <param.platforms />
+      <param.exclude.pcodedmfiles />
       <param.examples />
       <param.demosxml />
       <param.apps />
@@ -69,6 +79,12 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
       <param.getting.started.guide />
       <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
     </unset>
     <fileset.rootdir>
       <file>${PROJECT_ROOT}\tbx</file>
@@ -85,10 +101,11 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2017b</root>
+      <root>C:\Program Files\MATLAB\R2018a</root>
       <toolboxes>
         <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
         <toolbox name="embeddedcoder" />
         <toolbox name="gpucoder" />
       </toolboxes>
@@ -101,6 +118,11 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
       </toolbox>
       <toolbox>
         <embeddedcoder>
