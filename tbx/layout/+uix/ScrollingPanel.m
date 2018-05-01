@@ -620,7 +620,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 % Check that pointer is over panel
                 if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
                         cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end
-                % Compute delta
                 % Scroll
                 if strcmp( obj.VerticalSliders(sel).Enable, 'on' ) % scroll vertically
                     delta = eventData.VerticalScrollCount * ...
