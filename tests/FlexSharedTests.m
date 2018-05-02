@@ -38,9 +38,14 @@ classdef FlexSharedTests < ContainerSharedTests
             drawnow;
             % [SWITCH] Find the docked figure origin
             dockedFigureDetection = 1;
+            dirtyWindow = false;      % flag for if window size has changed
             % 1. The hard way, look all over the screens to find the figure
             % 2. Undocumented java feature, faster and cleaner, might break
             %    at anytime. Further, will break if Windows Screen Zoom
+            % 3. Undocumented java to get multi-monitor positions and run
+            %    same grid search as Method 1
+            % 4. Brute force method which forces MATLAB window to monitor 1
+            %    and to maximise
             switch dockedFigureDetection
                 case 1
                     fig.WindowButtonMotionFcn = @fakeCallback;
@@ -79,7 +84,89 @@ classdef FlexSharedTests < ContainerSharedTests
                     frameLocation = javaFrame.getContainerLocation();
                     % Java indexes from top left, MATLAB from Bottom left
                     figureLeftBottom = [frameLocation.x, root.ScreenSize(4) - fig.Position(4) - frameLocation.y];
-            end
+                case 3
+                    % get number of monitors
+                    jMonitors = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+                    for i = 1:numel(jMonitors)
+                        fig.WindowButtonMotionFcn = @fakeCallback;
+                        % Scour the screens
+                        steps = 10;
+                        mousePosition = [0 0];
+                        foundFigure = false;
+                        % Java to retrieve coordinates for each monitor for grid search
+                        monitorConfig = jMonitors(i).getConfigurations;
+                        monitorBounds = monitorConfig(1).getBounds;
+                        screenPosition = [monitorBounds.getX, monitorBounds.getY, ...
+                            monitorBounds.getWidth, monitorBounds.getHeight];
+                        % Setup grid for search
+                        [X,Y] = meshgrid(...
+                            linspace( screenPosition(1), screenPosition(1)+screenPosition(3), steps ),...
+                            linspace( screenPosition(2), screenPosition(2)+screenPosition(4), steps ) );
+                        for j=1:numel(X)
+                            % Move and click
+                            testcase.mouseMove( root, [X(j) Y(j)], false );
+                            % Check if you hit the figure
+                            if ~isequal( mousePosition, [0 0] )
+                                % Move by a pixel, to lock down
+                                testcase.mouseMove( root, [X(j) Y(j)], false );
+                                % Grab the info
+                                absolutePosition = root.PointerLocation;
+                                relativePosition = fig.CurrentPoint;
+                                figureLeftBottom = absolutePosition - relativePosition;
+                                fig.WindowButtonMotionFcn = [];
+                                foundFigure = true;
+                                break;
+                            end
+                        end
+                        if foundFigure
+                            break;
+                        end
+                    end
+                case 4
+                    % get number of monitors and screen size of screen 1
+                    jMonitors = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+                    monitorConfig = jMonitors(1).getConfigurations;
+                    monitorBounds = monitorConfig(1).getBounds;
+                    screenPosition = [monitorBounds.getX, monitorBounds.getY, ...
+                        monitorBounds.getWidth, monitorBounds.getHeight];
+                    
+                    % set window flag as having changed
+                    dirtyWindow = true;
+                    
+                    % get main window object
+                    desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
+                    desktopMainWindow = desktop.getMainFrame;
+                    
+                    % store original state
+                    origState = desktopMainWindow.getBounds;
+                    
+                    % force main window to monitor 1 and maximised
+                    desktopMainWindow.setBounds( java.awt.Rectangle( screenPosition(1), screenPosition(2), 100, 100 ) );
+                    desktopMainWindow.setMaximized( 1 );
+                    
+                    fig.WindowButtonMotionFcn = @fakeCallback;
+                    % Scour the screens
+                    steps = 10;
+                    mousePosition = [0 0];
+                    [X,Y] = meshgrid(...
+                        linspace( screenPosition(1), screenPosition(1)+screenPosition(3), steps ),...
+                        linspace( screenPosition(2), screenPosition(2)+screenPosition(4), steps ) );
+                    for i=1:numel(X)
+                        % Move and click
+                        testcase.mouseMove( root, [X(i) Y(i)], false );
+                        % Check if you hit the figure
+                        if ~isequal( mousePosition, [0 0] )
+                            % Move by a pixel, to lock down
+                            testcase.mouseMove( root, [X(i) Y(i)], false );
+                            % Grab the info
+                            absolutePosition = root.PointerLocation;
+                            relativePosition = fig.CurrentPoint;
+                            figureLeftBottom = absolutePosition - relativePosition;
+                            fig.WindowButtonMotionFcn = [];
+                            break;
+                        end
+                    end
+            end % end switch
             % 1. Nested
             function fakeCallback( src, ~ )
                 mousePosition = src.CurrentPoint;
@@ -97,6 +184,11 @@ classdef FlexSharedTests < ContainerSharedTests
                 testcase.verifyThat( @()fig.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
                     sprintf( 'Wrong pointer in divider %d, placed at [%d,%d]', i, midDivider ) );
             end
+            % resize window back to original state if dirty
+            if dirtyWindow
+                desktopMainWindow.setBounds( origState );
+            end
+            
         end
         function testMousePointerUpdateOnFlexChange( testcase, ContainerType )
             % g1367326: Add test for g1346921: Mouse pointer gets confused
@@ -253,7 +345,7 @@ classdef FlexSharedTests < ContainerSharedTests
             end
         end
         function decision = cannotRunInteractiveTests( testcase )
-            decision = true; % TODO strcmp( testcase.parentStr, '[]' ) || testcase.isjenkins() || testcase.isBaT();
+            decision = strcmp( testcase.parentStr, '[]' ) || testcase.isjenkins() || testcase.isBaT();
         end
     end % helpers
     
