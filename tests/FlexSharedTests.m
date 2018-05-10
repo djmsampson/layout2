@@ -37,7 +37,7 @@ classdef FlexSharedTests < ContainerSharedTests
             dividers = findobj( children, 'Tag', 'uix.Divider', 'Visible', 'on' );
             drawnow;
             % [SWITCH] Find the docked figure origin
-            dockedFigureDetection = 1;
+            dockedFigureDetection = 3;
             dirtyWindow = false;      % flag for if window size has changed
             % 1. The hard way, look all over the screens to find the figure
             % 2. Undocumented java feature, faster and cleaner, might break
@@ -89,6 +89,7 @@ classdef FlexSharedTests < ContainerSharedTests
                     jMonitors = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
                     for i = 1:numel(jMonitors)
                         fig.WindowButtonMotionFcn = @fakeCallback;
+                        mouse = java.awt.Robot;
                         % Scour the screens
                         steps = 10;
                         mousePosition = [0 0];
@@ -104,11 +105,13 @@ classdef FlexSharedTests < ContainerSharedTests
                             linspace( screenPosition(2), screenPosition(2)+screenPosition(4), steps ) );
                         for j=1:numel(X)
                             % Move and click
-                            testcase.mouseMove( root, [X(j) Y(j)], false );
+                            % testcase.mouseMove( root, [X(j) Y(j)], false );
+                            mouse.mouseMove( X(j), Y(j) );
+                            pause(0.001);
                             % Check if you hit the figure
                             if ~isequal( mousePosition, [0 0] )
                                 % Move by a pixel, to lock down
-                                testcase.mouseMove( root, [X(j) Y(j)], false );
+                                mouse.mouseMove( X(j), Y(j) );
                                 % Grab the info
                                 absolutePosition = root.PointerLocation;
                                 relativePosition = fig.CurrentPoint;
@@ -129,6 +132,7 @@ classdef FlexSharedTests < ContainerSharedTests
                     monitorBounds = monitorConfig(1).getBounds;
                     screenPosition = [monitorBounds.getX, monitorBounds.getY, ...
                         monitorBounds.getWidth, monitorBounds.getHeight];
+                    mouse = java.awt.Robot;
                     
                     % set window flag as having changed
                     dirtyWindow = true;
@@ -153,11 +157,15 @@ classdef FlexSharedTests < ContainerSharedTests
                         linspace( screenPosition(2), screenPosition(2)+screenPosition(4), steps ) );
                     for i=1:numel(X)
                         % Move and click
-                        testcase.mouseMove( root, [X(i) Y(i)], false );
+                        % testcase.mouseMove( root, [X(i) Y(i)], false );
+                        mouse.mouseMove( X(i), Y(i) );
+                        pause(0.001);
+                        
                         % Check if you hit the figure
                         if ~isequal( mousePosition, [0 0] )
                             % Move by a pixel, to lock down
-                            testcase.mouseMove( root, [X(i) Y(i)], false );
+                            % testcase.mouseMove( root, [X(i) Y(i)], false );
+                            mouse.mouseMove( X(i), Y(i) );
                             % Grab the info
                             absolutePosition = root.PointerLocation;
                             relativePosition = fig.CurrentPoint;
