@@ -15,34 +15,30 @@ classdef FlexSharedTests < ContainerSharedTests
             if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
             
             % Build the flex
-            flex = testcase.hCreateObj( ContainerType );
-            fig = flex.Parent;
-            fig.WindowStyle = 'docked';
-            figure( fig )
+            c = testcase.hCreateObj( ContainerType );
+            f = c.Parent;
+            f.WindowStyle = 'docked';
+            figure( f ) % bring to front
             for ii = 1:9
-                uicontrol( 'Parent', flex );
+                uicontrol( 'Parent', c );
             end
-            flex.Padding = 10;
-            flex.Spacing = 10;
+            c.Padding = 10;
+            c.Spacing = 10;
             % In case of grid, make sure you have a grid
-            if isa( flex, 'uiextras.GridFlex' )
-                flex.Widths = [-1 -1 -1];
+            if isa( c, 'uiextras.GridFlex' )
+                c.Widths = [-1 -1 -1];
             end
             % Find some dividers
-            children = hgGetTrueChildren( flex );
-            dividers = findobj( children, 'Tag', 'uix.Divider', 'Visible', 'on' );
-            drawnow;
-            % Find figure origin
-            figOrigin = getFigureOrigin( fig );
+            d = findobj( hgGetTrueChildren( c ), 'Tag', 'uix.Divider', 'Visible', 'on' );
             % Move to lower bottom
-            moveMouseTo( figOrigin )
+            figureOrigin = getFigureOrigin( f );
+            moveMouseTo( figureOrigin )
             % Check you start with an arrow pointer
-            testcase.verifyEqual( fig.Pointer, 'arrow', 'Pointer should be arrow to start with' )
+            testcase.verifyEqual( f.Pointer, 'arrow', 'Pointer should be arrow to start with' )
             % Move over dividers and make sure you get the right ones
-            set( dividers, 'Units', 'pixel' );
-            for ii = 1:numel( dividers )
-                moveMouseTo( figOrigin + getpixelcenter( dividers(ii), true ) )
-                testcase.verifyThat( @()fig.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
+            for ii = 1:numel( d )
+                moveMouseTo( figureOrigin + getpixelcenter( d(ii), true ) )
+                testcase.verifyThat( @()f.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
                     sprintf( 'Wrong pointer in divider %d', ii ) );
             end
             
@@ -56,65 +52,65 @@ classdef FlexSharedTests < ContainerSharedTests
             if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
             
             % Build
-            fig = figure;
+            f = figure;
             % Layout is component based
             switch ContainerType
                 case 'uiextras.VBoxFlex'
-                    testedContainer = 'VBoxFlex';
-                    layoutContainer = 'HBox';
+                    childType = 'VBoxFlex';
+                    parentType = 'HBox';
                 case 'uiextras.HBoxFlex'
-                    testedContainer = 'HBoxFlex';
-                    layoutContainer = 'VBox';
+                    childType = 'HBoxFlex';
+                    parentType = 'VBox';
                 case 'uiextras.GridFlex'
-                    testedContainer = 'GridFlex';
-                    layoutContainer = 'Grid';
+                    childType = 'GridFlex';
+                    parentType = 'Grid';
             end
-            layout = uiextras.(layoutContainer)( 'Parent', fig );
+            p = uiextras.(parentType)( 'Parent', f );
             nChildren = 9;
-            h1 = uiextras.(testedContainer)( 'Parent', layout, 'Spacing', 10 );
-            h1Buttons = gobjects( 1, nChildren );
+            c1 = uiextras.(childType)( 'Parent', p, 'Spacing', 10 );
+            b1 = gobjects( 1, nChildren );
             for ii = 1:nChildren
-                h1Buttons(ii) = uicontrol( 'Parent', h1 );
+                b1(ii) = uicontrol( 'Parent', c1 );
             end
-            h2 = uiextras.(testedContainer)( 'Parent', layout, 'Spacing', 10 );
-            h2Buttons = gobjects( 1, nChildren );
+            c2 = uiextras.(childType)( 'Parent', p, 'Spacing', 10 );
+            b2 = gobjects( 1, nChildren );
             for ii = 1:nChildren
-                h2Buttons(ii) = uicontrol( 'Parent', h2 );
+                b2(ii) = uicontrol( 'Parent', c2 );
             end
-            if strcmp( testedContainer, 'GridFlex' )
-                layout.Widths = -1;
-                h1.Widths = [-1 -1 -1];
-                h2.Widths = [-1 -1 -1];
+            if strcmp( childType, 'GridFlex' )
+                p.Widths = -1;
+                c1.Widths = [-1 -1 -1];
+                c2.Widths = [-1 -1 -1];
             end
             % Find the dividers
-            h1Dividers = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            h2Dividers = findobj( hgGetTrueChildren( h2 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
+            d1 = findobj( hgGetTrueChildren( c1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
+            d2 = findobj( hgGetTrueChildren( c2 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
             % Mark test elements
-            h1Buttons(1).BackgroundColor = 'r';
-            h2Buttons(2).BackgroundColor = 'g';
-            h1Dividers(end).BackgroundColor = 'c';
-            h2Dividers(end).BackgroundColor = 'm';
+            b1(1).BackgroundColor = 'r';
+            b2(2).BackgroundColor = 'g';
+            d1(end).BackgroundColor = 'c';
+            d2(end).BackgroundColor = 'm';
             % Get figure origin
-            figOrigin = getFigureOrigin( fig );
+            figureOrigin = getFigureOrigin( f );
             % Move over a button
-            moveMouseTo( figOrigin + getpixelcenter( h1Buttons(1), true ) )
-            testcase.verifyEqual( fig.Pointer, 'arrow' );
+            moveMouseTo( figureOrigin + getpixelcenter( b1(1), true ) )
+            testcase.verifyEqual( f.Pointer, 'arrow' );
             % Move over a divider
-            moveMouseTo( figOrigin + getpixelcenter( h1Dividers(end), true ) )
-            testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)' );
+            moveMouseTo( figureOrigin + getpixelcenter( d1(end), true ) )
+            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
             % Move to the matching divider of the other flex
-            moveMouseTo( figOrigin + getpixelcenter( h2Dividers(end), true ) )
-            testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)' );
+            moveMouseTo( figureOrigin + getpixelcenter( d2(end), true ) )
+            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
             % Move back to a button
-            moveMouseTo( figOrigin + getpixelcenter( h2Buttons(2), true ) )
-            testcase.verifyMatches( fig.Pointer, 'arrow' );
+            moveMouseTo( figureOrigin + getpixelcenter( b2(2), true ) )
+            testcase.verifyMatches( f.Pointer, 'arrow' );
             % And the other way around
-            moveMouseTo( figOrigin + getpixelcenter( h2Dividers(end), true ) )
-            testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)' );
-            moveMouseTo( figOrigin + getpixelcenter( h1Dividers(end), true ) )
-            testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)' );
-            moveMouseTo( figOrigin + getpixelcenter( h1Buttons(1), true ) )
-            testcase.verifyEqual( fig.Pointer, 'arrow' );
+            moveMouseTo( figureOrigin + getpixelcenter( d2(end), true ) )
+            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
+            moveMouseTo( figureOrigin + getpixelcenter( d1(end), true ) )
+            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
+            moveMouseTo( figureOrigin + getpixelcenter( b1(1), true ) )
+            testcase.verifyEqual( f.Pointer, 'arrow' );
             
         end % testMousePointerUpdateOnFlexChange
         
@@ -127,27 +123,27 @@ classdef FlexSharedTests < ContainerSharedTests
             temp = strsplit( ContainerType, '.' );
             ComponentName = temp{2};
             % Build
-            fig = figure;
+            f = figure;
             nChildren = 4;
-            h1 = uiextras.(ComponentName)( 'Parent', fig, 'Spacing', 10 );
-            h1Buttons = gobjects( 1, nChildren );
+            h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
+            b1 = gobjects( 1, nChildren );
             for ii = 1:nChildren
-                h1Buttons(ii) = uicontrol( 'Parent', h1 );
+                b1(ii) = uicontrol( 'Parent', h1 );
             end
             % Find the dividers
-            h1Dividers = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
+            d1 = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
             % Where will be the divider?
-            figOrigin = getFigureOrigin( fig );
-            dividerPosition = figOrigin + getpixelcenter( h1Dividers(1), true );
+            figureOrigin = getFigureOrigin( f );
+            dividerPosition = figureOrigin + getpixelcenter( d1(1), true );
             % Unparent
             h1.Parent = [];
             % Place the mouse
             moveMouseTo( dividerPosition )
-            testcase.verifyEqual( fig.Pointer, 'arrow' );
+            testcase.verifyEqual( f.Pointer, 'arrow' );
             % Parent
-            h1.Parent = fig;
+            h1.Parent = f;
             % Bring figure back into focus
-            figure(fig);
+            figure(f)
             % Click and check pointer
             import java.awt.Robot;
             import java.awt.event.*;
@@ -158,7 +154,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % Still sometimes needs a pose for the cursor change to take
             % effect
             pause( 0.01 )
-            testcase.verifyMatches( fig.Pointer, '(left|right|top|bottom)' );
+            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
             Robot().mouseRelease( InputEvent.BUTTON1_MASK );
             drawnow
             
@@ -201,7 +197,7 @@ switch f.WindowStyle
         
         t = 0.1; % pause during screen sweep
         
-        figure( f ); % bring to front
+        figure( f ) % bring to front
         li = event.listener( f, 'WindowMouseMotion', @onMouseMotion ); %#ok<NASGU>
         r = groot(); % graphics root
         m = r.MonitorPositions; % get monitor positions
@@ -240,7 +236,7 @@ c = p(1:2) + p(3:4)/2;
 
 end % getpixelcenter
 
-function moveMouseTo( newPosition )
+function moveMouseTo( new )
 %moveMouseTo  Move mouse to new position
 %
 %  moveMouseTo(p) moves the mouse to the location p.
@@ -249,12 +245,12 @@ n = 5; % number of steps
 t = 0.1; % pause during move
 
 r = groot();
-oldPosition = r.PointerLocation;
-x = linspace( oldPosition(1), newPosition(1), n );
-y = linspace( oldPosition(2), newPosition(2), n );
+old = r.PointerLocation;
+x = linspace( old(1), new(1), n );
+y = linspace( old(2), new(2), n );
 for ii = 2:n
     r.PointerLocation = [x(ii) y(ii)];
-    pause( t ); % wait
+    pause( t ) % wait
 end
 
 end % moveMouseTo
