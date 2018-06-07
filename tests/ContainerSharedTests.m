@@ -224,6 +224,10 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 % Auto success on unparented
                 return;
             end
+            if isprop( obj, 'ButtonSize' )
+                % Ensure that axes aren't tiny
+                obj.ButtonSize = [200 200];
+            end
             ax = axes( 'Parent', obj );
             h = plot( ax, 1:10, rand(1,10) );
             dcm = datacursormode( obj.Parent );
