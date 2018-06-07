@@ -215,6 +215,6 @@ function tf = iscontent( o )
 %  did prior to R2016a.
 
 tf = isa( o, 'matlab.graphics.internal.GraphicsBaseFunctions' ) &&...
-     isprop( o, 'Position' );
+     isprop( o, 'Position' ) && isprop( o, 'Units' );
 
 end % iscontent
