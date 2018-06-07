@@ -31,7 +31,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % Find some dividers
             d = findobj( hgGetTrueChildren( c ), 'Tag', 'uix.Divider', 'Visible', 'on' );
             % Move to lower bottom
-            figureOrigin = getFigureOrigin( f )
+            figureOrigin = getFigureOrigin( f );
             moveMouseTo( figureOrigin )
             % Check you start with an arrow pointer
             testcase.verifyEqual( f.Pointer, 'arrow', 'Pointer should be arrow to start with' )
