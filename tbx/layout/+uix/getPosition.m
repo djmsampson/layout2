@@ -27,11 +27,7 @@ else
 end
 
 % Get units
-if isprop( o, 'Units' )
-    v = o.Units;
-else
-    v = 'pixels';
-end
+v = o.Units;
 
 % Convert
 if strcmp( u, v ) % trivial

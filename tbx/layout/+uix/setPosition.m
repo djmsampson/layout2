@@ -10,8 +10,11 @@ function setPosition( o, p, u )
 %  Copyright 2009-2016 The MathWorks, Inc.
 %  $Revision$ $Date$
 
+% Set units
 o.Units = u;
-if isa( o, 'matlab.graphics.axis.Axes' )
+
+% Set position
+if isprop( o, 'ActivePositionProperty' )
     switch o.ActivePositionProperty
         case 'position'
             o.Position = p;
