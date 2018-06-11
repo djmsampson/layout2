@@ -134,6 +134,15 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.3">
+        <ul>
+            <li>Released 30 June 2018</li>
+            <li>Updated for compatibility with R2018b prerelease</li>
+            <li>Fixed G1804440 "Flex containers position axes incorrectly when ActivePositionProperty is outerposition"</li>
+            <li>Updated documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.2">
         <ul>
             <li>Released 1 May 2018</li>
