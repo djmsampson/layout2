@@ -137,7 +137,9 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
                 jc = loc + 1;
                 divider = obj.ColumnDividers(loc);
                 contents = obj.Contents_;
-                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                ip = uix.getPosition( contents(ic), 'pixels' );
+                jp = uix.getPosition( contents(jc), 'pixels' );
+                oldPixelWidths = [ip(3); jp(3)];
                 minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
                     delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
@@ -190,7 +192,9 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
                 ic = loc;
                 jc = loc + 1;
                 contents = obj.Contents_;
-                oldPixelWidths = [contents(ic).Position(3); contents(jc).Position(3)];
+                ip = uix.getPosition( contents(ic), 'pixels' );
+                jp = uix.getPosition( contents(jc), 'pixels' );
+                oldPixelWidths = [ip(3); jp(3)];
                 minimumWidths = obj.MinimumWidths_(iw:jw,:);
                 if delta < 0 % limit to minimum distance from left neighbor
                     delta = max( delta, minimumWidths(1) - oldPixelWidths(1) );
