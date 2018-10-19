@@ -472,9 +472,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
-            obj.MinimumWidths_(end+1,:) = -1;
+            obj.MinimumWidths_(end+1,:) = 1;
             obj.Heights_(end+1,:) = -1;
-            obj.MinimumHeights_(end+1,:) = -1;
+            obj.MinimumHeights_(end+1,:) = 1;
             obj.VerticalSliders(end+1,:) = uicontrol( ...
                 'Internal', true, 'Parent', obj, 'Units', 'pixels', ...
                 'Style', 'slider' );
