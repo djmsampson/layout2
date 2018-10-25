@@ -1,26 +1,24 @@
-function release( mode )
+function release( varargin )
 %release  Build, test and package GUI Layout Toolbox
 %
 %  release builds, tests and packages.
 %
 %  release -verbose displays detailed information.
+%
+%  release -nodoc suppresses regeneration of the documentation.
+%
+%  release -notest suppresses rerunning of the test suite.
+%
+%  These options can be used in combination, e.g., release -nodoc -notest
 
 %  Copyright 2009-2016 The MathWorks, Inc.
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 %% Check inputs
-switch nargin
-    case 0
-        verbose = false;
-    case 1
-        if ischar( mode ) && strcmp( mode, '-verbose' )
-            verbose = true;
-        else
-            error( 'Invalid mode.' )
-        end
-    otherwise
-        narginchk( 0, 1 )
-end
+assert( all( ismember( varargin, {'-verbose','-nodoc','-notest'} ) ) )
+verbose = ismember( '-verbose', varargin );
+doc = ~ismember( '-nodoc', varargin );
+test = ~ismember( '-notest', varargin );
 
 %% Grab this directory and the current directory
 prjDir = fileparts( mfilename( 'fullpath' ) );
@@ -52,48 +50,54 @@ else
 end
 
 %% Build documentation
-fprintf( 1, 'Generating documentation...' );
-try
-    cd( fullfile( prjDir, 'docsrc' ) )
-    log = evalc( 'buildDoc' );
-    close( 'all', 'force' )
-    drawnow()
-    cd( prjDir )
-    fprintf( 1, ' OK.\n' );
-    if verbose
-        fprintf( 1, '%s', log );
+if doc
+    fprintf( 1, 'Generating documentation...' );
+    try
+        cd( fullfile( prjDir, 'docsrc' ) )
+        log = evalc( 'buildDoc' );
+        close( 'all', 'force' )
+        drawnow()
+        cd( prjDir )
+        fprintf( 1, ' OK.\n' );
+        if verbose
+            fprintf( 1, '%s', log );
+        end
+    catch e
+        cd( prjDir )
+        fprintf( 1, ' failed.\n' );
+        e.rethrow()
     end
-catch e
-    cd( prjDir )
-    fprintf( 1, ' failed.\n' );
-    e.rethrow()
 end
 
 %% Build examples
-fprintf( 1, 'Generating examples...' );
-try
-    cd( fullfile( prjDir, 'docsrc' ) )
-    buildDocExamples()
-    close all force
-    drawnow
-    cd( prjDir )
-    fprintf( 1, ' OK.\n' );
-catch e
-    cd( prjDir )
-    fprintf( 1, ' OK.\n' );
-    e.rethrow()
+if doc
+    fprintf( 1, 'Generating examples...' );
+    try
+        cd( fullfile( prjDir, 'docsrc' ) )
+        buildDocExamples()
+        close all force
+        drawnow
+        cd( prjDir )
+        fprintf( 1, ' OK.\n' );
+    catch e
+        cd( prjDir )
+        fprintf( 1, ' OK.\n' );
+        e.rethrow()
+    end
 end
 
 %% Run tests
-fprintf( 1, 'Running tests...' );
-cd( fullfile( prjDir, 'tests' ) )
-[log, results] = evalc( 'runtests' );
-cd( currentDir )
-if ~any( [results.Failed] )
-    fprintf( 1, ' OK.\n' );
-else
-    fprintf( 1, ' failed.\n' );
-    error( '%s', log )
+if test
+    fprintf( 1, 'Running tests...' );
+    cd( fullfile( prjDir, 'tests' ) )
+    [log, results] = evalc( 'runtests' );
+    cd( currentDir )
+    if ~any( [results.Failed] )
+        fprintf( 1, ' OK.\n' );
+    else
+        fprintf( 1, ' failed.\n' );
+        error( '%s', log )
+    end
 end
 
 %% Check version
