@@ -11,7 +11,7 @@ function setPosition( o, p, u )
 %  $Revision$ $Date$
 
 % Set units
-if ~isempty( findprop( u, 'Units' ) )
+if ~isempty( findprop( o, 'Units' ) )
     o.Units = u;
 else
     assert( strcmp( u, 'pixels' ), 'uix:InvalidOperation', ...
