@@ -11,10 +11,15 @@ function setPosition( o, p, u )
 %  $Revision$ $Date$
 
 % Set units
-o.Units = u;
+if ~isempty( findprop( u, 'Units' ) )
+    o.Units = u;
+else
+    assert( strcmp( u, 'pixels' ), 'uix:InvalidOperation', ...
+        'Objects without property ''Units'' have units of ''pixels''.' )
+end
 
 % Set position
-if isprop( o, 'ActivePositionProperty' )
+if ~isempty( findprop( o, 'ActivePositionProperty' ) )
     switch o.ActivePositionProperty
         case 'position'
             o.Position = p;

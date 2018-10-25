@@ -11,7 +11,7 @@ function p = getPosition( o, u )
 %  $Revision: 1435 $ $Date: 2016-11-17 17:50:34 +0000 (Thu, 17 Nov 2016) $
 
 % Get position
-if isprop( o, 'ActivePositionProperty' )
+if ~isempty( findprop( o, 'ActivePositionProperty' ) )
     switch o.ActivePositionProperty
         case 'position'
             q = o.Position;
@@ -27,7 +27,11 @@ else
 end
 
 % Get units
-v = o.Units;
+if ~isempty( findprop( o, 'Units' ) )
+    v = o.Units;
+else
+    v = 'pixels';
+end
 
 % Convert
 if strcmp( u, v ) % trivial
