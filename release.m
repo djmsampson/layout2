@@ -7,6 +7,8 @@ function release( varargin )
 %
 %  release -nodoc suppresses regeneration of the documentation.
 %
+%  release -nodemo suppresses regeneration of the documentation.
+%
 %  release -notest suppresses rerunning of the test suite.
 %
 %  These options can be used in combination, e.g., release -nodoc -notest
@@ -15,9 +17,10 @@ function release( varargin )
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 %% Check inputs
-assert( all( ismember( varargin, {'-verbose','-nodoc','-notest'} ) ) )
+assert( all( ismember( varargin, {'-verbose','-nodoc','-nodemo','-notest'} ) ) )
 verbose = ismember( '-verbose', varargin );
 doc = ~ismember( '-nodoc', varargin );
+demo = doc && ~ismember( '-nodemo', varargin );
 test = ~ismember( '-notest', varargin );
 
 %% Grab this directory and the current directory
@@ -70,7 +73,7 @@ if doc
 end
 
 %% Build examples
-if doc
+if demo
     fprintf( 1, 'Generating examples...' );
     try
         cd( fullfile( prjDir, 'docsrc' ) )
