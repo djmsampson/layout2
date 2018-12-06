@@ -616,7 +616,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 % Get pointer position and panel bounds
                 pp = getpixelposition( obj, true );
                 f = ancestor( obj, 'figure' );
-                cp = f.CurrentPoint;
+                cpu = f.CurrentPoint; % figure Units
+                cpwhu = [cpu 0 0]; % [x y] to [x y w h] for hgconvertunits
+                cpwh = hgconvertunits( f, cpwhu, f.Units, 'pixels', obj ); % pixels
+                cp = cpwh(1:2); % [x y w h] to [x y]
+                
                 % Check that pointer is over panel
                 if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
                         cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end

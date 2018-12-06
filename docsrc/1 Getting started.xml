@@ -134,6 +134,14 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.4">
+        <ul>
+            <li>Released 25 December 2018</li>
+            <li>Fixed G1910801 "Scrolling panel does not work in figure with Units other than 'pixels'"</li>
+            <li>Updated documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.3">
         <ul>
             <li>Released 25 October 2018</li>
