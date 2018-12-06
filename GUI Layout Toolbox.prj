@@ -1,8 +1,8 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
   <configuration build-checksum="3000730109" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
-    <param.authnamewatermark>David Sampson &amp; Ben Tordoff</param.authnamewatermark>
-    <param.email>david.sampson@mathworks.co.uk</param.email>
+    <param.authnamewatermark>David Sampson</param.authnamewatermark>
+    <param.email>dsampson@mathworks.com</param.email>
     <param.company>MathWorks</param.company>
     <param.summary>Layout manager for MATLAB graphical user interfaces</param.summary>
     <param.description>This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully.  The classes supplied can be used in combination to produce virtually any user interface layout.
@@ -17,7 +17,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
 
 This version is for MATLAB R2014b and later.  For R2014a and earlier, see [version 1](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox).</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.3.3</param.version>
+    <param.version>2.3.4</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -75,8 +75,6 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
-      <param.email />
-      <param.company />
       <param.output />
       <param.platforms />
       <param.exclude.pcodedmfiles />
