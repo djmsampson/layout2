@@ -158,6 +158,9 @@ classdef Container < handle
         function onChildAdded( obj, ~, eventData )
             %onChildAdded  Event handler
             
+            % Do nothing if child is already added
+            if any( eventData.Child == obj.Contents_ ), return, end
+            
             % Call template method
             obj.addChild( eventData.Child )
             
@@ -168,6 +171,9 @@ classdef Container < handle
             
             % Do nothing if container is being deleted
             if strcmp( obj.BeingDeleted, 'on' ), return, end
+            
+            % Do nothing if removal is internal and temporary
+            if isInternalRemoval( eventData.Child ), return, end
             
             % Call template method
             obj.removeChild( eventData.Child )
@@ -295,3 +301,17 @@ classdef Container < handle
     end % template methods
     
 end % classdef
+
+function tf = isInternalRemoval( child )
+%isInternalRemoval  Test for internal, temporary removal
+
+if ~isa( child, 'matlab.graphics.axis.Axes' ) % only certain types
+    tf = false;
+elseif verLessThan( 'MATLAB', '9.5' ) % only certain versions
+    tf = false;
+else % check stack
+    s = dbstack();
+    tf = any( strcmp( 'ScribeStackManager.createLayer', {s.name} ) );
+end
+
+end % isInternalRemoval
