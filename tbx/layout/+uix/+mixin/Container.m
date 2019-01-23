@@ -158,8 +158,8 @@ classdef Container < handle
         function onChildAdded( obj, ~, eventData )
             %onChildAdded  Event handler
             
-            % Do nothing if child is already added
-            if any( eventData.Child == obj.Contents_ ), return, end
+            % Do nothing if add is internal tree surgery
+            if isTreeSurgery( eventData.Child ), return, end
             
             % Call template method
             obj.addChild( eventData.Child )
@@ -172,8 +172,8 @@ classdef Container < handle
             % Do nothing if container is being deleted
             if strcmp( obj.BeingDeleted, 'on' ), return, end
             
-            % Do nothing if removal is internal and temporary
-            if isInternalRemoval( eventData.Child ), return, end
+            % Do nothing if remove is internal tree surgery
+            if isTreeSurgery( eventData.Child ), return, end
             
             % Call template method
             obj.removeChild( eventData.Child )
@@ -302,8 +302,11 @@ classdef Container < handle
     
 end % classdef
 
-function tf = isInternalRemoval( child )
-%isInternalRemoval  Test for internal, temporary removal
+function tf = isTreeSurgery( child )
+%isTreeSurgery  Test for internal tree surgery
+%
+%  Certain internal operations perform tree surgery, removing a child
+%  temporarily and adding it back under an additional node.
 
 if ~isa( child, 'matlab.graphics.axis.Axes' ) % only certain types
     tf = false;
@@ -314,4 +317,4 @@ else % check stack
     tf = any( strcmp( 'ScribeStackManager.createLayer', {s.name} ) );
 end
 
-end % isInternalRemoval
+end % isTreeSurgery
