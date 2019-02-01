@@ -136,8 +136,9 @@ package "uiextras" provides support for legacy property values.</p>
     
     <inlinesubsection name="Version 2.3.4">
         <ul>
-            <li>Released 25 December 2018</li>
+            <li>Released 31 January 2019</li>
             <li>Fixed G1910801 "Scrolling panel does not work in figure with Units other than 'pixels'"</li>
+            <li>Fixed G1911845 "Unexpected reordering of contents as axes toolbar causes axes to be removed and readded"</li>
             <li>Updated documentation</li>
         </ul>
     </inlinesubsection> 
