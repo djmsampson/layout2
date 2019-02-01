@@ -243,6 +243,23 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual( positionBefore, positionAfter,...
                 'Data cursor messed the layout' )
         end
+        
+        function testAxesToolbarReordering( testCase, ContainerType )
+            % test for g1911845 where axes toolbar causes axes to be
+            % removed and readded, leading to unexpected reordering of
+            % contents
+            obj = testCase.hCreateObj(ContainerType);
+            if isempty( obj.Parent )
+                % Auto success on unparented
+                return;
+            end
+            ax = axes( 'Parent', obj );
+            c = uicontrol( 'Parent', obj );
+            testCase.verifyEqual( obj.Contents, [ax; c] ); % initially
+            pause( 0.1 )
+            testCase.verifyEqual( obj.Contents, [ax; c] ); % finally
+        end
+        
     end
     
     methods
