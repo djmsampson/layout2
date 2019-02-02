@@ -174,7 +174,6 @@ classdef FlexSharedTests < ContainerSharedTests
         function tf = isJenkins( ~ )
             %isJenkins  True in Jenkins environment
             
-            % tf = strcmp( getenv( 'JOB_NAME' ), 'GUI-Layout-Toolbox-2' );
             tf = ~isempty( getenv( 'JENKINS_HOME' ) );
             
         end % isJenkins
