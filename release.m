@@ -19,7 +19,7 @@ function release( varargin )
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 %% Check inputs
-assert( all( ismember( varargin, {'-verbose','-nodoc','-nodemo','-notest'} ) ) )
+assert( all( ismember( varargin, {'-verbose','-nodoc','-nodemo','-notest','-nopackage'} ) ) )
 verbose = ismember( '-verbose', varargin );
 doc = ~ismember( '-nodoc', varargin );
 demo = doc && ~ismember( '-nodemo', varargin );
