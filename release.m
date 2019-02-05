@@ -31,9 +31,8 @@ prjDir = fileparts( mfilename( 'fullpath' ) );
 tbxDir = fullfile( prjDir, 'tbx' );
 currentDir = pwd;
 
-%% Check MATLAB and related tools
+%% Check MATLAB version
 assert( ~verLessThan( 'MATLAB', '8.4' ), 'MATLAB R2014b or higher is required.' )
-assert( ~isempty( ver( 'DocToolsHelp' ) ), 'DocTools is required.' )
 
 %% Check installation
 fprintf( 1, 'Checking installation...' );
@@ -57,6 +56,7 @@ end
 
 %% Build documentation
 if doc
+    assert( ~isempty( ver( 'DocToolsHelp' ) ), 'DocTools is required.' )
     fprintf( 1, 'Generating documentation...' );
     try
         cd( fullfile( prjDir, 'docsrc' ) )
