@@ -106,19 +106,19 @@ if test
     end
 end
 
-%% Check version
-fprintf( 1, 'Checking version...' );
-prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
-w = matlab.addons.toolbox.toolboxVersion( prj );
-if strcmp( w, v.Version )
-    fprintf( 1, ' OK.\n' );
-else
-    fprintf( 1, ' failed.\n' );
-    error( 'Package version %s does not match code version %s.', w, v.Version )
-end
-
-%% Package and rename
+%% Package
 if package
+    % Check version
+    fprintf( 1, 'Checking version...' );
+    prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
+    w = matlab.addons.toolbox.toolboxVersion( prj );
+    if strcmp( w, v.Version )
+        fprintf( 1, ' OK.\n' );
+    else
+        fprintf( 1, ' failed.\n' );
+        error( 'Package version %s does not match code version %s.', w, v.Version )
+    end
+    % Package and rename
     fprintf( 1, 'Packaging...' );
     try
         mltbx = fullfile( prjDir, 'releases', ['GUI Layout Toolbox ' v.Version '.mltbx'] );
@@ -128,9 +128,8 @@ if package
         fprintf( 1, ' failed.\n' );
         e.rethrow()
     end
+    % Show message
+    fprintf( 1, 'Created package %s\n', mltbx );
 end
-
-%% Show message
-fprintf( 1, 'Created package %s\n', mltbx );
 
 end % release
