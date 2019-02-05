@@ -11,6 +11,8 @@ function release( varargin )
 %
 %  release -notest suppresses rerunning of the test suite.
 %
+%  release -nopackage suppresses packaging of the toolbox.
+%
 %  These options can be used in combination, e.g., release -nodoc -notest
 
 %  Copyright 2009-2016 The MathWorks, Inc.
@@ -22,6 +24,7 @@ verbose = ismember( '-verbose', varargin );
 doc = ~ismember( '-nodoc', varargin );
 demo = doc && ~ismember( '-nodemo', varargin );
 test = ~ismember( '-notest', varargin );
+package = ~ismember( '-nopackage', varargin );
 
 %% Grab this directory and the current directory
 prjDir = fileparts( mfilename( 'fullpath' ) );
@@ -115,14 +118,16 @@ else
 end
 
 %% Package and rename
-fprintf( 1, 'Packaging...' );
-try
-    mltbx = fullfile( prjDir, 'releases', ['GUI Layout Toolbox ' v.Version '.mltbx'] );
-    matlab.addons.toolbox.packageToolbox( prj, mltbx )
-    fprintf( 1, ' OK.\n' );
-catch e
-    fprintf( 1, ' failed.\n' );
-    e.rethrow()
+if package
+    fprintf( 1, 'Packaging...' );
+    try
+        mltbx = fullfile( prjDir, 'releases', ['GUI Layout Toolbox ' v.Version '.mltbx'] );
+        matlab.addons.toolbox.packageToolbox( prj, mltbx )
+        fprintf( 1, ' OK.\n' );
+    catch e
+        fprintf( 1, ' failed.\n' );
+        e.rethrow()
+    end
 end
 
 %% Show message
