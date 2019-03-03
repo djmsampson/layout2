@@ -49,7 +49,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChange );
+                @obj.onBackgroundColorChanged );
             
             % Store properties
             obj.FrontDivider = frontDivider;
@@ -270,8 +270,8 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             
         end % onMouseMotion
         
-        function onBackgroundColorChange( obj, ~, ~ )
-            %onBackgroundColorChange  Handler for BackgroundColor changes
+        function onBackgroundColorChanged( obj, ~, ~ )
+            %onBackgroundColorChanged  Handler for BackgroundColor changes
             
             backgroundColor = obj.BackgroundColor;
             highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
@@ -293,7 +293,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             frontDivider = obj.FrontDivider;
             frontDivider.BackgroundColor = shadowColor;
             
-        end % onBackgroundColorChange
+        end % onBackgroundColorChanged
         
     end % event handlers
     

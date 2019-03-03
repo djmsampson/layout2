@@ -87,7 +87,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChange );
+                @obj.onBackgroundColorChanged );
             selectionChangedListener = event.listener( obj, ...
                 'SelectionChanged', @obj.onSelectionChanged );
             parentListener = event.proplistener( obj, ...
@@ -829,12 +829,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % onTabClicked
         
-        function onBackgroundColorChange( obj, ~, ~ )
+        function onBackgroundColorChanged( obj, ~, ~ )
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % onBackgroundColorChange
+        end % onBackgroundColorChanged
         
         function onSelectionChanged( obj, source, eventData )
             
