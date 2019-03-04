@@ -134,6 +134,15 @@ package "uiextras" provides support for legacy property values.</p>
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.5">
+        <ul>
+            <li>Released 1 April 2019</li>
+            <li>Fixed G1959226 "Scrolling panel blanking plate does not match background color"</li>
+            <li>Fixed G1959228 "Scrolling panel sliders remain after child is deleted"</li>
+            <li>Updated documentation</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.4">
         <ul>
             <li>Released 31 January 2019</li>
