@@ -11,10 +11,4 @@
         <macroref id="global.EXCLUDE_ALL_MAC"/>
     </dir>
     
-    <!-- Run the remainder of the tests (not defined in above file nodes) with HG1 & HG2-->
-    <remaining_files>
-        <!-- Propogates to all tests *except* the ones in the file nodes -->
-        <macroref id="global.Internal.ML_allHGVersions"/>      
-    </remaining_files>
-    
 </test_requirements>
