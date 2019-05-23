@@ -258,7 +258,8 @@ classdef ( Hidden ) Divider < matlab.mixin.SetGet
             
             tf = isvalid( obj ); % initialize
             for ii = 1:numel( obj )
-                tf(ii) = tf(ii) && obj(ii).Control == eventData.HitObject;
+                tf(ii) = tf(ii) && ~isempty( eventData.HitObject ) && ...
+                    obj(ii).Control == eventData.HitObject;
             end
             
         end % isMouseOver
