@@ -34,10 +34,10 @@ classdef PanelTests < matlab.unittest.TestCase
             end
             
             % Make sure the "selected" child is visible
-            testcase.verifyEqual(obj.Contents(2).Visible, 'on' );
+            testcase.verifyEqual(char(obj.Contents(2).Visible), 'on');
             % Make sure the "hidden" children are invisible
-            testcase.verifyEqual(obj.Contents(1).Visible, 'off' );
-            testcase.verifyEqual(obj.Contents(3).Visible, 'off' );
+            testcase.verifyEqual(char(obj.Contents(1).Visible), 'off');
+            testcase.verifyEqual(char(obj.Contents(3).Visible), 'off');
         end
         
         function testSelectableEmptyPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
