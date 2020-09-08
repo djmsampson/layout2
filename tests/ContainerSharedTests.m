@@ -212,10 +212,10 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             obj = testcase.hCreateObj(ContainerType);
             con = uicontainer('Parent', obj);
             ax = axes('Parent', con, 'Visible', 'on');
-            testcase.verifyEqual(ax.Visible, 'on');
+            testcase.verifyEqual(char(ax.Visible), 'on');
             % equivalent of selecting the rotate button on figure window:
             rotate3d;
-            testcase.verifyEqual(ax.Visible, 'on');
+            testcase.verifyEqual(char(ax.Visible), 'on');
         end
         
         function testCheckDataCursorCanBeUsed( testcase, ContainerType )
@@ -291,6 +291,10 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 param    = args{i};
                 expected = args{i+1};
                 actual   = get(obj, param);
+                convert = str2func( class( expected ) );
+                try %#ok<TRYNC>
+                    actual = convert( actual ); % cast
+                end
                 testcase.verifyEqual(actual, expected);
             end
         end
