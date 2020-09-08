@@ -291,7 +291,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 param    = args{i};
                 expected = args{i+1};
                 actual   = get(obj, param);
-                testcase.verifyEqual(actual, expected)
+                convert = str2func( class( expected ) );
+                try %#ok<TRYNC>
+                    actual = convert( actual ); % cast
+                end
+                testcase.verifyEqual(actual, expected);
             end
         end
         function decision = isBaT( ~ )
