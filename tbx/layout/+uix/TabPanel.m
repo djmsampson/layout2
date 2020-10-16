@@ -123,7 +123,8 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 'SelectionChangedFcn', @obj.onSelectionChanged );
             
             % This checks against incorrect or unsupported properties in
-            % uitab and ignores them, warns against them being ignored.
+            % uitabgroup and ignores them, warns against them being ignored.
+            % This code can probably be streamlined!
             names = string(varargin(1:2:end));
             
             uiTabProps = properties(tabGroup);
@@ -132,7 +133,17 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
             for k = 1:numel(idx)
                 if ~idx(k)
+                try
+                    % Validate potential typos
+                    varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
+                    % If successfully validated, change the contains to
+                    % true;
+                    idx(k)=1;
+                catch
+                    % If unsuccessful validation return the warning that it
+                    % is being ignored.
                     warning("The property '" + names(k)+ "' is not supported and will be ignored.")
+                end
                 end
             end
             
@@ -893,9 +904,41 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 % Remove it from varargin
                 varargin(parentIdx:parentIdx+1)=[];
                 % Create tab group
-            end
+            end          
+            
+            
             % Calling the non-overloaded uitab
             tb=matlab.ui.container.Tab("Parent",obj.TabGroup);
+            
+            % This checks against incorrect or unsupported properties in
+            % uitab and ignores them, warns against them being ignored.
+            names = string(varargin(1:2:end));
+            uiTabProps = properties(tb);
+            idx = contains(names,uiTabProps);
+            
+            for k = 1:numel(idx)
+                if ~idx(k)
+                try
+                    % Validate potential typos
+                    varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
+                    % If successfully validated, change the contains to
+                    % true;
+                    idx(k)=1;
+                catch
+                    % If unsuccessful validation return the warning that it
+                    % is being ignored.
+                    warning("The property '" + names(k)+ "' is not supported and will be ignored.")
+                end
+                end
+            end
+            
+            % Index into the correct name value pairs
+            idx = 2*idx.*(1:numel(idx))-1; % Get the positions of the relevant names, returning -1 for rejected names
+            idx = idx(idx>0); % Filter > 0 to get rid of rejected names
+            idx = sort([idx,idx+1]); % concat with the position of the values, sort for correct match
+            
+            varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
+            
             set(tb,varargin{:});
         end % addTab
         
