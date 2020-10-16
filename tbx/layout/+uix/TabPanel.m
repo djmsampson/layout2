@@ -1,4 +1,4 @@
-classdef TabPanel < uix.Container & uix.mixin.Panel
+classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance as it seems to clash with uitab
     %uix.TabPanel  Tab panel
     %
     %  p = uix.TabPanel(p1,v1,p2,v2,...) constructs a tab panel and sets
@@ -21,11 +21,11 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         Tabs
-    end  
+    end
     
     properties
         SelectionChangedFcn = '' % selection change callback
-        SelectedTab {mustBeInteger, mustBeGreaterThanOrEqual(SelectedTab,0)} = 0;
+        Selection {mustBeInteger, mustBeGreaterThanOrEqual(Selection,0)} = 1;
     end
     
     properties( Access = public, Dependent, AbortSet )
@@ -47,7 +47,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         SelectionChangedListener % listener
         ParentListener % listener
         ParentBackgroundColorListener % listener
-        
+        Dirty
         Dividers % tab dividers WILL BE REMOVED
     end
     
@@ -118,17 +118,41 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 varargin(parentIdx:parentIdx+1)=[];
             end
             
-            
             tabGroup = matlab.ui.container.TabGroup( ...
                 'Parent', parent, ...
                 'SelectionChangedFcn', @obj.onSelectionChanged );
+            
+            % This checks against incorrect or unsupported properties in
+            % uitab and ignores them, warns against them being ignored.
+            names = string(varargin(1:2:end));
+            
+            uiTabProps = properties(tabGroup);
+            
+            idx = contains(names,uiTabProps);
+            
+            for k = 1:numel(idx)
+                if ~idx(k)
+                    warning("The property '" + names(k)+ "' is not supported and will be ignored.")
+                end
+            end
+            
+            % Index into the correct name value pairs
+            idx = 2*idx.*(1:numel(idx))-1; % Get the positions of the relevant names, returning -1 for rejected names
+            idx = idx(idx>0); % Filter > 0 to get rid of rejected names
+            idx = sort([idx,idx+1]); % concat with the position of the values, sort for correct match
+            
+            varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
+            
+            % Because we checked and removed the parent, the remaining
+            % entries should all be name then value
+            
             
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChanged );
-            selectionChangedListener = event.listener( obj, ...
-                'SelectionChanged', @obj.onSelectionChanged );
+            %selectionChangedListener = event.listener( obj, ...
+            %    'SelectionChanged', @obj.onSelectionChanged );
             parentListener = event.proplistener( obj, ...
                 findprop( obj, 'Parent' ), 'PostSet', ...
                 @obj.onParentChanged );
@@ -136,7 +160,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Store properties
             obj.TabGroup = tabGroup;
             obj.BackgroundColorListener = backgroundColorListener;
-            obj.SelectionChangedListener = selectionChangedListener;
+            %obj.SelectionChangedListener = selectionChangedListener;
             obj.ParentListener = parentListener;
             
             % If position is stated we need to apply that to the tab group
@@ -190,21 +214,34 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 error("Tabs may only be set to permutations of themselves.")
             end % try/catch
         end % set.Tabs
-                
-        function set.SelectedTab(obj,value)
-            
-            obj.SelectedTab = value;
-            
-            obj.showSelected;
-        end
         
-        function showSelected(obj)
-            if obj.SelectedTab > 0
-                obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.SelectedTab);
+        function set.Selection(obj,value)
+            if isempty(obj.TabGroup.SelectedTab)
+                error("No tabs have been added to the tab panel.")
+            else
+                obj.Selection = value;
+                obj.showSelected;
             end
         end
         
-               
+        function value=get.Selection(obj)
+            
+            if isempty(obj.TabGroup.SelectedTab)
+                error("No tabs have been added to the tab panel.")
+            else
+                value = obj.Selection;
+            end
+            
+        end
+        
+        
+        function showSelected(obj)
+            if obj.Selection > 0
+                obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.Selection);
+            end
+        end
+        
+        
         function value = get.ForegroundColor( obj )
             
             value = obj.ForegroundColor_;
@@ -829,9 +866,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %             end
             %
             
-            selectedTab = min(obj.Selection,1);
+            Selection = min(obj.Selection,1);
             
-            obj.TabGroup.SelectedTab = obj.TabGroup.Children(selectedTab);
+            obj.TabGroup.Selection = obj.TabGroup.Children(Selection);
             
         end % showSelection
         
