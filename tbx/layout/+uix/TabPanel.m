@@ -125,14 +125,10 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             % This checks against incorrect or unsupported properties in
             % uitabgroup and ignores them, warns against them being ignored.
             % This code can probably be streamlined!
-            names = string(varargin(1:2:end));
-            
-            uiTabProps = properties(tabGroup);
-            
-            idx = contains(names,uiTabProps);
+            uiTabProps = properties(tabGroup);            
+            idx = zeros(1,numel(varargin)/2,"logical");
             
             for k = 1:numel(idx)
-                if ~idx(k)
                 try
                     % Validate potential typos
                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
@@ -142,8 +138,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 catch
                     % If unsuccessful validation return the warning that it
                     % is being ignored.
-                    warning("The property '" + names(k)+ "' is not supported and will be ignored.")
-                end
+                    warning("The property '" + varargin{2*k-1}+ "' is not supported and will be ignored.")
                 end
             end
             
@@ -912,12 +907,13 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
             % This checks against incorrect or unsupported properties in
             % uitab and ignores them, warns against them being ignored.
-            names = string(varargin(1:2:end));
+           % names = varargin(1:2:end);
             uiTabProps = properties(tb);
-            idx = contains(names,uiTabProps);
+            
+           idx = zeros(1,numel(varargin)/2,"logical");
+            
             
             for k = 1:numel(idx)
-                if ~idx(k)
                 try
                     % Validate potential typos
                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
@@ -927,8 +923,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 catch
                     % If unsuccessful validation return the warning that it
                     % is being ignored.
-                    warning("The property '" + names(k)+ "' is not supported and will be ignored.")
-                end
+                    warning("The property '" + varargin{2*k-1} + "' is not supported and will be ignored.")
                 end
             end
             
