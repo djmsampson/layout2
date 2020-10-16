@@ -71,6 +71,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         FontSize = get( 0, 'DefaultUicontrolFontSize' ) % font size
         FontWeight = get( 0, 'DefaultUicontrolFontWeight' ) % font weight
         FontUnits = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
+        OldProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
     end
     
     properties ( Constant, Hidden ) % Same as previous block but these are the backing properties
@@ -125,7 +126,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             % This checks against incorrect or unsupported properties in
             % uitabgroup and ignores them, warns against them being ignored.
             % This code can probably be streamlined!
-            uiTabProps = properties(tabGroup);            
+            uiTabProps = properties(tabGroup);
             idx = zeros(1,numel(varargin)/2,"logical");
             
             for k = 1:numel(idx)
@@ -136,9 +137,14 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                     % true;
                     idx(k)=1;
                 catch
-                    % If unsuccessful validation return the warning that it
-                    % is being ignored.
-                    warning("The property '" + varargin{2*k-1}+ "' is not supported and will be ignored.")
+                    try
+                        oldArgument = validatestring(varargin{2*k-1},obj.OldProperties);
+                        % If unsuccessful validation return the warning that it
+                        % is being ignored.
+                        warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
+                    catch
+                        error("'" + varargin{2*k-1} + "' is not a valid argument name.")
+                    end
                 end
             end
             
@@ -197,13 +203,21 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         
         % Backwards compatability by overloading uicontrol
         function uicontrol(varargin)
-            addTab(varargin{:});
+            try
+                addTab(varargin{:});
+            catch ME
+                error(ME.message); % This makes sure the errormaps to uicontrol and not addTab
+            end
         end % uicontrol
         
         
         % Overload uitab so that it works to be intuative for new users.
         function uitab(varargin)
-            addTab(varargin{:});
+            try
+                addTab(varargin{:});
+            catch ME
+                error(ME.message);% This makes sure the errormaps to uitab and not addTab
+            end
         end % uicontrol
         
         % Currently this is a workaround for Children
@@ -899,7 +913,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 % Remove it from varargin
                 varargin(parentIdx:parentIdx+1)=[];
                 % Create tab group
-            end          
+            end
             
             
             % Calling the non-overloaded uitab
@@ -907,10 +921,10 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
             % This checks against incorrect or unsupported properties in
             % uitab and ignores them, warns against them being ignored.
-           % names = varargin(1:2:end);
+            % names = varargin(1:2:end);
             uiTabProps = properties(tb);
             
-           idx = zeros(1,numel(varargin)/2,"logical");
+            idx = zeros(1,numel(varargin)/2,"logical");
             
             
             for k = 1:numel(idx)
@@ -921,9 +935,14 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                     % true;
                     idx(k)=1;
                 catch
-                    % If unsuccessful validation return the warning that it
-                    % is being ignored.
-                    warning("The property '" + varargin{2*k-1} + "' is not supported and will be ignored.")
+                    try
+                        oldArgument = validatestring(varargin{2*k-1},obj.OldProperties);
+                        % If unsuccessful validation return the warning that it
+                        % is being ignored.
+                        warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
+                    catch
+                        error("'" + varargin{2*k-1} + "' is not a valid argument name.")
+                    end
                 end
             end
             
