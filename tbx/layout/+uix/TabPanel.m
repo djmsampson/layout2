@@ -71,7 +71,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         FontSize = get( 0, 'DefaultUicontrolFontSize' ) % font size
         FontWeight = get( 0, 'DefaultUicontrolFontWeight' ) % font weight
         FontUnits = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
-        OldProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
+        OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
     end
     
     properties ( Constant, Hidden ) % Same as previous block but these are the backing properties
@@ -127,18 +127,19 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             % uitabgroup and ignores them, warns against them being ignored.
             % This code can probably be streamlined!
             uiTabProps = properties(tabGroup);
-            idx = zeros(1,numel(varargin)/2,"logical");
+            idx = zeros(size(varargin),"logical");
             
-            for k = 1:numel(idx)
+            for k = 1:numel(idx)/2
                 try
                     % Validate potential typos
                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
                     % If successfully validated, change the contains to
                     % true;
-                    idx(k)=1;
+                    idx(2*k-1)=1;
+                    idx(2*k)=1;
                 catch
                     try
-                        oldArgument = validatestring(varargin{2*k-1},obj.OldProperties);
+                        oldArgument = validatestring(varargin{2*k-1},obj.OldPanelProperties);
                         % If unsuccessful validation return the warning that it
                         % is being ignored.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
@@ -147,11 +148,6 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                     end
                 end
             end
-            
-            % Index into the correct name value pairs
-            idx = 2*idx.*(1:numel(idx))-1; % Get the positions of the relevant names, returning -1 for rejected names
-            idx = idx(idx>0); % Filter > 0 to get rid of rejected names
-            idx = sort([idx,idx+1]); % concat with the position of the values, sort for correct match
             
             varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
             
@@ -924,19 +920,20 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             % names = varargin(1:2:end);
             uiTabProps = properties(tb);
             
-            idx = zeros(1,numel(varargin)/2,"logical");
+            idx = zeros(size(varargin),"logical");
             
             
-            for k = 1:numel(idx)
+            for k = 1:numel(idx)/2
                 try
                     % Validate potential typos
                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
                     % If successfully validated, change the contains to
                     % true;
-                    idx(k)=1;
+                    idx(2*k-1)=1;
+                    idx(2*k)=1;
                 catch
                     try
-                        oldArgument = validatestring(varargin{2*k-1},obj.OldProperties);
+                        oldArgument = validatestring(varargin{2*k-1},obj.OldPanelProperties);
                         % If unsuccessful validation return the warning that it
                         % is being ignored.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
@@ -945,11 +942,6 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                     end
                 end
             end
-            
-            % Index into the correct name value pairs
-            idx = 2*idx.*(1:numel(idx))-1; % Get the positions of the relevant names, returning -1 for rejected names
-            idx = idx(idx>0); % Filter > 0 to get rid of rejected names
-            idx = sort([idx,idx+1]); % concat with the position of the values, sort for correct match
             
             varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
             
