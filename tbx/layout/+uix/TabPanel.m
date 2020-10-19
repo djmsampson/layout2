@@ -72,6 +72,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         FontWeight = get( 0, 'DefaultUicontrolFontWeight' ) % font weight
         FontUnits = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
         OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
+        OldUiControlArguments = ["HorizontalAlignment","ListboxTop","Max","Min","SliderStep","String","Style","Value","Position","BackgroundColor","CData","Callback","Children","Tooltip","ForegroundColor","Enable","Extent","Visible","Parent","HandleVisibility","ButtonDownFcn","ContextMenu","BusyAction","BeingDeleted","Interruptible","CreateFcn","DeleteFcn","Type","Tag","UserData","KeyPressFcn","KeyReleaseFcn","FontUnits","FontSize","FontName","FontAngle","FontWeight","Units","InnerPosition","OuterPosition"];
     end
     
     properties ( Constant, Hidden ) % Same as previous block but these are the backing properties
@@ -933,7 +934,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                     idx(2*k)=1;
                 catch
                     try
-                        oldArgument = validatestring(varargin{2*k-1},obj.OldPanelProperties);
+                        oldArgument = validatestring(varargin{2*k-1},obj.OldUiControlArguments);
                         % If unsuccessful validation return the warning that it
                         % is being ignored.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
