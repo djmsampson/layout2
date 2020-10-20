@@ -16,25 +16,22 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     %  Copyright 2009-2016 The MathWorks, Inc.
     %  $Revision: 1790 $ $Date: 2019-03-03 23:07:34 +0000 (Sun, 03 Mar 2019) $
     
-    properties( Access = public, Dependent, AbortSet )
-        ForegroundColor % tab text color [RGB]
-        HighlightColor % border highlight color [RGB]
-        ShadowColor % border shadow color [RGB]
-        Tabs
-        Children
-    end
-    
+   
     properties
         SelectionChangedFcn = '' % selection change callback
+        Tag (1,1) string % Arbitrary user settable tag to add to layout.
     end
     
     properties ( Dependent )
         Selection(1, 1) {mustBeInteger, mustBeNonnegative}
         TabEnables (1,:) cell {mustBeMember(TabEnables,{'on','off'})}% tab enable states
+        ForegroundColor (1,3) {mustBeInRange(ForegroundColor,0,1)}
+        Children % The tabgroup children
+        Contents % Tabgroup children in their left to right order - this is redundant with uitab but kept for compatability.
     end % properties ( Dependent )
     
-    properties( Access = public, Dependent)
-        Contents % Contents in layout order.
+    properties( Access = private, Dependent)
+        Tabs
     end
         properties( Access = public, Dependent, SetObservable)
         Parent
@@ -49,8 +46,6 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     properties( Access = private )
         TabEnables_ % Backing for dependent property TabEnables
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
-        HighlightColor_ = [1 1 1] % backing for HighlightColor
-        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
         ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
@@ -64,37 +59,36 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     end
     
     
-    properties
-        TabGroup(1, 1) matlab.ui.container.TabGroup  % Replacing Dividers
-    end % move these to private later
-    
-    properties( Access = private, Constant )
-        FontNames = listfonts() % all available font names
-        DividerMask = uix.TabPanel.getDividerMask() % divider image data
-        DividerWidth = 8 % divider width
-        TabMinimumHeight = 9 % tab minimum height
-        Tint = 0.85 % tint factor for unselected tabs
+    properties % ( Access = private ) % Make private when done
+        TabGroup(1, 1) matlab.ui.container.TabGroup
     end
     
-    properties ( Constant, Hidden ) % Temporarily lost functionality due to webgraphics
+    % Legacy properties to check against for backwards compatability
+    properties ( Constant , Hidden ) 
+       OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
+       OldUiControlArguments = ["HorizontalAlignment","ListboxTop","Max","Min","SliderStep","String","Style","Value","Position","BackgroundColor","CData","Callback","Children","Tooltip","ForegroundColor","Enable","Extent","Visible","Parent","HandleVisibility","ButtonDownFcn","ContextMenu","BusyAction","BeingDeleted","Interruptible","CreateFcn","DeleteFcn","Type","Tag","UserData","KeyPressFcn","KeyReleaseFcn","FontUnits","FontSize","FontName","FontAngle","FontWeight","Units","InnerPosition","OuterPosition"];
+    end % (Constant,Hidden) Backwards compatability checks
+       
+    properties ( Constant, Hidden ) % Temporarily removed functionality due to webgraphics
         TabWidth = -1 % tab width
-        FontAngle = get( 0, 'DefaultUicontrolFontAngle' ) % font angle
-        FontName = get( 0, 'DefaultUicontrolFontName' ) % font name
-        FontSize = get( 0, 'DefaultUicontrolFontSize' ) % font size
-        FontWeight = get( 0, 'DefaultUicontrolFontWeight' ) % font weight
-        FontUnits = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
-        OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
-        OldUiControlArguments = ["HorizontalAlignment","ListboxTop","Max","Min","SliderStep","String","Style","Value","Position","BackgroundColor","CData","Callback","Children","Tooltip","ForegroundColor","Enable","Extent","Visible","Parent","HandleVisibility","ButtonDownFcn","ContextMenu","BusyAction","BeingDeleted","Interruptible","CreateFcn","DeleteFcn","Type","Tag","UserData","KeyPressFcn","KeyReleaseFcn","FontUnits","FontSize","FontName","FontAngle","FontWeight","Units","InnerPosition","OuterPosition"];
-    end
-    
-    properties ( Constant, Hidden ) % Same as previous block but these are the backing properties
         TabWidth_ = -1 % backing for TabWidth
+        FontAngle = get( 0, 'DefaultUicontrolFontAngle' ) % font angle
         FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
+        FontName = get( 0, 'DefaultUicontrolFontName' ) % font name
         FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
+        FontSize = get( 0, 'DefaultUicontrolFontSize' ) % font size
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
+        FontWeight = get( 0, 'DefaultUicontrolFontWeight' ) % font weight
         FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
+        FontUnits = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
         FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
-    end
+        HighlightColor = [0,0,0] % border highlight color [RGB]
+        ShadowColor = [0.7,0.7,0.7] % border shadow color [RGB]
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        FontNames = listfonts() % all available font names
+        Tint = 0.85 % tint factor for unselected tabs
+    end % Removed properties
     
     events
         SelectionChanged
@@ -115,41 +109,21 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc. Parent can be a name value pair
             
-            % Unparented case.
-            parent=[];
             
-            % Add option to specify parent as first input
+           
+            % If odd number of inputs, first is parent, add the name for consistency
             if mod(numel(varargin),2) == 1
-                % Extract the parent.
-                parent = varargin{1};
-                % Remove it from varargin for uix.set later.
-                varargin = varargin(2:end);
-                % TODO: Could do with a check here to ensure that the
-                % parent is not also set via name value pair
-                % as that property would overwrite the first one.
-            else
-                % If parent is a name value pair then find it
-                parentIdx = find(lower(string(varargin(1:2:end))) == "parent");               
-                
-                if ~isempty(parentIdx)
-                
-                % Extract it
-                parent  = varargin{2*parentIdx};
-                % Remove it from varargin, if parent was not any of the
-                % names then this will fail, try/catch and error report.
-                varargin(2*parentIdx-1:2*parentIdx)=[];
-                end % if
+                varargin=['parent',varargin];
             end
             
-            % Try/catch in case either there are an odd number of inputs
-            % but the first is not a valid handle or there are an even
-            % number but no parent is specified.
+            % Create the tab group, the only consitent property is the selection changed callback
                 tabGroup = matlab.ui.container.TabGroup( ...
-                    'Parent', parent, ...
                     'SelectionChangedFcn', @obj.onSelectionChanged );
-            % This checks against incorrect or unsupported properties in
-            % uitabgroup and ignores them, warns against them being ignored.
-            % This code can probably be streamlined!
+           
+            % Validate arguments against properties of the current releases uitabgroup
+            % If a property fails to validate, check it against legacy properties
+            % If it validates against a legacy property, skip that name-value
+            % Pair and give a warning instead of an error
             uiTabProps = properties(tabGroup);
             idx = zeros(size(varargin),"logical");
             
@@ -157,17 +131,19 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 try
                     % Validate potential typos
                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
-                    % If successfully validated, change the contains to
-                    % true;
+                    % If successfully validated, logically index them in
                     idx(2*k-1)=1;
                     idx(2*k)=1;
                 catch
                     try
+                        % If unsuccessful try validation against legacy arguments
                         oldArgument = validatestring(varargin{2*k-1},obj.OldPanelProperties);
-                        % If unsuccessful validation return the warning that it
-                        % is being ignored.
+                        % If successfully validated against a legacy
+                        % argument, warn but don't include.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
                     catch
+                        % If it doesnt validate against any argument old or
+                        % new, error.
                         error("uix:InvalidArgument","'" + varargin{2*k-1} + "' is not a valid argument name.")
                     end
                 end
@@ -178,30 +154,24 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % Because we checked and removed the parent, the remaining
             % entries should all be name then value
             
-            
+            % TODO: Do we need these???
             % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChanged );
+            %backgroundColorListener = event.proplistener( obj, ...
+            %    findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+            %    @obj.onBackgroundColorChanged );
             %selectionChangedListener = event.listener( obj, ...
             %    'SelectionChanged', @obj.onSelectionChanged );
-            parentListener = event.proplistener( obj, ...
-                findprop( obj, 'Parent' ), 'PostSet', ...
-                @obj.onParentChanged );
+            %parentListener = event.proplistener( obj, ...
+            %    findprop( obj, 'Parent' ), 'PostSet', ...
+            %    @obj.onParentChanged );
             
             % Store properties
             obj.TabGroup = tabGroup;
-            obj.BackgroundColorListener = backgroundColorListener;
+            %obj.BackgroundColorListener = backgroundColorListener;
             %obj.SelectionChangedListener = selectionChangedListener;
-            obj.ParentListener = parentListener;
+            %obj.ParentListener = parentListener;
             
-            % If position is stated we need to apply that to the tab group
-            if any(string(varargin(1:2:end)) == "Position" )
-                posIdx = sum( (1:2:numel(varargin)/2) .* (string(varargin(1:2:end)) == "Position"));
-                set(obj.TabGroup,"Position", varargin{posIdx+1});
-                varargin(posIdx:posIdx+1)=[];
-            end % if
-            
+           
             % Set properties
             try
                 if numel(varargin) > 0 % Make sure we havnet already dealt with all of the arguments
@@ -212,8 +182,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 delete( obj )
                 e.throwAsCaller()
             end
-            
-            
+                       
         end % constructor
         
           % Backwards compatability by overloading uicontrol
@@ -221,9 +190,9 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             try
                 tab=addTab(varargin{:});
             catch ME
-                rethrow(ME)
-                error(ME.message); % This makes sure the errormaps to uicontrol and not addTab
-                
+                ME.throwAsCaller;
+                % Alternative way to force the correct uix error id
+                %error("uix:InvalidPropertyValue",ME.message);
             end
         end % uicontrol
         
@@ -233,7 +202,9 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             try
                 tab=addTab(varargin{:});
             catch ME
-                error(ME.message);% This makes sure the errormaps to uitab and not addTab
+                ME.throwAsCaller;
+                % Alternative way to force the correct uix error id
+                % error("uix:InvalidPropertyValue",ME.message);
             end
         end % uitab
         
@@ -246,7 +217,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         end
         
         function set.Parent(obj,value)
-           obj.TabGroup.Parent = value; 
+           obj.TabGroup.Parent = value;           
         end
         
         function value = get.Children( obj )
@@ -255,6 +226,9 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
         end % get.Children
         
+        function set.Children(obj,value)
+             obj.TabGroup.Children=value;
+        end
       
         
         % Currently this is a workaround for Children
@@ -263,13 +237,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         end % get.Tabs
         
         function set.Tabs(obj,value)
-            % Tabs can only be set to change their order
-            % The error message inherited from uitab unhelpfully talks about children.
-            try
-                obj.TabGroup.Children = value;
-            catch
-                error("Tabs may only be set to permutations of themselves.")
-            end % try/catch
+            obj.TabGroup.Children = value;
         end % set.Tabs
         
         function set.Selection(obj,value)
@@ -301,71 +269,13 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
         end % get.Selection
         
-        
         function value=get.Contents(obj)
-            value={};
-            for k = 1:numel(obj.TabGroup.Children)
-                value{k} = obj.TabGroup.Children(k).Children;
-            end
+           value = obj.TabGroup.Children;
         end % get.Contents
         
         function set.Contents(obj,value)
-            obj.contentsIntoTabs(value);
-        end % set.Contents
-        
-        
-        
-        
-        %         function value = get.ForegroundColor( obj )
-        %
-        %             value = obj.ForegroundColor_;
-        %
-        %         end % get.ForegroundColor
-        
-        %         function set.ForegroundColor( obj, value )
-        %
-        %             % Check
-        %             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-        %                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-        %                 'uix:InvalidPropertyValue', ...
-        %                 'Property ''ForegroundColor'' must be an RGB triple.' )
-        %
-        %             % Set
-        %             obj.ForegroundColor_ = value;
-        %
-        %             % Update existing tabs
-        %             tabs = obj.Tabs;
-        %             n = numel( tabs );
-        %             for ii = 1:n
-        %                 tab = tabs(ii);
-        %                 tab.ForegroundColor = value;
-        %             end
-        %
-        %         end % set.ForegroundColor
-        
-        %         function value = get.HighlightColor( obj )
-        %
-        %             value = obj.HighlightColor_;
-        %
-        %         end % get.HighlightColor
-        %
-        %         function set.HighlightColor( obj, value )
-        %
-        %             % Check
-        %             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-        %                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-        %                 'uix:InvalidPropertyValue', ...
-        %                 'Property ''HighlightColor'' must be an RGB triple.' )
-        %
-        %             % Set
-        %             obj.HighlightColor_ = value;
-        %
-        %             % Mark as dirty
-        %             obj.Dirty = true;
-        %
-        %         end % set.HighlightColor
-        
-        
+            obj.TabGroup.Children=value;
+        end % set.Contents  
         
         function set.SelectionChangedFcn( obj, value )
             
@@ -390,27 +300,16 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
         end % set.SelectionChangedFcn
         
-        function value = get.ShadowColor( obj )
-            
-            value = obj.ShadowColor_;
-            
-        end % get.ShadowColor
+        function set.ForegroundColor(obj,value)
+            obj.ForegroundColor_ = value;
+            idx = obj.TabEnables == "on";
+            set(obj.TabGroup.Children(idx),"ForegroundColor",value)
+        end
         
-        function set.ShadowColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''ShadowColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.ShadowColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.ShadowColor
+        function value=get.ForegroundColor(obj)
+           value = obj.ForegroundColor_; 
+        end
+      
         
         function value = get.TabEnables( obj )
             if isempty(obj.TabEnables_)
@@ -428,7 +327,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
             for k = 1:numel(obj.TabGroup.Children)
                 if value(k) == "on"
-                    obj.TabGroup.Children(k).ForegroundColor = [0,0,0];
+                    obj.TabGroup.Children(k).ForegroundColor = obj.ForegroundColor;
                 else
                     obj.TabGroup.Children(k).ForegroundColor = [0.6,0.6,0.6];
                 end
@@ -737,143 +636,143 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     
     methods( Access = protected )
         
-        function redraw( obj )
-            
-            % Compute positions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                [0 0 1 1], 'normalized', 'pixels', obj );
-            w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
-            h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
-            p = obj.Padding_; % padding
-            tabs = obj.Tabs;
-            n = numel( tabs ); % number of tabs
-            tH = obj.TabHeight; % tab height
-            if tH == -1 % cache stale, refresh
-                if n > 0
-                    cTabExtents = get( tabs, {'Extent'} );
-                    tabExtents = vertcat( cTabExtents{:} );
-                    tH = max( tabExtents(:,4) );
-                end
-                tH = max( tH, obj.TabMinimumHeight ); % apply minimum
-                tH = ceil( tH ); % round up
-                obj.TabHeight = tH; % store
-            end
-            cH = max( [h - 2 * p - tH, 1] ); % contents height
-            switch obj.TabLocation_
-                case 'top'
-                    cY = 1 + p; % contents y
-                    tY = cY + cH + p; % tab y
-                case 'bottom'
-                    tY = 1; % tab y
-                    cY = tY + tH + p; % contents y
-            end
-            cX = 1 + p; % contents x
-            cW = max( [w - 2 * p, 1] ); % contents width
-            tW = obj.TabWidth_; % tab width
-            dW = obj.DividerWidth; % tab divider width
-            if tW < 0 && n > 0 % relative
-                tW = max( ( w - (n+1) * dW ) / n, 1 );
-            end
-            tW = ceil( tW ); % round up
-            for ii = 1:n
-                tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
-            end
-            obj.Dividers.Position = [0 tY w+1 tH];
-            contentsPosition = [cX cY cW cH];
-            
-            % Redraw tabs
-            obj.redrawTabs()
-            
-            % Redraw contents
-            selection = obj.Selection_;
-            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
-                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
-            end
-            
-        end % redraw
+%         function redraw( obj )
+%             
+%             % Compute positions
+%             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+%                 [0 0 1 1], 'normalized', 'pixels', obj );
+%             w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
+%             h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
+%             p = obj.Padding_; % padding
+%             tabs = obj.Tabs;
+%             n = numel( tabs ); % number of tabs
+%             tH = obj.TabHeight; % tab height
+%             if tH == -1 % cache stale, refresh
+%                 if n > 0
+%                     cTabExtents = get( tabs, {'Extent'} );
+%                     tabExtents = vertcat( cTabExtents{:} );
+%                     tH = max( tabExtents(:,4) );
+%                 end
+%                 tH = max( tH, obj.TabMinimumHeight ); % apply minimum
+%                 tH = ceil( tH ); % round up
+%                 obj.TabHeight = tH; % store
+%             end
+%             cH = max( [h - 2 * p - tH, 1] ); % contents height
+%             switch obj.TabLocation_
+%                 case 'top'
+%                     cY = 1 + p; % contents y
+%                     tY = cY + cH + p; % tab y
+%                 case 'bottom'
+%                     tY = 1; % tab y
+%                     cY = tY + tH + p; % contents y
+%             end
+%             cX = 1 + p; % contents x
+%             cW = max( [w - 2 * p, 1] ); % contents width
+%             tW = obj.TabWidth_; % tab width
+%             dW = obj.DividerWidth; % tab divider width
+%             if tW < 0 && n > 0 % relative
+%                 tW = max( ( w - (n+1) * dW ) / n, 1 );
+%             end
+%             tW = ceil( tW ); % round up
+%             for ii = 1:n
+%                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
+%             end
+%             obj.Dividers.Position = [0 tY w+1 tH];
+%             contentsPosition = [cX cY cW cH];
+%             
+%             % Redraw tabs
+%             obj.redrawTabs()
+%             
+%             % Redraw contents
+%             selection = obj.Selection_;
+%             if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
+%                 uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+%             end
+%             
+%         end % redraw
         
-        function addChild( obj, child )
-            %addChild  Add child
-            %
-            %  c.addChild(d) adds the child d to the container c.
-            
-            % Create new tab
-            n = numel( obj.Tabs );
-            tab = matlab.ui.control.UIControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
-                'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
-                'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
-                'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_, ...
-                'ForegroundColor', obj.ForegroundColor_, ...
-                'String', sprintf( 'Page %d', n + 1 ) );
-            tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClicked );
-            obj.Tabs(n+1,:) = tab;
-            obj.TabListeners(n+1,:) = tabListener;
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            
-            % Check for bug
-            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
-                obj.G1218142 = true;
-            end
-            
-            % Select new content
-            oldSelection = obj.Selection_;
-            if numel( obj.Contents_ ) == 0
-                newSelection = 1;
-                obj.Selection_ = newSelection;
-            else
-                newSelection = oldSelection;
-            end
-            
-            % Call superclass method
-            addChild@uix.mixin.Container( obj, child )
-            
-            % Show selected child
-            obj.showSelection()
-            
-            % Notify selection change
-            if oldSelection ~= newSelection
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
-            
-        end % addChild
+%         function addChild( obj, child )
+%             %addChild  Add child
+%             %
+%             %  c.addChild(d) adds the child d to the container c.
+%             
+%             % Create new tab
+%             n = numel( obj.Tabs );
+%             tab = matlab.ui.control.UIControl( 'Internal', true, ...
+%                 'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
+%                 'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
+%                 'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
+%                 'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_, ...
+%                 'ForegroundColor', obj.ForegroundColor_, ...
+%                 'String', sprintf( 'Page %d', n + 1 ) );
+%             tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClicked );
+%             obj.Tabs(n+1,:) = tab;
+%             obj.TabListeners(n+1,:) = tabListener;
+%             
+%             % Mark as dirty
+%             obj.TabHeight = -1;
+%             
+%             % Check for bug
+%             if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
+%                 obj.G1218142 = true;
+%             end
+%             
+%             % Select new content
+%             oldSelection = obj.Selection_;
+%             if numel( obj.Contents_ ) == 0
+%                 newSelection = 1;
+%                 obj.Selection_ = newSelection;
+%             else
+%                 newSelection = oldSelection;
+%             end
+%             
+%             % Call superclass method
+%             addChild@uix.mixin.Container( obj, child )
+%             
+%             % Show selected child
+%             obj.showSelection()
+%             
+%             % Notify selection change
+%             if oldSelection ~= newSelection
+%                 obj.notify( 'SelectionChanged', ...
+%                     uix.SelectionData( oldSelection, newSelection ) )
+%             end
+%             
+%         end % addChild
         
-        function removeChild( obj, child )
-            %removeChild  Remove child
-            %
-            %  c.removeChild(d) removes the child d from the container c.
-            
-            % Find index of removed child
-            contents = obj.Contents_;
-            index = find( contents == child );
-            
-            % Remove tab
-            delete( obj.Tabs(index) )
-            obj.Tabs(index,:) = [];
-            obj.TabListeners(index,:) = [];
-            
-            % Call superclass method
-            removeChild@uix.mixin.Panel( obj, child )
-            
-        end % removeChild
+%         function removeChild( obj, child )
+%             %removeChild  Remove child
+%             %
+%             %  c.removeChild(d) removes the child d from the container c.
+%             
+%             % Find index of removed child
+%             contents = obj.Contents_;
+%             index = find( contents == child );
+%             
+%             % Remove tab
+%             delete( obj.Tabs(index) )
+%             obj.Tabs(index,:) = [];
+%             obj.TabListeners(index,:) = [];
+%             
+%             % Call superclass method
+%             removeChild@uix.mixin.Panel( obj, child )
+%             
+%         end % removeChild
         
-        function reorder( obj, indices )
-            %reorder  Reorder contents
-            %
-            %  c.reorder(i) reorders the container contents using indices
-            %  i, c.Contents = c.Contents(i).
-            
-            % Reorder
-            obj.Tabs = obj.Tabs(indices,:);
-            obj.TabListeners = obj.TabListeners(indices,:);
-            
-            % Call superclass method
-            reorder@uix.mixin.Panel( obj, indices )
-            
-        end % reorder
+%         function reorder( obj, indices )
+%             %reorder  Reorder contents
+%             %
+%             %  c.reorder(i) reorders the container contents using indices
+%             %  i, c.Contents = c.Contents(i).
+%             
+%             % Reorder
+%             obj.Tabs = obj.Tabs(indices,:);
+%             obj.TabListeners = obj.TabListeners(indices,:);
+%             
+%             % Call superclass method
+%             reorder@uix.mixin.Panel( obj, indices )
+%             
+%         end % reorder
         
         function reparent( obj, oldFigure, newFigure )
             %reparent  Reparent container
@@ -924,9 +823,9 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             %             end
             %
             
-            Selection = min(obj.Selection,1);
+            selection = min(obj.Selection,1);
             
-            obj.TabGroup.Selection = obj.TabGroup.Children(Selection);
+            obj.TabGroup.Selection = obj.TabGroup.Children(selection);
             
         end % showSelection
         
@@ -937,41 +836,27 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         % This is the function that uicontrol and uitab map to
         function tb=addTab(varargin)
             if mod(numel(varargin),2) == 1
-                % Extract the parent object.
-                obj = varargin{1};
-                % Remove it from varargin for uix.set later.
-                varargin = varargin(2:end);
-                
-                %protect against the method being accessed in the
-                %obj.method approach but with parent also as a name-value
-                %pair.
-                if contains('parent',lower(varargin(1:2:end)))
-                    idx = find(lower(varargin(1:2:end))=="parent");
-                    varargin(2*idx-1:2*idx)=[];
-                end
-                
-                % Create tab group
-            else
-                % If parent is a name value pair then find it
+                % Add the parent name at the start for consistency.
+                varargin = ['parent',varargin];
+                                
+            end   
+
+                % Find the parent argument
                 parentIdx = find(lower(string(varargin(1:2:end))) == "parent");
-                % Extract it
-                obj  = varargin{2*parentIdx};
-                % Remove it from varargin
-                varargin(2*parentIdx-1:2*parentIdx)=[];
-            end
+                % Extract the tabgroup from the tabpanel
+                varargin{2*parentIdx}=varargin{2*parentIdx}.TabGroup;
+
             
             
-            % Calling the non-overloaded uitab
-            tb=matlab.ui.container.Tab("Parent",obj.TabGroup);
+            % Create a tab panel
+            tb=matlab.ui.container.Tab;
             
             % This checks against incorrect or unsupported properties in
             % uitab and ignores them, warns against them being ignored.
             % names = varargin(1:2:end);
             uiTabProps = properties(tb);
-            
             idx = zeros(size(varargin),"logical");
-            
-            
+
             for k = 1:numel(idx)/2
                 try
                     % Validate potential typos
@@ -987,7 +872,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                         % is being ignored.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
                     catch
-                        error("'" + varargin{2*k-1} + "' is not a valid argument name.")
+                        error("uix:InvalidArgument","'" + varargin{2*k-1} + "' is not a valid argument name.")
                     end
                 end
             end
