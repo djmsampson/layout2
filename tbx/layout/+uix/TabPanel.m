@@ -116,14 +116,27 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 parentIdx = sum((1:numel(varargin)/2).*parentIdx);
                 % Extract it
                 parent  = varargin{parentIdx+1};
-                % Remove it from varargin
-                varargin(parentIdx:parentIdx+1)=[];
+                
+                % Remove it from varargin, if parent was not any of the
+                % names then this will fail, try/catch and error report.
+                try
+                    varargin(parentIdx:parentIdx+1)=[];
+                catch
+                    error("Parent must be the first input or specified as a name-value pair.")
+                end
+                
             end
             
-            tabGroup = matlab.ui.container.TabGroup( ...
-                'Parent', parent, ...
-                'SelectionChangedFcn', @obj.onSelectionChanged );
-            
+            % Try/catch in case either there are an odd number of inputs
+            % but the first is not a valid handle or there are an even
+            % number but no parent is specified.
+            try
+                tabGroup = matlab.ui.container.TabGroup( ...
+                    'Parent', parent, ...
+                    'SelectionChangedFcn', @obj.onSelectionChanged );
+            catch
+                error("Parent must be the first input or specified as a name-value pair.")
+            end
             % This checks against incorrect or unsupported properties in
             % uitabgroup and ignores them, warns against them being ignored.
             % This code can probably be streamlined!
