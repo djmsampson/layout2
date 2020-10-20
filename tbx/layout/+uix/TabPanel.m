@@ -1,4 +1,4 @@
-classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance as it seems to clash with uitab
+classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Removed this inheritance as it seems to clash with uitab
     %uix.TabPanel  Tab panel
     %
     %  p = uix.TabPanel(p1,v1,p2,v2,...) constructs a tab panel and sets
@@ -21,21 +21,33 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         Tabs
+        Children
     end
     
     properties
         SelectionChangedFcn = '' % selection change callback
-        Selection {mustBeInteger, mustBeGreaterThanOrEqual(Selection,0)} = 1;
+    end
+    
+    properties ( Dependent )
+        Selection(1, 1) {mustBeInteger, mustBeNonnegative}
+        TabEnables (1,:) cell {mustBeMember(TabEnables,{'on','off'})}% tab enable states
+    end % properties ( Dependent )
+    
+    properties( Access = public, Dependent)
+        Contents % Contents in layout order.
+    end
+        properties( Access = public, Dependent, SetObservable)
+        Parent
     end
     
     properties( Access = public, Dependent, AbortSet )
-        TabEnables string % tab enable states
         TabLocation % tab location [top|bottom]
         TabTitles string % tab titles
         TabContextMenus % tab context menus
     end
     
     properties( Access = private )
+        TabEnables_ % Backing for dependent property TabEnables
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
@@ -53,7 +65,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
     
     
     properties
-        TabGroup % Replacing Dividers
+        TabGroup(1, 1) matlab.ui.container.TabGroup  % Replacing Dividers
     end % move these to private later
     
     properties( Access = private, Constant )
@@ -84,6 +96,10 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % font weight
     end
     
+    events
+        SelectionChanged
+    end
+    
     methods
         
         function obj = TabPanel( varargin )
@@ -99,7 +115,8 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc. Parent can be a name value pair
             
-            
+            % Unparented case.
+            parent=[];
             
             % Add option to specify parent as first input
             if mod(numel(varargin),2) == 1
@@ -112,31 +129,24 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                 % as that property would overwrite the first one.
             else
                 % If parent is a name value pair then find it
-                parentIdx = lower(string(varargin(1:2:end))) == "parent";
-                parentIdx = sum((1:numel(varargin)/2).*parentIdx);
-                % Extract it
-                parent  = varargin{parentIdx+1};
+                parentIdx = find(lower(string(varargin(1:2:end))) == "parent");               
                 
+                if ~isempty(parentIdx)
+                
+                % Extract it
+                parent  = varargin{2*parentIdx};
                 % Remove it from varargin, if parent was not any of the
                 % names then this will fail, try/catch and error report.
-                try
-                    varargin(parentIdx:parentIdx+1)=[];
-                catch
-                    error("Parent must be the first input or specified as a name-value pair.")
-                end
-                
+                varargin(2*parentIdx-1:2*parentIdx)=[];
+                end % if
             end
             
             % Try/catch in case either there are an odd number of inputs
             % but the first is not a valid handle or there are an even
             % number but no parent is specified.
-            try
                 tabGroup = matlab.ui.container.TabGroup( ...
                     'Parent', parent, ...
                     'SelectionChangedFcn', @obj.onSelectionChanged );
-            catch
-                error("Parent must be the first input or specified as a name-value pair.")
-            end
             % This checks against incorrect or unsupported properties in
             % uitabgroup and ignores them, warns against them being ignored.
             % This code can probably be streamlined!
@@ -158,7 +168,7 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
                         % is being ignored.
                         warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
                     catch
-                        error("'" + varargin{2*k-1} + "' is not a valid argument name.")
+                        error("uix:InvalidArgument","'" + varargin{2*k-1} + "' is not a valid argument name.")
                     end
                 end
             end
@@ -206,29 +216,46 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
         end % constructor
         
-    end % structors
-    
-    methods
-        
-        
-        % Backwards compatability by overloading uicontrol
-        function uicontrol(varargin)
+          % Backwards compatability by overloading uicontrol
+        function tab=uicontrol(varargin)
             try
-                addTab(varargin{:});
+                tab=addTab(varargin{:});
             catch ME
+                rethrow(ME)
                 error(ME.message); % This makes sure the errormaps to uicontrol and not addTab
+                
             end
         end % uicontrol
         
         
         % Overload uitab so that it works to be intuative for new users.
-        function uitab(varargin)
+        function tab=uitab(varargin)
             try
-                addTab(varargin{:});
+                tab=addTab(varargin{:});
             catch ME
                 error(ME.message);% This makes sure the errormaps to uitab and not addTab
             end
-        end % uicontrol
+        end % uitab
+        
+    end % structors
+    
+    methods
+        
+        function value = get.Parent(obj)
+           value = obj.TabGroup.Parent; 
+        end
+        
+        function set.Parent(obj,value)
+           obj.TabGroup.Parent = value; 
+        end
+        
+        function value = get.Children( obj )
+            
+            value = obj.TabGroup.Children;
+            
+        end % get.Children
+        
+      
         
         % Currently this is a workaround for Children
         function value=get.Tabs(obj)
@@ -246,80 +273,97 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         end % set.Tabs
         
         function set.Selection(obj,value)
-            if isempty(obj.TabGroup.SelectedTab)
-                error("No tabs have been added to the tab panel.")
-            else
-                obj.Selection = value;
-                obj.showSelected;
+            % Get old tab to pass to onSelectionChanged
+            eventData.OldValue = obj.TabGroup.SelectedTab;
+            
+            if isempty(obj.TabGroup.Children) % Are there any tabs?
+                error("uix:InvalidPropertyValue","No tabs have been added to the tab panel.")
             end
+            
+            numTabs = length( obj.TabGroup.Children );
+            assert( (value <= numTabs) && (value > 0),"uix:InvalidPropertyValue", "Selection must be in the range 1 to " + numTabs + " (the number of tabs)." )
+            obj.TabGroup.SelectedTab = obj.TabGroup.Children(value);
+           
+            % Get new tab to pass to onSelectionChanged
+            eventData.NewValue = obj.TabGroup.SelectedTab;
+            
+            % Call the changed tab function.
+            obj.onSelectionChanged([],eventData)
         end
         
         function value=get.Selection(obj)
             
-            if isempty(obj.TabGroup.SelectedTab)
-                error("No tabs have been added to the tab panel.")
+            if isempty(obj.TabGroup.Children)
+                value = 0;
             else
-                value = obj.Selection;
+                value = find( obj.TabGroup.Children == obj.TabGroup.SelectedTab );
+            end % if
+            
+        end % get.Selection
+        
+        
+        function value=get.Contents(obj)
+            value={};
+            for k = 1:numel(obj.TabGroup.Children)
+                value{k} = obj.TabGroup.Children(k).Children;
             end
-            
-        end
+        end % get.Contents
+        
+        function set.Contents(obj,value)
+            obj.contentsIntoTabs(value);
+        end % set.Contents
         
         
-        function showSelected(obj)
-            if obj.Selection > 0
-                obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.Selection);
-            end
-        end
         
         
-        function value = get.ForegroundColor( obj )
-            
-            value = obj.ForegroundColor_;
-            
-        end % get.ForegroundColor
+        %         function value = get.ForegroundColor( obj )
+        %
+        %             value = obj.ForegroundColor_;
+        %
+        %         end % get.ForegroundColor
         
-        function set.ForegroundColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''ForegroundColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.ForegroundColor_ = value;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.ForegroundColor = value;
-            end
-            
-        end % set.ForegroundColor
+        %         function set.ForegroundColor( obj, value )
+        %
+        %             % Check
+        %             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+        %                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+        %                 'uix:InvalidPropertyValue', ...
+        %                 'Property ''ForegroundColor'' must be an RGB triple.' )
+        %
+        %             % Set
+        %             obj.ForegroundColor_ = value;
+        %
+        %             % Update existing tabs
+        %             tabs = obj.Tabs;
+        %             n = numel( tabs );
+        %             for ii = 1:n
+        %                 tab = tabs(ii);
+        %                 tab.ForegroundColor = value;
+        %             end
+        %
+        %         end % set.ForegroundColor
         
-        function value = get.HighlightColor( obj )
-            
-            value = obj.HighlightColor_;
-            
-        end % get.HighlightColor
-        
-        function set.HighlightColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HighlightColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.HighlightColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.HighlightColor
+        %         function value = get.HighlightColor( obj )
+        %
+        %             value = obj.HighlightColor_;
+        %
+        %         end % get.HighlightColor
+        %
+        %         function set.HighlightColor( obj, value )
+        %
+        %             % Check
+        %             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+        %                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+        %                 'uix:InvalidPropertyValue', ...
+        %                 'Property ''HighlightColor'' must be an RGB triple.' )
+        %
+        %             % Set
+        %             obj.HighlightColor_ = value;
+        %
+        %             % Mark as dirty
+        %             obj.Dirty = true;
+        %
+        %         end % set.HighlightColor
         
         
         
@@ -369,42 +413,26 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
         end % set.ShadowColor
         
         function value = get.TabEnables( obj )
-            
-            value = get( obj.TabGroup.Children, {'Visible'} );
-            %value(strcmp( value, 'inactive' )) = {'on'};
-            
+            if isempty(obj.TabEnables_)
+                value = repmat({'on'},1,numel(obj.TabGroup.Children));
+            else
+                value = obj.TabEnables_;
+            end
         end % get.TabEnables
         
         function set.TabEnables( obj, value )
+                        
+            assert(numel(value) == numel(obj.TabGroup.Children),"uix:InvalidParameter","TabEnables must have one entry for each tab.")
             
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
+            obj.TabEnables_ = value;
+            
+            for k = 1:numel(obj.TabGroup.Children)
+                if value(k) == "on"
+                    obj.TabGroup.Children(k).ForegroundColor = [0,0,0];
+                else
+                    obj.TabGroup.Children(k).ForegroundColor = [0.6,0.6,0.6];
+                end
             end
-            
-            % Retrieve tabs
-            tabs = obj.TabGroup.Children;
-            tabListeners = obj.TabListeners;
-            
-            % Check
-            assert( isequal( size( value ), size( tabs ) ) && ...
-                all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabEnables'' should be an array of strings "on" or "off", one per tab.' )
-            
-            % Set
-            tf = strcmp( value, 'on' );
-            value(tf) = {'inactive'};
-            for ii = 1:numel( tabs )
-                tabs(ii).Enable = value{ii};
-                tabListeners(ii).Enabled = tf(ii);
-            end
-            
-            % Show selected child
-            obj.showSelection()
-            
-            % Mark as dirty
-            obj.Dirty = true;
             
         end % set.TabEnables
         
@@ -907,22 +935,29 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
     methods( Access = private )
         
         % This is the function that uicontrol and uitab map to
-        function addTab(varargin)
+        function tb=addTab(varargin)
             if mod(numel(varargin),2) == 1
                 % Extract the parent object.
                 obj = varargin{1};
                 % Remove it from varargin for uix.set later.
                 varargin = varargin(2:end);
+                
+                %protect against the method being accessed in the
+                %obj.method approach but with parent also as a name-value
+                %pair.
+                if contains('parent',lower(varargin(1:2:end)))
+                    idx = find(lower(varargin(1:2:end))=="parent");
+                    varargin(2*idx-1:2*idx)=[];
+                end
+                
                 % Create tab group
             else
                 % If parent is a name value pair then find it
-                parentIdx = lower(string(varargin(1:2:end))) == "parent";
-                parentIdx = sum((1:numel(varargin)/2).*parentIdx);
+                parentIdx = find(lower(string(varargin(1:2:end))) == "parent");
                 % Extract it
-                obj  = varargin{parentIdx+1};
+                obj  = varargin{2*parentIdx};
                 % Remove it from varargin
-                varargin(parentIdx:parentIdx+1)=[];
-                % Create tab group
+                varargin(2*parentIdx-1:2*parentIdx)=[];
             end
             
             
@@ -961,6 +996,13 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
             set(tb,varargin{:});
         end % addTab
+        
+        function contentsIntoTabs(obj,value)
+            for k = 1:numel(value)
+                obj.TabGroup.Children(k).Children=value{k};
+            end
+        end
+        
         
         function redrawTabs( obj )
             %redrawTabs  Redraw tabs
@@ -1068,20 +1110,15 @@ classdef TabPanel < uix.Container % & uix.mixin.Panel % Removed this inheritance
             
         end % onBackgroundColorChanged
         
-        function onSelectionChanged( obj, source, eventData )
-            
-            % Call callback
-            callback = obj.SelectionChangedFcn;
-            if ischar( callback ) && isequal( callback, '' )
-                % do nothing
-            elseif ischar( callback )
-                feval( callback, source, eventData )
-            elseif isa( callback, 'function_handle' )
-                callback( source, eventData )
-            elseif iscell( callback )
-                feval( callback{1}, source, eventData, callback{2:end} )
+        function onSelectionChanged( obj, ~ , eventData )
+                        
+            % If the tab is enabled deny the swap
+            if obj.TabEnables{obj.TabGroup.Children==eventData.NewValue}=="off"
+                obj.Selection = find(eventData.OldValue==obj.TabGroup.Children);
+            else
+                % If the change is allowed, send out notification of change
+                notify(obj,"SelectionChanged")
             end
-            
         end % onSelectionChanged
         
         function onParentChanged( obj, ~, ~ )
