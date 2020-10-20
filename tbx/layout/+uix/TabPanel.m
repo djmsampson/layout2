@@ -64,7 +64,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     end
     
     % Legacy properties to check against for backwards compatability
-    properties ( Constant , Hidden ) 
+    properties ( Constant , Access = private ) 
        OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
        OldUiControlArguments = ["HorizontalAlignment","ListboxTop","Max","Min","SliderStep","String","Style","Value","Position","BackgroundColor","CData","Callback","Children","Tooltip","ForegroundColor","Enable","Extent","Visible","Parent","HandleVisibility","ButtonDownFcn","ContextMenu","BusyAction","BeingDeleted","Interruptible","CreateFcn","DeleteFcn","Type","Tag","UserData","KeyPressFcn","KeyReleaseFcn","FontUnits","FontSize","FontName","FontAngle","FontWeight","Units","InnerPosition","OuterPosition"];
     end % (Constant,Hidden) Backwards compatability checks
@@ -176,7 +176,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             try
                 if numel(varargin) > 0 % Make sure we havnet already dealt with all of the arguments
                     %uix.set is also an option
-                    set( obj, varargin{:} );
+                    set( obj.TabGroup, varargin{:} );
                 end % if
             catch e
                 delete( obj )
@@ -835,6 +835,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         % This is the function that uicontrol and uitab map to
         function tb=addTab(varargin)
+            
             if mod(numel(varargin),2) == 1
                 % Add the parent name at the start for consistency.
                 varargin = ['parent',varargin];
@@ -844,7 +845,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 % Find the parent argument
                 parentIdx = find(lower(string(varargin(1:2:end))) == "parent");
                 % Extract the tabgroup from the tabpanel
-                varargin{2*parentIdx}=varargin{2*parentIdx}.TabGroup;
+                obj = varargin{2*parentIdx};
+                varargin{2*parentIdx}=obj.TabGroup;
 
             
             
@@ -889,80 +891,80 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         end
         
         
-        function redrawTabs( obj )
-            %redrawTabs  Redraw tabs
-            %
-            %  p.redrawTabs() redraws the tabs.
-            
-            % Get relevant properties
-            selection = obj.Selection_;
-            tabs = obj.Tabs;
-            t = numel( tabs );
-            dividers = obj.Dividers;
-            
-            % Handle no tabs as a special case
-            if t == 0
-                dividers.Visible = 'off'; % hide
-                return
-            end
-            
-            % Repaint tabs
-            backgroundColor = obj.BackgroundColor;
-            for ii = 1:t
-                tab = tabs(ii);
-                if ii == selection
-                    tab.BackgroundColor = backgroundColor;
-                else
-                    tab.BackgroundColor = obj.Tint * backgroundColor;
-                end
-            end
-            
-            % Repaint dividers
-            d = t + 1;
-            dividerNames = repmat( 'F', [d 2] ); % initialize
-            dividerNames(1,1) = 'E'; % end
-            dividerNames(end,2) = 'E'; % end
-            if selection ~= 0
-                dividerNames(selection,2) = 'T'; % selected
-                dividerNames(selection+1,1) = 'T'; % selected
-            end
-            tH = obj.TabHeight;
-            assert( tH >= obj.TabMinimumHeight, 'uix:InvalidState', ...
-                'Cannot redraw tabs with invalid TabHeight.' )
-            tW = obj.Tabs(1).Position(3);
-            dW = obj.DividerWidth;
-            allCData = zeros( [tH 0 3] ); % initialize
-            map = [obj.ShadowColor; obj.BackgroundColor; ...
-                obj.Tint * obj.BackgroundColor; obj.HighlightColor;...
-                obj.ParentBackgroundColor];
-            for ii = 1:d
-                % Select mask
-                iMask = obj.DividerMask.( dividerNames(ii,:) );
-                % Resize
-                iData = repmat( iMask(5,:), [tH 1] );
-                iData(1:4,:) = iMask(1:4,:);
-                iData(end-3:end,:) = iMask(end-3:end,:);
-                % Convert to RGB
-                cData = ind2rgb( iData+1, map );
-                % Orient
-                switch obj.TabLocation_
-                    case 'bottom'
-                        cData = flipud( cData );
-                end
-                % Insert
-                allCData(1:tH,(ii-1)*(dW+tW)+(1:dW),:) = cData; % center
-                if ii > 1 % extend left under transparent uicontrol edge
-                    allCData(1:tH,(ii-1)*(dW+tW),:) = cData(:,1,:);
-                end
-                if ii < d % extend right under transparent uicontrol edge
-                    allCData(1:tH,(ii-1)*(dW+tW)+dW+1,:) = cData(:,end,:);
-                end
-            end
-            dividers.CData = allCData; % paint
-            dividers.BackgroundColor = obj.ParentBackgroundColor;
-            dividers.Visible = 'on'; % show
-            
-        end % redrawTabs
+%         function redrawTabs( obj )
+%             %redrawTabs  Redraw tabs
+%             %
+%             %  p.redrawTabs() redraws the tabs.
+%             
+%             % Get relevant properties
+%             selection = obj.Selection_;
+%             tabs = obj.Tabs;
+%             t = numel( tabs );
+%             dividers = obj.Dividers;
+%             
+%             % Handle no tabs as a special case
+%             if t == 0
+%                 dividers.Visible = 'off'; % hide
+%                 return
+%             end
+%             
+%             % Repaint tabs
+%             backgroundColor = obj.BackgroundColor;
+%             for ii = 1:t
+%                 tab = tabs(ii);
+%                 if ii == selection
+%                     tab.BackgroundColor = backgroundColor;
+%                 else
+%                     tab.BackgroundColor = obj.Tint * backgroundColor;
+%                 end
+%             end
+%             
+%             % Repaint dividers
+%             d = t + 1;
+%             dividerNames = repmat( 'F', [d 2] ); % initialize
+%             dividerNames(1,1) = 'E'; % end
+%             dividerNames(end,2) = 'E'; % end
+%             if selection ~= 0
+%                 dividerNames(selection,2) = 'T'; % selected
+%                 dividerNames(selection+1,1) = 'T'; % selected
+%             end
+%             tH = obj.TabHeight;
+%             assert( tH >= obj.TabMinimumHeight, 'uix:InvalidState', ...
+%                 'Cannot redraw tabs with invalid TabHeight.' )
+%             tW = obj.Tabs(1).Position(3);
+%             dW = obj.DividerWidth;
+%             allCData = zeros( [tH 0 3] ); % initialize
+%             map = [obj.ShadowColor; obj.BackgroundColor; ...
+%                 obj.Tint * obj.BackgroundColor; obj.HighlightColor;...
+%                 obj.ParentBackgroundColor];
+%             for ii = 1:d
+%                 % Select mask
+%                 iMask = obj.DividerMask.( dividerNames(ii,:) );
+%                 % Resize
+%                 iData = repmat( iMask(5,:), [tH 1] );
+%                 iData(1:4,:) = iMask(1:4,:);
+%                 iData(end-3:end,:) = iMask(end-3:end,:);
+%                 % Convert to RGB
+%                 cData = ind2rgb( iData+1, map );
+%                 % Orient
+%                 switch obj.TabLocation_
+%                     case 'bottom'
+%                         cData = flipud( cData );
+%                 end
+%                 % Insert
+%                 allCData(1:tH,(ii-1)*(dW+tW)+(1:dW),:) = cData; % center
+%                 if ii > 1 % extend left under transparent uicontrol edge
+%                     allCData(1:tH,(ii-1)*(dW+tW),:) = cData(:,1,:);
+%                 end
+%                 if ii < d % extend right under transparent uicontrol edge
+%                     allCData(1:tH,(ii-1)*(dW+tW)+dW+1,:) = cData(:,end,:);
+%                 end
+%             end
+%             dividers.CData = allCData; % paint
+%             dividers.BackgroundColor = obj.ParentBackgroundColor;
+%             dividers.Visible = 'on'; % show
+%             
+%         end % redrawTabs
         
     end % helper methods
     
