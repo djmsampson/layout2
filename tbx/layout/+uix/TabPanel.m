@@ -18,8 +18,10 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     
     
     properties
-        SelectionChangedFcn % selection change callback
+        SelectionChangedFcn='' % selection change callback
+        DeleteFcn=''
         Tag (1,1) string % Arbitrary user settable tag to add to layout.
+        BeingDeleted (1,:) char {mustBeMember(BeingDeleted,{'on','off'})} = 'off'
     end
     
     properties ( Dependent )
@@ -74,7 +76,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         HighlightColor = [0,0,0] % border highlight color [RGB]
         ShadowColor = [0.7,0.7,0.7] % border shadow color [RGB]
         TabLocation = 'top'% tab location [top|bottom]
-        Padding = 0;
+        Padding = 0
+        BackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
     end % Removed properties
     
     properties ( Access=private, Constant ) % Temporarily removed functionality due to webgraphics
@@ -548,7 +551,10 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         function set.FontWeight(~,~)
         end
         
-                function set.FontUnits(~,~)
+        function set.FontUnits(~,~)
+        end
+        
+        function set.BackgroundColor(~,~)
         end
         
         function set.HighlightColor(~,~)
