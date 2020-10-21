@@ -129,6 +129,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % to cover legacy arguments
             currentProps = erase(string(properties(obj))',obj.RemovedProperties);
             % Add any properties that will get passed to uitabgroup
+            % Note if any of the removed properties get added back in
+            % This will automatically disable their warnings.
             currentProps=unique([currentProps,string(properties(obj.TabGroup))']);
             currentProps=currentProps(currentProps~="");
             % Get the input arguments to compare.
