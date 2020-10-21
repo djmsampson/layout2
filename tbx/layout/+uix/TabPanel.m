@@ -28,30 +28,30 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         Selection(1, 1) {mustBeInteger, mustBeNonnegative}
         TabEnables (1,:) cell {mustBeMember(TabEnables,{'on','off'})}% tab enable states
         ForegroundColor (1,3) {mustBeInRange(ForegroundColor,0,1)}
-        Children % The tabgroup children
+        Children % Points to the tabgroup children
         Contents % Tabgroup children in their left to right order - this is redundant with uitab but kept for compatability.
     end % properties ( Dependent )
     
     properties( Access = public, Dependent, SetObservable)
         Parent
-    end
+    end % properties ( Access = public, Dependent, SetObservable)
     
     properties( Access = public, Dependent, AbortSet = true)
         TabTitles (1,:) % tab titles
         TabContextMenus % tab context menus
         Visible
-    end
+    end % properties( Access = public, Dependent, AbortSet = true)
     
     properties( Access = private )
         TabEnables_ % Backing for dependent property TabEnables
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
-    end
+    end % ( Access = private )
     
     % Listeners - potentially redundant
     properties( Access = private )
-        BackgroundColorListener % listener
-        SelectionChangedListener % listener
-        ParentListener % listener
+        BackgroundColorListener % listener *unused*
+        SelectionChangedListener % listener *unused*
+        ParentListener % listener *unused*
         ParentBackgroundColorListener % listener
     end
     
