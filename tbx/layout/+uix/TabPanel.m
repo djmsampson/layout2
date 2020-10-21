@@ -39,7 +39,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     
     properties( Access = public, Dependent, AbortSet )
         TabLocation % tab location [top|bottom]
-        TabTitles string % tab titles
+        TabTitles (1,:) string % tab titles
         TabContextMenus % tab context menus
     end
     
@@ -360,7 +360,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         function value = get.TabTitles( obj )
             
-            value = string(get( obj.TabGroup.Children, {'Title'} ));
+            %value = string(get( obj.TabGroup.Children, {'Title'} ));
+            value = get( obj.TabGroup.Children, {'Title'} )';
             
         end % get.TabTitles
         
@@ -372,10 +373,6 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 'uix:InvalidPropertyValue', ...
                 'Property "TabTitles" should be an array of strings, one per tab.' )
             
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
             
             
             % Set
