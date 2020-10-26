@@ -492,7 +492,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         function onSelectionChanged( obj, ~ , eventData )
             % If the tab is enabled deny the swap
-            if strcmpi(obj.TabEnables{obj.TabGroup.Children==eventData.NewValue},"off")
+            if strcmpi(obj.TabEnables{obj.TabGroup.Children==eventData.NewValue},'off')
                 obj.Selection = find(eventData.OldValue==obj.TabGroup.Children);
             else
                 % If the change is allowed, send out notification of change
@@ -500,36 +500,6 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 obj.SelectionChangedFcn;
             end
         end % onSelectionChanged
-        
-        
-        function onParentChanged( obj, ~, ~ )
-            % Update ParentBackgroundColor and ParentBackgroundColor
-            if isprop( obj.Parent, 'BackgroundColor' )
-                prop = 'BackgroundColor';
-            elseif isprop( obj.Parent, 'Color' )
-                prop = 'Color';
-            else
-                prop = [];
-            end
-            
-            if ~isempty( prop )
-                obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
-                    findprop( obj.Parent, prop ), 'PostSet', ...
-                    @( src, evt ) obj.updateParentBackgroundColor( prop ) );
-            else
-                obj.ParentBackgroundColorListener = [];
-            end
-            obj.updateParentBackgroundColor( prop );
-        end % onParentChanged
-        
-        
-        function updateParentBackgroundColor( obj, prop )
-            if isempty( prop )
-                obj.ParentBackgroundColor = obj.BackgroundColor;
-            else
-                obj.ParentBackgroundColor = obj.Parent.(prop);
-            end
-        end
         
     end % event handlers
     
