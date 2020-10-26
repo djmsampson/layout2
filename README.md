@@ -7,7 +7,10 @@ This toolbox provides tools to create sophisticated MATLAB graphical user interf
 * Show and hide components using tabs and panels
 * Show part of a large component in a scrollable panel
 
-This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks.
+## History
+This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks, and was first released in 2010.
+
+The toolbox is distributed externally on [File Exchange](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox).
 
 This version is for MATLAB R2014b and later. For R2014a and earlier, see [version 1](http://www.mathworks.com/matlabcentral/fileexchange/27758-gui-layout-toolbox).
 
