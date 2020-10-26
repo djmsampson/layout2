@@ -2,7 +2,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        IsParentedOptions = struct('Parented', true, 'Unparented', false)
+        IsParentedOptions = struct('ParentFig', struct('IsParented', true, 'Parent', 'figure'),...
+                                   'ParentUiFig', struct('IsParented', true, 'Parent', 'uifigure'),...
+                                   'Unparented', struct('IsParented', false));
     end
     
     properties (TestParameter, Abstract)
@@ -37,9 +39,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             uix.tracking( 'off' )
         end
         function setParentedField(testcase, IsParentedOptions)
-            testcase.isParented = IsParentedOptions;
-            if IsParentedOptions
-                testcase.parentStr = 'figure';
+            testcase.isParented = IsParentedOptions.IsParented;
+            if IsParentedOptions.IsParented
+                testcase.parentStr = IsParentedOptions.Parent;
             else
                 testcase.parentStr = '[]';
             end

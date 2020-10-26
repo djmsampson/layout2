@@ -11,8 +11,8 @@ ts = matlab.unittest.TestSuite.fromFolder(pwd);
 runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput
 
 % Tell the test runner to report code coverage for the code/layout folder
-runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uiextras')));
-runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uix')));
+%runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uiextras')));
+%runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(layoutRoot, '+uix')));
 
 results             = runner.run(ts);
 resultsTable        = table(results);
