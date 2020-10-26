@@ -444,7 +444,6 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             if mod(numel(varargin),2) == 1
                 % Add the parent name at the start for consistency.
                 varargin = ['parent',varargin];
-                
             end
             
             % Find the parent argument
@@ -459,6 +458,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % This checks against incorrect or unsupported properties in
             % uitab and ignores them, warns against them being ignored.
             uiTabProps = properties(tb);
+            
             idx = zeros(size(varargin),'logical');
             
             for k = 1:numel(idx)/2
@@ -475,14 +475,16 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                         % If unsuccessful validation return the warning that it
                         % is being ignored.
                         warning off backtrace
-                        warning('The property "' +oldArgument + '" is no longer supported and will be ignored.')
+                        warning(['The property "',oldArgument , '" is no longer supported and will be ignored.'])
                         warning on backtrace
                     catch ME
                         error('uix:InvalidArgument',ME.message)
                     end
                 end
             end
+            
             varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
+            
             set(tb,varargin{:});
         end % addTab
         
