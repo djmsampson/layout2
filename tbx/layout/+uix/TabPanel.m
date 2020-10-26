@@ -56,14 +56,14 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     end
     
     properties % ( Access = private ) % Make private when done
-        TabGroup(1, 1) matlab.ui.container.TabGroup
+        TabGroup
     end
     
     % Legacy properties to check against for backwards compatability
     properties ( Constant , Access = private )
-        OldPanelProperties = ["BackgroundColor","BeingDeleted","Contents","DeleteFcn","FontAngle","FontName","FontSize","FontUnits","FontWeight","ForegroundColor","HighlightColor","ShadowColor","Padding","Parent","Position","Selection","SelectionChangedFcn","TabContextMenus","TabEnables","TabTitles","TabWidth","Tag","Type","Units","Visible"];
-        OldUiControlArguments = ["HorizontalAlignment","ListboxTop","Max","Min","SliderStep","String","Style","Value","Position","BackgroundColor","CData","Callback","Children","Tooltip","ForegroundColor","Enable","Extent","Visible","Parent","HandleVisibility","ButtonDownFcn","ContextMenu","BusyAction","BeingDeleted","Interruptible","CreateFcn","DeleteFcn","Type","Tag","UserData","KeyPressFcn","KeyReleaseFcn","FontUnits","FontSize","FontName","FontAngle","FontWeight","Units","InnerPosition","OuterPosition"];
-        RemovedProperties = ["Padding","TabWidth","FontAngle","FontName","FontSize","FontWeight","FontUnits","HighlightColor","ShadowColor","TabLocation","Type"]
+        OldPanelProperties = {'BackgroundColor','BeingDeleted','Contents','DeleteFcn','FontAngle','FontName','FontSize','FontUnits','FontWeight','ForegroundColor','HighlightColor','ShadowColor','Padding','Parent','Position','Selection','SelectionChangedFcn','TabContextMenus','TabEnables','TabTitles','TabWidth','Tag','Type','Units','Visible'};
+        OldUiControlArguments = {'HorizontalAlignment','ListboxTop','Max','Min','SliderStep','String','Style','Value','Position','BackgroundColor','CData','Callback','Children','Tooltip','ForegroundColor','Enable','Extent','Visible','Parent','HandleVisibility','ButtonDownFcn','ContextMenu','BusyAction','BeingDeleted','Interruptible','CreateFcn','DeleteFcn','Type','Tag','UserData','KeyPressFcn','KeyReleaseFcn','FontUnits','FontSize','FontName','FontAngle','FontWeight','Units','InnerPosition','OuterPosition'};
+        RemovedProperties = {'Padding','TabWidth','FontAngle','FontName','FontSize','FontWeight','FontUnits','HighlightColor','ShadowColor','TabLocation','Type'}
     end % (Constant,Hidden) Backwards compatability checks
     
     properties % Temporarily removed functionality due to webgraphics
@@ -137,7 +137,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             inputProps = string(varargin(1:2:end));
             
             % String validation to check against current properties
-            idx = zeros(size(inputProps),"logical");
+            idx = zeros(size(inputProps),'logical');
             for k =1:numel(inputProps)
                 try
                     inputProps(k) = validatestring(inputProps(k),currentProps);
@@ -155,7 +155,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 try
                     oldProp = validatestring(notCurrentProps(k),unique([obj.OldPanelProperties,obj.RemovedProperties]));
                     warning off backtrace
-                    warning("The property '" + oldProp + "' is no longer supported and will be ignored.");
+                    warning(['The property "' , oldProp , '" is no longer supported and will be ignored.']);
                     warning on backtrace
                 catch ME
                     delete( obj )
@@ -179,7 +179,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
             % Common arguments are preferentially sent to the TabPanel class
             % so its set methods transfer legacy inputs to the uitabgroup
-            idx = zeros(size(varargin),"logical");
+            idx = zeros(size(varargin),'logical');
             tabPanelProps = properties(obj);
             for k = 1:numel(idx)/2
                 try
@@ -203,7 +203,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % uitabgroup properties or legacy ones - again any false
             % arguments have already been mentioned.
             uiTabProps = properties(tabGroup);
-            idx = zeros(size(uitabgroupVarargin),"logical");
+            idx = zeros(size(uitabgroupVarargin),'logical');
             
             for k = 1:numel(idx)/2
                 try
@@ -289,14 +289,14 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         function set.Selection(obj,value)
             
             if isempty(obj.TabGroup.Children) % Are there any tabs?
-                error("uix:InvalidPropertyValue","No tabs have been added to the tab panel.")
+                error('uix:InvalidPropertyValue','No tabs have been added to the tab panel.')
             end
             
             % Get old tab to pass to onSelectionChanged
             eventData.OldValue = obj.TabGroup.SelectedTab;
             
             numTabs = numel( obj.Children );
-            assert( (value <= numTabs) && (value > 0),"uix:InvalidPropertyValue", "Selection must be in the range 1 to " + numTabs + " (the number of tabs)." )
+            assert( (value <= numTabs) && (value > 0),'uix:InvalidPropertyValue', ['Selection must be in the range 1 to ' , numTabs , ' (the number of tabs).'] )
             obj.TabGroup.SelectedTab = obj.TabGroup.Children(value);
             
             % Get new tab to pass to onSelectionChanged
@@ -350,8 +350,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         % Should this be something we can have on a per tab basis?
         function set.ForegroundColor(obj,value)
             obj.ForegroundColor_ = value;
-            idx = obj.TabEnables == "on";
-            set(obj.TabGroup.Children(idx),"ForegroundColor",value)
+            idx = strcmpi(obj.TabEnables,'on');
+            set(obj.TabGroup.Children(idx),'ForegroundColor',value)
         end
         
         
@@ -371,12 +371,12 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         function set.TabEnables( obj, value )
             % Validate size
-            assert(numel(value) == numel(obj.TabGroup.Children),"uix:InvalidParameter","TabEnables must have one entry for each tab.")
+            assert(numel(value) == numel(obj.TabGroup.Children),'uix:InvalidParameter','TabEnables must have one entry for each tab.')
             % Set the backer, used to implement uitab disabling
             obj.TabEnables_ = value;
             % Update text color depending on tab enabled state.
             for k = 1:numel(obj.TabGroup.Children)
-                if value(k) == "on"
+                if strcmpi(value(k),'on')
                     obj.TabGroup.Children(k).ForegroundColor = obj.ForegroundColor;
                 else
                     obj.TabGroup.Children(k).ForegroundColor = [0.6,0.6,0.6];
@@ -448,8 +448,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             end
             
             % Find the parent argument
-            parentIdx = find(lower(string(varargin(1:2:end))) == "parent");
-            % Extract the tabgroup from the tabpanel
+            parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+            % Point it towards the tab group
             obj = varargin{2*parentIdx};
             varargin{2*parentIdx}=obj.TabGroup;
             
@@ -459,7 +459,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % This checks against incorrect or unsupported properties in
             % uitab and ignores them, warns against them being ignored.
             uiTabProps = properties(tb);
-            idx = zeros(size(varargin),"logical");
+            idx = zeros(size(varargin),'logical');
             
             for k = 1:numel(idx)/2
                 try
@@ -475,10 +475,10 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                         % If unsuccessful validation return the warning that it
                         % is being ignored.
                         warning off backtrace
-                        warning("The property '" +oldArgument + "' is no longer supported and will be ignored.")
+                        warning('The property "' +oldArgument + '" is no longer supported and will be ignored.')
                         warning on backtrace
                     catch ME
-                        error("uix:InvalidArgument",ME.message)%"'" + varargin{2*k-1} + "' is not a valid argument name.")
+                        error('uix:InvalidArgument',ME.message)
                     end
                 end
             end
@@ -492,11 +492,11 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         function onSelectionChanged( obj, ~ , eventData )
             % If the tab is enabled deny the swap
-            if obj.TabEnables{obj.TabGroup.Children==eventData.NewValue}=="off"
+            if strcmpi(obj.TabEnables{obj.TabGroup.Children==eventData.NewValue},"off")
                 obj.Selection = find(eventData.OldValue==obj.TabGroup.Children);
             else
                 % If the change is allowed, send out notification of change
-                notify(obj,"SelectionChanged")
+                notify(obj,'SelectionChanged')
                 obj.SelectionChangedFcn;
             end
         end % onSelectionChanged
