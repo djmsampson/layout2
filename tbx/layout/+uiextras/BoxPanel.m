@@ -35,7 +35,6 @@ classdef BoxPanel < uix.BoxPanel
     %  $Revision$ $Date$
     
     properties( Hidden, Access = public, Dependent )
-        Enable % deprecated
         IsDocked
         IsMinimized
         SelectedChild % deprecated
@@ -48,6 +47,13 @@ classdef BoxPanel < uix.BoxPanel
             % Call uix constructor
             obj@uix.BoxPanel( varargin{:} )
             
+            % Add Enable property
+            if ~isprop( obj, 'Enable' )
+                p = addprop( obj, 'Enable' );
+                p.GetMethod = @getEnable;
+                p.SetMethod = @setEnable;
+            end
+            
             % Auto-parent
             if ~ismember( 'Parent', varargin(1:2:end) )
                 obj.Parent = gcf();
@@ -59,7 +65,7 @@ classdef BoxPanel < uix.BoxPanel
     
     methods
         
-        function value = get.Enable( ~ )
+        function value = getEnable( ~ )
             
             % Warn
             % warning( 'uiextras:Deprecated', ...
@@ -68,9 +74,9 @@ classdef BoxPanel < uix.BoxPanel
             % Return
             value = 'on';
             
-        end % get.Enable
+        end % getEnable
         
-        function set.Enable( ~, value )
+        function setEnable( ~, value )
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
@@ -81,7 +87,7 @@ classdef BoxPanel < uix.BoxPanel
             % warning( 'uiextras:Deprecated', ...
             %     'Property ''Enable'' will be removed in a future release.' )
             
-        end % set.Enable
+        end % setEnable
         
         function value = get.IsDocked( obj )
             
