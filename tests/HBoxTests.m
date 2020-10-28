@@ -7,6 +7,9 @@ classdef HBoxTests < matlab.unittest.TestCase
     
     methods (Test) 
         function testResizeFigureRetainsElementSizesInHBoxes(testcase, ContainerType)
+            % filter if unparented
+            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
+                'Not applicable for unparented');
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ContainerType, 'Width');
             
@@ -21,10 +24,13 @@ classdef HBoxTests < matlab.unittest.TestCase
         function testAxesPositionInHBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
+                {'Parent', eval(testcase.parentStr), 'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');            
-            
+            % If unparented, reparent
+            if strcmp(testcase.parentStr,'[]')
+                obj.Parent = figure;
+            end
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 1 250 500] );
             testcase.verifyEqual( get( ax2, 'Position' ), [251 1 250 500] );
@@ -33,7 +39,7 @@ classdef HBoxTests < matlab.unittest.TestCase
         function testMinimumSizes(testcase, ContainerType)
             %testMinimumSizes Test that minimum size is honored (g1329485)
             
-            f = figure();
+            f = eval(testcase.parentStr);
             obj = testcase.hCreateObj(ContainerType, ...
                 {'Parent', f, 'Units', 'Pixels', 'Position', [1 1 1000 500]});  
             
@@ -47,6 +53,11 @@ classdef HBoxTests < matlab.unittest.TestCase
             % Squeeze right, verify that all elements obey their MinimumWidth setting                
             obj.Position(3) = 400; 
             
+             % If it was unparented, reparent
+            if strcmp(testcase.parentStr,'[]')
+                obj.Parent = figure;
+            end
+            
             for ii = 1:5
                 testcase.verifyEqual(ui(ii).Position(3), 100);
             end
@@ -58,7 +69,7 @@ classdef HBoxTests < matlab.unittest.TestCase
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute
-            fig = figure('Position', [400 400 750 750]);
+            fig = eval([testcase.parentStr, '(''Position'', [400 400 750 750])']);
             [obj, ~] = testcase.hBuildRGBBox(type);
             set(obj, 'Padding', 10, 'Spacing', 10, 'Parent', fig);
             set(obj, resizedParameter, [-3, -1, -1, 50]);

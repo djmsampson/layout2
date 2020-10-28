@@ -2,9 +2,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        IsParentedOptions = struct('ParentFig', struct('IsParented', true, 'Parent', 'figure'),...
-                                   ...'ParentUiFig', struct('IsParented', true, 'Parent', 'uifigure'),...
-                                   'Unparented', struct('IsParented', false));
+        Parent = struct('Web','uifigure', ...
+            'Java', 'figure', 'Unparented', '[]')
     end
     
     properties (TestParameter, Abstract)
@@ -19,12 +18,25 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     properties
-        isParented
-        parentStr
         oldTracking = 'unset'
+        parentStr
     end
     
     methods(TestClassSetup)
+        function filterByRelease(testcase, Parent)
+            unsupportedRel = {'R2016b'};
+            if strcmp(Parent,'uifigure')
+                % uifigure only supported from when webgraphics was rolled out
+                rel = ver('matlab');
+                rel = replace(rel.Release,{'(',')'},'');
+ 
+                testcase.assumeFalse(strcmp(rel,unsupportedRel),...
+                    ['Filtered uifigure tests for release ', rel]);
+            end
+            
+            testcase.parentStr = Parent; 
+        end
+        
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
             % If not BaT, assume MATLAB path is setup correctly
@@ -38,14 +50,6 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.oldTracking = uix.tracking( 'query' );
             uix.tracking( 'off' )
         end
-        function setParentedField(testcase, IsParentedOptions)
-            testcase.isParented = IsParentedOptions.IsParented;
-            if IsParentedOptions.IsParented
-                testcase.parentStr = IsParentedOptions.Parent;
-            else
-                testcase.parentStr = '[]';
-            end
-        end
     end
     
     methods(TestClassTeardown)
@@ -55,18 +59,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
     end
     
-    methods(TestMethodTeardown)
-        function closeAllOpenFigures(~)
-            close all force;
-        end
-    end
-    
-    
     methods (Test)
         
         function testEmptyConstructor(testcase, ContainerType)
             % Test constructing the widget with no arguments
-            obj = eval(ContainerType);
+            obj = testcase.hCreateObj(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
         
@@ -136,7 +133,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual( obj.Contents, actualContents([1 3 4]) );
             
             % Reparent a child
-            set( actualContents(3), 'Parent', figure )
+            parent = eval(testcase.parentStr);
+            set( actualContents(3), 'Parent', parent);
             testcase.verifyEqual( obj.Contents, actualContents([1 4]) );
         end
         
@@ -220,7 +218,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual(char(ax.Visible), 'on');
         end
         
-        function testCheckDataCursorCanBeUsed( testcase, ContainerType )
+        function testCheckDataCursorCanBeUsed(testcase, ContainerType)
             obj = testcase.hCreateObj(ContainerType);
             if isempty( obj.Parent )
                 % Auto success on unparented
@@ -265,13 +263,14 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     methods
-        function obj = hCreateObj(testcase, type, varargin)
+        function obj = hCreateObj(testcase,type,varargin)
+            testcase.hApplyFixture;
             if(nargin > 2)
                 obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
             else
                 obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
             end
-            testcase.assertClass(obj, type);
+            testcase.hAddFigureTeardown;
         end
         
         function [obj, rgb] = hBuildRGBBox(testcase, type)
@@ -285,7 +284,6 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 uiextras.Empty('Parent', obj)
                 uicontrol('Parent', obj, 'BackgroundColor', 'b') ];
         end
-        
         function hVerifyHandleContainsParameterValuePairs(testcase, obj, args)
             % check that instance has correctly assigned parameter/value
             % pairs
@@ -306,6 +304,26 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             thisFolder = fileparts( mfilename( 'fullpath' ) );
             batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
             decision = strcmp( thisFolder, batTestFolder );
+        end
+        function hApplyFixture(testcase)
+            if strcmp(testcase.parentStr,'uifigure')
+               testcase.applyFixture(EnableUicontrolFixture); 
+            end
+        end
+        function hAddFigureTeardown(testcase)
+           % Close figure depending on what was open
+           if strcmp(testcase.parentStr,'figure')
+               hFig = findobj('Type','Figure');
+               if ~isempty(hFig)
+                   testcase.addTeardown(@()close(hFig));
+               end
+           elseif strcmp(testcase.parentStr,'uifigure')
+               h = findall(0,'HandleVisibility', 'off');
+               hUifig = findobj(h,'Type','Figure');
+               if ~isempty(hUifig)
+                   testcase.addTeardown(@()close(hUifig));
+               end
+           end
         end
     end
     
