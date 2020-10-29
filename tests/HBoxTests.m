@@ -71,7 +71,8 @@ classdef HBoxTests < matlab.unittest.TestCase
             % create RGB box and set sizes to something relative and
             % absolute
             [obj, ~] = testcase.hBuildRGBBox(type);
-            set(obj, 'Position',[400 400 750 750]);
+            testcase.figfx.FigureHandle.Position = [400 400 750 750];
+            
             set(obj, 'Padding', 10, 'Spacing', 10);
             set(obj, resizedParameter, [-3, -1, -1, 50]);
             
