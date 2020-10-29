@@ -13,9 +13,9 @@ classdef FigureFixture < matlab.unittest.fixtures.Fixture
         
         function setup(fixture)
             if strcmp(fixture.FigureType,'uifigure')
-                fixture.FigureHandle = uifigure('Visible', 'on');  
+                fixture.FigureHandle = uifigure('Visible', 'on','Name','test');  
             elseif strcmp(fixture.FigureType,'figure')
-                fixture.FigureHandle = figure('Visible', 'on');  
+                fixture.FigureHandle = figure('Visible', 'on','Name','test');  
             end
         end
         

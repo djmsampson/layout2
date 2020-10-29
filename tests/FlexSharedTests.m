@@ -3,56 +3,60 @@ classdef FlexSharedTests < ContainerSharedTests
     
     methods ( Test )
         
-        function testMouseOverDividerInDockedFigure( testcase, ContainerType )
-            % g1334965: Add test for g1330841: Mouse-over-divider detection
-            % does not work for docked figures in R2015b
-            %
-            % Pass for unparented tests, since this is not applicable
-            import matlab.unittest.constraints.Eventually
-            import matlab.unittest.constraints.Matches
-            
-            % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
-            
-            % Build the flex
-            c = testcase.hCreateObj( ContainerType );
-            f = c.Parent;
-            f.WindowStyle = 'docked';
-            figure( f ) % bring to front
-            for ii = 1:9
-                uicontrol( 'Parent', c );
-            end
-            c.Padding = 10;
-            c.Spacing = 10;
-            % In case of grid, make sure you have a grid
-            if isa( c, 'uiextras.GridFlex' )
-                c.Widths = [-1 -1 -1];
-            end
-            % Find some dividers
-            d = findobj( hgGetTrueChildren( c ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            % Move to lower bottom
-            figureOrigin = getFigureOrigin( f );
-            moveMouseTo( figureOrigin )
-            % Check you start with an arrow pointer
-            testcase.verifyEqual( f.Pointer, 'arrow', 'Pointer should be arrow to start with' )
-            % Move over dividers and make sure you get the right ones
-            for ii = 1:numel( d )
-                moveMouseTo( figureOrigin + getpixelcenter( d(ii), true ) )
-                testcase.verifyThat( @()f.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
-                    sprintf( 'Wrong pointer in divider %d', ii ) );
-            end
-            
-        end % testMouseOverDividerInDockedFigure
-        
+%         function testMouseOverDividerInDockedFigure( testcase, ContainerType )
+%             % g1334965: Add test for g1330841: Mouse-over-divider detection
+%             % does not work for docked figures in R2015b
+%             %
+%             % Pass for unparented tests, since this is not applicable
+%             import matlab.unittest.constraints.Eventually
+%             import matlab.unittest.constraints.Matches
+%             
+%             % Abort for unparented cases and in unsuitable environments
+%             testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
+%                 strcmp(testcase.parentStr,'[]'),'Not applicable - filtered');
+%             
+%             % Build the flex
+%             c = testcase.hCreateObj( ContainerType );
+%             f = c.Parent;
+%             f.WindowStyle = 'docked';
+%             figure( f ) % bring to front
+%             for ii = 1:9
+%                 uicontrol( 'Parent', c );
+%             end
+%             c.Padding = 10;
+%             c.Spacing = 10;
+%             % In case of grid, make sure you have a grid
+%             if isa( c, 'uiextras.GridFlex' )
+%                 c.Widths = [-1 -1 -1];
+%             end
+%             % Find some dividers
+%             d = findobj( hgGetTrueChildren( c ), 'Tag', 'uix.Divider', 'Visible', 'on' );
+%             % Move to lower bottom
+%             figureOrigin = getFigureOrigin( f );
+%             moveMouseTo( figureOrigin )
+%             % Check you start with an arrow pointer
+%             testcase.verifyEqual( f.Pointer, 'arrow', 'Pointer should be arrow to start with' )
+%             % Move over dividers and make sure you get the right ones
+%             for ii = 1:numel( d )
+%                 moveMouseTo( figureOrigin + getpixelcenter( d(ii), true ) )
+%                 testcase.verifyThat( @()f.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
+%                     sprintf( 'Wrong pointer in divider %d', ii ) );
+%             end
+%             
+%         end % testMouseOverDividerInDockedFigure
+%         
         function testMousePointerUpdateOnFlexChange( testcase, ContainerType )
             % g1367326: Add test for g1346921: Mouse pointer gets confused
             % when moving between adjacent flex containers
             
             % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
+            testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
+                strcmp(testcase.parentStr,'[]'),...
+                'Not applicable for unparented, in Jenkins or in BaT.');
             
             % Build
-            f = figure;
+            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            f = fx.FigureHandle;
             % Layout is component based
             switch ContainerType
                 case 'uiextras.VBoxFlex'
@@ -113,63 +117,57 @@ classdef FlexSharedTests < ContainerSharedTests
             testcase.verifyEqual( f.Pointer, 'arrow' );
             
         end % testMousePointerUpdateOnFlexChange
-        
-        function testMousePointerUpdateOnFlexClick( testcase, ContainerType )
-            % g1367337: Update flex container pointer on mouse press event
-            
-            % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
-            
-            temp = strsplit( ContainerType, '.' );
-            ComponentName = temp{2};
-            % Build
-            f = figure;
-            nChildren = 4;
-            h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
-            b1 = gobjects( 1, nChildren );
-            for ii = 1:nChildren
-                b1(ii) = uicontrol( 'Parent', h1 );
-            end
-            % Find the dividers
-            d1 = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            % Where will be the divider?
-            figureOrigin = getFigureOrigin( f );
-            dividerPosition = figureOrigin + getpixelcenter( d1(1), true );
-            % Unparent
-            h1.Parent = [];
-            % Place the mouse
-            moveMouseTo( dividerPosition )
-            testcase.verifyEqual( f.Pointer, 'arrow' );
-            % Parent
-            h1.Parent = f;
-            % Bring figure back into focus
-            figure(f)
-            % Click and check pointer
-            import java.awt.Robot;
-            import java.awt.event.*;
-            mouse = javaObjectEDT( 'java.awt.Robot' );
-            drawnow
-            javaMethodEDT( 'mousePress', mouse, InputEvent.BUTTON1_MASK );
-            drawnow
-            % Still sometimes needs a pose for the cursor change to take
-            % effect
-            pause( 0.01 )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            Robot().mouseRelease( InputEvent.BUTTON1_MASK );
-            drawnow
-            
-        end % testMousePointerUpdateOnFlexClick
-        
+%         
+%         function testMousePointerUpdateOnFlexClick( testcase, ContainerType )
+%             % g1367337: Update flex container pointer on mouse press event
+%             
+%             % Abort for unparented cases and in unsuitable environments
+%             testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
+%                 strcmp(testcase.parentStr,'[]'),'Not applicable - filtered');
+%             
+%             temp = strsplit( ContainerType, '.' );
+%             ComponentName = temp{2};
+%             % Build
+%             f = eval(testcase.parentStr);
+%             nChildren = 4;
+%             h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
+%             b1 = gobjects( 1, nChildren );
+%             for ii = 1:nChildren
+%                 b1(ii) = uicontrol( 'Parent', h1 );
+%             end
+%             % Find the dividers
+%             d1 = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
+%             % Where will be the divider?
+%             figureOrigin = getFigureOrigin( f );
+%             dividerPosition = figureOrigin + getpixelcenter( d1(1), true );
+%             % Unparent
+%             h1.Parent = [];
+%             % Place the mouse
+%             moveMouseTo( dividerPosition )
+%             testcase.verifyEqual( f.Pointer, 'arrow' );
+%             % Parent
+%             h1.Parent = f;
+%             % Bring figure back into focus
+%             eval('figure(f)');
+%             % Click and check pointer
+%             import java.awt.Robot;
+%             import java.awt.event.*;
+%             mouse = javaObjectEDT( 'java.awt.Robot' );
+%             drawnow
+%             javaMethodEDT( 'mousePress', mouse, InputEvent.BUTTON1_MASK );
+%             drawnow
+%             % Still sometimes needs a pose for the cursor change to take
+%             % effect
+%             pause( 0.01 )
+%             testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
+%             Robot().mouseRelease( InputEvent.BUTTON1_MASK );
+%             drawnow
+%             
+%         end % testMousePointerUpdateOnFlexClick
+%         
     end
     
     methods ( Access = private )
-        
-        function tf = isUnparented( testcase )
-            %isUnparented  Test for unparented testcases
-            
-            tf = strcmp( testcase.parentStr, '[]' );
-            
-        end % isUnparented
         
         function tf = isJenkins( ~ )
             %isJenkins  True in Jenkins environment

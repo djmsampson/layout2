@@ -24,12 +24,13 @@ classdef VBoxTests < matlab.unittest.TestCase
         function testAxesPositionInVBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0});
+                {'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0});
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');
-            % If unparented, reparent
+            % If unparented, reparent to a figure
             if strcmp(testcase.parentStr,'[]')
-                obj.Parent = figure;
+                fx = testcase.applyFixture(FigureFixture('figure'));
+                obj.Parent = fx.FigureHandle;
             end
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 251 500 250] );
@@ -38,10 +39,11 @@ classdef VBoxTests < matlab.unittest.TestCase
         
         function testMinimumSizes(testcase, ContainerType)
             %testMinimumSizes Test that minimum size is honored (g1329485)
-            
-            f = eval(testcase.parentStr);
+            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
+                'Not applicable to unparented.');
+
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Parent', f, 'Units', 'Pixels', 'Position', [1 1 500 1000]});  
+                {'Units', 'Pixels', 'Position', [1 1 500 1000]});  
             
             for ii = 1:5 
                 ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
@@ -64,13 +66,13 @@ classdef VBoxTests < matlab.unittest.TestCase
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute
-            fig = eval([testcase.parentStr, '(''Position'', [400 400 750 750])']);
             [obj, ~] = testcase.hBuildRGBBox(type);
-            set(obj, 'Padding', 10, 'Spacing', 10, 'Parent', fig);
-            set(obj, resizedParameter, [-3, -1, -1, 50]);
+            set(obj,'Position',[400 400 750 750]);
+            set(obj,'Padding', 10, 'Spacing', 10);
+            set(obj,resizedParameter, [-3, -1, -1, 50]);
             
             % resize figure
-            fig.Position = [600, 600, 200, 200];            
+            testcase.figfx.FigureHandle.Position = [600, 600, 200, 200];            
             testcase.assertNumElements(obj.Contents, 4, ...
                 sprintf('created box with %d elements instead of 4\n', numel(obj.Contents)) );
             

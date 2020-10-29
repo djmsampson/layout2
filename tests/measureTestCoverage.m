@@ -16,7 +16,7 @@ runner = matlab.unittest.TestRunner.withNoPlugins; %withTextOutput
 
 results             = runner.run(ts);
 resultsTable        = table(results);
-failedResultsTable  = resultsTable(~resultsTable.Passed,:);
+failedResultsTable  = resultsTable(resultsTable.Failed,:)
 
 numTests            = size(resultsTable, 1);
 numFails            = size(failedResultsTable, 1);

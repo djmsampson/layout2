@@ -13,7 +13,7 @@ classdef PanelTests < matlab.unittest.TestCase
         
         function testLayoutInPanel(testcase, ContainerType)
             %testLayoutInTab  Test layout in panel
-            obj = testcase.hCreateObj(ContainerType, {'Parent', eval(testcase.parentStr)});
+            obj = testcase.hCreateObj(ContainerType);
             
             b = uiextras.HBox( 'Parent', obj );
             testcase.verifyEqual( obj.Contents, b );
@@ -29,8 +29,11 @@ classdef PanelTests < matlab.unittest.TestCase
             % if the panel is unparented all children are automatically
             % visible, but on reparenting we need to make sure the
             % visibility is correctly set. So reparent obj at this point.
+            % Make a copy of the obj to test with both figure and uifigure
+            
             if strcmp(testcase.parentStr,'[]')
-                obj.Parent = testcase.parentStr;
+                fxFig = testcase.applyFixture(FigureFixture('figure'));
+                obj.Parent = fxFig.FigureHandle;
             end
             
             % Make sure the "selected" child is visible
@@ -38,6 +41,7 @@ classdef PanelTests < matlab.unittest.TestCase
             % Make sure the "hidden" children are invisible
             testcase.verifyEqual(char(obj.Contents(1).Visible), 'off');
             testcase.verifyEqual(char(obj.Contents(3).Visible), 'off');
+            
         end
         
         function testSelectableEmptyPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
