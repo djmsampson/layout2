@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3000730109" file="C:\Development\layouts2\GUI Layout Toolbox.prj" location="C:\Development\layouts2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3000730109" file="C:\Development\layout2\GUI Layout Toolbox.prj" location="C:\Development\layout2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson</param.authnamewatermark>
     <param.email>dsampson@mathworks.com</param.email>
@@ -26,7 +26,7 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.5</item>
+      <item>9.9</item>
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
@@ -58,9 +58,14 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     <param.registered.apps />
     <param.docs>${PROJECT_ROOT}\tbx\layoutdoc\info.xml</param.docs>
     <param.getting.started.guide />
-    <param.matlabpath.excludes />
+    <param.matlabpath.excludes>
+      <item>/</item>
+    </param.matlabpath.excludes>
     <param.javaclasspath.excludes />
     <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
     <param.release.start>R2014b</param.release.start>
     <param.release.end>latest</param.release.end>
     <param.release.current.only>false</param.release.current.only>
@@ -75,6 +80,9 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
       <param.output />
       <param.platforms />
       <param.exclude.pcodedmfiles />
@@ -83,9 +91,11 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
       <param.apps />
       <param.registered.apps />
       <param.getting.started.guide />
-      <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
       <param.exported.on.package />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
       <param.release.current.only />
       <param.compatiblity.windows />
       <param.compatiblity.macos />
@@ -108,12 +118,31 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Development\layouts2" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layouts2\GUI Layout Toolbox.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="GUI Layout Toolbox.mltbx" optional="false">C:\Development\layout2\GUI Layout Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2018b</root>
-      <toolboxes />
+      <root>C:\Program Files\MATLAB\R2020b</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
     </matlab>
     <platform>
       <unix>false</unix>

@@ -7,8 +7,7 @@ function setPosition( o, p, u )
 %  In contrast to setting the Position property directly, this function
 %  honors the ActivePositionProperty of axes.
 
-%  Copyright 2009-2016 The MathWorks, Inc.
-%  $Revision$ $Date$
+%  Copyright 2009-2020 The MathWorks, Inc.
 
 % Set units
 if ~isempty( findprop( o, 'Units' ) )

@@ -1,8 +1,7 @@
 classdef ( Hidden, Sealed ) PointerManager < handle
     %uix.PointerManager  Pointer manager
     
-    %  Copyright 2016 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( SetAccess = private )
         Figure % figure
