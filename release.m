@@ -110,7 +110,7 @@ end
 if package
     % Check version
     fprintf( 1, 'Checking version...' );
-    prj = fullfile( prjDir, 'GUI Layout Toolbox.prj' );
+    prj = fullfile( prjDir, 'toolbox.prj' );
     w = matlab.addons.toolbox.toolboxVersion( prj );
     if strcmp( w, v.Version )
         fprintf( 1, ' OK.\n' );
