@@ -8,8 +8,7 @@ classdef HBox < uix.Box
     %
     %  See also: uix.VBox, uix.Grid, uix.HButtonBox, uix.HBoxFlex
     
-    %  Copyright 2009-2016 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
         Widths % widths of contents, in pixels and/or weights

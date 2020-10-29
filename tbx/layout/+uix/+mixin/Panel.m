@@ -4,8 +4,7 @@ classdef Panel < uix.mixin.Container
     %  uix.mixin.Panel is a mixin class used by panels to provide various
     %  properties and template methods.
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
         Selection % selected contents

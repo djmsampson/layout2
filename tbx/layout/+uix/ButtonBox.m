@@ -3,8 +3,7 @@ classdef ButtonBox < uix.Box
     %
     %  uix.ButtonBox is a base class for containers that lay out buttons.
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
         ButtonSize % button size, in pixels

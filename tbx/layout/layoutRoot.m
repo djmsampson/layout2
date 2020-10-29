@@ -10,8 +10,7 @@ function folder = layoutRoot()
 %
 %   See also: layoutVersion
 
-%  Copyright 2009-2014 The MathWorks, Inc.
-%  $Revision$ $Date$
+%  Copyright 2009-2020 The MathWorks, Inc.
 
 folder = fileparts( mfilename( 'fullpath' ) );
 

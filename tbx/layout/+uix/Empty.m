@@ -16,8 +16,7 @@ function obj = Empty( varargin )
 %   >> uix.Empty( 'Parent', box )
 %   >> uicontrol( 'Parent', box, 'Background', 'b' )
 
-%   Copyright 2009-2016 The MathWorks, Inc.
-%   $Revision$ $Date$
+%  Copyright 2009-2020 The MathWorks, Inc.
 
 % Create uicontainer
 obj = matlab.ui.container.internal.UIContainer( 'Tag', 'empty', varargin{:} );
