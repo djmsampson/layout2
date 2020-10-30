@@ -25,12 +25,13 @@ classdef GridTests < matlab.unittest.TestCase
             delete( u(5) );
             testcase.verifyEqual(obj.Contents, u([1:4,6]) );
             
-            % Reparent a child - if unparented, create a parent
-            if isempty(testcase.figfx)
-                testcase.figfx = testcase.applyFixture(FigureFixture('figure'));
+            % Reparent a child when not unparented
+            if ~strcmp(testcase.parentStr,'[]')
+                fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+                set(u(1), 'Parent', fx.FigureHandle)
+           
+                testcase.verifyEqual(obj.Contents, u([2 3 4 6]));
             end
-            set(u(1), 'Parent', testcase.figfx.FigureHandle)
-            testcase.verifyEqual(obj.Contents, u([2 3 4 6]));
         end
     end
 end

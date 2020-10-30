@@ -67,13 +67,13 @@ classdef VBoxTests < matlab.unittest.TestCase
             % create RGB box and set sizes to something relative and
             % absolute
             [obj, ~] = testcase.hBuildRGBBox(type);
-            testcase.figfx.FigureHandle.Position = [400 400 750 750];
-
+            set(obj, 'Position',[400 400 750 750]);
+            set(obj, 'Units', 'normalized', 'Position', [0 0 1 1]); % fill
             set(obj,'Padding', 10, 'Spacing', 10);
             set(obj,resizedParameter, [-3, -1, -1, 50]);
             
             % resize figure
-            testcase.figfx.FigureHandle.Position = [600, 600, 200, 200];            
+            obj.Parent.Position = [600, 600, 200, 200];            
             testcase.assertNumElements(obj.Contents, 4, ...
                 sprintf('created box with %d elements instead of 4\n', numel(obj.Contents)) );
             

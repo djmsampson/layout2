@@ -13,8 +13,8 @@ classdef FlexSharedTests < ContainerSharedTests
             
             % Abort for unparented cases and in unsuitable environments
             testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
-                strcmp(testcase.parentStr,'[]'),...
-                'Not applicable for unparented, in Jenkins or in BaT.');
+                strcmp(testcase.parentStr,'[]')||strcmp(testcase.parentStr,'uifigure'),...
+                'Not applicable for unparented, uifigure, in Jenkins or in BaT.');
             
             % Build the flex
             c = testcase.hCreateObj( ContainerType );

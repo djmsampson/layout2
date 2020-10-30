@@ -2,8 +2,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        Parent = struct(...'Web','uifigure', ...
-            'Java', 'figure', 'Unparented', '[]')
+        Parent = struct('Web','uifigure')%, ...
+           ... 'Java', 'figure', 'Unparented', '[]')
     end
     
     properties (TestParameter, Abstract)
@@ -171,15 +171,16 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function testAxesStillVisibleAfterRotate3d(testcase, ContainerType)
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
-            % Filter for unparented case
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            % Filter for unparented and uifigure case
+            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
+                strcmp(testcase.parentStr,'uifigure'),...
+                'Not applicable for unparented or uifigure.');
             obj = testcase.hCreateObj(ContainerType);
             con = uicontainer('Parent', obj);
             ax = axes('Parent', con, 'Visible', 'on');
             testcase.verifyEqual(char(ax.Visible), 'on');
             % equivalent of selecting the rotate button on figure window:
-            rotate3d;
+            rotate3d(obj.Parent);
             testcase.verifyEqual(char(ax.Visible), 'on');
         end
         
