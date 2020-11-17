@@ -42,13 +42,14 @@ classdef tExamples <  matlab.unittest.TestCase
     end
     
     methods(TestMethodTeardown)
-        function cleanWorkspace(testcase)
-            % Find any figures and close them
+        function closeFig(~)
+           % Find any figures and close them
             fig = findall(groot, 'Type', 'figure');
             for f = 1:numel(fig)
                close(fig(f)); 
-            end
-            
+            end 
+        end
+        function cleanWorkspace(testcase)
             % Clear any newly created variables
             newVars = evalin('base','whos');
             newVarsNames = {newVars.name};
