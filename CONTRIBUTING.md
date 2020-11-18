@@ -46,5 +46,34 @@ We use GitLab issues to track public bugs. Report a bug by opening a new issue.
 
 We *love* thorough bug reports.
 
+## Managing issues
+We use GitLab [standard labels](https://gitlab.com/gitlab-org/gitlab/-/issues/17563), with additions:
+
+- Type
+  - bug (qualifier: confirmed)
+  - enhancement (qualifiers: suggestion, discussion)
+  - documentation
+  - test
+  - maintenance
+  - support
+  - meta
+- Priority
+  - critical
+  - sooner
+  - later
+  - someday
+  - never
+- Severity (for bugs)
+  - critical (also a priority)
+  - normal
+  - low
+- State
+  - confirmed (for bugs)
+  - suggestion (for enhancements)
+  - discussion (for enhancements)
+  - todo
+  - doing
+  - testing
+
 ## Use a consistent coding style
 Please use the established coding style.
