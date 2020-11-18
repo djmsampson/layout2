@@ -7,7 +7,7 @@ We want to make contributing to this project as easy and transparent as possible
 - Proposing new features
 - Becoming a maintainer
 
-## We Suport Many MATLAB Releases
+## We support MATLAB releases
 From a single codebase, we support:
 
 - MATLAB releases R2014b to the present
@@ -16,7 +16,7 @@ From a single codebase, we support:
   - unparented
   - (soon) in uifigures
 
-## We Develop with GitLab
+## We develop with GitLab
 We use GitLab to host code, to track issues and feature requests, and to accept pull requests.
 
 Please ensure that you set your Git `user.name` and `user.email` before committing changes.
@@ -46,5 +46,29 @@ We use GitLab issues to track public bugs. Report a bug by opening a new issue.
 
 We *love* thorough bug reports.
 
-## Use a Consistent Coding Style
+## Managing issues
+We use GitLab [standard labels](https://gitlab.com/gitlab-org/gitlab/-/issues/17563), with additions:
+
+- Type
+  - bug (qualifier: confirmed)
+  - enhancement (qualifiers: suggestion, discussion)
+  - documentation
+  - test
+  - maintenance
+  - support
+  - meta
+- Priority
+  - critical
+  - sooner
+  - later
+  - someday
+  - never
+- Severity (for bugs)
+  - critical (also a priority)
+  - normal
+  - low
+- Stage
+  - doing
+
+## Use a consistent coding style
 Please use the established coding style.
