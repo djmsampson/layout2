@@ -67,13 +67,8 @@ We use GitLab [standard labels](https://gitlab.com/gitlab-org/gitlab/-/issues/17
   - critical (also a priority)
   - normal
   - low
-- State
-  - confirmed (for bugs)
-  - suggestion (for enhancements)
-  - discussion (for enhancements)
-  - todo
+- Stage
   - doing
-  - testing
 
 ## Use a consistent coding style
 Please use the established coding style.
