@@ -2,12 +2,6 @@ classdef tEmpty < matlab.unittest.TestCase
     %testEmpty  Unit tests for uiextras.Empty.
     % Empty is not a container so does not inherit ContainerSharedTests
     
-    methods(TestMethodTeardown)
-        function closeAllOpenFigures(~)
-            close all force;
-        end
-    end
-    
     methods(TestClassSetup)
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
@@ -17,6 +11,16 @@ classdef tEmpty < matlab.unittest.TestCase
                 thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
                 testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
             end
+        end
+    end
+    
+    properties
+       figFx
+    end
+    
+    methods(TestMethodSetup)
+        function figFixture(testcase)
+            testcase.figFx = testcase.applyFixture(FigureFixture('figure')); 
         end
     end
     
@@ -41,7 +45,7 @@ classdef tEmpty < matlab.unittest.TestCase
         
         function testPositioning(testcase)
             %testChildren  Test adding and removing children
-            h = uiextras.HBox( 'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500] );
+            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle, 'Units', 'Pixels', 'Position', [1 1 500 500] );
             testcase.assertEqual( isa( h, 'uiextras.HBox' ), true );
             
             e = uiextras.Empty( 'Parent', h );
@@ -53,7 +57,7 @@ classdef tEmpty < matlab.unittest.TestCase
         function testInitialColor(testcase)
             %testColor  Test background color
             c = rand( [1 3] ); % random color
-            h = uiextras.HBox( 'Parent', figure, 'BackgroundColor', c );
+            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle, 'BackgroundColor', c );
             
             uicontrol( 'Parent', h );
             e = uiextras.Empty( 'Parent', h );
@@ -64,7 +68,7 @@ classdef tEmpty < matlab.unittest.TestCase
         
         function testParentColorChanged(testcase)
             %testParentColorChanged  Test color when Parent color changes
-            h = uiextras.HBox( 'Parent', figure );
+            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle);
             uicontrol( 'Parent', h );
             e = uiextras.Empty( 'Parent', h );
             uicontrol( 'Parent', h );
@@ -78,7 +82,7 @@ classdef tEmpty < matlab.unittest.TestCase
         function testColorOnReparent(testcase)
             %testColor  Test color when reparenting
             c = rand( [1 3] ); % random color
-            h = uiextras.HBox( 'Parent', figure, 'BackgroundColor', c );
+            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle, 'BackgroundColor', c );
             uicontrol( 'Parent', h );
             
             e = uiextras.Empty(); % unparented
