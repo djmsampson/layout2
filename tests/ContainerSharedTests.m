@@ -2,8 +2,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        Parent = struct('Web','uifigure')%, ...
-           ... 'Java', 'figure', 'Unparented', '[]')
+        Parent = struct(...'Web','uifigure')%, ...
+           'Java', 'figure', 'Unparented', '[]');
     end
     
     properties (TestParameter, Abstract)
