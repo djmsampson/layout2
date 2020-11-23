@@ -7,7 +7,7 @@ This toolbox provides tools to create sophisticated MATLAB graphical user interf
 * Show and hide components using tabs and panels
 * Show part of a large component in a scrollable panel
 
-## History
+## History of the toolbox
 This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks, and was first released in 2010.
 
 The toolbox is distributed externally on [File Exchange](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox).
@@ -24,3 +24,22 @@ The repository is divided into:
 - `/bash`: a collection of bash tasks
 - `/docsrc`: the documentation source files -- to be processed by DocTools
 - `/releases`: the archive of previous MATLAB toolbox (.mltbx) releases -- now also presented as GitLab releases
+
+## History of the repository
+The toolbox code was originally managed using Subversion, and was migrated to Git in October 2020.
+
+`git svn clone "http://svn.mathworks.co.uk:8080/internalprojects/Z-MLADJS-298" "C:\Path\To\layout2" -T trunk/code/Layouts2 --authors-file=users.txt`
+
+with users
+
+```
+dsampson = David Sampson <dsampson@mathworks.com>
+btordoff = Ben Tordoff <btordoff@mathworks.com>
+chrislim = Chris Lim <chrislim@mathworks.com>
+owenj = Jenny Owen <owenj@mathworks.com>
+slacaze = Sylvain Lacaze <slacaze@mathworks.com>
+ttodd = Thomas Todd <ttodd@mathworks.com>
+```
+
+## History of the issues
+The toolbox issues were originally managed using [Gecko](http://komodo.mathworks.com/main/gecko/list?report=default&SubComponent=GUI+Layout+Toolbox&ReportName=default&Component=Consulting+Projects), and were migrated to GitLab in 2020 using [gecko2gitlab](https://insidelabs-git.mathworks.com/dsampson/gecko2gitlab).
