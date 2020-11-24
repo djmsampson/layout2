@@ -10,8 +10,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     %
     %  See also: uix.Panel, uipanel, uix.CardPanel
     
-    %  Copyright 2009-2016 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Dependent )
         TitleColor % title background color [RGB]

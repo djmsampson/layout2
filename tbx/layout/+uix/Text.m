@@ -10,8 +10,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
     %
     %  See also: uicontrol
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Dependent )
         BackgroundColor

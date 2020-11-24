@@ -3,8 +3,7 @@ function unset( ~, ~, ~ )
 %
 %  This functionality has been removed.
 
-%  Copyright 2009-2014 The MathWorks, Inc.
-%  $Revision$ $Date$
+%  Copyright 2009-2020 The MathWorks, Inc.
 
 % Check inputs
 narginchk( 2, 2 )

@@ -6,8 +6,7 @@ classdef ( Hidden ) Node < dynamicprops
     %  Node is a helper class for managing trees of objects and associated
     %  listeners.
     
-    %  Copyright 2009-2015 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( SetAccess = private )
         Object % object

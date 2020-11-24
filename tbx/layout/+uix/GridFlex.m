@@ -9,8 +9,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
     %
     %  See also: uix.HBoxFlex, uix.VBoxFlex, uix.Grid
     
-    %  Copyright 2009-2016 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
         DividerMarkings % divider markings [on|off]

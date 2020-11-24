@@ -7,8 +7,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
     %
     %  See also: uix.Node
     
-    %  Copyright 2009-2016 The MathWorks, Inc.
-    %  $Revision$ $Date$
+    %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = private )
         Root % root node
