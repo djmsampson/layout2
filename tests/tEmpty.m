@@ -3,14 +3,12 @@ classdef tEmpty < matlab.unittest.TestCase
     % Empty is not a container so does not inherit ContainerSharedTests
     
     methods(TestClassSetup)
-        function addInitialTestPaths(testcase)
-            import matlab.unittest.fixtures.PathFixture;
-            % If not BaT, assume MATLAB path is setup correctly
-            if isBaT()
-                % Add path using fixtures for BaT
-                thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
-                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
-            end
+        function setupPath(testcase)
+            import matlab.unittest.fixtures.PathFixture
+            testsFolder = fileparts( mfilename( 'fullpath' ) );
+            projectFolder = fileparts( testsFolder );
+            toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
+            testcase.applyFixture( PathFixture( toolboxFolder ) )
         end
     end
     
