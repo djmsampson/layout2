@@ -6,13 +6,14 @@ classdef FlexSharedTests < ContainerSharedTests
         function testMouseOverDividerInDockedFigure( testcase, ContainerType )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
-            %
-            % Pass for unparented tests, since this is not applicable
+            
             import matlab.unittest.constraints.Eventually
             import matlab.unittest.constraints.Matches
             
             % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
+            testcase.assumeRooted()
+            testcase.assumeNotWeb()
+            testcase.assumeDisplay()
             
             % Build the flex
             c = testcase.hCreateObj( ContainerType );
@@ -49,10 +50,12 @@ classdef FlexSharedTests < ContainerSharedTests
             % when moving between adjacent flex containers
             
             % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
+            testcase.assumeRooted()
+            testcase.assumeDisplay()
             
             % Build
-            f = figure;
+            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            f = fx.FigureHandle;
             % Layout is component based
             switch ContainerType
                 case 'uiextras.VBoxFlex'
@@ -118,12 +121,14 @@ classdef FlexSharedTests < ContainerSharedTests
             % g1367337: Update flex container pointer on mouse press event
             
             % Abort for unparented cases and in unsuitable environments
-            if testcase.isJenkins() || testcase.isBaT() || testcase.isUnparented(), return, end
+            testcase.assumeRooted()
+            testcase.assumeDisplay()
             
             temp = strsplit( ContainerType, '.' );
             ComponentName = temp{2};
             % Build
-            f = figure;
+            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            f = fx.FigureHandle;
             nChildren = 4;
             h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
             b1 = gobjects( 1, nChildren );
@@ -143,7 +148,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % Parent
             h1.Parent = f;
             % Bring figure back into focus
-            figure(f)
+            figure( f );
             % Click and check pointer
             import java.awt.Robot;
             import java.awt.event.*;
@@ -161,24 +166,6 @@ classdef FlexSharedTests < ContainerSharedTests
         end % testMousePointerUpdateOnFlexClick
         
     end
-    
-    methods ( Access = private )
-        
-        function tf = isUnparented( testcase )
-            %isUnparented  Test for unparented testcases
-            
-            tf = strcmp( testcase.parentStr, '[]' );
-            
-        end % isUnparented
-        
-        function tf = isJenkins( ~ )
-            %isJenkins  True in Jenkins environment
-            
-            tf = ~isempty( getenv( 'JENKINS_HOME' ) );
-            
-        end % isJenkins
-        
-    end % helpers
     
 end
 

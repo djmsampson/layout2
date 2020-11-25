@@ -2,7 +2,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        IsParentedOptions = struct('Parented', true, 'Unparented', false)
+        Parent = struct( ... % 'Web', 'uifigure', ...
+            'Java', 'figure', ...
+            'Unparented', '[]' );
     end
     
     properties (TestParameter, Abstract)
@@ -11,38 +13,32 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         GetSetArgs
     end
     
-    properties(Constant)
-        % tells testrunner whether to run testAxesLegend and testAxesColorbar
-        runAxesLegendAndColorbarTests = false
-    end
-    
     properties
-        isParented
-        parentStr
         oldTracking = 'unset'
+        parentStr
+        figfx
     end
     
     methods(TestClassSetup)
-        function addInitialTestPaths(testcase)
-            import matlab.unittest.fixtures.PathFixture;
-            % If not BaT, assume MATLAB path is setup correctly
-            if testcase.isBaT()
-                % Add path using fixtures for BaT
-                thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
-                testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
+        function setup(testcase, Parent)
+            testcase.assumeVersion() % check MATLAB version
+            testcase.parentStr = Parent; % set parent
+        end
+        function enableUicontrol(testcase,Parent)
+            if strcmp(Parent,'uifigure')
+                testcase.applyFixture(EnableUicontrolFixture);
             end
+        end
+        function setupPath(testcase)
+            import matlab.unittest.fixtures.PathFixture
+            testsFolder = fileparts( mfilename( 'fullpath' ) );
+            projectFolder = fileparts( testsFolder );
+            toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
+            testcase.applyFixture( PathFixture( toolboxFolder ) );
         end
         function disableTracking(testcase)
             testcase.oldTracking = uix.tracking( 'query' );
             uix.tracking( 'off' )
-        end
-        function setParentedField(testcase, IsParentedOptions)
-            testcase.isParented = IsParentedOptions;
-            if IsParentedOptions
-                testcase.parentStr = 'figure';
-            else
-                testcase.parentStr = '[]';
-            end
         end
     end
     
@@ -53,18 +49,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
     end
     
-    methods(TestMethodTeardown)
-        function closeAllOpenFigures(~)
-            close all force;
-        end
-    end
-    
-    
     methods (Test)
         
         function testEmptyConstructor(testcase, ContainerType)
             % Test constructing the widget with no arguments
-            obj = eval(ContainerType);
+            obj = testcase.hCreateObj(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
         
@@ -134,7 +123,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual( obj.Contents, actualContents([1 3 4]) );
             
             % Reparent a child
-            set( actualContents(3), 'Parent', figure )
+            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            set( actualContents(3), 'Parent', fx.FigureHandle);
             testcase.verifyEqual( obj.Contents, actualContents([1 4]) );
         end
         
@@ -154,9 +144,10 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testAddingAxesToContainer(testcase, ContainerType)
+            testcase.assumeRooted() % TODO review
+            testcase.assumeNotWeb() % TODO review
             % tests that sizing is retained when adding new data to
             % existing axis.
-            
             obj = testcase.hCreateObj(ContainerType);
             ax1 = axes('Parent', obj);
             plot(ax1, rand(10,2));
@@ -169,61 +160,24 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifySameHandle(obj.Contents(2), ax2);
         end
         
-        %         function testAxesLegend(testcase, ContainerType)
-        %             %testAxesLegend  Test that axes legends are ignored properly
-        %             % This is test for g1019459.
-        %
-        %             testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
-        %                 'ignoring test for legends being added correctly');
-        %
-        %             obj = testcase.hCreateObj(ContainerType, ...
-        %                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]});
-        %             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
-        %             plot( ax1, peaks(7) )
-        %             legend( 'line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 6', 'line 7' );
-        %             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
-        %             imagesc( peaks(7), 'Parent', ax2 );
-        %
-        %             % Check that the legend does not appear as a child
-        %             testcase.verifyEqual( obj.Contents, [ax1;ax2] );
-        %         end
-        %
-        %         function testAxesColorbar(testcase, ContainerType)
-        %             % testAxesColorbar  Test that axes colorbars are ignored properly
-        %             % This is test for g1019459.
-        %             testcase.assumeTrue(testcase.runAxesLegendAndColorbarTests, ...
-        %                 'ignoring test for colorbar being added correctly');
-        %
-        %             obj = testcase.hCreateObj(ContainerType, ...
-        %                 {'Parent', figure, 'Units', 'Pixels', 'Position', [1 1 500 500]});
-        %             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels' );
-        %             contourf( ax1, peaks(30) );
-        %             colorbar( 'peer', ax1, 'location', 'EastOutside' )
-        %             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels' );
-        %             imagesc( peaks(7), 'Parent', ax2 );
-        %
-        %             % Check that the legend doesn't appear as a child
-        %             testcase.verifyEqual( obj.Contents, [ax1;ax2] );
-        %         end
-        
         function testAxesStillVisibleAfterRotate3d(testcase, ContainerType)
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
+            testcase.assumeRooted() % TODO review
+            testcase.assumeNotWeb() % TODO review
             obj = testcase.hCreateObj(ContainerType);
             con = uicontainer('Parent', obj);
             ax = axes('Parent', con, 'Visible', 'on');
             testcase.verifyEqual(char(ax.Visible), 'on');
             % equivalent of selecting the rotate button on figure window:
-            rotate3d;
+            rotate3d(obj.Parent);
             testcase.verifyEqual(char(ax.Visible), 'on');
         end
         
-        function testCheckDataCursorCanBeUsed( testcase, ContainerType )
+        function testCheckDataCursorCanBeUsed(testcase, ContainerType)
+            testcase.assumeRooted()
+            testcase.assumeNotWeb()
             obj = testcase.hCreateObj(ContainerType);
-            if isempty( obj.Parent )
-                % Auto success on unparented
-                return;
-            end
             if isprop( obj, 'ButtonSize' )
                 % Ensure that axes aren't tiny
                 obj.ButtonSize = [200 200];
@@ -244,32 +198,40 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 'Data cursor messed the layout' )
         end
         
-        function testAxesToolbarReordering( testCase, ContainerType )
+        function testAxesToolbarReordering( testcase, ContainerType )
             % test for g1911845 where axes toolbar causes axes to be
             % removed and readded, leading to unexpected reordering of
             % contents
-            obj = testCase.hCreateObj(ContainerType);
-            if isempty( obj.Parent )
-                % Auto success on unparented
-                return;
-            end
+            testcase.assumeRooted()
+            obj = testcase.hCreateObj(ContainerType);
             ax = axes( 'Parent', obj );
             c = uicontrol( 'Parent', obj );
-            testCase.verifyEqual( obj.Contents, [ax; c] ); % initially
+            testcase.verifyEqual( obj.Contents, [ax; c] ); % initially
             pause( 0.1 )
-            testCase.verifyEqual( obj.Contents, [ax; c] ); % finally
+            testcase.verifyEqual( obj.Contents, [ax; c] ); % finally
         end
         
     end
     
     methods
-        function obj = hCreateObj(testcase, type, varargin)
-            if(nargin > 2)
-                obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
-            else
-                obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
+        
+        function obj = hCreateObj(testcase,type,varargin)
+            if ~strcmp(testcase.parentStr,'[]')
+                % Create required figure
+                testcase.figfx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+                if(nargin > 2)
+                    obj = feval(type,'Parent',testcase.figfx.FigureHandle,varargin{1}{:});
+                else
+                    obj = feval(type,'Parent',testcase.figfx.FigureHandle);
+                end
+            else % unparented
+                if(nargin > 2)
+                    obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
+                else
+                    obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
+                end
             end
-            testcase.assertClass(obj, type);
+            
         end
         
         function [obj, rgb] = hBuildRGBBox(testcase, type)
@@ -292,19 +254,52 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 expected = args{i+1};
                 actual   = get(obj, param);
                 convert = str2func( class( expected ) );
-                try %#ok<TRYNC>
-                    actual = convert( actual ); % cast
-                end
+                testcase.assertWarningFree(@()convert(actual));
+                actual = convert( actual ); % cast
                 testcase.verifyEqual(actual, expected);
             end
         end
-        function decision = isBaT( ~ )
-            % Test if in BaT.
-            % For now, compare the location of this file with the MATLAB install
+        
+        function assumeRooted( testcase )
+            %check that container is rooted
+            testcase.assumeFalse( ...
+                strcmp( testcase.parentStr, testcase.Parent.Unparented ), ...
+                'Not applicable to unrooted graphics.' );
+        end % assumeRooted
+        
+        function assumeNotWeb( testcase )
+            %check that container is not Web graphics
+            testcase.assumeFalse( ...
+                isfield( testcase.Parent, 'Web' ) && ...
+                strcmp( testcase.parentStr, testcase.Parent.Web ) , ...
+                'Not applicable to Web graphics.' );
+        end % assumeNotWeb
+        
+        function assumeDisplay( testcase )
+            %check that environment has a display, for mouse tests
             thisFolder = fileparts( mfilename( 'fullpath' ) );
-            batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            decision = strcmp( thisFolder, batTestFolder );
-        end
+            batFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+            testcase.assumeFalse( ...
+                strcmp( thisFolder, batFolder ), ...
+                'Not applicable to headless BaT environment.');
+            testcase.assumeTrue( ...
+                isempty( getenv( 'JENKINS_HOME' ) ), ...
+                'Not applicable to headless Jenkins environment.');
+        end % assumeDisplay
+        
+        function assumeVersion( testcase )
+            %check that MATLAB version is supported
+            testcase.assumeFalse( ...
+                verLessThan( 'matlab', '8.4' ), ... % R2014b
+                'Not applicable prior to R2014b.' )
+            if isfield( testcase.Parent, 'Web' ) && ...
+                    strcmp( testcase.parentStr, testcase.Parent.Web ) % web graphics
+                testcase.assumeFalse( ...
+                    verLessThan( 'matlab', '9.8' ), ... % R2020a
+                    'Not applicable to Web graphics prior to R2020a.' )
+            end
+        end % assumeVersion
+        
     end
     
 end
