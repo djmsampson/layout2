@@ -9,6 +9,22 @@ classdef PanelTests < matlab.unittest.TestCase
         failingSelection = {2.4, int32(2), [2 3 4], 5};
     end
     
+    properties
+        G1218142
+    end
+    
+    methods(TestClassSetup)
+        function suppressWarnings(testcase)
+            testcase.G1218142 = warning('off','uix:G1218142');
+        end
+    end
+    
+    methods(TestClassTeardown)
+        function restoreWarnings(testcase)
+            warning(testcase.G1218142)
+        end
+    end
+
     methods (Test)
         
         function testLayoutInPanel(testcase, ContainerType)
