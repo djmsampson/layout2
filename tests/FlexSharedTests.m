@@ -148,7 +148,7 @@ classdef FlexSharedTests < ContainerSharedTests
             % Parent
             h1.Parent = f;
             % Bring figure back into focus
-            eval('figure(f)');
+            figure( f );
             % Click and check pointer
             import java.awt.Robot;
             import java.awt.event.*;
