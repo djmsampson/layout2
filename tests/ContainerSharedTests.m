@@ -41,7 +41,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testsFolder = fileparts( mfilename( 'fullpath' ) );
             projectFolder = fileparts( testsFolder );
             toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
-            testcase.applyFixture( PathFixture( toolboxFolder ) )
+            testcase.applyFixture( PathFixture( toolboxFolder ) );
         end
         function disableTracking(testcase)
             testcase.oldTracking = uix.tracking( 'query' );

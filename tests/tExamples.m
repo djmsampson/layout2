@@ -17,9 +17,10 @@ classdef tExamples <  matlab.unittest.TestCase
         function addInitialTestPaths(testcase)
             import matlab.unittest.fixtures.PathFixture;
             thisFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
-            % Add examples to path
+            % Add examples and toolbox to path
             testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc' ) ) );
             testcase.applyFixture( PathFixture( fullfile( thisFolder, 'docsrc', 'Examples' ) ) );
+            testcase.applyFixture( PathFixture( fullfile( thisFolder, 'tbx', 'layout' ) ) );
         end
     end
     
@@ -37,14 +38,14 @@ classdef tExamples <  matlab.unittest.TestCase
     end
     
     methods(TestMethodTeardown)
-        function closeFig(~)
+         function closeFig(~)
            % Find any figures and close them
             fig = findall(groot, 'Type', 'figure');
             for f = 1:numel(fig)
                close(fig(f)); 
             end 
-        end
-        function cleanWorkspace(testcase)
+         end
+         function cleanWorkspace(testcase)
             % Clear any newly created variables
             newVars = evalin('base','whos');
             newVarsNames = {newVars.name};
@@ -56,7 +57,7 @@ classdef tExamples <  matlab.unittest.TestCase
             for v = 1:numel(varsToRemove)
                evalin('base',['clear ' varsToRemove{v}]); 
             end
-        end
+         end
     end
     
     methods (Test)
