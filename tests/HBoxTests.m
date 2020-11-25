@@ -24,9 +24,9 @@ classdef HBoxTests < matlab.unittest.TestCase
         function testAxesPositionInHBoxes(testcase, ContainerType)
             %testAxesPosition  Test that axes get positioned properly
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Units', 'Pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
-            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'Pixels');
-            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'Pixels');            
+                {'Units', 'pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
+            ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'pixels');
+            ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'pixels');            
             % If unparented, reparent to a figure
             if strcmp(testcase.parentStr,'[]')
                 fx = testcase.applyFixture(FigureFixture('figure'));
@@ -41,7 +41,7 @@ classdef HBoxTests < matlab.unittest.TestCase
             %testMinimumSizes Test that minimum size is honored (g1329485)
             
             obj = testcase.hCreateObj(ContainerType, ...
-                {'Units', 'Pixels', 'Position', [1 1 1000 500]});  
+                {'Units', 'pixels', 'Position', [1 1 1000 500]});  
             
             for ii = 1:5 
                 ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>

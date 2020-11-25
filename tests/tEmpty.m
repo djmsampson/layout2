@@ -43,7 +43,7 @@ classdef tEmpty < matlab.unittest.TestCase
         
         function testPositioning(testcase)
             %testChildren  Test adding and removing children
-            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle, 'Units', 'Pixels', 'Position', [1 1 500 500] );
+            h = uiextras.HBox( 'Parent', testcase.figFx.FigureHandle, 'Units', 'pixels', 'Position', [1 1 500 500] );
             testcase.assertEqual( isa( h, 'uiextras.HBox' ), true );
             
             e = uiextras.Empty( 'Parent', h );
