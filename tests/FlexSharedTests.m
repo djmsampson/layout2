@@ -6,7 +6,7 @@ classdef FlexSharedTests < ContainerSharedTests
         function testMouseOverDividerInDockedFigure( testcase, ContainerType )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
-
+            
             import matlab.unittest.constraints.Eventually
             import matlab.unittest.constraints.Matches
             
@@ -166,24 +166,6 @@ classdef FlexSharedTests < ContainerSharedTests
         end % testMousePointerUpdateOnFlexClick
         
     end
-    
-    methods ( Access = private )
-        
-        function tf = isJenkins( ~ )
-            %isJenkins  True in Jenkins environment
-            
-            tf = ~isempty( getenv( 'JENKINS_HOME' ) );
-            
-        end % isJenkins
-        
-        function decision = isBaT( ~ )
-            % Test if in BaT.
-            % For now, compare the location of this file with the MATLAB install
-            thisFolder = fileparts( mfilename( 'fullpath' ) );
-            batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            decision = strcmp( thisFolder, batTestFolder );
-        end
-    end % helpers
     
 end
 

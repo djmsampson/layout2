@@ -76,11 +76,3 @@ classdef tExamples <  matlab.unittest.TestCase
         end % helper function
     end
 end
-
-function decision = isBaT()
-% Test if in BaT.
-% For now, compare the location of this file with the MATLAB install
-thisFolder = fileparts( mfilename( 'fullpath' ) );
-batTestFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-decision = strcmp( thisFolder, batTestFolder );
-end
