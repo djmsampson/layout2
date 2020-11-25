@@ -151,9 +151,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testAddingAxesToContainer(testcase, ContainerType)
+            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
+                strcmp(testcase.parentStr,'uifigure'),...
+                'Not applicable for unparented or uifigure.');
             % tests that sizing is retained when adding new data to
             % existing axis.
-            
             obj = testcase.hCreateObj(ContainerType);
             ax1 = axes('Parent', obj);
             plot(ax1, rand(10,2));
@@ -183,11 +185,11 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testCheckDataCursorCanBeUsed(testcase, ContainerType)
+            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
+                strcmp(testcase.parentStr,'uifigure'),...
+                'Not applicable for unparented or uifigure.');
+            
             obj = testcase.hCreateObj(ContainerType);
-            if isempty( obj.Parent )
-                % Auto success on unparented
-                return;
-            end
             if isprop( obj, 'ButtonSize' )
                 % Ensure that axes aren't tiny
                 obj.ButtonSize = [200 200];
@@ -263,9 +265,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 expected = args{i+1};
                 actual   = get(obj, param);
                 convert = str2func( class( expected ) );
-                try %#ok<TRYNC>
-                    actual = convert( actual ); % cast
-                end
+                testcase.assertWarningFree(@()convert(actual));
+                actual = convert( actual ); % cast
                 testcase.verifyEqual(actual, expected);
             end
         end
