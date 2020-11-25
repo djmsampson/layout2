@@ -137,7 +137,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         end
         
         function testSelectionBehaviourNewChild(testcase)
-            % g1342432 Tests that adding a new child doesn't change current selection 
+            % g1342432 Tests that adding a new child doesn't change current selection
             testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
                 'Not applicable to unparented.');
             % Create a TabPanel with two tabs
@@ -149,7 +149,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             oldSelection = tp.Selection;
             % Add new tab
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-           
+            
             testcase.verifyEqual(oldSelection, tp.Selection);
         end
         
@@ -165,7 +165,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
             % Select the 2nd child, then delete the first
-            tp.Selection = 2; 
+            tp.Selection = 2;
             oldSelection = tp.Selection;
             delete(c1)
             
@@ -174,7 +174,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testSelectionBehaviourDeleteSelectedChild(testcase)
             % g1342432 Tests that deleting the currently selected child
-            % causes the selection index to stay the same. 
+            % causes the selection index to stay the same.
             testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
                 'Not applicable to unparented.');
             % Create a TabPanel with three tabs
@@ -184,7 +184,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
             % Select the 2nd child, then delete the 1st
-            tp.Selection = 2; 
+            tp.Selection = 2;
             oldSelection = tp.Selection;
             delete(c2)
             
@@ -193,15 +193,15 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testSelectionBehaviourDeleteOnlyChild(testcase)
             % g1342432 Tests that deleting the only child
-            % causes the selection index to go to 0. 
+            % causes the selection index to go to 0.
             testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
                 'Not applicable to unparented.');
             % Create a TabPanel with a signel tab
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
             c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            % Ensure that the 1st child is selected. 
-            tp.Selection = 1; 
+            % Ensure that the 1st child is selected.
+            tp.Selection = 1;
             delete(c1)
             
             testcase.verifyEqual(0, tp.Selection);
@@ -209,8 +209,8 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testSelectionBehaviourDeleteHigherChild(testcase)
             % g1342432 Tests that deleting a child with a higher index than the
-            % current selection causes the selection index remain same. 
-
+            % current selection causes the selection index remain same.
+            
             testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
                 'Not applicable to unparented.');
             
@@ -221,7 +221,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
             % Select the 2nd child, then delete the 3rd
-            tp.Selection = 2; 
+            tp.Selection = 2;
             oldSelection = tp.Selection;
             delete(c3)
             
@@ -230,8 +230,8 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testSelectionBehaviourDisableSelectedChild(testcase)
             % g1342432 Tests that disabling a child which is selected won't stop it
-            % being selected. 
-
+            % being selected.
+            
             testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
                 'Not applicable to unparented.');
             % Create a TabPanel with three tabs
@@ -242,7 +242,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
             % Select the 2nd child, then disable it
-            tp.Selection = 2; 
+            tp.Selection = 2;
             oldSelection = tp.Selection;
             tp.TabEnables{2}='off';
             
@@ -261,7 +261,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
             c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
             % Select the 1st child, then disable the second
-            tp.Selection = 1; 
+            tp.Selection = 1;
             oldSelection = tp.Selection;
             tp.TabEnables{2}='off';
             
@@ -277,8 +277,8 @@ classdef tTabPanel  < ContainerSharedTests ...
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;
             tabs = uiextras.TabPanel( 'Parent', fig );
-            uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
-            uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
+            c1 = uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
+            c2 = uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
             
             % Get the divider
             children = hgGetTrueChildren( tabs );
