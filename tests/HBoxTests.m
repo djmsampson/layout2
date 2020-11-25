@@ -7,9 +7,7 @@ classdef HBoxTests < matlab.unittest.TestCase
     
     methods (Test) 
         function testResizeFigureRetainsElementSizesInHBoxes(testcase, ContainerType)
-            % filter if unparented
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable for unparented');
+            testcase.assumeRooted()
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ContainerType, 'Width');
             

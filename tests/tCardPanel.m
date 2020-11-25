@@ -22,8 +22,7 @@ classdef tCardPanel < ContainerSharedTests ...
        function testSelectionBehaviourNewChild(testcase)
             % g1342432 Tests that adding a new child changes current selection to
             % new child
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             % Create a CardPanel with two panels
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;
@@ -40,8 +39,7 @@ classdef tCardPanel < ContainerSharedTests ...
         function testSelectionBehaviourDeleteLowerChild(testcase)
             % g1342432 Tests that deleting a child with a lower index than the
             % current selection causes the selection index to decrease by 1
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             % Create a CardPanel with two panels
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;
@@ -61,8 +59,7 @@ classdef tCardPanel < ContainerSharedTests ...
         function testSelectionBehaviourDeleteSelectedChild(testcase)
             % g1342432 Tests that deleting the currently selected child
             % causes the selection index to stay the same. 
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             % Create a CardPanel with two panels
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;
@@ -82,8 +79,7 @@ classdef tCardPanel < ContainerSharedTests ...
         function testSelectionBehaviourDeleteOnlyChild(testcase)
             % g1342432 Tests that deleting the only child
             % causes the selection index to go to 0. 
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             % Create a CardPanel with two panels
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;
@@ -100,8 +96,7 @@ classdef tCardPanel < ContainerSharedTests ...
         function testSelectionBehaviourDeleteHigherChild(testcase)
             % g1342432 Tests that deleting a child with a higher index than the
             % current selection causes the selection index remain same. 
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             % Create a CardPanel with two panels
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;

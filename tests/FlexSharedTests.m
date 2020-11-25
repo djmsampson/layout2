@@ -6,15 +6,14 @@ classdef FlexSharedTests < ContainerSharedTests
         function testMouseOverDividerInDockedFigure( testcase, ContainerType )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
-            %
-            % Pass for unparented tests, since this is not applicable
+
             import matlab.unittest.constraints.Eventually
             import matlab.unittest.constraints.Matches
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
-                strcmp(testcase.parentStr,'[]')||strcmp(testcase.parentStr,'uifigure'),...
-                'Not applicable for unparented, uifigure, in Jenkins or in BaT.');
+            testcase.assumeRooted()
+            testcase.assumeNotWeb()
+            testcase.assumeDisplay()
             
             % Build the flex
             c = testcase.hCreateObj( ContainerType );
@@ -51,9 +50,8 @@ classdef FlexSharedTests < ContainerSharedTests
             % when moving between adjacent flex containers
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
-                strcmp(testcase.parentStr,'[]'),...
-                'Not applicable for unparented, in Jenkins or in BaT.');
+            testcase.assumeRooted()
+            testcase.assumeDisplay()
             
             % Build
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
@@ -123,9 +121,8 @@ classdef FlexSharedTests < ContainerSharedTests
             % g1367337: Update flex container pointer on mouse press event
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeFalse(testcase.isJenkins()||testcase.isBaT()||...
-                strcmp(testcase.parentStr,'[]'),...
-                'Not applicable for unparented, in Jenkins or in BaT');
+            testcase.assumeRooted()
+            testcase.assumeDisplay()
             
             temp = strsplit( ContainerType, '.' );
             ComponentName = temp{2};

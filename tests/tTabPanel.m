@@ -87,8 +87,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testContextMenuReparents(testcase)
             % test for g1250808 where reparenting a tab panel to a
             % different figure causes the context menus to be orphaned.
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
             
             fx1 = testcase.applyFixture(FigureFixture(testcase.parentStr));
             f = fx1.FigureHandle;
@@ -123,9 +122,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testRotate3dDoesNotAddMoreTabs(testcase)
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
-            
+            testcase.assumeRooted()
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             obj = uiextras.TabPanel('Parent',fx.FigureHandle);
             con = uicontainer('Parent', obj);
@@ -138,8 +135,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         
         function testSelectionBehaviourNewChild(testcase)
             % g1342432 Tests that adding a new child doesn't change current selection
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with two tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -156,8 +152,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testSelectionBehaviourDeleteLowerChild(testcase)
             % g1342432 Tests that deleting a child with a lower index than the
             % current selection causes the selection index to decrease by 1
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with three tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -175,8 +170,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testSelectionBehaviourDeleteSelectedChild(testcase)
             % g1342432 Tests that deleting the currently selected child
             % causes the selection index to stay the same.
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with three tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -194,8 +188,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testSelectionBehaviourDeleteOnlyChild(testcase)
             % g1342432 Tests that deleting the only child
             % causes the selection index to go to 0.
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with a signel tab
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -211,8 +204,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             % g1342432 Tests that deleting a child with a higher index than the
             % current selection causes the selection index remain same.
             
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             
             % Create a TabPanel with three tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
@@ -232,8 +224,7 @@ classdef tTabPanel  < ContainerSharedTests ...
             % g1342432 Tests that disabling a child which is selected won't stop it
             % being selected.
             
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with three tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -252,8 +243,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testSelectionBehaviourDisableNonSelectedChild(testcase)
             % g1342432 Tests that disabling a non-selected child doesn't change
             % selection
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create a TabPanel with three tabs
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             tp = uix.TabPanel('Parent',fx.FigureHandle);
@@ -271,8 +261,7 @@ classdef tTabPanel  < ContainerSharedTests ...
         function testParentBackgroundColor(testcase)
             % g1380756 Test to make sure that the some elements match the
             % parent (background)color
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted() % TODO review
             % Create
             fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
             fig = fx.FigureHandle;

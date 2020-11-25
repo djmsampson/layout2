@@ -7,9 +7,7 @@ classdef VBoxTests < matlab.unittest.TestCase
     
     methods (Test)       
         function testResizeFigureRetainsElementSizesInVBoxes(testcase, ContainerType)
-            % filter if unparented
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable for unparented');
+            testcase.assumeRooted()
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ContainerType, 'Heights');
             
@@ -39,8 +37,7 @@ classdef VBoxTests < matlab.unittest.TestCase
         
         function testMinimumSizes(testcase, ContainerType)
             %testMinimumSizes Test that minimum size is honored (g1329485)
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable to unparented.');
+            testcase.assumeRooted()
 
             obj = testcase.hCreateObj(ContainerType, ...
                 {'Units', 'pixels', 'Position', [1 1 500 1000]});  

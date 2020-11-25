@@ -2,8 +2,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
     
     properties (ClassSetupParameter)
-        Parent = struct(...'Web','uifigure')%, ...
-           'Java', 'figure', 'Unparented', '[]');
+        Parent = struct( ... % 'Web', 'uifigure', ...
+            'Java', 'figure', ...
+            'Unparented', '[]' );
     end
     
     properties (TestParameter, Abstract)
@@ -19,17 +20,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     methods(TestClassSetup)
-        function filterByRelease(testcase, Parent)
-            unsupportedRel = {'R2016b'};
-            if strcmp(Parent,'uifigure')
-                % uifigure only supported from when webgraphics was rolled out
-                rel = ver('matlab');
-                rel = replace(rel.Release,{'(',')'},'');
-                testcase.assumeFalse(strcmp(rel,unsupportedRel),...
-                    ['Filtered uifigure tests for release ', rel]);
-            end
-            
-            testcase.parentStr = Parent;
+        function setup(testcase, Parent)
+            testcase.assumeVersion() % check MATLAB version
+            testcase.parentStr = Parent; % set parent
         end
         function enableUicontrol(testcase,Parent)
             if strcmp(Parent,'uifigure')
@@ -151,9 +144,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testAddingAxesToContainer(testcase, ContainerType)
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
-                strcmp(testcase.parentStr,'uifigure'),...
-                'Not applicable for unparented or uifigure.');
+            testcase.assumeRooted() % TODO review
+            testcase.assumeNotWeb() % TODO review
             % tests that sizing is retained when adding new data to
             % existing axis.
             obj = testcase.hCreateObj(ContainerType);
@@ -171,10 +163,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function testAxesStillVisibleAfterRotate3d(testcase, ContainerType)
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
-            % Filter for unparented and uifigure case
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
-                strcmp(testcase.parentStr,'uifigure'),...
-                'Not applicable for unparented or uifigure.');
+            testcase.assumeRooted() % TODO review
+            testcase.assumeNotWeb() % TODO review
             obj = testcase.hCreateObj(ContainerType);
             con = uicontainer('Parent', obj);
             ax = axes('Parent', con, 'Visible', 'on');
@@ -185,10 +175,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end
         
         function testCheckDataCursorCanBeUsed(testcase, ContainerType)
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]')||...
-                strcmp(testcase.parentStr,'uifigure'),...
-                'Not applicable for unparented or uifigure.');
-            
+            testcase.assumeRooted()
+            testcase.assumeNotWeb()
             obj = testcase.hCreateObj(ContainerType);
             if isprop( obj, 'ButtonSize' )
                 % Ensure that axes aren't tiny
@@ -214,9 +202,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             % test for g1911845 where axes toolbar causes axes to be
             % removed and readded, leading to unexpected reordering of
             % contents
-            testcase.assumeFalse(strcmp(testcase.parentStr,'[]'),...
-                'Not applicable when unparented');
-            
+            testcase.assumeRooted()
             obj = testcase.hCreateObj(ContainerType);
             ax = axes( 'Parent', obj );
             c = uicontrol( 'Parent', obj );
@@ -228,6 +214,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     end
     
     methods
+        
         function obj = hCreateObj(testcase,type,varargin)
             if ~strcmp(testcase.parentStr,'[]')
                 % Create required figure
@@ -246,6 +233,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             end
             
         end
+        
         function [obj, rgb] = hBuildRGBBox(testcase, type)
             % creates a Box of requested type and adds 3 uicontrols with
             % red, green, and blue background colours, with an empty space
@@ -257,6 +245,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 uiextras.Empty('Parent', obj)
                 uicontrol('Parent', obj, 'BackgroundColor', 'b') ];
         end
+        
         function hVerifyHandleContainsParameterValuePairs(testcase, obj, args)
             % check that instance has correctly assigned parameter/value
             % pairs
@@ -270,6 +259,47 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 testcase.verifyEqual(actual, expected);
             end
         end
+        
+        function assumeRooted( testcase )
+            %check that container is rooted
+            testcase.assumeFalse( ...
+                strcmp( testcase.parentStr, testcase.Parent.Unparented ), ...
+                'Not applicable to unrooted graphics.' );
+        end % assumeRooted
+        
+        function assumeNotWeb( testcase )
+            %check that container is not Web graphics
+            testcase.assumeFalse( ...
+                isfield( testcase.Parent, 'Web' ) && ...
+                strcmp( testcase.parentStr, testcase.Parent.Web ) , ...
+                'Not applicable to Web graphics.' );
+        end % assumeNotWeb
+        
+        function assumeDisplay( testcase )
+            %check that environment has a display, for mouse tests
+            thisFolder = fileparts( mfilename( 'fullpath' ) );
+            batFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+            testcase.assumeFalse( ...
+                strcmp( thisFolder, batFolder ), ...
+                'Not applicable to headless BaT environment.');
+            testcase.assumeTrue( ...
+                isempty( getenv( 'JENKINS_HOME' ) ), ...
+                'Not applicable to headless Jenkins environment.');
+        end % assumeDisplay
+        
+        function assumeVersion( testcase )
+            %check that MATLAB version is supported
+            testcase.assumeFalse( ...
+                verLessThan( 'matlab', '8.4' ), ... % R2014b
+                'Not applicable prior to R2014b.' )
+            if isfield( testcase.Parent, 'Web' ) && ...
+                    strcmp( testcase.parentStr, testcase.Parent.Web ) % web graphics
+                testcase.assumeFalse( ...
+                    verLessThan( 'matlab', '9.8' ), ... % R2020a
+                    'Not applicable to Web graphics prior to R2020a.' )
+            end
+        end % assumeVersion
+        
     end
     
 end
