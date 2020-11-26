@@ -5,6 +5,8 @@ R2020b:
         artifacts:
                 reports:
                         junit: testResultsR2020b.xml
+        except:
+                - branches
 
 R2020a:
         script:
@@ -13,6 +15,8 @@ R2020a:
         artifacts:
                 reports:
                         junit: testResultsR2020a.xml
+        except:
+                - branches
 
 variables:
         GIT_DEPTH: 5
