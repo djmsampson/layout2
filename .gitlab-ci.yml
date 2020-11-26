@@ -1,0 +1,21 @@
+R2020b:
+        script:
+                - export DISPLAY=:1
+                - mw -using BR2020bd matlab -r "exit(testsandbox)"
+        artifacts:
+                reports:
+                        junit: testResultsR2020b.xml
+
+R2020a:
+        script:
+                - export DISPLAY=:1
+                - mw -using BR2020ad matlab -r "exit(testsandbox)"
+        artifacts:
+                reports:
+                        junit: testResultsR2020a.xml
+
+variables:
+        GIT_DEPTH: 5
+        GIT_SUBMODULE_STRATEGY: normal
+        GIT_CLEAN_FLAGS: -ffdx
+        DISPLAY: :1
