@@ -30,6 +30,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         ForegroundColor
         Children % Points to the tabgroup children
         Contents % Tabgroup children in their left to right order - this is redundant with uitab but kept for compatability.
+        Units
+        Position
     end % properties ( Dependent )
     
     properties( Access = public, Dependent, SetObservable)
@@ -47,6 +49,10 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
     end % ( Access = private )
     
+    properties( Access = private, Dependent)
+        Tabs
+    end
+    
     % Listeners - potentially redundant
     properties( Access = private )
         BackgroundColorListener % listener *unused*
@@ -62,7 +68,6 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     % Legacy properties to check against for backwards compatability
     properties ( Constant , Access = private )
         OldPanelProperties = {'BackgroundColor','BeingDeleted','Contents','DeleteFcn','FontAngle','FontName','FontSize','FontUnits','FontWeight','ForegroundColor','HighlightColor','ShadowColor','Padding','Parent','Position','Selection','SelectionChangedFcn','TabContextMenus','TabEnables','TabTitles','TabWidth','Tag','Type','Units','Visible'};
-        OldUiControlArguments = {'HorizontalAlignment','ListboxTop','Max','Min','SliderStep','String','Style','Value','Position','BackgroundColor','CData','Callback','Children','Tooltip','ForegroundColor','Enable','Extent','Visible','Parent','HandleVisibility','ButtonDownFcn','ContextMenu','BusyAction','BeingDeleted','Interruptible','CreateFcn','DeleteFcn','Type','Tag','UserData','KeyPressFcn','KeyReleaseFcn','FontUnits','FontSize','FontName','FontAngle','FontWeight','Units','InnerPosition','OuterPosition'};
         RemovedProperties = {'Padding','TabWidth','FontAngle','FontName','FontSize','FontWeight','FontUnits','HighlightColor','ShadowColor','TabLocation','Type'}
     end % (Constant,Hidden) Backwards compatability checks
     
@@ -129,7 +134,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             % Note if any of the removed properties get added back in
             % This will automatically disable their warnings.
             currentProps=unique([currentProps,properties(obj.TabGroup)']);
-                      
+            
             % Get the input arguments to compare.
             inputProps = varargin(1:2:end);
             
@@ -156,12 +161,11 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                     warning on backtrace
                 catch ME
                     delete( obj )
-                    ME.throwAsCaller;
-                    %error('uix:InvalidArgument',ME.message)
+                    error('uix:InvalidArgument',ME.message)
                 end
             end
             
-
+            
             
             
             % These blocks do not perform argument validation
@@ -222,9 +226,9 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 if numel(uitabgroupVarargin) > 0 % Make sure we havnet already dealt with all of the arguments
                     set( obj.TabGroup, uitabgroupVarargin{:} );
                 end % if
-            catch e
+            catch ME
                 delete( obj )
-                e.throwAsCaller()
+                error('uix:InvalidArgument',ME.message)
             end
             
         end % constructor
@@ -235,26 +239,185 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         end
         
         % Backwards compatability by overloading uicontrol
-        function tab=uicontrol(varargin)
+        function control=uicontrol(varargin)
+            
+            if mod(numel(varargin),2) == 1
+                % Add the parent name at the start for consistency.
+                varargin = ['parent',varargin];
+            end
+            
+            
+            % create the uicontrol
+            control = matlab.ui.control.UIControl;
+            
             try
-                tab=addTab(varargin{:});
-            catch ME
-                ME.throwAsCaller;
-                % Alternative way to force a uix error id
-                %error('uix:InvalidPropertyValue',ME.message);
+                
+                % Use the UIcontrol to validate properties
+                for k = 1:2:numel(varargin)
+                    varargin{k} = validatestring(varargin{k},properties(control)');
+                end
+                
+                % Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Point it towards the tab
+                obj = varargin{2*parentIdx};
+                
+                % Create a tab, put it in the parent slot
+                tb=matlab.ui.container.Tab('Parent',obj.TabGroup);
+                
+                % At this point we are done with varargin so lets set it
+                varargin{2*parentIdx}=tb;
+                set(control,varargin{:})
+                
+                % Put in some defaults:
+                % If no position is put in, make it the whole tab
+                posIdx =find(strcmpi(varargin(1:2:end),'Position'),1);
+                if isempty(posIdx)
+                    control.Units = 'normalized';
+                    control.Position = [0,0,1,1];
+                end
+                
+                % If no color specified for the tab itself, use panel default.
+                if ~any(strcmpi(varargin(1:2:end),'ForegroundColor'))
+                    control.ForegroundColor = obj.ForegroundColor;
+                    tb.ForegroundColor = obj.ForegroundColor;
+                else % If it was specified, make the tab string match the uicontrol
+                    tb.ForegroundColor = control.ForegroundColor;
+                end
+                
+            catch ME % If anything fails delete and throw error
+                delete(control)
+                error('uix:InvalidArgument',ME.message)
+                try % In case we error after creating the tab
+                    delete(tb)
+                catch
+                end
             end
         end % uicontrol
         
-        % Overload uitab so that it works to be intuative for new users.
-        function tab=uitab(varargin)
+        function value = uix.HBox(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
             try
-                tab=addTab(varargin{:});
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uix.HBox(varargin{:});
             catch ME
-                ME.throwAsCaller;
-                % Alternative way to force a uix error id
-                % error('uix:InvalidPropertyValue',ME.message);
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
             end
-        end % uitab
+        end
+        
+        function value = uiextras.HBox(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
+            try
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uiextras.HBox(varargin{:});
+            catch ME
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
+            end
+        end
+        
+        function value = uiextras.VBox(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
+            try
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uiextras.VBox(varargin{:});
+            catch ME
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
+            end
+        end
+        
+        function value = uix.VBox(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
+            try
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uix.VBox(varargin{:});
+            catch ME
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
+            end
+        end
+        
+        function value = uix.Empty(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
+            try
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uix.Empty(varargin{:});
+            catch ME
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
+            end
+        end
+        
+        
+        function value = uiextras.Empty(varargin)
+            % Create a tab, put it in the parent slot
+            tb=matlab.ui.container.Tab;
+            % Try and put HBox in tab.
+            % If it doesnt work delete the tab
+            try
+                %Find the parent argument
+                parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+                % Slot the tab and change the varargin parent to be the tab
+                obj = varargin{2*parentIdx};
+                tb.Parent = obj.TabGroup;
+                varargin{2*parentIdx} = tb;
+                value = uiextras.Empty(varargin{:});
+            catch ME
+                delete(tb)
+                error('uix:InvalidArgument',ME.message)
+            end
+        end
+        
+        %         % Overload uitab so that it works to be intuative for new users.
+        %         function tab=uitab(varargin)
+        %             try
+        %                 tab=addTab(varargin{:});
+        %             catch ME
+        %                 error('uix:InvalidPropertyValue',ME.message);
+        %             end
+        %         end % uitab
         
     end % structors
     
@@ -271,29 +434,75 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         
         function value = get.Children( obj )
-            value = obj.TabGroup.Children;
+            value = get(obj.TabGroup.Children,'Children');
+            if numel(value) > 1
+                value = [value{:}]';
+            end
         end % get.Children
         
         
         function set.Children(obj,value)
-            obj.TabGroup.Children=value;
+            % Setting the children is supposed to swap the contents between
+            % tabs without changing the order of the tabs.
+            
+            assert(numel(value)==numel(obj.TabGroup.Children),'uix:InvalidPropertyValue','One child must be specified per tab.')
+            
+            for k = 1:numel(value)
+                value(k).Parent = obj.TabGroup.Children(k);
+            end
+            
         end % set.Children
         
+        function value = get.Tabs(obj)  
+            value = obj.TabGroup.Children;
+        end
+        
+        function value=get.Units(obj)
+            value = obj.TabGroup.Units;
+        end
+        
+        function set.Units(obj,value)
+            assert(isrow(value) & ischar(value),'uix:InvalidPropertyValue','Units should be a character array.')
+            assert(any(strcmpi(value,{'centimeters','characters','inches','normalized','pixels','points'})),'uix:InvalidPropertyValue',...
+                'Units should have a value of ''centimeters'', ''characters'', ''inches'', ''normalized'', ''pixels'', or ''points''.')
+            obj.TabGroup.Units=value;
+        end
+        
+        function value=get.Position(obj)
+            value = obj.TabGroup.Position;
+        end
+        
+        function set.Position(obj,value)
+           assert(isrow(value) & (numel(value)==4),'uix:InvalidPropertyValue','Position should be a numeric 1-by-4 array.')
+           try
+           obj.TabGroup.Position = value; 
+           catch ME
+           error('uix:InvalidPropertyValue', ME.message)
+           end
+        end
         
         function set.Selection(obj,value)
             
             % Even if there are no tabs, selection should be an integer and zero or above
             % isinteger checks class, so instead check using mod division.
-            assert((value >= 0) & (mod(value,1)<eps) ,'uix:InvalidPropertyValue','''Selection'' should be a positive integer.')
-            
-            % Are there any tabs?
-            assert(~isempty(obj.TabGroup.Children),'uix:InvalidPropertyValue','No tabs have been added to the tab panel.')
+            if (value < 0) | (mod(value,1)>eps) | (numel(value)~=1)
+                error('uix:InvalidPropertyValue','''Selection'' should be a scalar positive integer.')
+            end
             
             % Get old tab to pass to onSelectionChanged
             eventData.OldValue = obj.TabGroup.SelectedTab;
             numTabs = numel( obj.Children );
             % Make sure you arent selecting a non existing tab.
-            assert( (value <= numTabs) && (value > 0),'uix:InvalidPropertyValue', ['''Selection'' must be in the range 1 to ' , num2str(numTabs) , ' (the number of tabs).'] )
+            if value > numTabs
+                error('uix:InvalidPropertyValue', ['''Selection'' must be in the range 1 to ' , num2str(numTabs) , ' (the number of tabs).'] )
+            end
+            % Or zero if there are tabs
+            
+            if (value < 0) & numTabs > 0
+                error('uix:InvalidPropertyValue', ['''Selection'' must be in the range 1 to ' , num2str(numTabs) , ' (the number of tabs).'] )
+            end
+            
+            if value ~= 0 % Dont change for zero it is the null case.
             obj.TabGroup.SelectedTab = obj.TabGroup.Children(value);
             
             % Get new tab to pass to onSelectionChanged
@@ -301,6 +510,7 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
             % Call the changed tab function.
             obj.onSelectionChanged([],eventData)
+            end
         end
         
         
@@ -314,12 +524,28 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
         
         
         function value=get.Contents(obj)
-            value = obj.TabGroup.Children;
+            value = obj.Children;
         end % get.Contents
         
         
         function set.Contents(obj,value)
-            obj.TabGroup.Children=value;
+            % Contents is supposed to rearrange the tabs
+            
+            % Value is the origional tab contents in some permuted order.
+            % So first lets get the oldContents
+            
+            oldContents = get(obj.TabGroup.Children,'Children');
+            oldContents = [oldContents{:}]';
+            
+            % Find the desired tab order based on the user input
+            orderIdx = nan(1,numel(value));
+            for k = 1:numel(orderIdx)
+                orderIdx(k) = find(oldContents(k)==value);
+            end
+            
+            % Reorder the tabs.
+            obj.TabGroup.Children = obj.TabGroup.Children(orderIdx);
+            
         end % set.Contents
         
         function set.BeingDeleted(obj,value)
@@ -367,7 +593,10 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
             
             obj.ForegroundColor_ = value;
             idx = strcmpi(obj.TabEnables,'on');
+            
+            % Recolor the tabs
             set(obj.TabGroup.Children(idx),'ForegroundColor',value)
+            set(obj.Children(idx),'ForegroundColor',value)
         end
         
         
@@ -439,8 +668,8 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
             
-           % Set
-           for k = 1:numel( obj.TabGroup.Children )
+            % Set
+            for k = 1:numel( obj.TabGroup.Children )
                 obj.TabGroup.Children(k).Title = value{k};
             end
         end % set.TabTitles
@@ -474,66 +703,66 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     
     % Set end of class for null accessor functions for removed properties
     
-    methods( Access = private ) % addTab
-        
-        % This is the function that uicontrol and uitab map to
-        function tb=addTab(varargin)
-            
-            if mod(numel(varargin),2) == 1
-                % Add the parent name at the start for consistency.
-                varargin = ['parent',varargin];
-            end
-            
-            % Find the parent argument
-            parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
-            % Point it towards the tab group
-            obj = varargin{2*parentIdx};
-            varargin{2*parentIdx}=obj.TabGroup;
-            
-            % Create a tab panel
-            tb=matlab.ui.container.Tab;
-            
-            % This checks against incorrect or unsupported properties in
-            % uitab and ignores them, warns against them being ignored.
-            uiTabProps = properties(tb);
-            
-            idx = false(size(varargin));
-            
-            for k = 1:numel(idx)/2
-                try
-                    % Validate potential typos
-                    varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
-                    % If successfully validated, change the contains to
-                    % true;
-                    idx(2*k-1)=1;
-                    idx(2*k)=1;
-                catch
-                    try
-                        oldArgument = validatestring(varargin{2*k-1},obj.OldUiControlArguments);
-                        % If unsuccessful validation return the warning that it
-                        % is being ignored.
-                        warning off backtrace
-                        warning(['The property ''',oldArgument , ''' is no longer supported and will be ignored.'])
-                        warning on backtrace
-                    catch ME
-                        error('uix:InvalidArgument',ME.message)
-                    end
-                end
-            end
-            
-            varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
-            
-            set(tb,varargin{:});
-            
-            % If no color specified for the tab itself, go with the panel
-            % default.
-            if ~any(strcmpi(varargin(1:2:end),'ForegroundColor'))
-               tb.ForegroundColor = obj.ForegroundColor; 
-            end
-            
-        end % addTab
-        
-    end % helper methods
+    %     methods( Access = private ) % addTab
+    %
+    %         % This is the function that uicontrol and uitab map to
+    %         function tb=addTab(varargin)
+    %
+    %             if mod(numel(varargin),2) == 1
+    %                 % Add the parent name at the start for consistency.
+    %                 varargin = ['parent',varargin];
+    %             end
+    %
+    %             % Find the parent argument
+    %             parentIdx = find(strcmpi(varargin(1:2:end),'parent'));
+    %             % Point it towards the tab group
+    %             obj = varargin{2*parentIdx};
+    %             varargin{2*parentIdx}=obj.TabGroup;
+    %
+    %             % Create a tab panel
+    %             tb=matlab.ui.container.Tab;
+    %
+    %             % This checks against incorrect or unsupported properties in
+    %             % uitab and ignores them, warns against them being ignored.
+    %             uiTabProps = properties(tb);
+    %
+    %             idx = false(size(varargin));
+    %
+    %             for k = 1:numel(idx)/2
+    %                 try
+    %                     % Validate potential typos
+    %                     varargin{2*k-1} = validatestring(varargin{2*k-1},uiTabProps);
+    %                     % If successfully validated, change the contains to
+    %                     % true;
+    %                     idx(2*k-1)=1;
+    %                     idx(2*k)=1;
+    %                 catch
+    %                     try
+    %                         oldArgument = validatestring(varargin{2*k-1},obj.OldUiControlArguments);
+    %                         % If unsuccessful validation return the warning that it
+    %                         % is being ignored.
+    %                         warning off backtrace
+    %                         warning(['The property ''',oldArgument , ''' is no longer supported and will be ignored.'])
+    %                         warning on backtrace
+    %                     catch ME
+    %                         error('uix:InvalidArgument',ME.message)
+    %                     end
+    %                 end
+    %             end
+    %
+    %             varargin=varargin(idx); % Filter the varargin to have the non rejected properties.
+    %
+    %             set(tb,varargin{:});
+    %
+    %             % If no color specified for the tab itself, go with the panel
+    %             % default.
+    %             if ~any(strcmpi(varargin(1:2:end),'ForegroundColor'))
+    %                tb.ForegroundColor = obj.ForegroundColor;
+    %             end
+    %
+    %         end % addTab
+    %
+    %     end % helper methods
     
     methods( Access = private )
         
@@ -555,39 +784,39 @@ classdef TabPanel < matlab.mixin.SetGet %uix.Container & uix.mixin.Panel % Remov
     % But the set functions no longer do anything.
     methods % Null setters
         % Print warnings?
-        function set.TabWidth(~,~)
-        end
-        
-        function set.FontAngle(~,~)
-        end
-        
-        function set.FontName(~,~)
-        end
-        
-        function set.FontSize(~,~)
-        end
-        
-        function set.FontWeight(~,~)
-        end
-        
-        function set.FontUnits(~,~)
-        end
-        
-        function set.BackgroundColor(~,~)
-        end
-        
-        function set.HighlightColor(~,~)
-        end
-        
-        function set.ShadowColor(~,~)
-        end
-        
-        function set.TabLocation(~,~)
-        end
-        
-        function set.Padding(~,~)
-        end
-        
+%         function set.TabWidth(~,~)
+%         end
+%         
+%         function set.FontAngle(~,~)
+%         end
+%         
+%         function set.FontName(~,~)
+%         end
+%         
+%         function set.FontSize(~,~)
+%         end
+%         
+%         function set.FontWeight(~,~)
+%         end
+%         
+%         function set.FontUnits(~,~)
+%         end
+%         
+%         function set.BackgroundColor(~,~)
+%         end
+%         
+%         function set.HighlightColor(~,~)
+%         end
+%         
+%         function set.ShadowColor(~,~)
+%         end
+%         
+%         function set.TabLocation(~,~)
+%         end
+%         
+%         function set.Padding(~,~)
+%         end
+%         
     end % Null set functions
     
 end % classdef
