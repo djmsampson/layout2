@@ -757,6 +757,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     methods
         
         function value = get.FontAngle( obj )
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontAngle'' is no longer supported.' )
             value = obj.FontAngle_;
         end % get.FontAngle
         
@@ -787,7 +788,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         
         
         function value = get.FontName( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontName'' is no longer supported.' )
             value = obj.FontName_;
             
         end % get.FontName
@@ -819,7 +820,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % set.FontName
         
         function value = get.FontSize( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontSize'' is no longer supported.' )
             value = obj.FontSize_;
             
         end % get.FontSize
@@ -852,7 +853,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % set.FontSize
         
         function value = get.FontWeight( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontWeight'' is no longer supported.' )
             value = obj.FontWeight_;
             
         end % get.FontWeight
@@ -879,25 +880,22 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %
             %             % Mark as dirty
             % %             obj.TabHeight = -1;
-            %             obj.Dirty = true;
-            
+            %             obj.Dirty = true; 
         end % set.FontWeight
         
         function value = get.FontUnits( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontUnits'' is no longer supported.' )                       
             value = obj.FontUnits_;
-            
         end % get.FontUnits
         
         function set.FontUnits( obj, value )
-            
-            warning( 'uix:Deprecated', 'The TabPanel property ''FontUnits'' is no longer supported.' )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontUnits'' is no longer supported.' )           
             % Check
             assert( ischar( value ) && ...
                 any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''FontUnits'' must be ''inches'', ''centimeters'', ''points'' or ''pixels''.' )
+            obj.FontUnits_=value;
             
             %             % Compute size in new units
             %             oldUnits = obj.FontUnits_;
@@ -949,58 +947,44 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % set.FontUnits
         
         function value = get.HighlightColor( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''HighlightColor'' is no longer supported.' )
             value = obj.HighlightColor_;
-            
         end % get.HighlightColor
         
-        function set.HighlightColor( obj, value )
-            
+        function set.HighlightColor( obj, value )           
             warning( 'uix:Deprecated', 'The TabPanel property ''HighlightColor'' is no longer supported.' )
-            
             % Check
             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''HighlightColor'' must be an RGB triple.' )
-            
+                'Property ''HighlightColor'' must be an RGB triple.' )            
             % Set
-            obj.HighlightColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
+            obj.HighlightColor_ = value;             
+%             % Mark as dirty
+%             obj.Dirty = true;
         end % set.HighlightColor
         
         function value = get.ShadowColor( obj )
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''ShadowColor'' is no longer supported.' )            
             value = obj.ShadowColor_;
-            
         end % get.ShadowColor
         
         function set.ShadowColor( obj, value )
-            
             warning( 'uix:Deprecated', 'The TabPanel property ''ShadowColor'' is no longer supported.' )
-            
             % Check
             assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
                 all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''ShadowColor'' must be an RGB triple.' )
-            
+                'Property ''ShadowColor'' must be an RGB triple.' )           
             % Set
             obj.ShadowColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
+%             % Mark as dirty
+%             obj.Dirty = true;            
         end % set.ShadowColor
         
         function value = get.TabWidth( obj )
-            warning( 'uix:Deprecated', 'The TabPanel property ''TabWidth'' is no longer supported, a placeholder value of 50 px has been returned.' )
-            %             value = obj.TabWidth_;
-            value = 50;
-            
+            warning( 'uix:Deprecated', 'The TabPanel property ''TabWidth'' is no longer supported.' )
+            value = obj.TabWidth_;
         end % get.TabWidth
         
         function set.TabWidth( obj, value )
@@ -1011,9 +995,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 ~isnan( value ) && value ~= 0, ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabWidth'' must be a non-zero scalar.' )
-            
-            %             % Set
-            %             obj.TabWidth_ = value;
+            % Set
+            obj.TabWidth_ = value;
             %
             %             % Mark as dirty
             %             obj.Dirty = true;
