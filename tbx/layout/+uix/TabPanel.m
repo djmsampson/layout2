@@ -16,14 +16,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     %  Copyright 2009-2020 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
-        FontAngle % font angle
-        FontName % font name
-        FontSize % font size
-        FontWeight % font weight
-        FontUnits % font weight
         ForegroundColor % tab text color [RGB]
-        HighlightColor % border highlight color [RGB]
-        ShadowColor % border shadow color [RGB]
     end
     
     properties
@@ -34,48 +27,76 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabGroup % This is where we will store the tab buttons
     end
     
-    properties ( Dependent) %(Access = private)
+    properties ( Dependent ) %(Access = private)
         Tabs = gobjects( [0 1] ) % This is where the tabs will be
     end
-    
     
     properties( Access = public, Dependent, AbortSet )
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom]
         TabTitles % tab titles
         TabContextMenus % tab context menus
-        TabWidth % tab width
     end
     
     properties( Access = private )
         TabEnables_ = cell.empty % Backer for implementing tab disabling
-        FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
-        FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
-        FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
-        FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
-        FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
-        HighlightColor_ = [1 1 1] % backing for HighlightColor
-        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
         ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
-        %TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabLocation_ = 'top' % backing for TabPosition
-        TabHeight = -1 % cache of tab height (-1 denotes stale cache)
-        TabWidth_ = 50 % backing for TabWidth
-        Dividers % tab dividers
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         ParentListener % listener
         ParentBackgroundColorListener % listener
     end
     
-    properties( Access = private, Constant )
-        FontNames = listfonts() % all available font names
-        DividerMask = uix.TabPanel.getDividerMask() % divider image data
-        DividerWidth = 8 % divider width
-        TabMinimumHeight = 25 % tab minimum height, was 9, now 25 due to uitab
-        Tint = 0.85 % tint factor for unselected tabs
+    %%% These are no longer supported %%%%%
+    properties( Access = public, Dependent, AbortSet )
+        FontAngle % font angle
+        FontName % font name
+        FontSize % font size
+        FontWeight % font weight
+        FontUnits % font weight
+        HighlightColor % border highlight color [RGB]
+        ShadowColor % border shadow color [RGB]
+        TabWidth % tab width
     end
+    
+    %%% Backers of no longer supported properties %%%%%
+    properties
+        FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
+        FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
+        FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
+        FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
+        FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        TabWidth_ = 50 % backing for TabWidth
+    end
+    
+    % This property is removable but has been left in to validate code in
+    % case font names become supported in future versions of uitab.
+    properties (Access = private, Constant)
+        FontNames = listfonts() % all available font names
+    end
+    
+    %     %%%%%%%%%%% This is a block of properties that can be removed  %%%%%%%%%%%
+    %     properties( Access = private, Constant )
+    %
+    %         DividerMask = uix.TabPanel.getDividerMask() % divider image data
+    %         DividerWidth = 8 % divider width
+    %         TabMinimumHeight = 23 % tab minimum height, was 9, now 23 due to uitab
+    %         Tint = 0.85 % tint factor for unselected tabs
+    %     end
+    %
+    %     %%%%%%%%%%% This is a block of properties that can be removed  %%%%%%%%%%%
+    %     properties (Access = private)
+    %         %TabListeners = event.listener.empty( [0 1] ) % tab listeners
+    %         Dividers % tab dividers
+    %
+    %         % This may need reimplementation in future:
+    %         %TabHeight = -1 % cache of tab height (-1 denotes stale cache)
+    %     end
+    
     
     methods
         
@@ -108,29 +129,27 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 findprop( obj, 'Parent' ), 'PostSet', ...
                 @obj.onParentChanged );
             
-            %             % Store properties
-            %             obj.Dividers = dividers;
             
             
+            % Store properties
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             obj.ParentListener = parentListener;
+            %           obj.Dividers = dividers;
+            
             
             % Set properties
             try
-                uix.set( obj, varargin{:} )               
+                uix.set( obj, varargin{:} )
             catch e
                 delete( obj )
                 e.throwAsCaller()
             end
-            
-            
-            
-            
         end % constructor
         
     end % structors
     
+    % Accessors
     methods
         
         function value = get.Tabs(obj)
@@ -140,191 +159,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         function set.Tabs(obj,value)
             obj.TabGroup.Children = value;
         end
-        
-        function value = get.FontAngle( obj )
-            
-            value = obj.FontAngle_;
-            
-        end % get.FontAngle
-        
-        function set.FontAngle( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'normal','italic','oblique'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''FontAngle'' must be ''normal'', ''italic'' or ''oblique''.' )
-            
-            % Set
-            obj.FontAngle_ = value;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.FontAngle = value;
-            end
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            obj.Dirty = true;
-            
-        end % set.FontAngle
-        
-        function value = get.FontName( obj )
-            
-            value = obj.FontName_;
-            
-        end % get.FontName
-        
-        function set.FontName( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, obj.FontNames ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''FontName'' must be a valid font name.' )
-            
-            % Set
-            obj.FontName_ = value;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.FontName = value;
-            end
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            obj.Dirty = true;
-            
-        end % set.FontName
-        
-        function value = get.FontSize( obj )
-            
-            value = obj.FontSize_;
-            
-        end % get.FontSize
-        
-        function set.FontSize( obj, value )
-            
-            % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value > 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''FontSize'' must be a positive scalar.' )
-            
-            % Set
-            obj.FontSize_ = value;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.FontSize = value;
-            end
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            obj.Dirty = true;
-            
-        end % set.FontSize
-        
-        function value = get.FontWeight( obj )
-            
-            value = obj.FontWeight_;
-            
-        end % get.FontWeight
-        
-        function set.FontWeight( obj, value )
-            
-            % Check
-            assert( ischar( value ) && any( strcmp( value, {'normal','bold'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''FontWeight'' must be ''normal'' or ''bold''.' )
-            
-            % Set
-            obj.FontWeight_ = value;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.FontWeight = value;
-            end
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            obj.Dirty = true;
-            
-        end % set.FontWeight
-        
-        function value = get.FontUnits( obj )
-            
-            value = obj.FontUnits_;
-            
-        end % get.FontUnits
-        
-        function set.FontUnits( obj, value )
-            
-            % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''FontUnits'' must be ''inches'', ''centimeters'', ''points'' or ''pixels''.' )
-            
-            % Compute size in new units
-            oldUnits = obj.FontUnits_;
-            oldSize = obj.FontSize_;
-            newUnits = value;
-            newSize = oldSize * convert( oldUnits ) / convert( newUnits );
-            
-            % Set size and units
-            obj.FontSize_ = newSize;
-            obj.FontUnits_ = newUnits;
-            
-            % Update existing tabs
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tab = tabs(ii);
-                tab.FontUnits = newUnits;
-            end
-            
-            % Mark as dirty
-            obj.TabHeight = -1;
-            obj.Dirty = true;
-            
-            function factor = convert( units )
-                %convert  Compute conversion factor to points
-                %
-                %  f = convert(u) computes the conversion factor from units
-                %  u to points.  For example, convert('inches') since 1
-                %  inch equals 72 points.
-                
-                persistent SCREEN_PIXELS_PER_INCH
-                if isequal( SCREEN_PIXELS_PER_INCH, [] ) % uninitialized
-                    SCREEN_PIXELS_PER_INCH = get( 0, 'ScreenPixelsPerInch' );
-                end
-                
-                switch units
-                    case 'inches'
-                        factor = 72;
-                    case 'centimeters'
-                        factor = 72 / 2.54;
-                    case 'points'
-                        factor = 1;
-                    case 'pixels'
-                        factor = 72 / SCREEN_PIXELS_PER_INCH;
-                end
-                
-            end % convert
-            
-        end % set.FontUnits
         
         function value = get.ForegroundColor( obj )
             
@@ -353,28 +187,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % set.ForegroundColor
         
-        function value = get.HighlightColor( obj )
-            
-            value = obj.HighlightColor_;
-            
-        end % get.HighlightColor
-        
-        function set.HighlightColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HighlightColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.HighlightColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.HighlightColor
-        
         function set.SelectionChangedFcn( obj, value )
             
             % Check
@@ -398,29 +210,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % set.SelectionChangedFcn
         
-        function value = get.ShadowColor( obj )
-            
-            value = obj.ShadowColor_;
-            
-        end % get.ShadowColor
-        
-        function set.ShadowColor( obj, value )
-            
-            % Check
-            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
-                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''ShadowColor'' must be an RGB triple.' )
-            
-            % Set
-            obj.ShadowColor_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.ShadowColor
-        
-        
         function value = get.TabEnables( obj )
             if isempty(obj.TabEnables_)
                 value = repmat({'on'},1,numel(obj.Tabs));
@@ -428,7 +217,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 value = obj.TabEnables_;
             end
         end % get.TabEnables
-        
         
         function set.TabEnables( obj, value )
             
@@ -511,7 +299,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             
             % Mark as dirty
-            obj.TabHeight = -1;
+            %             obj.TabHeight = -1;
             obj.Dirty = true;
             
         end % set.TabTitles
@@ -537,121 +325,82 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
         end % set.TabContextMenus
         
-        function value = get.TabWidth( obj )
-            
-            value = obj.TabWidth_;
-            
-        end % get.TabWidth
-        
-        function set.TabWidth( obj, value )
-            
-            % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value ~= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabWidth'' must be a non-zero scalar.' )
-            
-            % Set
-            obj.TabWidth_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.TabWidth
-        
-        
     end % accessors
+    
+    % Note: Deprecated accessors have been moved to the end.
     
     methods( Access = protected )
         
         function redraw( obj )
+            % Compute positions
+            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+                [0 0 1 1], 'normalized', 'pixels', obj );
+            w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
+            h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
+            p = obj.Padding_; % padding
+            
+            %                          tH = obj.TabHeight; % tab height
+            
+            % These tab height calcs arent useful now because
+            % uitabs are fixed height, still allowing the check to occur.
+            % To not interfere with other things being marked
+            % dirty. May be removed if it isnt used elsewhere.
+            
+            %                          if tH == -1 % cache stale, refresh
+            %                               if n > 0
+            %                                  cTabExtents = get( tabs, {'Extent'} );
+            %                                  tabExtents = vertcat( cTabExtents{:} );
+            %                                  tH = max( tabExtents(:,4) );
+            %                            end
+            %                              tH = max( tH, obj.TabMinimumHeight ); % apply minimum
+            %                              tH = ceil( tH ); % round up
+            %                             obj.TabHeight = tH; % store
+            %                          end
+            
+            tH = 23;
+            
+            cH = max( [h - 2 * p - tH, 1] ); % contents height
+            switch obj.TabLocation_
+                case 'top'
+                    cY = 1 + p; % contents y
+                    tY = cY + cH + p; % tab y
+                case 'bottom'
+                    tY = 1; % tab y
+                    cY = tY + tH + p; % contents y
+            end
+            cX = 1 + p; % contents x
+            cW = max( [w - 2 * p, 1] ); % contents width
+            
+            % Probably redundant width calculations.
+            %                          tW = obj.TabWidth_; % tab width
+            %                          dW = obj.DividerWidth; % tab divider width
+            %                          if tW < 0 && n > 0 % relative
+            %                              tW = max( ( w - (n+1) * dW ) / n, 1 );
+            %                          end
+            %                          tW = ceil( tW ); % round up
             
             
+            obj.TabGroup.Position(2) = tY;
+            obj.TabGroup.Position(4)=tH;
             
-                % We only want to be able to see the buttons, so make the tab
-                % group 23 pixels high - this may have to change in the future
-                % if we ever get the ability to resize tabs
-                
-                if ~isempty(ancestor(obj,'figure'))
-                    bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                        [0 0 1 1], 'normalized', 'pixels', obj );
-                    
-                    obj.TabGroup.Position(2) = bounds(4) - 23;
-                    obj.TabGroup.Position(4) = 23;
-                else
-                    disp("Derp")
-                end
-            
-            % TODO: Change all this when tabs can actually be created
-            
-                         % Compute positions
-                         bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                             [0 0 1 1], 'normalized', 'pixels', obj );
-                         w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
-                         h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
-                         p = obj.Padding_; % padding
-                         tH = obj.TabHeight; % tab height
-                          
-            
-                         % These tab height calcs arent useful now because
-                         % uitabs are fixed height, still allowing the check to occur.
-                         % To not interfere with other things being marked
-                         % dirty. May be removed if it isnt used elsewhere.
-                         
-                         if tH == -1 % cache stale, refresh
-%                               if n > 0
-%                                  cTabExtents = get( tabs, {'Extent'} );
-%                                  tabExtents = vertcat( cTabExtents{:} );
-%                                  tH = max( tabExtents(:,4) );
-%                            end
-%                              tH = max( tH, obj.TabMinimumHeight ); % apply minimum
-%                              tH = ceil( tH ); % round up
-                             tH = 23;
-                             obj.TabHeight = tH; % store
-                         end
-                         cH = max( [h - 2 * p - tH, 1] ); % contents height
-                         switch obj.TabLocation_
-                             case 'top'
-                                 cY = 1 + p; % contents y
-                                 tY = cY + cH + p; % tab y
-                             case 'bottom'
-                                 tY = 1; % tab y
-                                 cY = tY + tH + p; % contents y
-                         end
-                         cX = 1 + p; % contents x
-                         cW = max( [w - 2 * p, 1] ); % contents width
-
-                         % Probably redundant width calculations.
-%                          tW = obj.TabWidth_; % tab width
-%                          dW = obj.DividerWidth; % tab divider width
-%                          if tW < 0 && n > 0 % relative
-%                              tW = max( ( w - (n+1) * dW ) / n, 1 );
-%                          end
-%                          tW = ceil( tW ); % round up
-              
-                         
-                         obj.TabGroup.Position(2) = tY;
-                         obj.TabGroup.Position(4)=tH;
-                         
-                         % This is the old tab positioning code.
-%                          for ii = 1:n
-%                              tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
-%                          end
-%                          obj.Dividers.Position = [0 tY w+1 tH];
+            % This is the old tab positioning code.
+            %                          for ii = 1:n
+            %                              tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
+            %                          end
+            %                          obj.Dividers.Position = [0 tY w+1 tH];
             
             contentsPosition = [cX cY cW cH];
             
             
             
-                         % Redraw tabs
-                         %obj.redrawTabs()
+            % Redraw tabs
+            %obj.redrawTabs()
             
-                         % Redraw contents
-                         selection = obj.Selection_;
-                         if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
-                             uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
-                         end
+            % Redraw contents
+            selection = obj.Selection_;
+            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
+                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+            end
         end % redraw
         
         function addChild( obj, child )
@@ -691,7 +440,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             
             
             % Mark as dirty
-            obj.TabHeight = -1;
+            %             obj.TabHeight = -1;
             
             % Check for bug
             if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
@@ -1001,58 +750,334 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         
     end % event handlers
     
-    methods( Access = private, Static )
+    
+    
+    
+    %%%%%% Deprecated accessors
+    methods
         
-        function mask = getDividerMask()
-            %getDividerMask  Get divider image data
+        function value = get.FontAngle( obj )
+            value = obj.FontAngle_;
+        end % get.FontAngle
+        
+        function set.FontAngle( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontAngle'' is no longer supported.' )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'normal','italic','oblique'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontAngle'' must be ''normal'', ''italic'' or ''oblique''.' )
+            
+            % Set
+            obj.FontAngle_ = value;
+            
+            %             % Update existing tabs
+            %             tabs = obj.Tabs;
+            %             n = numel( tabs );
+            %             for ii = 1:n
+            %                 tab = tabs(ii);
+            %                 tab.FontAngle = value;
+            %             end
             %
-            %  m = uix.TabPanel.getDividerMask() returns the image masks
-            %  for tab panel dividers.  Mask entries are 0 (shadow), 1
-            %  (background), 2 (tint) and 3 (highlight).
-            
-            mask.EF = indexColor( uix.loadIcon( 'tab_NoEdge_NotSelected.png' ) );
-            mask.ET = indexColor( uix.loadIcon( 'tab_NoEdge_Selected.png' ) );
-            mask.FE = indexColor( uix.loadIcon( 'tab_NotSelected_NoEdge.png' ) );
-            mask.FF = indexColor( uix.loadIcon( 'tab_NotSelected_NotSelected.png' ) );
-            mask.FT = indexColor( uix.loadIcon( 'tab_NotSelected_Selected.png' ) );
-            mask.TE = indexColor( uix.loadIcon( 'tab_Selected_NoEdge.png' ) );
-            mask.TF = indexColor( uix.loadIcon( 'tab_Selected_NotSelected.png' ) );
-            
-            function mask = indexColor( rgbMap )
-                %indexColor  Returns a map of index given an RGB map
-                %
-                %  mask = indexColor( rgbMap ) returns a mask of color
-                %  index based on the supplied rgbMap.
-                %  black  : 0
-                %  red    : 1
-                %  yellow : 2
-                %  white  : 3
-                %  blue   : 4
-                mask = nan( size( rgbMap, 1 ),size( rgbMap, 2 ) );
-                % Black
-                colorIndex = isColor( rgbMap, [0 0 0] );
-                mask(colorIndex) = 0;
-                % Red
-                colorIndex = isColor( rgbMap, [1 0 0] );
-                mask(colorIndex) = 1;
-                % Yellow
-                colorIndex = isColor( rgbMap, [1 1 0] );
-                mask(colorIndex) = 2;
-                % White
-                colorIndex = isColor( rgbMap, [1 1 1] );
-                mask(colorIndex) = 3;
-                % Blue
-                colorIndex = isColor( rgbMap, [0 0 1] );
-                mask(colorIndex) = 4;
-                % Nested
-                function boolMap = isColor( map, color )
-                    %isColor  Return a map of boolean where map is equal to color
-                    boolMap = all( bsxfun( @eq, map, permute( color, [1 3 2] ) ), 3 );
-                end
-            end
-            
-        end % getDividerMask
+            %             % Mark as dirty
+            % %           obj.TabHeight = -1;
+            %             obj.Dirty = true;
+        end % set.FontAngle
         
-    end % static helper methods
+        
+        function value = get.FontName( obj )
+            
+            value = obj.FontName_;
+            
+        end % get.FontName
+        
+        function set.FontName( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontName'' is no longer supported.' )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, obj.FontNames ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontName'' must be a valid font name.' )
+            
+            % Set
+            obj.FontName_ = value;
+            
+            %             % Update existing tabs
+            %             tabs = obj.Tabs;
+            %             n = numel( tabs );
+            %             for ii = 1:n
+            %                 tab = tabs(ii);
+            %                 tab.FontName = value;
+            %             end
+            %
+            %             % Mark as dirty
+            % %              = -1;
+            %             obj.Dirty = true;
+            
+        end % set.FontName
+        
+        function value = get.FontSize( obj )
+            
+            value = obj.FontSize_;
+            
+        end % get.FontSize
+        
+        function set.FontSize( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontSize'' is no longer supported.' )
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value > 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontSize'' must be a positive scalar.' )
+            
+            % Set
+            obj.FontSize_ = value;
+            
+            %             % Update existing tabs
+            %             tabs = obj.Tabs;
+            %             n = numel( tabs );
+            %             for ii = 1:n
+            %                 tab = tabs(ii);
+            %                 tab.FontSize = value;
+            %             end
+            %
+            %             % Mark as dirty
+            % %             obj.TabHeight = -1;
+            %             obj.Dirty = true;
+            
+        end % set.FontSize
+        
+        function value = get.FontWeight( obj )
+            
+            value = obj.FontWeight_;
+            
+        end % get.FontWeight
+        
+        function set.FontWeight( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontWeight'' is no longer supported.' )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'normal','bold'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontWeight'' must be ''normal'' or ''bold''.' )
+            
+            % Set
+            obj.FontWeight_ = value;
+            
+            %             % Update existing tabs
+            %             tabs = obj.Tabs;
+            %             n = numel( tabs );
+            %             for ii = 1:n
+            %                 tab = tabs(ii);
+            %                 tab.FontWeight = value;
+            %             end
+            %
+            %             % Mark as dirty
+            % %             obj.TabHeight = -1;
+            %             obj.Dirty = true;
+            
+        end % set.FontWeight
+        
+        function value = get.FontUnits( obj )
+            
+            value = obj.FontUnits_;
+            
+        end % get.FontUnits
+        
+        function set.FontUnits( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''FontUnits'' is no longer supported.' )
+            
+            % Check
+            assert( ischar( value ) && ...
+                any( strcmp( value, {'inches','centimeters','points','pixels'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''FontUnits'' must be ''inches'', ''centimeters'', ''points'' or ''pixels''.' )
+            
+            %             % Compute size in new units
+            %             oldUnits = obj.FontUnits_;
+            %             oldSize = obj.FontSize_;
+            %             newUnits = value;
+            %             newSize = oldSize * convert( oldUnits ) / convert( newUnits );
+            %
+            %             % Set size and units
+            %             obj.FontSize_ = newSize;
+            %             obj.FontUnits_ = newUnits;
+            %
+            %             % Update existing tabs
+            %             tabs = obj.Tabs;
+            %             n = numel( tabs );
+            %             for ii = 1:n
+            %                 tab = tabs(ii);
+            %                 tab.FontUnits = newUnits;
+            %             end
+            %
+            %             % Mark as dirty
+            % %             obj.TabHeight = -1;
+            %             obj.Dirty = true;
+            %
+            %             function factor = convert( units )
+            %                 %convert  Compute conversion factor to points
+            %                 %
+            %                 %  f = convert(u) computes the conversion factor from units
+            %                 %  u to points.  For example, convert('inches') since 1
+            %                 %  inch equals 72 points.
+            %
+            %                 persistent SCREEN_PIXELS_PER_INCH
+            %                 if isequal( SCREEN_PIXELS_PER_INCH, [] ) % uninitialized
+            %                     SCREEN_PIXELS_PER_INCH = get( 0, 'ScreenPixelsPerInch' );
+            %                 end
+            %
+            %                 switch units
+            %                     case 'inches'
+            %                         factor = 72;
+            %                     case 'centimeters'
+            %                         factor = 72 / 2.54;
+            %                     case 'points'
+            %                         factor = 1;
+            %                     case 'pixels'
+            %                         factor = 72 / SCREEN_PIXELS_PER_INCH;
+            %                 end
+            %
+            %             end % convert
+            
+        end % set.FontUnits
+        
+        function value = get.HighlightColor( obj )
+            
+            value = obj.HighlightColor_;
+            
+        end % get.HighlightColor
+        
+        function set.HighlightColor( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''HighlightColor'' is no longer supported.' )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''HighlightColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.HighlightColor_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.HighlightColor
+        
+        function value = get.ShadowColor( obj )
+            
+            value = obj.ShadowColor_;
+            
+        end % get.ShadowColor
+        
+        function set.ShadowColor( obj, value )
+            
+            warning( 'uix:Deprecated', 'The TabPanel property ''ShadowColor'' is no longer supported.' )
+            
+            % Check
+            assert( isnumeric( value ) && isequal( size( value ), [1 3] ) && ...
+                all( isreal( value ) ) && all( value >= 0 ) && all( value <= 1 ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''ShadowColor'' must be an RGB triple.' )
+            
+            % Set
+            obj.ShadowColor_ = value;
+            
+            % Mark as dirty
+            obj.Dirty = true;
+            
+        end % set.ShadowColor
+        
+        function value = get.TabWidth( obj )
+            warning( 'uix:Deprecated', 'The TabPanel property ''TabWidth'' is no longer supported, a placeholder value of 50 px has been returned.' )
+            %             value = obj.TabWidth_;
+            value = 50;
+            
+        end % get.TabWidth
+        
+        function set.TabWidth( obj, value )
+            warning( 'uix:Deprecated', 'The TabPanel property ''TabWidth'' is no longer supported.' )
+            % Check
+            assert( isa( value, 'double' ) && isscalar( value ) && ...
+                isreal( value ) && ~isinf( value ) && ...
+                ~isnan( value ) && value ~= 0, ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabWidth'' must be a non-zero scalar.' )
+            
+            %             % Set
+            %             obj.TabWidth_ = value;
+            %
+            %             % Mark as dirty
+            %             obj.Dirty = true;
+            %
+        end % set.TabWidth
+        
+        
+    end % Deprecated accessors
+    
+    
+    %%%%% This dividers methods block should no longer be needed %%%%%
+    
+    %     methods( Access = private, Static )
+    %
+    %         function mask = getDividerMask()
+    %             %getDividerMask  Get divider image data
+    %             %
+    %             %  m = uix.TabPanel.getDividerMask() returns the image masks
+    %             %  for tab panel dividers.  Mask entries are 0 (shadow), 1
+    %             %  (background), 2 (tint) and 3 (highlight).
+    %
+    %             mask.EF = indexColor( uix.loadIcon( 'tab_NoEdge_NotSelected.png' ) );
+    %             mask.ET = indexColor( uix.loadIcon( 'tab_NoEdge_Selected.png' ) );
+    %             mask.FE = indexColor( uix.loadIcon( 'tab_NotSelected_NoEdge.png' ) );
+    %             mask.FF = indexColor( uix.loadIcon( 'tab_NotSelected_NotSelected.png' ) );
+    %             mask.FT = indexColor( uix.loadIcon( 'tab_NotSelected_Selected.png' ) );
+    %             mask.TE = indexColor( uix.loadIcon( 'tab_Selected_NoEdge.png' ) );
+    %             mask.TF = indexColor( uix.loadIcon( 'tab_Selected_NotSelected.png' ) );
+    %
+    %             function mask = indexColor( rgbMap )
+    %                 %indexColor  Returns a map of index given an RGB map
+    %                 %
+    %                 %  mask = indexColor( rgbMap ) returns a mask of color
+    %                 %  index based on the supplied rgbMap.
+    %                 %  black  : 0
+    %                 %  red    : 1
+    %                 %  yellow : 2
+    %                 %  white  : 3
+    %                 %  blue   : 4
+    %                 mask = nan( size( rgbMap, 1 ),size( rgbMap, 2 ) );
+    %                 % Black
+    %                 colorIndex = isColor( rgbMap, [0 0 0] );
+    %                 mask(colorIndex) = 0;
+    %                 % Red
+    %                 colorIndex = isColor( rgbMap, [1 0 0] );
+    %                 mask(colorIndex) = 1;
+    %                 % Yellow
+    %                 colorIndex = isColor( rgbMap, [1 1 0] );
+    %                 mask(colorIndex) = 2;
+    %                 % White
+    %                 colorIndex = isColor( rgbMap, [1 1 1] );
+    %                 mask(colorIndex) = 3;
+    %                 % Blue
+    %                 colorIndex = isColor( rgbMap, [0 0 1] );
+    %                 mask(colorIndex) = 4;
+    %                 % Nested
+    %                 function boolMap = isColor( map, color )
+    %                     %isColor  Return a map of boolean where map is equal to color
+    %                     boolMap = all( bsxfun( @eq, map, permute( color, [1 3 2] ) ), 3 );
+    %                 end
+    %             end
+    %
+    %         end % getDividerMask
+    %
+    %     end % static helper methods
     
 end % classdef
