@@ -3,7 +3,8 @@ function varargout = reportTestCoverage()
 
 % Create the test suite.
 rootFolder = fileparts( mfilename( "fullpath" ) );
-suite = testsuite( fullfile( rootFolder ) );
+suite = testsuite( fullfile( rootFolder ), "IncludeSubfolders", true, ...
+    "IncludeSubpackages", true );
 
 % Create the test runner.
 runner = testrunner( "minimal" );
