@@ -1,7 +1,7 @@
 classdef tUnset < matlab.unittest.TestCase
     %TUNSET Tests for uiextras.unset.
 
-    methods ( Test, TestTags = {'uiextras.unset'} )
+    methods ( Test )
 
         function tUnsetErrorsWithNotExactlyTwoInputs( testCase )
 
@@ -32,6 +32,6 @@ classdef tUnset < matlab.unittest.TestCase
 
         end % tGetIssuesDeprecationErrorWithTwoInputs
 
-    end % methods ( Test, TestTags = {'uiextras.unset'} )
+    end % methods ( Test )
 
 end % class

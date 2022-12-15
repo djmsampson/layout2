@@ -1,7 +1,7 @@
 classdef tSet < matlab.unittest.TestCase
     %TSET Tests for uiextras.set.
 
-    methods ( Test, TestTags = {'uiextras.set'} )
+    methods ( Test )
 
         function tSetErrorsWithNotExactlyThreeInputs( testCase )
 
@@ -32,6 +32,6 @@ classdef tSet < matlab.unittest.TestCase
 
         end % tSetIssuesDeprecationWarningWithThreeInputs 
 
-    end % methods ( Test, TestTags = {'uiextras.set'} )
+    end % methods ( Test )
 
 end % class

@@ -26,7 +26,7 @@ classdef FigureFixture < matlab.unittest.fixtures.Fixture
                 case 'web'
                     % Create a new web figure.
                     fixture.Figure = uifigure( ...
-                        "AutoResizeChildren", "off" );
+                        'AutoResizeChildren', 'off' );
                 case 'unrooted'
                     % Create an empty figure.
                     fixture.Figure = matlab.ui.Figure.empty( 0, 1 );
