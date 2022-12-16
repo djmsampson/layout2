@@ -2,6 +2,7 @@ classdef tSetPosition < matlab.unittest.TestCase
     %TSETPOSITION Tests for uix.setPosition.
 
     properties ( Access = private )
+        % Figure fixture.
         Fixture
     end % properties ( Access = private )
 

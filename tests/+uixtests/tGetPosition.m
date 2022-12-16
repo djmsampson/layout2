@@ -2,6 +2,7 @@ classdef tGetPosition < matlab.unittest.TestCase
     %TGETPOSITION Tests for uix.getPosition.
 
     properties ( Access = private )
+        % Figure fixture.
         Fixture
     end % properties ( Access = private )
 
