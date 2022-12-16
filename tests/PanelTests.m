@@ -2,11 +2,11 @@ classdef PanelTests < matlab.unittest.TestCase
     %PANELTESTS Extra tests for panels
     
     properties (Abstract, TestParameter)
-        ContainerType;
+        ContainerType
     end
     
     properties (TestParameter)
-        failingSelection = {2.4, int32(2), [2 3 4], 5};
+        failingSelection = {2.4, int32(2), [2 3 4], 5}
     end
     
     properties
@@ -47,7 +47,7 @@ classdef PanelTests < matlab.unittest.TestCase
             % visibility is correctly set. So reparent obj at this point.
             % Make a copy of the obj to test with both figure and uifigure
             
-            if strcmp(testcase.parentStr,'[]')
+            if strcmp(testcase.ParentType, 'unrooted')
                 fxFig = testcase.applyFixture(FigureFixture('figure'));
                 obj.Parent = fxFig.FigureHandle;
             end

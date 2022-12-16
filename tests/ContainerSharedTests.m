@@ -1,31 +1,66 @@
 classdef ContainerSharedTests < matlab.unittest.TestCase
-    %CONTAINERSHAREDTESTS Contains tests that are common to all uiextras container objects.
-    
-    properties (ClassSetupParameter)
-        Parent = struct( 'Web', 'uifigure', ...
-            'Java', 'figure', ...
-            'Unparented', '[]' );
-    end
-    
-    properties (TestParameter, Abstract)
+    %CONTAINERSHAREDTESTS Tests common to all GUI Layout Toolbox
+    %containers, including both the +uiextras and +uix packages.
+
+    properties ( ClassSetupParameter )
+        % Graphics parent type.
+        ParentType = struct( ...
+            'JavaFigure', 'legacy', ...
+            'WebFigure', 'web', ...
+            'Unrooted', 'unrooted' )
+    end % properties ( ClassSetupParameter )
+
+    properties ( TestParameter, Abstract )
+        % The container type (constructor name).
         ContainerType
+        % Name-value pairs to use when testing the constructor.
         ConstructorArgs
+        % Name-value pairs to use when testing the get/set methods.
         GetSetArgs
-    end
-    
+    end % properties ( TestParameter, Abstract )
+
     properties
         oldTracking = 'unset'
-        parentStr
-        figfx
     end
-    
-    methods(TestClassSetup)
-        function setup(testcase, Parent)
-            testcase.assumeVersion() % check MATLAB version
-            testcase.parentStr = Parent; % set parent
-        end
-        function enableUicontrol(testcase,Parent)
-            if strcmp(Parent,'uifigure')
+
+    properties ( GetAccess = protected, SetAccess = private )
+        % Figure fixture, providing the top-level parent
+        % graphics object for the containers during the test procedures.
+        % See also the ParentType class setup parameter and
+        % matlab.unittest.fixtures.FigureFixture.
+        FigureFixture
+    end % properties ( GetAccess = protected, SetAccess = private )
+
+    methods ( TestClassSetup )
+
+        function assumeMinimumMATLABVersion( testCase )
+
+            % This overall collection of tests requires MATLAB R2014b or
+            % later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2014b' )
+
+        end % assumeMinimumMATLABVersion
+
+        function applyFigureFixture( testCase, ParentType )            
+            
+            if strcmp( ParentType, 'web' )
+                % Filter all tests using a web figure graphics parent, 
+                % unless the MATLAB version supports the creation of 
+                % uicontrol objects in web figures.
+                testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+            end % if
+
+            % Create the figure fixture using the corresponding parent
+            % type.
+            figureFixture = matlab.unittest.fixtures.FigureFixture( ...
+                ParentType );
+            testCase.FigureFixture = ...
+                testCase.applyFixture( figureFixture );
+
+        end % applyFigureFixture        
+
+        function enableUicontrol(testcase,ParentType)
+            if strcmp(ParentType,'web')
                 testcase.applyFixture(EnableUicontrolFixture);
             end
         end
@@ -41,42 +76,42 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             uix.tracking( 'off' )
         end
     end
-    
+
     methods(TestClassTeardown)
         function resetTracking(testcase)
             uix.tracking(testcase.oldTracking)
             testcase.oldTracking = 'unset';
         end
     end
-    
-    methods (Test)
-        
+
+    methods ( Test )
+
         function testEmptyConstructor(testcase, ContainerType)
             % Test constructing the widget with no arguments
             obj = testcase.hCreateObj(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
-        
+
         function testConstructorParentOnly(testcase, ContainerType)
             obj = testcase.hCreateObj(ContainerType);
             testcase.assertClass(obj, ContainerType);
         end
-        
+
         function testConstructorArguments(testcase, ContainerType, ConstructorArgs)
             %testConstructionArguments  Test constructing the widget with optional arguments
-            
+
             % create Box of specified type
             obj = testcase.hCreateObj(ContainerType, ConstructorArgs);
-            
+
             testcase.assertClass(obj, ContainerType);
             testcase.hVerifyHandleContainsParameterValuePairs(obj, ConstructorArgs);
         end
-        
+
         function testRepeatedConstructorArguments(testcase, ContainerType)
             obj = testcase.hCreateObj(ContainerType, {'Tag', '1', 'Tag', '2', 'Tag', '3'});
             testcase.verifyEqual(obj.Tag, '3');
         end
-        
+
         function testBadConstructorArguments(testcase, ContainerType)
             badargs1 = {'BackgroundColor'};
             badargs2 = {200};
@@ -84,26 +119,26 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyError(@()testcase.hCreateObj(ContainerType, badargs1), 'uix:InvalidArgument');
             testcase.verifyError(@()testcase.hCreateObj(ContainerType, badargs2), 'uix:InvalidArgument');
         end
-        
+
         function testGetSet(testcase, ContainerType, GetSetArgs)
             % Test the get/set functions for each class.
             % Class specific parameters/values should be specified in the
             % test parameter GetSetPVArgs
-            
+
             obj = testcase.hBuildRGBBox(ContainerType);
-            
+
             % test get/set parameter value pairs in testcase.GetSetPVArgs
             for i = 1:2:(numel(GetSetArgs))
                 param    = GetSetArgs{i};
                 expected = GetSetArgs{i+1};
-                
+
                 set(obj, param, expected);
                 actual = get(obj, param);
-                
+
                 testcase.verifyEqual(actual, expected, ['testGetSet failed for ', param]);
             end
         end
-        
+
         function testChildObserverDoesNotIncorrectlyAddElements(testcase, ContainerType)
             % test to cover g1148914:
             % "Setting child property Internal to its existing value causes
@@ -113,23 +148,24 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             el.Internal = false;
             testcase.verifyNumElements(obj.Contents, 1);
         end
-        
+
         function testContents(testcase, ContainerType)
             [obj, actualContents] = testcase.hBuildRGBBox(ContainerType);
             testcase.assertEqual( obj.Contents, actualContents );
-            
+
             % Delete a child
             delete( actualContents(2) )
             testcase.verifyEqual( obj.Contents, actualContents([1 3 4]) );
-            
+
             % Reparent a child
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            set( actualContents(3), 'Parent', fx.FigureHandle);
+            %fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            %set( actualContents(3), 'Parent', fx.FigureHandle);
+            set( actualContents(3), 'Parent', testcase.FigureFixture.Figure )
             testcase.verifyEqual( obj.Contents, actualContents([1 4]) );
         end
-        
+
         function testContentsAfterReorderingChildren(testcase, ContainerType)
-            
+
             obj = testcase.hCreateObj(ContainerType);
             b1 = uicontrol('Parent', obj); %#ok<NASGU>
             c1 = uicontainer('Parent', obj); %#ok<NASGU>
@@ -140,9 +176,9 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyLength(obj.Contents, 4)
             obj.Children = flipud(obj.Children);
             testcase.verifyLength(obj.Contents, 4)
-            
+
         end
-        
+
         function testAddingAxesToContainer(testcase, ContainerType)
             testcase.assumeRooted() % TODO review
             testcase.assumeNotWeb() % TODO review
@@ -159,7 +195,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifySameHandle(obj.Contents(1), ax1);
             testcase.verifySameHandle(obj.Contents(2), ax2);
         end
-        
+
         function testAxesStillVisibleAfterRotate3d(testcase, ContainerType)
             % test for g1129721 where rotating an axis in a panel causes
             % the axis to lose visibility.
@@ -173,7 +209,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             rotate3d(obj.Parent);
             testcase.verifyEqual(char(ax.Visible), 'on');
         end
-        
+
         function testCheckDataCursorCanBeUsed(testcase, ContainerType)
             testcase.assumeRooted()
             testcase.assumeNotWeb()
@@ -186,18 +222,18 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             h = plot( ax, 1:10, rand(1,10) );
             dcm = datacursormode( obj.Parent );
             dcm.Enable = 'on';
-            
+
             drawnow
             positionBefore = ax.Position;
             drawnow
             dcm.createDatatip( h );
             drawnow
             positionAfter = ax.Position;
-            
+
             testcase.verifyEqual( positionBefore, positionAfter,...
                 'Data cursor messed the layout' )
         end
-        
+
         function testAxesToolbarReordering( testcase, ContainerType )
             % test for g1911845 where axes toolbar causes axes to be
             % removed and readded, leading to unexpected reordering of
@@ -210,30 +246,34 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             pause( 0.1 )
             testcase.verifyEqual( obj.Contents, [ax; c] ); % finally
         end
-        
+
     end
-    
+
     methods
-        
+
         function obj = hCreateObj(testcase,type,varargin)
-            if ~strcmp(testcase.parentStr,'[]')
+            if ~strcmp(testcase.FigureFixture.Type,'unrooted')
                 % Create required figure
-                testcase.figfx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+                %testcase.FigureFixture = testcase.applyFixture(FigureFixture(testcase.parentStr));
                 if(nargin > 2)
-                    obj = feval(type,'Parent',testcase.figfx.FigureHandle,varargin{1}{:});
+                    %obj = feval(type,'Parent',testcase.FigureFixture.FigureHandle,varargin{1}{:});
+                    obj = feval(type, 'Parent', testcase.FigureFixture.Figure, varargin{1}{:});
                 else
-                    obj = feval(type,'Parent',testcase.figfx.FigureHandle);
+                    %obj = feval(type,'Parent',testcase.FigureFixture.FigureHandle);
+                    obj = feval(type, 'Parent', testcase.FigureFixture.Figure);
                 end
             else % unparented
                 if(nargin > 2)
-                    obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
+                    %obj = eval([type, '(''Parent'', ', testcase.parentStr, ', varargin{1}{:});']);
+                    obj = eval([type, '(''Parent'', ', '[]', ', varargin{1}{:});']);
                 else
-                    obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
+                    %obj = eval([type, '(''Parent'', ', testcase.parentStr, ')']);
+                    obj = eval([type, '(''Parent'', ', '[]', ')']);
                 end
             end
-            
+
         end
-        
+
         function [obj, rgb] = hBuildRGBBox(testcase, type)
             % creates a Box of requested type and adds 3 uicontrols with
             % red, green, and blue background colours, with an empty space
@@ -245,7 +285,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 uiextras.Empty('Parent', obj)
                 uicontrol('Parent', obj, 'BackgroundColor', 'b') ];
         end
-        
+
         function hVerifyHandleContainsParameterValuePairs(testcase, obj, args)
             % check that instance has correctly assigned parameter/value
             % pairs
@@ -259,22 +299,22 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 testcase.verifyEqual(actual, expected);
             end
         end
-        
+
         function assumeRooted( testcase )
             %check that container is rooted
             testcase.assumeFalse( ...
-                strcmp( testcase.parentStr, testcase.Parent.Unparented ), ...
+                strcmp( testcase.FigureFixture.Type, testcase.ParentType.Unrooted ), ...
                 'Not applicable to unrooted graphics.' );
         end % assumeRooted
-        
+
         function assumeNotWeb( testcase )
             %check that container is not Web graphics
             testcase.assumeFalse( ...
-                isfield( testcase.Parent, 'Web' ) && ...
-                strcmp( testcase.parentStr, testcase.Parent.Web ) , ...
+                isfield( testcase.ParentType, 'WebFigure' ) && ...
+                strcmp( testcase.FigureFixture.Type, testcase.ParentType.WebFigure ) , ...
                 'Not applicable to Web graphics.' );
         end % assumeNotWeb
-        
+
         function assumeDisplay( testcase )
             %check that environment has a display, for mouse tests
             thisFolder = fileparts( mfilename( 'fullpath' ) );
@@ -286,20 +326,48 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 isempty( getenv( 'JENKINS_HOME' ) ), ...
                 'Not applicable to headless Jenkins environment.');
         end % assumeDisplay
-        
-        function assumeVersion( testcase )
-            %check that MATLAB version is supported
-            testcase.assumeFalse( ...
-                verLessThan( 'matlab', '8.4' ), ... % R2014b
-                'Not applicable prior to R2014b.' )
-            if isfield( testcase.Parent, 'Web' ) && ...
-                    strcmp( testcase.parentStr, testcase.Parent.Web ) % web graphics
-                testcase.assumeFalse( ...
-                    verLessThan( 'matlab', '9.8' ), ... % R2020a
-                    'Not applicable to Web graphics prior to R2020a.' )
-            end
-        end % assumeVersion
-        
+
+%         function assumeVersion( testcase )
+%             %check that MATLAB version is supported
+%             testcase.assumeFalse( ...
+%                 verLessThan( 'matlab', '8.4' ), ... % R2014b
+%                 'Not applicable prior to R2014b.' )
+%             if isfield( testcase.ParentType, 'WebFigure' ) && ...
+%                     strcmp( testcase.FigureFixture.Type, testcase.ParentType.WebFigure ) % web graphics
+%                 testcase.assumeFalse( ...
+%                     verLessThan( 'matlab', '9.8' ), ... % R2020a
+%                     'Not applicable to Web graphics prior to R2020a.' )
+%             end
+%         end % assumeVersion
+
     end
-    
-end
+
+    methods ( Access = protected )
+
+        function assumeMATLABVersionIsAtLeast( testCase, versionString )
+
+            % Determine the version number and diagnostic text depending
+            % the version specified.
+            switch versionString
+                case 'R2014b'
+                    versionNumber = '8.4';
+                    diagnosticText = 'prior to MATLAB ';
+                case 'R2022a'
+                    versionNumber = '9.12';
+                    diagnosticText = 'to web graphics prior to MATLAB ';
+                otherwise
+                    error( 'ContainerSharedTests:UnsupportedVersion', ...
+                        'Unsupported version: %s.', versionString )
+            end % switch/case
+
+            % Enforce that a minimum MATLAB version is required.
+            testCase.assumeFalse( ...
+                verLessThan( 'matlab', versionNumber ), ...
+                ['Test not applicable ', diagnosticText, ...
+                versionString, '.'] )
+
+        end % assumeMATLABVersionIsAtLeast
+
+    end % methods ( Access = protected )
+
+end % class
