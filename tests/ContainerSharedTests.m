@@ -327,20 +327,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 'Not applicable to headless Jenkins environment.');
         end % assumeDisplay
 
-%         function assumeVersion( testcase )
-%             %check that MATLAB version is supported
-%             testcase.assumeFalse( ...
-%                 verLessThan( 'matlab', '8.4' ), ... % R2014b
-%                 'Not applicable prior to R2014b.' )
-%             if isfield( testcase.ParentType, 'WebFigure' ) && ...
-%                     strcmp( testcase.FigureFixture.Type, testcase.ParentType.WebFigure ) % web graphics
-%                 testcase.assumeFalse( ...
-%                     verLessThan( 'matlab', '9.8' ), ... % R2020a
-%                     'Not applicable to Web graphics prior to R2020a.' )
-%             end
-%         end % assumeVersion
-
-    end
+    end % methods
 
     methods ( Access = protected )
 
