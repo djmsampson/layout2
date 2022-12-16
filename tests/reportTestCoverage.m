@@ -1,9 +1,12 @@
-function varargout = reportTestCoverage()
+function varargout = reportTestCoverage( testFileSpec )
 %REPORTTESTCOVERAGE Report test coverage for GUI Layout Toolbox.
 
+arguments
+    testFileSpec(1, :) string = rootFolder()
+end % arguments
+
 % Create the test suite.
-rootFolder = fileparts( mfilename( "fullpath" ) );
-suite = testsuite( fullfile( rootFolder ), "IncludeSubfolders", true, ...
+suite = testsuite( testFileSpec, "IncludeSubfolders", true, ...
     "IncludeSubpackages", true );
 
 % Create the test runner.
@@ -30,3 +33,10 @@ end % if
 web( fullfile( coverageFolder, coverageReport.MainFile ), "-browser" )
 
 end % reportTestCoverage
+
+function folder = rootFolder()
+%ROOTFOLDER Return the parent folder of the function.
+
+folder = fileparts( mfilename( "fullpath" ) );
+
+end % rootFolder
