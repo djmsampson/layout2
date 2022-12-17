@@ -4,10 +4,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
     properties ( ClassSetupParameter )
         % Graphics parent type.
-        ParentType = struct( ...
-            'JavaFigure', 'legacy', ...
-            'WebFigure', 'web', ...
-            'Unrooted', 'unrooted' )
+        ParentType = parentTypes()
     end % properties ( ClassSetupParameter )
 
     properties ( TestParameter, Abstract )

@@ -1,4 +1,7 @@
 function assumeMATLABVersionIsAtLeast( testCase, versionString )
+%ASSUMEMATLABVERSIONISATLEAST Assume that the MATLAB version is at least
+%the version specified by versionString. This assumption is used in 
+%different locations across the test suite.
 
 % Determine the version number and diagnostic text depending
 % the version specified.
