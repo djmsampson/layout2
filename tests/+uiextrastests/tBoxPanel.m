@@ -33,24 +33,7 @@ classdef tBoxPanel < ContainerSharedTests & PanelTests
             }}
     end % properties ( TestParameter )
 
-    methods ( Test )
-
-        function tBoxPanelAutoParentsCorrectly( testCase )
-
-            % Create a new figure.
-            newFig = figure();
-            testCase.addTeardown( @() delete( newFig ) )
-
-            % Instantiate the BoxPanel, without specifying the parent.
-            boxPanel = uiextras.BoxPanel();
-            testCase.addTeardown( @() delete( boxPanel ) )
-
-            % Verify that the parent of the BoxPanel is the new figure we
-            % created in the test.
-            testCase.verifySameHandle( boxPanel.Parent, newFig, ...
-                'uiextras.BoxPanel has not auto-parented correctly.' )
-
-        end % tBoxPanelAutoParentsCorrectly
+    methods ( Test )        
 
         function tBoxPanelEnableGetMethod( testCase )
 

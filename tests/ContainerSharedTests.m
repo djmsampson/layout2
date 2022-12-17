@@ -35,19 +35,18 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         function assumeMinimumMATLABVersion( testCase )
 
-            % This overall collection of tests requires MATLAB R2014b or
-            % later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2014b' )
+            % This collection of tests requires MATLAB R2014b or later.
+            assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
 
         end % assumeMinimumMATLABVersion
 
-        function applyFigureFixture( testCase, ParentType )            
-            
+        function applyFigureFixture( testCase, ParentType )
+
             if strcmp( ParentType, 'web' )
-                % Filter all tests using a web figure graphics parent, 
-                % unless the MATLAB version supports the creation of 
+                % Filter all tests using a web figure graphics parent,
+                % unless the MATLAB version supports the creation of
                 % uicontrol objects in web figures.
-                testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+                assumeMATLABVersionIsAtLeast( testCase, 'R2022a' )
             end % if
 
             % Create the figure fixture using the corresponding parent
@@ -57,7 +56,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testCase.FigureFixture = ...
                 testCase.applyFixture( figureFixture );
 
-        end % applyFigureFixture        
+        end % applyFigureFixture
 
         function enableUicontrol(testcase,ParentType)
             if strcmp(ParentType,'web')
@@ -247,7 +246,24 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testcase.verifyEqual( obj.Contents, [ax; c] ); % finally
         end
 
-    end
+        function tAutoParentBehaviorIsCorrect( testCase, ContainerType )
+
+            % Create a new figure.
+            newFig = figure();
+            testCase.addTeardown( @() delete( newFig ) )
+
+            % Instantiate the component, without specifying the parent.
+            component = feval( ContainerType );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the parent of the component is the new figure we
+            % created above.
+            testCase.verifySameHandle( component.Parent, newFig, ...
+                [ContainerType, ' has not auto-parented correctly.'] )
+
+        end % tAutoParentBehaviorIsCorrect
+
+    end % methods ( Test )
 
     methods
 
@@ -328,33 +344,5 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end % assumeDisplay
 
     end % methods
-
-    methods ( Access = protected )
-
-        function assumeMATLABVersionIsAtLeast( testCase, versionString )
-
-            % Determine the version number and diagnostic text depending
-            % the version specified.
-            switch versionString
-                case 'R2014b'
-                    versionNumber = '8.4';
-                    diagnosticText = 'prior to MATLAB ';
-                case 'R2022a'
-                    versionNumber = '9.12';
-                    diagnosticText = 'to web graphics prior to MATLAB ';
-                otherwise
-                    error( 'ContainerSharedTests:UnsupportedVersion', ...
-                        'Unsupported version: %s.', versionString )
-            end % switch/case
-
-            % Enforce that a minimum MATLAB version is required.
-            testCase.assumeFalse( ...
-                verLessThan( 'matlab', versionNumber ), ...
-                ['Test not applicable ', diagnosticText, ...
-                versionString, '.'] )
-
-        end % assumeMATLABVersionIsAtLeast
-
-    end % methods ( Access = protected )
-
+    
 end % class
