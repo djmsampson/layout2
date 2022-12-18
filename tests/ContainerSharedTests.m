@@ -16,10 +16,6 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         GetSetArgs
     end % properties ( TestParameter, Abstract )
 
-    properties
-        oldTracking = 'unset'
-    end
-
     properties ( GetAccess = protected, SetAccess = private )
         % Figure fixture, providing the top-level parent
         % graphics object for the containers during the test procedures.
@@ -27,6 +23,39 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         % matlab.unittest.fixtures.FigureFixture.
         FigureFixture
     end % properties ( GetAccess = protected, SetAccess = private )
+
+    properties ( Access = private )
+        % Current GUI Layout Toolbox tracking status, to be restored after
+        % the tests run. Tracking is disabled whilst the tests run.
+        CurrentTrackingStatus = 'unset'
+    end % properties ( Access = private )
+
+    properties ( Constant )
+        % List of containers with get and set methods for the 'Enable'
+        % property.
+        ContainersWithEnableGetAndSetMethods = {
+            'uiextras.CardPanel', ...
+            'uiextras.Grid', ...
+            'uiextras.GridFlex', ...
+            'uiextras.HBox', ...
+            'uiextras.HBoxFlex', ...
+            'uiextras.TabPanel', ...
+            'uiextras.VBox', ...
+            'uiextras.VBoxFlex'
+            }
+        % List of containers that may need the 'Enable' property to be
+        % added dynamically (depending on the MATLAB version). The 'Enable'
+        % property was added to matlab.ui.container.Panel in R2020b.
+        ContainersWithDynamicEnableProperty = {
+            'uiextras.BoxPanel', ...
+            'uiextras.Panel'
+            }
+        % List of containers that have the 'SelectedChild' property.
+        ContainersWithSelectedChildProperty = {
+            'uiextras.BoxPanel', ...
+            'uiextras.Panel'
+            }
+    end % properties ( Constant )
 
     methods ( TestClassSetup )
 
@@ -55,30 +84,39 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         end % applyFigureFixture
 
-        function enableUicontrol(testcase,ParentType)
+        function disableTracking(testCase)
+
+            % Store the current tracking status.
+            testCase.CurrentTrackingStatus = uix.tracking( 'query' );
+
+            % Disable tracking for the duration of the tests.
+            uix.tracking( 'off' )
+            testCase.addTeardown( @restoreTrackingStatus )
+
+            function restoreTrackingStatus()
+
+                uix.tracking( testCase.CurrentTrackingStatus )
+                testCase.CurrentTrackingStatus = 'unset';
+
+            end % restoreTrackingStatus
+
+        end % disableTracking
+
+        function enableUicontrol( testCase, ParentType )
             if strcmp(ParentType,'web')
-                testcase.applyFixture(EnableUicontrolFixture);
+                testCase.applyFixture(EnableUicontrolFixture);
             end
         end
-        function setupPath(testcase)
+
+        function setupPath( testCase )
             import matlab.unittest.fixtures.PathFixture
             testsFolder = fileparts( mfilename( 'fullpath' ) );
             projectFolder = fileparts( testsFolder );
             toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
-            testcase.applyFixture( PathFixture( toolboxFolder ) );
+            testCase.applyFixture( PathFixture( toolboxFolder ) );
         end
-        function disableTracking(testcase)
-            testcase.oldTracking = uix.tracking( 'query' );
-            uix.tracking( 'off' )
-        end
-    end
 
-    methods(TestClassTeardown)
-        function resetTracking(testcase)
-            uix.tracking(testcase.oldTracking)
-            testcase.oldTracking = 'unset';
-        end
-    end
+    end % methods ( TestClassSetup )
 
     methods ( Test )
 
@@ -245,6 +283,12 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         function tAutoParentBehaviorIsCorrect( testCase, ContainerType )
 
+            % Testing auto-parenting behavior only applies to containers in
+            % the uiextras namespace. Containers in the uix namespace do
+            % not exhibit auto-parenting behavior.
+            testCase.assumeComponentIsFromUiextrasNamespace( ...
+                ContainerType )
+
             % Create a new figure.
             newFig = figure();
             testCase.addTeardown( @() delete( newFig ) )
@@ -260,7 +304,221 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         end % tAutoParentBehaviorIsCorrect
 
+        function tContainerEnableGetMethod( testCase, ContainerType )
+
+            % Filter the test if the container does not get and set methods
+            % for the 'Enable' property.
+            testCase.assumeComponentHasEnableGetSetMethods( ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = feval( ContainerType, 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Verify that the 'Enable' property is set to 'on'.
+            testCase.verifyEqual( container.Enable, 'on', ...
+                ['The ''Enable'' property of the ', ContainerType, ...
+                'container is not set to ''on''.'] )
+
+        end % tContainerEnableGetMethod
+
+        function tContainerEnableSetMethod( testCase, ContainerType )
+
+            % Filter the test if the container does not get and set methods
+            % for the 'Enable' property.
+            testCase.assumeComponentHasEnableGetSetMethods( ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = feval( ContainerType, 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Check that setting 'on' or 'off' is accepted.
+            for enable = {'on', 'off'}
+                enableSetter = ...
+                    @() set( container, 'Enable', enable{1} );
+                testCase.verifyWarningFree( enableSetter, ...
+                    [ContainerType, ' has not accepted a value ', ...
+                    'of ''', enable{1}, ...
+                    ''' for the ''Enable'' property.'] )
+            end % for
+
+            % Check that setting an invalid value causes an error.
+            errorID = 'uiextras:InvalidPropertyValue';
+            invalidSetter = @() set( container, 'Enable', {} );
+            testCase.verifyError( invalidSetter, errorID, ...
+                [ContainerType, ' has not produced an ', ...
+                'error with the expected ID when the ''Enable'' ', ...
+                'property was set to an invalid value.'] )
+
+        end % tContainerEnableSetMethod
+
+        function tContainerDynamicEnableGetMethod( ...
+                testCase, ContainerType )
+
+            % Filter the test if the component does not have a dynamic
+            % 'Enable' property.
+            testCase.assumeComponentHasDynamicEnableProperty( ...
+                ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = feval( ContainerType, 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Verify that the 'Enable' property exists and is set to
+            % 'on'.
+            testCase.assertTrue( isprop( container, 'Enable' ), ...
+                [ContainerType, ' does not ', ...
+                'have the ''Enable'' property.'] )
+            testCase.verifyTrue( strcmp( container.Enable, 'on' ), ...
+                ['The ''Enable'' property of the ', ...
+                ContainerType, ' is not set to ''on''.'] )
+
+        end % tContainerDynamicEnableGetMethod
+
+        function tContainerDynamicEnableSetMethod( ...
+                testCase, ContainerType )
+
+            % Filter the test if the component does not have a dynamic
+            % 'Enable' property.
+            testCase.assumeComponentHasDynamicEnableProperty( ...
+                ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = uiextras.BoxPanel( 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Check that setting 'on' or 'off' is accepted.
+            for enable = {'on', 'off'}
+                enableSetter = ...
+                    @() set( container, 'Enable', enable{1} );
+                testCase.verifyWarningFree( enableSetter, ...
+                    [ContainerType, ' has not accepted a value ', ...
+                    'of ''', enable{1}, ...
+                    ''' for the ''Enable'' property.'] )
+            end % for
+
+            % Check that setting an invalid value causes an error.
+            if verLessThan( 'matlab', '9.9' )
+                errorID = 'uiextras:InvalidPropertyValue';
+            else
+                errorID = ...
+                    'MATLAB:datatypes:onoffboolean:IncorrectValue';
+            end % if
+            invalidSetter = @() set( container, 'Enable', {} );
+            testCase.verifyError( invalidSetter, errorID, ...
+                [ContainerType, ' has not produced an ', ...
+                'error with the expected ID when the ''Enable'' ', ...
+                'property was set to an invalid value.'] )
+
+        end % tContainerDynamicEnableSetMethod
+
+        function tGetSelectedChild( testCase, ContainerType )
+
+            % Filter the test if the component does not have the
+            % 'SelectedChild' property.
+            testCase.assumeComponentHasSelectedChildProperty( ...
+                ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = feval( ContainerType, 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Verify that the 'SelectedChild' property is equal to [].
+            testCase.verifyEqual( container.SelectedChild, [], ...
+                ['The ''SelectedChild'' property of ', ...
+                ContainerType, ' is not equal to [].'] )
+
+            % Add a child to the box panel.
+            uicontrol( container )
+
+            % Verify that the 'SelectedChild' property is equal to 1.
+            testCase.verifyEqual( container.SelectedChild, 1, ...
+                ['The ''SelectedChild'' property of ', ...
+                ContainerType, ' is not equal to 1.'] )
+
+        end % tGetSelectedChild
+
+        function tSetSelectedChild( testCase, ContainerType )
+
+            % Filter the test if the component does not have the
+            % 'SelectedChild' property.
+            testCase.assumeComponentHasSelectedChildProperty( ...
+                ContainerType )
+
+            % Create a container.
+            fig = testCase.FigureFixture.Figure;
+            container = feval( ContainerType, 'Parent', fig );
+            testCase.addTeardown( @() delete( container ) )
+
+            % Verify that setting the 'SelectedChild' property is
+            % warning-free.
+            setter = @() set( container, 'SelectedChild', 1 );
+            testCase.verifyWarningFree( setter, ...
+                [ContainerType, ' did not accept setting the ', ...
+                '''SelectedChild'' property.'] )
+
+        end % tSetSelectedChild
+
     end % methods ( Test )
+
+    methods ( Access = protected )
+
+        function assumeComponentIsFromUiextrasNamespace( ...
+                testCase, ContainerType )
+
+            % Assume that the component, specified by ContainerType, is
+            % from the uiextras namespace.
+            namespace = 'uiextras';
+            condition = strncmp( ContainerType, namespace, ...
+                length( namespace ) );
+            testCase.assumeTrue( condition, ...
+                ['The component ', ContainerType, ' is not from the ', ...
+                'uiextras namespace.'] )
+
+        end % assumeComponentIsFromUiextrasNamespace
+
+        function assumeComponentHasDynamicEnableProperty( ...
+                testCase, ContainerType )
+
+            % Assume that the component, specified by ContainerType, has a
+            % dynamic 'Enable' property.
+            testCase.assumeTrue( ismember( ContainerType, ...
+                testCase.ContainersWithDynamicEnableProperty ), ...
+                ['The component ', ContainerType, ' does not have ', ...
+                'a dynamic ''Enable'' property.'] )
+
+        end % assumeComponentHasDynamicEnableProperty
+
+        function assumeComponentHasEnableGetSetMethods( ...
+                testCase, ContainerType )
+
+            % Assume that the component, specified by ContainerType, has
+            % get and set methods defined for its 'Enable' property.
+            testCase.assumeTrue( ismember( ContainerType, ...
+                testCase.ContainersWithEnableGetAndSetMethods ), ...
+                ['The component ', ContainerType, ' does not have ', ...
+                'get and set methods defined for its ', ...
+                '''Enable'' property.'] )
+
+        end % assumeContainerHasEnableGetSetMethods
+
+        function assumeComponentHasSelectedChildProperty( ...
+                testCase, ContainerType )
+
+            % Assume that the component, specified by ContainerType, has
+            % the 'SelectedChild' property.
+            testCase.assumeTrue( ismember( ContainerType, ...
+                testCase.ContainersWithSelectedChildProperty ), ...
+                ['The component ', ContainerType, ' does not have ', ...
+                'the ''SelectedChild'' property.'] )
+
+        end % assumeComponentHasSelectedChildProperty
+
+    end % methods ( Access = protected )
 
     methods
 
@@ -341,5 +599,5 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         end % assumeDisplay
 
     end % methods
-    
+
 end % class

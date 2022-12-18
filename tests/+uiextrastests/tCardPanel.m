@@ -1,4 +1,4 @@
-classdef tCardPanel < ContainerSharedTests & PanelTests
+classdef tCardPanel < PanelTests & ContainerSharedTests
     %TCARDPANEL Tests for uiextras.CardPanel.
 
     properties ( TestParameter )
@@ -109,47 +109,7 @@ classdef tCardPanel < ContainerSharedTests & PanelTests
                 'was deleted (and the current child was not the ', ...
                 'highest index child).'] )
 
-        end % tDeletingHigherIndexChildPreservesSelection
-
-        function tCardPanelEnableGetMethod( testCase )
-
-            % Create a card panel.
-            fig = testCase.FigureFixture.Figure;
-            cardPanel = uiextras.CardPanel( 'Parent', fig );
-            testCase.addTeardown( @() delete( cardPanel ) )
-
-            % Verify that the 'Enable' property is set to 'on'.
-            testCase.verifyEqual( cardPanel.Enable, 'on', ...
-                ['The ''Enable'' property of the CardPanel ', ...
-                'is not set to ''on''.'] )
-
-        end % tCardPanelEnableGetMethod
-
-        function tCardPanelEnableSetMethod( testCase )
-
-            % Create a card panel.
-            fig = testCase.FigureFixture.Figure;
-            cardPanel = uiextras.CardPanel( 'Parent', fig );
-            testCase.addTeardown( @() delete( cardPanel ) )
-
-            % Check that setting 'on' or 'off' is accepted.
-            for enable = {'on', 'off'}
-                enableSetter = @() set( cardPanel, 'Enable', enable{1} );
-                testCase.verifyWarningFree( enableSetter, ...
-                    ['uiextras.CardPanel has not accepted a value ', ...
-                    'of ''', enable{1}, ...
-                    ''' for the ''Enable'' property.'] )
-            end % for
-
-            % Check that setting an invalid value causes an error.
-            errorID = 'uiextras:InvalidPropertyValue';
-            invalidSetter = @() set( cardPanel, 'Enable', {} );
-            testCase.verifyError( invalidSetter, errorID, ...
-                ['uiextras.CardPanel has not produced an ', ...
-                'error with the expected ID when the ''Enable'' ', ...
-                'property was set to an invalid value.'] )
-
-        end % tCardPanelEnableSetMethod
+        end % tDeletingHigherIndexChildPreservesSelection        
 
     end % methods ( Test )
 
