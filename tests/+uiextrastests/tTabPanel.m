@@ -34,278 +34,415 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
             'FontUnits', 'points', ...
             'FontWeight', 'bold'
             }}
-        % Different ways to specify callbacks.
-        ValidCallbacks = struct( ...
-            'fcnString', '@()disp(''function as string'');', ...
-            'fcnAnonHandle', @()disp('function as anon handle'), ...
-            'fcnHandle', @tTabPanel.selectionChangedCallback, ...
-            'fcnCell', {{@()disp, 'function as cell'}} )
+        % Possible ways in which to specify a callback.
+        Callback = struct( ...
+            'StringCallback', ...
+            '@() disp( ''String callback'' )', ...
+            'FunctionHandleCallback', ...
+            @() disp( 'Function handle callback' ), ...
+            'CellArrayCallback', ...
+            {{@disp, 'Cell array callback'}} )
     end % properties ( TestParameter )
 
-    properties
-        selectionChangedCallbackCalled = false;
-    end
+    methods ( Test )
 
-    methods (Test)
+        function tSettingTabPanelCallbackStoresValue( testCase, Callback )
 
-        function testTabPanelCallbacks(testcase, ContainerType, ValidCallbacks)
-            [obj, ~] = testcase.hBuildRGBBox(ContainerType);
-            set(obj, 'Callback', ValidCallbacks);
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
 
-            testcase.verifyEqual(get(obj, 'Callback'), ValidCallbacks);
-        end
+            % Set the 'Callback' property.
+            tabPanel.Callback = Callback;
 
-        function testTabPanelGetSetOnSelectionChanged(testcase, ContainerType, ValidCallbacks)
-            [obj, ~] = testcase.hBuildRGBBox(ContainerType);
-            set(obj, 'SelectionChangedFcn', ValidCallbacks);
+            % Verify that the value has been stored.
+            testCase.verifyEqual( tabPanel.Callback, Callback, ...
+                ['uiextras.TabPanel has not stored the ', ...
+                '''Callback'' property correctly.'] )
 
-            testcase.verifyEqual(get(obj, 'SelectionChangedFcn'), ValidCallbacks);
-        end
+        end % tSettingTabPanelCallbackStoresValue
 
-        function testTabPanelOnSelectionChangedCallbackExecutes(testcase, ContainerType)
-            [obj, ~] = testcase.hBuildRGBBox(ContainerType);
+        function tSettingInvalidCallbackThrowsError( testCase )
 
-            % MATLAB did not correctly set callbacks when defined as a test
-            % parameter.
-            callbackCell = {...
-                @(varargin)testcase.selectionChangedCallback, ...
-                @testcase.selectionChangedCallback, ...
-                {@testcase.selectionChangedCallback, 2, 3 ,4} ...
-                };
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
 
-            for i = 1:numel(callbackCell)
-                % set new callback
-                set(obj, 'SelectionChangedFcn', callbackCell{i});
-                % change selection
-                obj.Selection = 3;
-                % check callback executed
-                testcase.verifyTrue(testcase.selectionChangedCallbackCalled);
-                % reset selection and successflag
-                obj.Selection = 1;
-                testcase.selectionChangedCallbackCalled = false;
-            end
-        end
+            % Verify that setting the 'Callback' property to an invalid
+            % value causes an error with ID
+            % 'uiextras:InvalidPropertyValue'.
+            invalidSetter = @() set( tabPanel, 'Callback', 0 );
+            testCase.verifyError( invalidSetter, ...
+                'uiextras:InvalidPropertyValue', ...
+                ['The TabPanel has not thrown an error with ID ', ...
+                '''uiextras:InvalidPropertyValue'' when its ', ...
+                '''Callback'' property was set to an invalid value.'] )
 
-        function testContextMenuReparents(testcase)
-            % test for g1250808 where reparenting a tab panel to a
-            % different figure causes the context menus to be orphaned.
-            testcase.assumeRooted()
+        end % tSettingInvalidCallbackThrowsError
 
-            fx1 = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            f = fx1.FigureHandle;
+        function tSettingTabPanelSelectionChangedFcnStoresValue( ...
+                testCase, Callback )
 
-            obj = uix.TabPanel( 'Parent', f );
-            obj.Position = [0.1 0.1 0.8 0.8];
-            for ii = 1:3
-                uicontrol( 'Parent', obj );
-            end
-            % Create a context menu
-            contextMenu = uicontextmenu( 'Parent', f );
-            uimenu( 'Parent', contextMenu, 'Label', 'Red' );
-            uimenu( 'Parent', contextMenu, 'Label', 'Green' );
-            uimenu( 'Parent', contextMenu, 'Label', 'Blue' );
-            obj.TabContextMenus{2} = contextMenu;
-            % Reparent to a new figure
-            fx2 = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            g = fx2.FigureHandle;
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
 
-            obj.Parent = g;
-            testcase.verifyEqual( contextMenu.Parent, g );
-            % Unparent
-            obj.Parent = [];
-            testcase.verifyEmpty( contextMenu.Parent );
-            % Reparent within the current figure
-            u = uix.TabPanel( 'Parent', g, 'TabLocation', 'bottom' );
-            obj.Parent = u;
-            testcase.verifyEqual( contextMenu.Parent, g );
+            % Set the 'SelectionChangedFcn' property.
+            tabPanel.SelectionChangedFcn = Callback;
 
-        end
+            % Verify that the value has been stored.
+            testCase.verifyEqual( tabPanel.SelectionChangedFcn, ...
+                Callback, ...
+                ['uiextras.TabPanel has not stored the ', ...
+                '''SelectionChangedFcn'' property correctly.'] )
 
-        function testRotate3dDoesNotAddMoreTabs(testcase)
-            % test for g1129721 where rotating an axis in a panel causes
-            % the axis to lose visibility.
-            testcase.assumeRooted()
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            obj = uiextras.TabPanel('Parent',fx.FigureHandle);
-            con = uicontainer('Parent', obj);
-            axes('Parent', con, 'Visible', 'on');
-            testcase.verifyNumElements(obj.TabTitles, 1);
-            % equivalent of selecting the rotate button on figure window:
-            rotate3d;
-            testcase.verifyNumElements(obj.TabTitles, 1);
-        end
+        end % tSettingTabPanelSelectionChangedFcnStoresValue
 
-        function testSelectionBehaviourNewChild(testcase)
-            % g1342432 Tests that adding a new child doesn't change current selection
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with two tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            % Store the selection
-            oldSelection = tp.Selection;
-            % Add new tab
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
+        function tTabPanelSelectionChangedFcnIsInvoked( testCase )
 
-            testcase.verifyEqual(oldSelection, tp.Selection);
-        end
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
 
-        function testSelectionBehaviourDeleteLowerChild(testcase)
-            % g1342432 Tests that deleting a child with a lower index than the
-            % current selection causes the selection index to decrease by 1
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with three tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-            % Select the 2nd child, then delete the first
-            tp.Selection = 2;
-            oldSelection = tp.Selection;
-            delete(c1)
+            % Add content to the tab panel.
+            uicontrol( tabPanel )
+            uicontrol( tabPanel )
 
-            testcase.verifyEqual(oldSelection - 1, tp.Selection);
-        end
+            % Set the 'SelectionChangedFcn' callback.
+            callbackInvoked = false;
+            tabPanel.SelectionChangedFcn = @( s, e ) onSelectionChanged();
 
-        function testSelectionBehaviourDeleteSelectedChild(testcase)
-            % g1342432 Tests that deleting the currently selected child
-            % causes the selection index to stay the same.
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with three tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-            % Select the 2nd child, then delete the 1st
-            tp.Selection = 2;
-            oldSelection = tp.Selection;
-            delete(c2)
+            % Change the selection.
+            tabPanel.Selection = 2;
 
-            testcase.verifyEqual(oldSelection, tp.Selection);
-        end
+            % Verify that the callback was invoked.
+            testCase.verifyTrue( callbackInvoked, ...
+                ['uiextras.TabPanel did not invoke the ', ...
+                '''SelectionChangedFcn'' callback when the ', ...
+                '''Selection'' property was changed.'] )
 
-        function testSelectionBehaviourDeleteOnlyChild(testcase)
-            % g1342432 Tests that deleting the only child
-            % causes the selection index to go to 0.
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with a signel tab
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            % Ensure that the 1st child is selected.
-            tp.Selection = 1;
-            delete(c1)
+            % Restore the selection.
+            tabPanel.Selection = 1;
+            callbackInvoked = false;
 
-            testcase.verifyEqual(0, tp.Selection);
-        end
+            % Cover other callback options.
+            callbackOptions = {'uiextrastests.noop', ...
+                @uiextrastests.noop, ...
+                {@uiextrastests.noop}};
+            
+            for callback = callbackOptions
+                % Assign the callback.
+                tabPanel.Callback = callback{1};
+                % Verify that invoking it is warning-free.
+                selectionSetter = @() set( tabPanel, 'Selection', 2 );
+                testCase.verifyWarningFree( selectionSetter, ...
+                    ['The TabPanel issued a warning when its ', ...
+                    '''SelectionChangedFcn'' callback was changed.'] )
+                % Restore the selection.
+                tabPanel.Selection = 1;
+            end % for
 
-        function testSelectionBehaviourDeleteHigherChild(testcase)
-            % g1342432 Tests that deleting a child with a higher index than the
-            % current selection causes the selection index remain same.
+            function onSelectionChanged()
 
-            testcase.assumeRooted() % TODO review
+                callbackInvoked = true;
 
-            % Create a TabPanel with three tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-            % Select the 2nd child, then delete the 3rd
-            tp.Selection = 2;
-            oldSelection = tp.Selection;
-            delete(c3)
+            end % onSelectionChanged
 
-            testcase.verifyEqual(oldSelection, tp.Selection);
-        end
+        end % tTabPanelSelectionChangedFcnIsInvoked
 
-        function testSelectionBehaviourDisableSelectedChild(testcase)
-            % g1342432 Tests that disabling a child which is selected won't stop it
-            % being selected.
+        function tContextMenuIsReparentedWhenTabPanelIsReparented( ...
+                testCase )
 
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with three tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
+            % Filter the unrooted case.
+            testCase.assumeRooted()
 
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-            % Select the 2nd child, then disable it
-            tp.Selection = 2;
-            oldSelection = tp.Selection;
-            tp.TabEnables{2}='off';
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
+            testFig = tabPanel.Parent;
 
-            testcase.verifyEqual(oldSelection, tp.Selection);
-        end
+            % Add controls.
+            for c = 1:3
+                uicontrol( 'Parent', tabPanel )
+            end % for
 
-        function testSelectionBehaviourDisableNonSelectedChild(testcase)
-            % g1342432 Tests that disabling a non-selected child doesn't change
-            % selection
-            testcase.assumeRooted() % TODO review
-            % Create a TabPanel with three tabs
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            tp = uix.TabPanel('Parent',fx.FigureHandle);
-            c1 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'r' );
-            c2 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'g' );
-            c3 = uicontrol( 'Style', 'frame', 'Parent', tp, 'Background', 'b' );
-            % Select the 1st child, then disable the second
-            tp.Selection = 1;
-            oldSelection = tp.Selection;
-            tp.TabEnables{2}='off';
+            % Create a context menu.
+            contextMenu = uicontextmenu( 'Parent', testFig );
+            uimenu( 'Parent', contextMenu, 'Text', 'Test Menu' )
 
-            testcase.verifyEqual(oldSelection, tp.Selection);
-        end
+            % Attach the context menu to the second tab.
+            tabPanel.TabContextMenus{2} = contextMenu;
 
-        function testParentBackgroundColor(testcase)
-            % g1380756 Test to make sure that the some elements match the
-            % parent (background)color
-            testcase.assumeRooted() % TODO review
-            % Create
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            fig = fx.FigureHandle;
-            tabs = uiextras.TabPanel( 'Parent', fig );
-            c1 = uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
-            c2 = uix.Panel( 'Parent', tabs, 'BackgroundColor', rand( 1, 3 ) );
+            % Create a new figure parent.
+            if isempty( testFig.Number )
+                newFig = uifigure();
+            else
+                newFig = figure();
+            end % if
+            testCase.addTeardown( @() delete( newFig ) )
 
-            % Get the divider
-            children = hgGetTrueChildren( tabs );
-            dividers = findobj( children, 'Tag', 'TabPanelDividers' );
+            % Reparent the tab panel.
+            tabPanel.Parent = newFig;
 
-            checkDividersBackgroundColor( testcase, dividers, fig.Color );
+            % Verify that the context menu has been reparented.
+            testCase.verifySameHandle( contextMenu.Parent, newFig, ...
+                ['Reparenting a uiextras.TabPanel component with an ', ...
+                'existing context menu has not reparented the ', ...
+                'context menu.'] )
 
-            % Change figure color
-            fig.Color = [1 0 0];
-            checkDividersBackgroundColor( testcase, dividers, fig.Color );
+            % Unparent the tab panel.
+            tabPanel.Parent = [];
 
-            % Reparent
-            container = uix.VBox( 'BackgroundColor', [0 1 0], 'Parent', fig );
-            tabs.Parent = container;
-            checkDividersBackgroundColor( testcase, dividers, container.BackgroundColor );
+            % Verify that the context menu has also been unparented.
+            testCase.verifyEmpty( contextMenu.Parent, ...
+                ['Unparenting a uiextras.TabPanel component with an ', ...
+                'existing context menu has not unparented the ', ...
+                'context menu.'] )
 
-            % Change container's color
-            container.BackgroundColor = [0 0 1];
-            checkDividersBackgroundColor( testcase, dividers, container.BackgroundColor );
+            % Reparent the tab panel.
+            tabPanel.Parent = testFig;
 
-            % Nested
-            function checkDividersBackgroundColor( testcase, dividers, color )
-                % Check both CData and BackgroundColor
-                testcase.verifyEqual( color, dividers.BackgroundColor,...
-                    'The divider BackgroundColor does not match.' );
-                testcase.verifyEqual( color, permute( dividers.CData(1, 1, :), [1 3 2] ),...
-                    'The divider CData (mask) does not match.' );
-            end
-        end
+            % Verify that the context menu has been reparented.
+            testCase.verifySameHandle( contextMenu.Parent, testFig, ...
+                ['Reparenting a uiextras.TabPanel component with an ', ...
+                'existing context menu has not reparented the ', ...
+                'context menu.'] )
 
-    end
+        end % tContextMenuIsReparentedWhenTabPanelIsReparented
 
-    methods (Access = private)
-        function selectionChangedCallback(src, varargin)
-            src.selectionChangedCallbackCalled = true;
-        end
-    end
+        function tRotate3dDoesNotAddMoreTabs( testCase )
 
-end
+            % Filter the unrooted case.
+            testCase.assumeRooted()
+
+            % Create a tab panel.
+            tabPanel = testCase.createTabPanel();
+
+            % Add an axes to the tab panel.
+            ax = axes( 'Parent', tabPanel );
+            testCase.addTeardown( @() delete( ax ) )
+
+            % Verify that the number of elements in the tab group is 1.
+            testCase.verifyNumElements( tabPanel.TabTitles, 1, ...
+                ['Adding an axes to a uiextras.TabPanel component ', ...
+                'has not resulted in one element in the tab group.'] )
+
+            % Enable 3d rotation mode.
+            rotate3d( ax, 'on' )
+
+            % Verify that the number of elements in the tab group is 1.
+            testCase.verifyNumElements( tabPanel.TabTitles, 1, ...
+                ['Adding an axes to a uiextras.TabPanel component ', ...
+                'has not resulted in one element in the tab group.'] )
+
+        end % tRotate3dDoesNotAddMoreTabs
+
+        function tDeletingChildrenSetsSelectionToZero( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Delete all the children.
+            delete( tabPanel.Children )
+
+            % Verify that the 'Selection' property is equal to 0.
+            testCase.verifyEqual( tabPanel.Selection, 0, ...
+                ['The ''Selection'' property of the TabPanel ', ...
+                'was not set to 0 when all the children of the ', ...
+                'TabPanel were deleted.'] )
+
+        end % tDeletingChildrenSetsSelectionToZero
+
+        function tAddingChildPreservesSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Verify that the first control is selected.
+            testCase.verifyEqual( tabPanel.Selection, 1, ...
+                ['The TabPanel has not preserved its ', ...
+                '''Selection'' property when a new child was added.'] )
+
+        end % tAddingChildIncrementsSelection
+
+        function tDeletingLowerIndexChildDecrementsSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Select the second child, record the current selection, then
+            % delete the first child.
+            tabPanel.Selection = 2;
+            currentSelection = tabPanel.Selection;
+            delete( tabPanel.Children(3) )
+
+            % Test that deleting a child with a lower index than the
+            % current selection causes the selection index to decrease by
+            % 1.
+            testCase.verifyEqual( tabPanel.Selection, ...
+                currentSelection - 1, ...
+                ['The TabPanel has not correctly updated its ', ...
+                '''Selection'' property when a child with a lower ', ...
+                'index than the current selection was deleted.'] )
+
+        end % tDeletingLowerIndexChildDecrementsSelection
+
+        function tDeletingSelectedChildPreservesSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Select the second child, record the current selection, then
+            % delete the second child.
+            tabPanel.Selection = 2;
+            currentSelection = tabPanel.Selection;
+            delete( tabPanel.Children(2) )
+
+            % Verify that the 'Selection' property has remained the same.
+            testCase.verifyEqual( tabPanel.Selection, ...
+                currentSelection, ...
+                ['The ''Selection'' property of the TabPanel ', ...
+                'has not remained the same when the current child ', ...
+                'was deleted (and the current child was not the ', ...
+                'highest index child).'] )
+
+        end % tDeletingSelectedChildPreservesSelection
+
+        function tDeletingHigherIndexChildPreservesSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Select the second child, record the current selection, and
+            % delete the third child.
+            tabPanel.Selection = 2;
+            currentSelection = tabPanel.Selection;
+            delete( tabPanel.Children(1) )
+
+            % Verify that the 'Selection' property has remained the same.
+            testCase.verifyEqual( tabPanel.Selection, ...
+                currentSelection, ...
+                ['The ''Selection'' property of the TabPanel ', ...
+                'has not remained the same when a higher index child ', ...
+                'was deleted (and the current child was not the ', ...
+                'highest index child).'] )
+
+        end % tDeletingHigherIndexChildPreservesSelection
+
+        function tDisablingSelectedChildPreservesSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Select the second child, record the current selection, then
+            % disable the second child.
+            tabPanel.Selection = 2;
+            currentSelection = tabPanel.Selection;
+            tabPanel.TabEnables{2} = 'off';
+
+            % Verify that the 'Selection' property has been preserved.
+            testCase.verifyEqual( tabPanel.Selection, ...
+                currentSelection, ...
+                ['Disabling the selected child of a TabPanel ', ...
+                'has not preserved the ''Selection'' property.'] )
+
+        end % tDisablingSelectedChildPreservesSelection
+
+        function tDisablingNonSelectedChildPreservesSelection( testCase )
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+
+            % Select the first child, record the current selection, then
+            % disable the second child.
+            tabPanel.Selection = 1;
+            currentSelection = tabPanel.Selection;
+            tabPanel.TabEnables{2} = 'off';
+
+            % Verify that the 'Selection' property has been preserved.
+            testCase.verifyEqual( tabPanel.Selection, ...
+                currentSelection, ...
+                ['Disabling a non-selected child of a TabPanel ', ...
+                'has not preserved the ''Selection'' property.'] )
+
+        end % tDisablingNonSelectedChildPreservesSelection
+
+        function tTabPanelRespectsParentColor( testCase )
+
+            % Assume that the component is rooted.
+            testCase.assumeRooted()
+
+            % Create a tab panel with controls.
+            tabPanel = testCase.createTabPanelWithControls();
+            testFig = tabPanel.Parent;
+
+            % Identify the tab panel dividers.
+            allChildren = hgGetTrueChildren( tabPanel );
+            dividers = findobj( allChildren, 'Tag', 'TabPanelDividers' );
+
+            % Verify their 'CData' and 'BackgroundColor' properties.
+            verifyDividersCDataAndBackgroundColor( testFig.Color )
+
+            % Next, change the figure's color, and re-check the dividers'
+            % 'CData' and 'BackgroundColor' properties.
+            testFig.Color = [1, 0, 0];
+            verifyDividersCDataAndBackgroundColor( testFig.Color )
+
+            % Next, reparent the tab panel, and re-check the color-related
+            % properties.
+            newColor = [0, 1, 0];
+            newContainer = uix.VBox( 'Parent', testFig, ...
+                'BackgroundColor', newColor );
+            tabPanel.Parent = newContainer;
+            verifyDividersCDataAndBackgroundColor( newColor )
+
+            % Change the new container's 'BackgroundColor' property.
+            newColor = [0, 0, 1];
+            newContainer.BackgroundColor = newColor;
+            verifyDividersCDataAndBackgroundColor( newColor )
+
+            function verifyDividersCDataAndBackgroundColor( targetColor )
+
+                % Check the 'BackgroundColor' property.
+                testCase.verifyEqual( dividers.BackgroundColor, ...
+                    targetColor, ...
+                    ['The TabPanel''s divider''s ''BackgroundColor'' ', ...
+                    'does not match its Parent''s ''BackgroundColor''.'] )
+                % Check the 'CData' property.
+                dividersCData = permute( ...
+                    dividers.CData(1, 1, :), [1, 3, 2] );
+                testCase.verifyEqual( dividersCData, targetColor, ...
+                    ['The TabPanel''s divider''s ''CData'' ', ...
+                    'does not match its Parent''s ''CData''.'] )
+
+            end % verifyDividersCDataAndBackgroundColor
+
+        end % tTabPanelRespectsParentColor
+
+    end % methods ( Test )
+
+    methods ( Access = private )
+
+        function tabPanel = createTabPanel( testCase )
+
+            % Create a tab panel.
+            testFig = testCase.FigureFixture.Figure;
+            tabPanel = uiextras.TabPanel( 'Parent', testFig );
+            testCase.addTeardown( @() delete( tabPanel ) )
+
+        end % createTabPanel
+
+        function tabPanel = createTabPanelWithControls( testCase )
+
+            % Create a TabPanel with three controls.
+            tabPanel = testCase.createTabPanel();
+            uicontrol( 'Parent', tabPanel, ...
+                'Style', 'frame', ...
+                'BackgroundColor', 'r' )
+            uicontrol( 'Parent', tabPanel, ...
+                'Style', 'frame', ...
+                'BackgroundColor', 'g' )
+            uicontrol( 'Parent', tabPanel, ...
+                'Style', 'frame', ...
+                'BackgroundColor', 'b' )
+
+        end % createTabPanelWithControls
+
+    end % methods ( Access = private )
+
+end % class

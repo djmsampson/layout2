@@ -42,7 +42,7 @@ classdef tCardPanel < PanelTests & ContainerSharedTests
             % Create a card panel with controls.
             cardPanel = testCase.createCardPanelWithControls();
 
-            % Verify that the thid control is selected.
+            % Verify that the third control is selected.
             testCase.verifyEqual( cardPanel.Selection, 3, ...
                 ['The CardPanel has not correctly updated its ', ...
                 '''Selection'' property when a new child was added.'] )
