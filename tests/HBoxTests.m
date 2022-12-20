@@ -2,14 +2,14 @@ classdef HBoxTests < matlab.unittest.TestCase
     %HBOXTESTS Extra tests for HBox and HBoxFlex.
     
     properties (Abstract, TestParameter)
-        ContainerType;
+        ConstructorName;
     end
     
     methods (Test) 
-        function testResizeFigureRetainsElementSizesInHBoxes(testcase, ContainerType)
+        function testResizeFigureRetainsElementSizesInHBoxes(testcase, ConstructorName)
             testcase.assumeRooted()
             % create RGB box and resize the whole figure
-            [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ContainerType, 'Width');
+            [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ConstructorName, 'Width');
             
             actualSizes(1) = obj.Contents(1).Position(3);
             actualSizes(2) = obj.Contents(2).Position(3);
@@ -19,9 +19,9 @@ classdef HBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual(actualSizes, expectedSizes);
         end      
        
-        function testAxesPositionInHBoxes(testcase, ContainerType)
+        function testAxesPositionInHBoxes(testcase, ConstructorName)
             %testAxesPosition  Test that axes get positioned properly
-            obj = testcase.hCreateObj(ContainerType, ...
+            obj = testcase.hCreateObj(ConstructorName, ...
                 {'Units', 'pixels', 'Position', [1 1 500 500], 'Spacing', 0}); %'Parent', figure, 
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'pixels');            
@@ -35,10 +35,10 @@ classdef HBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual( get( ax2, 'Position' ), [251 1 250 500] );
         end
         
-        function testMinimumSizes(testcase, ContainerType)
+        function testMinimumSizes(testcase, ConstructorName)
             %testMinimumSizes Test that minimum size is honored (g1329485)
             
-            obj = testcase.hCreateObj(ContainerType, ...
+            obj = testcase.hCreateObj(ConstructorName, ...
                 {'Units', 'pixels', 'Position', [1 1 1000 500]});  
             
             for ii = 1:5 

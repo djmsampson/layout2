@@ -2,14 +2,14 @@ classdef VBoxTests < matlab.unittest.TestCase
 %VBOXTESTS Extra tests for VBox and VBoxFlex.
 
     properties (Abstract, TestParameter)
-        ContainerType;
+        ConstructorName;
     end
     
     methods (Test)       
-        function testResizeFigureRetainsElementSizesInVBoxes(testcase, ContainerType)
+        function testResizeFigureRetainsElementSizesInVBoxes(testcase, ConstructorName)
             testcase.assumeRooted()
             % create RGB box and resize the whole figure
-            [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ContainerType, 'Heights');
+            [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ConstructorName, 'Heights');
             
             actualSizes(1) = obj.Contents(1).Position(4);
             actualSizes(2) = obj.Contents(2).Position(4);
@@ -19,9 +19,9 @@ classdef VBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual(actualSizes, expectedSizes);
         end
            
-        function testAxesPositionInVBoxes(testcase, ContainerType)
+        function testAxesPositionInVBoxes(testcase, ConstructorName)
             %testAxesPosition  Test that axes get positioned properly
-            obj = testcase.hCreateObj(ContainerType, ...
+            obj = testcase.hCreateObj(ConstructorName, ...
                 {'Units', 'pixels', 'Position', [1 1 500 500], 'Spacing', 0});
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'pixels');
@@ -35,11 +35,11 @@ classdef VBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual( get( ax2, 'Position' ), [1 1 500 250] );
         end
         
-        function testMinimumSizes(testcase, ContainerType)
+        function testMinimumSizes(testcase, ConstructorName)
             %testMinimumSizes Test that minimum size is honored (g1329485)
             testcase.assumeRooted()
 
-            obj = testcase.hCreateObj(ContainerType, ...
+            obj = testcase.hCreateObj(ConstructorName, ...
                 {'Units', 'pixels', 'Position', [1 1 500 1000]});  
             
             for ii = 1:5 

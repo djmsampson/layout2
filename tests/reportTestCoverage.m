@@ -5,8 +5,11 @@ arguments
     testFileSpec(1, :) string = rootFolder()
 end % arguments
 
+nargoutchk( 0, 1 )
+
 % Create the test suite.
-suite = testsuite( testFileSpec, "IncludeSubfolders", true, ...
+suite = testsuite( testFileSpec, ...
+    "IncludeSubfolders", true, ...
     "IncludeSubpackages", true );
 
 % Create the test runner.
@@ -16,16 +19,17 @@ runner = testrunner( "minimal" );
 % of the toolbox.
 coverageFolder = fullfile( rootFolder, "Coverage" );
 coverageReport = matlab.unittest.plugins.codecoverage...
-    .CoverageReport( coverageFolder, "MainFile", "CoverageReport.html" );
+    .CoverageReport( coverageFolder, ...
+    "MainFile", "CoverageReport.html" );
 coveragePlugin = matlab.unittest.plugins.CodeCoveragePlugin...
-    .forFolder( layoutRoot(), "IncludingSubfolders", true, ...
+    .forFolder( layoutRoot(), ...
+    "IncludingSubfolders", true, ...
     "Producing", coverageReport );
 runner.addPlugin( coveragePlugin )
 
 % Run the tests.
 results = runner.run( suite );
-if nargout > 0
-    nargoutchk( 1, 1 )
+if nargout == 1    
     varargout{1} = results;
 end % if
 

@@ -2,13 +2,13 @@ classdef GridTests < matlab.unittest.TestCase
     %GRIDTESTS Extra tests for Grid and GridFlex.
     
     properties (Abstract, TestParameter)
-        ContainerType;
+        ConstructorName;
     end
     
     methods (Test)
-        function testGridContents(testcase, ContainerType)
+        function testGridContents(testcase, ConstructorName)
             %testContents  Test adding and removing children
-            obj = testcase.hCreateObj(ContainerType);
+            obj = testcase.hCreateObj(ConstructorName);
             u = [
                 uicontrol( 'Parent', obj, 'BackgroundColor', 'r' )
                 uicontrol( 'Parent', obj, 'BackgroundColor', 'g' )

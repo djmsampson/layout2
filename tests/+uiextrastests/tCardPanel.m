@@ -2,20 +2,22 @@ classdef tCardPanel < PanelTests & ContainerSharedTests
     %TCARDPANEL Tests for uiextras.CardPanel.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.CardPanel'}
-        % Name-value pairs to use when testing the get/set methods.
-        GetSetArgs = {{
-            'BackgroundColor', [1, 1, 0], ...
-            'SelectedChild', 2
-            }}
-        % Name-value pairs to use when testing the constructor.
-        ConstructorArgs = {{
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.CardPanel'}
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
             'Padding', 5, ...
             'Tag', 'Test', ...
             'Visible', 'on'
+            }}
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
+            'BackgroundColor', [1, 1, 0], ...
+            'SelectedChild', 2
             }}
     end % properties ( TestParameter )
 
@@ -109,7 +111,7 @@ classdef tCardPanel < PanelTests & ContainerSharedTests
                 'was deleted (and the current child was not the ', ...
                 'highest index child).'] )
 
-        end % tDeletingHigherIndexChildPreservesSelection        
+        end % tDeletingHigherIndexChildPreservesSelection
 
     end % methods ( Test )
 

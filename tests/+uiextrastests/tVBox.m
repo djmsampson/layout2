@@ -4,13 +4,9 @@ classdef tVBox < VBoxTests & ContainerSharedTests
     properties ( TestParameter )
         % The container type (constructor name).
         ContainerType = {'uiextras.VBox'}
-        % Name-value pairs to use when testing the get/set methods.
-        GetSetArgs = {{
-            'Sizes', [-1, -2, 100, -1], ...
-            'MinimumSizes', [0, 1, 2, 0]
-            }}
-        % Name-value pairs to use when testing the constructor.
-        ConstructorArgs = {{
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -18,6 +14,12 @@ classdef tVBox < VBoxTests & ContainerSharedTests
             'Spacing', 5, ...
             'Tag', 'test', ...
             'Visible', 'on'
+            }}
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
+            'Sizes', [-1, -2, 100, -1], ...
+            'MinimumSizes', [0, 1, 2, 0]
             }}
     end % properties ( TestParameter )
 

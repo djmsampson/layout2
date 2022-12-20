@@ -7,13 +7,16 @@ classdef tEmpty < matlab.unittest.TestCase
         ParentType = parentTypes()
     end % properties ( ClassSetupParameter )
 
-    properties ( Access = private )
+    properties
         % Figure fixture, providing the top-level parent
         % graphics object for the containers during the test procedures.
         % See also the ParentType class setup parameter and
         % matlab.unittest.fixtures.FigureFixture.
         FigureFixture
-    end % properties ( Access = private )
+        % Current GUI Layout Toolbox tracking status, to be restored after
+        % the tests run. Tracking is disabled whilst the tests run.
+        CurrentTrackingStatus = 'unset'
+    end % properties
 
     methods ( TestClassSetup )
 
@@ -24,38 +27,29 @@ classdef tEmpty < matlab.unittest.TestCase
 
         end % assumeMinimumMATLABVersion
 
-        function applyFigureFixture( testCase, ParentType )
-
-            if strcmp( ParentType, 'web' )
-                % Filter all tests using a web figure graphics parent,
-                % unless the MATLAB version supports the creation of
-                % uicontrol objects in web figures.
-                assumeMATLABVersionIsAtLeast( testCase, 'R2022a' )
-            end % if
-
-            % Create the figure fixture using the corresponding parent
-            % type.
-            figureFixture = matlab.unittest.fixtures.FigureFixture( ...
-                ParentType );
-            testCase.FigureFixture = ...
-                testCase.applyFixture( figureFixture );
-
-        end % applyFigureFixture
-
         function setupToolboxPath( testCase )
 
-            % Locate the GLT folder based on the current location.
-            testsFolder = fileparts( fileparts( ...
-                mfilename( 'fullpath' ) ) );
-            projectFolder = fileparts( testsFolder );
-            toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
-
-            % Ensure that 'layout' folder is added/removed to the path
-            % during the test procedure.
-            testCase.applyFixture( matlab.unittest.fixtures...
-                .PathFixture( toolboxFolder ) );
+            % Apply a path fixture for the GUI Layout Toolbox main folder.
+            applyGLTFolderFixture( testCase )
 
         end % setupToolboxPath
+
+        function setupFigureFixture( testCase, ParentType )
+
+            % Apply a custom fixture to provide the top-level parent
+            % graphics object for the GUI Layout Toolbox components during
+            % the test procedures.
+            applyFigureFixture( testCase, ParentType )
+
+        end % setupFigureFixture
+
+        function disableTrackingDuringTests( testCase )
+
+            % Disable GUI Layout Toolbox tracking during the test
+            % procedures.
+            disableTracking( testCase )
+
+        end % disableTracking
 
     end % methods ( TestClassSetup )
 

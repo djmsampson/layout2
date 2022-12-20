@@ -2,17 +2,11 @@ classdef tGrid < GridTests & ContainerSharedTests
     %TGRID Tests for uiextras.Grid.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.Grid'}
-        % Name-value pairs to use when testing the get/set methods.
-        GetSetArgs = {{
-            'RowSizes', [-10, -1, 20], ...
-            'ColumnSizes', [-0.5, 50], ...
-            'MinimumRowSizes', [1, 1, 1], ...
-            'MinimumColumnSizes', [2, 2]
-            }}
-        % Name-value pairs to use when testing the constructor.
-        ConstructorArgs = {{
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.Grid'}
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -21,7 +15,14 @@ classdef tGrid < GridTests & ContainerSharedTests
             'Tag', 'test' ...
             'Visible', 'on'
             }}
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
+            'RowSizes', [-10, -1, 20], ...
+            'ColumnSizes', [-0.5, 50], ...
+            'MinimumRowSizes', [1, 1, 1], ...
+            'MinimumColumnSizes', [2, 2]
+            }}
     end % properties ( TestParameter )
 
 end % class
-

@@ -2,10 +2,11 @@ classdef tVButtonBox < ContainerSharedTests
     %TVBUTTONBOX Tests for uiextras.VButtonBox.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.VButtonBox'}
-        % Name-value pairs to use when testing the get/set methods.
-        ConstructorArgs = {{
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.VButtonBox'}
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -15,8 +16,9 @@ classdef tVButtonBox < ContainerSharedTests
             'Visible', 'on', ...
             'ButtonSize', [200, 25]
             }}
-        % Name-value pairs to use when testing the constructor.
-        GetSetArgs  = {{
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
             'BackgroundColor', [0, 1, 0], ...
             'HorizontalAlignment', 'right', ...
             'VerticalAlignment', 'top'

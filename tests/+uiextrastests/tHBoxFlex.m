@@ -2,16 +2,11 @@ classdef tHBoxFlex < HBoxTests & FlexSharedTests
     %THBOXFLEX Tests for uiextras.HBoxFlex.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.HBoxFlex'}
-        % Name-value pairs to use when testing the get/set methods.
-        GetSetArgs = {{
-            'Sizes', [-1, -2, 100, -1], ...
-            'MinimumSizes', [0, 1, 2, 0], ...
-            'ShowMarkings', 'on'
-            }}
-        % Name-value pairs to use when testing the constructor.
-        ConstructorArgs = {{
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.HBoxFlex'}
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -20,6 +15,13 @@ classdef tHBoxFlex < HBoxTests & FlexSharedTests
             'Tag', 'test', ...
             'Visible', 'on', ...
             'ShowMarkings', 'off'
+            }}
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
+            'Sizes', [-1, -2, 100, -1], ...
+            'MinimumSizes', [0, 1, 2, 0], ...
+            'ShowMarkings', 'on'
             }}
     end % properties ( TestParameter )
 

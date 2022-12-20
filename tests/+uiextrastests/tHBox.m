@@ -2,15 +2,11 @@ classdef tHBox < HBoxTests & ContainerSharedTests
     %THBOX Tests for uiextras.HBox.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.HBox'}
-        % Name-value pairs to use when testing the get/set methods.
-        GetSetArgs = {{
-            'Sizes', [-1, -2, 100, -1], ...
-            'MinimumSizes', [0, 1, 2, 0]
-            }}
-        % Name-value pairs to use when testing the constructor.
-        ConstructorArgs = {{
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.HBox'}
+        % Name-value pair input arguments to use when testing the component
+        % constructor.
+        ConstructorInputArguments = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -19,7 +15,12 @@ classdef tHBox < HBoxTests & ContainerSharedTests
             'Tag', 'test', ...
             'Visible', 'on'
             }}
+        % Name-value pairs to use when testing the component's get and set
+        % methods.
+        GetSetNameValuePairs = {{
+            'Sizes', [-1, -2, 100, -1], ...
+            'MinimumSizes', [0, 1, 2, 0]
+            }}
     end % properties ( TestParameter )
 
 end % class
-

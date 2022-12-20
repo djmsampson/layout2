@@ -2,7 +2,7 @@ classdef PanelTests < matlab.unittest.TestCase
     %PANELTESTS Extra tests for panels
     
     properties (Abstract, TestParameter)
-        ContainerType
+        ConstructorName
     end
     
     properties (TestParameter)
@@ -27,17 +27,17 @@ classdef PanelTests < matlab.unittest.TestCase
 
     methods (Test)
         
-        function testLayoutInPanel(testcase, ContainerType)
+        function testLayoutInPanel(testcase, ConstructorName)
             %testLayoutInTab  Test layout in panel
-            obj = testcase.hCreateObj(ContainerType);
+            obj = testcase.constructComponent(ConstructorName);
             
             b = uiextras.HBox( 'Parent', obj );
             testcase.verifyEqual( obj.Contents, b );
         end
         
-        function testSelectablePanelContents(testcase, ContainerType)
+        function testSelectablePanelContents(testcase, ConstructorName)
             %testChildren  Test adding and removing children
-            [obj, actualContents] = testcase.hBuildRGBBox(ContainerType);
+            [obj, actualContents] = testcase.hBuildRGBBox(ConstructorName);
             testcase.assertEqual( obj.Contents, actualContents );
             
             obj.Selection = 2;
@@ -60,21 +60,21 @@ classdef PanelTests < matlab.unittest.TestCase
             
         end
         
-        function testSelectableEmptyPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
-            objEmpty = testcase.hCreateObj(ContainerType);
+        function testSelectableEmptyPanelSetSelectionErrors(testcase, ConstructorName, failingSelection)
+            objEmpty = testcase.constructComponent(ConstructorName);
             
             testcase.verifyError(@()set(objEmpty, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
         end
         
-        function testSelectableRGBPanelSetSelectionErrors(testcase, ContainerType, failingSelection)
-            [obj4Children, ~] = testcase.hBuildRGBBox(ContainerType);
+        function testSelectableRGBPanelSetSelectionErrors(testcase, ConstructorName, failingSelection)
+            [obj4Children, ~] = testcase.hBuildRGBBox(ConstructorName);
             
             testcase.verifyError(@()set(obj4Children, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
         end
         
-        function testSelectablePanelSetSelectionSucceeds(testcase, ContainerType)
-            objEmpty = testcase.hCreateObj(ContainerType);
-            [obj4Children, ~] = testcase.hBuildRGBBox(ContainerType);
+        function testSelectablePanelSetSelectionSucceeds(testcase, ConstructorName)
+            objEmpty = testcase.constructComponent(ConstructorName);
+            [obj4Children, ~] = testcase.hBuildRGBBox(ConstructorName);
             set(objEmpty, 'Selection', 0);
             set(obj4Children, 'Selection', 2);
             
@@ -82,10 +82,10 @@ classdef PanelTests < matlab.unittest.TestCase
             testcase.verifyEqual(get(obj4Children, 'Selection'), 2);
         end
         
-        function testAddInvisibleUicontrolToPanel(testcase, ContainerType)
+        function testAddInvisibleUicontrolToPanel(testcase, ConstructorName)
             % test for g1129721 where adding an invisible uicontrol to a
             % panel causes a segv.
-            obj = testcase.hCreateObj(ContainerType);
+            obj = testcase.constructComponent(ConstructorName);
             f = ancestor(obj, 'figure');
             % b1 = uicontrol('Parent', f, 'Visible', 'off');
             b1 = uicontainer('Parent', f, 'Visible', 'off');
