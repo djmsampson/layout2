@@ -22,6 +22,7 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
         % methods.
         GetSetNameValuePairs = {{
             'BackgroundColor', [1, 1, 0], ...
+            'Selection', 2, ...
             'SelectedChild', 2, ...
             'TabNames', {'Tab 1', 'Tab 2', 'Empty', 'Tab 3'}, ...
             'TabEnable', {'on', 'off', 'on', 'on'}, ...
@@ -152,7 +153,7 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
                 testCase )
 
             % Filter the unrooted case.
-            testCase.assumeRooted()
+            testCase.assumeGraphicsAreRooted()
 
             % Create a tab panel.
             tabPanel = testCase.createTabPanel();
@@ -210,7 +211,7 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
         function tRotate3dDoesNotAddMoreTabs( testCase )
 
             % Filter the unrooted case.
-            testCase.assumeRooted()
+            testCase.assumeGraphicsAreRooted()
 
             % Create a tab panel.
             tabPanel = testCase.createTabPanel();
@@ -367,7 +368,7 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
         function tTabPanelRespectsParentColor( testCase )
 
             % Assume that the component is rooted.
-            testCase.assumeRooted()
+            testCase.assumeGraphicsAreRooted()
 
             % Create a tab panel with controls.
             tabPanel = testCase.createTabPanelWithControls();

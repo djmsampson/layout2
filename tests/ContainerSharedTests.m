@@ -3,7 +3,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
     %containers, including both the +uiextras and +uix packages.
 
     properties ( ClassSetupParameter )
-        % Graphics parent type.
+        % Graphics parent type ('legacy'|'web'|'unrooted'). See also 
+        % parentTypes.
         ParentType = parentTypes()
     end % properties ( ClassSetupParameter )
 
@@ -302,161 +303,282 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         end % tConstructorSetsNameValuePairsCorrectly
 
-        %
-        %         function testRepeatedConstructorArguments(testcase, ConstructorName)
-        %             obj = testcase.constructComponent(ConstructorName, 'Tag', '1', 'Tag', '2', 'Tag', '3');
-        %             testcase.verifyEqual(obj.Tag, '3');
-        %         end
-        %
-        %         function testBadConstructorArguments(testcase, ConstructorName)
-        %             badargs1 = 'BackgroundColor';
-        %             badargs2 = 200;
-        %             %badargs3 = {'Parent', 3}; % throws same error identifier as axes('Parent', 3)
-        %             testcase.verifyError(@()testcase.constructComponent(ConstructorName, badargs1), 'uix:InvalidArgument');
-        %             testcase.verifyError(@()testcase.constructComponent(ConstructorName, badargs2), 'uix:InvalidArgument');
-        %         end
-        %
-        %         function testGetSet(testcase, ConstructorName, GetSetNameValuePairs)
-        %             % Test the get/set functions for each class.
-        %             % Class specific parameters/values should be specified in the
-        %             % test parameter GetSetPVArgs
-        %
-        %             obj = testcase.hBuildRGBBox(ConstructorName);
-        %
-        %             % test get/set parameter value pairs in testcase.GetSetPVArgs
-        %             for i = 1:2:(numel(GetSetNameValuePairs))
-        %                 param    = GetSetNameValuePairs{i};
-        %                 expected = GetSetNameValuePairs{i+1};
-        %
-        %                 set(obj, param, expected);
-        %                 actual = get(obj, param);
-        %
-        %                 testcase.verifyEqual(actual, expected, ['testGetSet failed for ', param]);
-        %             end
-        %         end
-        %
-        %         function testChildObserverDoesNotIncorrectlyAddElements(testcase, ConstructorName)
-        %             % test to cover g1148914:
-        %             % "Setting child property Internal to its existing value causes
-        %             % invalid ChildAdded or ChildRemoved events"
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             el = uicontrol( 'Parent', obj);
-        %             el.Internal = false;
-        %             testcase.verifyNumElements(obj.Contents, 1);
-        %         end
-        %
-        %         function testContents(testcase, ConstructorName)
-        %             [obj, actualContents] = testcase.hBuildRGBBox(ConstructorName);
-        %             testcase.assertEqual( obj.Contents, actualContents );
-        %
-        %             % Delete a child
-        %             delete( actualContents(2) )
-        %             testcase.verifyEqual( obj.Contents, actualContents([1 3 4]) );
-        %
-        %             % Reparent a child
-        %             %fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-        %             %set( actualContents(3), 'Parent', fx.FigureHandle);
-        %             set( actualContents(3), 'Parent', testcase.FigureFixture.Figure )
-        %             testcase.verifyEqual( obj.Contents, actualContents([1 4]) );
-        %         end
-        %
-        %         function testContentsAfterReorderingChildren(testcase, ConstructorName)
-        %
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             b1 = uicontrol('Parent', obj); %#ok<NASGU>
-        %             c1 = uicontainer('Parent', obj); %#ok<NASGU>
-        %             b2 = uicontrol('Parent', obj); %#ok<NASGU>
-        %             c2 = uicontainer('Parent', obj); %#ok<NASGU>
-        %             testcase.verifyLength(obj.Contents, 4)
-        %             obj.Contents = flipud(obj.Contents);
-        %             testcase.verifyLength(obj.Contents, 4)
-        %             obj.Children = flipud(obj.Children);
-        %             testcase.verifyLength(obj.Contents, 4)
-        %
-        %         end
-        %
-        %         function testAddingAxesToContainer(testcase, ConstructorName)
-        %             testcase.assumeRooted() % TODO review
-        %             testcase.assumeNotWeb() % TODO review
-        %             % tests that sizing is retained when adding new data to
-        %             % existing axis.
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             ax1 = axes('Parent', obj);
-        %             plot(ax1, rand(10,2));
-        %             ax2 = axes('Parent', obj);
-        %             plot(ax2, rand(10,2));
-        %             testcase.assertNumElements(obj.Contents, 2);
-        %             testcase.verifyClass(obj.Contents(1), 'matlab.graphics.axis.Axes');
-        %             testcase.verifyClass(obj.Contents(2), 'matlab.graphics.axis.Axes');
-        %             testcase.verifySameHandle(obj.Contents(1), ax1);
-        %             testcase.verifySameHandle(obj.Contents(2), ax2);
-        %         end
-        %
-        %         function testAxesStillVisibleAfterRotate3d(testcase, ConstructorName)
-        %             % test for g1129721 where rotating an axis in a panel causes
-        %             % the axis to lose visibility.
-        %             testcase.assumeRooted() % TODO review
-        %             testcase.assumeNotWeb() % TODO review
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             con = uicontainer('Parent', obj);
-        %             ax = axes('Parent', con, 'Visible', 'on');
-        %             testcase.verifyEqual(char(ax.Visible), 'on');
-        %             % equivalent of selecting the rotate button on figure window:
-        %             rotate3d(obj.Parent);
-        %             testcase.verifyEqual(char(ax.Visible), 'on');
-        %         end
-        %
-        %         function testCheckDataCursorCanBeUsed(testcase, ConstructorName)
-        %             testcase.assumeRooted()
-        %             testcase.assumeNotWeb()
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             if isprop( obj, 'ButtonSize' )
-        %                 % Ensure that axes aren't tiny
-        %                 obj.ButtonSize = [200 200];
-        %             end
-        %             ax = axes( 'Parent', obj );
-        %             h = plot( ax, 1:10, rand(1,10) );
-        %             dcm = datacursormode( obj.Parent );
-        %             dcm.Enable = 'on';
-        %
-        %             drawnow
-        %             positionBefore = ax.Position;
-        %             drawnow
-        %             dcm.createDatatip( h );
-        %             drawnow
-        %             positionAfter = ax.Position;
-        %
-        %             testcase.verifyEqual( positionBefore, positionAfter,...
-        %                 'Data cursor messed the layout' )
-        %         end
-        %
-        %         function testAxesToolbarReordering( testcase, ConstructorName )
-        %             % test for g1911845 where axes toolbar causes axes to be
-        %             % removed and readded, leading to unexpected reordering of
-        %             % contents
-        %             testcase.assumeRooted()
-        %             obj = testcase.constructComponent(ConstructorName);
-        %             ax = axes( 'Parent', obj );
-        %             c = uicontrol( 'Parent', obj );
-        %             testcase.verifyEqual( obj.Contents, [ax; c] ); % initially
-        %             pause( 0.1 )
-        %             testcase.verifyEqual( obj.Contents, [ax; c] ); % finally
-        %         end
+        function tConstructorSetsRepeatedNameValuePairsCorrectly( ...
+                testCase, ConstructorName )
+
+            % Create the component, passing in repeated name-value pairs.
+            component = testCase.constructComponent( ConstructorName, ...
+                'Tag', '1', 'Tag', '2', 'Tag', '3' );
+            % Verify that the 'Tag' has been set correctly.
+            testCase.verifyEqual( component.Tag, '3', ...
+                ['The ', ConstructorName, ' constructor did not set ', ...
+                'the ''Tag'' correctly when this property was passed ', ...
+                'multiple times to the constructor.'] )
+
+        end % tConstructorSetsRepeatedNameValuePairsCorrectly
+
+        function tConstructorErrorsWithBadArguments( ...
+                testCase, ConstructorName )
+
+            % Test with an invalid name.
+            invalidConstructor = @() testCase.constructComponent( ...
+                ConstructorName, 'BackgroundColor' );
+            testCase.verifyError( ...
+                invalidConstructor, 'uix:InvalidArgument' )
+
+            % Test with an invalid property value.
+            invalidConstructor = @() testCase.constructComponent( ...
+                ConstructorName, 200 );
+            testCase.verifyError( ...
+                invalidConstructor, 'uix:InvalidArgument' );
+
+        end % tConstructorErrorsWithBadArguments
+
+        function tGetAndSetMethodsFunctionCorrectly( ...
+                testCase, ConstructorName, GetSetNameValuePairs )
+
+            % Construct the component, with children.
+            component = testCase.constructComponentWithChildren( ...
+                ConstructorName );
+
+            % For each property, set its value and verify that the
+            % component has correctly assigned the value.
+            for k = 1 : 2 : length( GetSetNameValuePairs )
+                % Extract the current name-value pair.
+                propertyName = GetSetNameValuePairs{k};
+                propertyValue = GetSetNameValuePairs{k+1};
+                % Set the property in the component.
+                component.(propertyName) = propertyValue;
+                % Verify that the property has been assigned correctly.
+                actual = component.(propertyName);
+                testCase.verifyEqual( actual, propertyValue, ...
+                    ['Setting the ''', propertyName, ''' property of ', ...
+                    'the ', ConstructorName, ' object did not store ', ...
+                    'the value correctly.'] )
+            end % for
+
+        end % tGetAndSetMethodsFunctionCorrectly
+
+        function tChildObserverDoesNotIncorrectlyAddElements( ...
+                testCase, ConstructorName )
+
+            % Create the component and verify that its 'Contents' property
+            % has no elements.
+            component = testCase.constructComponent( ConstructorName );
+            testCase.verifyNumElements( component.Contents, 0 )
+
+            % Add a control, and set its 'Internal' property to false.
+            c = uicontrol( 'Parent', component );
+            c.Internal = false;
+
+            % Verify that the component's 'Contents' property has one
+            % element.
+            testCase.verifyNumElements( component.Contents, 1 )
+
+        end % tChildObserverDoesNotIncorrectlyAddElements
+
+        function tContentsAreUpdatedWhenChildrenAreAdded( ...
+                testCase, ConstructorName )
+
+            % Create the component, with children.
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
+            % Verify that the contents are equal to the list of children.
+            testCase.verifyEqual( component.Contents, kids, ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'updated its ''Contents'' property correctly when ', ...
+                'controls were added.'] )
+
+        end % tContentsAreUpdatedWhenChildrenAreAdded
+
+        function tContentsAreUpdatedWhenAChildIsDeleted( testCase, ...
+                ConstructorName )
+
+            % Create the component, with children.
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Delete a child.
+            delete( kids(2) )
+
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, kids([1, 3, 4]), ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'updated its ''Contents'' property correctly when ', ...
+                'a child was deleted.'] )
+
+        end % tContentsAreUpdatedWhenAChildIsDeleted
+
+        function tContentsAreUpdatedWhenAChildIsReparented( ...
+                testCase, ConstructorName )
+
+            % Create the component, with children.
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Reparent a child.
+            kids(2).Parent = testCase.FigureFixture.Figure;
+            testCase.addTeardown( @() delete( kids(2) ) )
+
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, kids([1, 3, 4]), ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'updated its ''Contents'' property correctly when ', ...
+                'a child was reparented.'] )
+
+        end % tContentsAreUpdatedWhenAChildIsReparented
+
+        function tContentsAreUpdatedAfterChildrenAreReordered( ...
+                testCase, ConstructorName )
+
+            % Create the component, with children.
+            component = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Reorder the children.
+            previousContents = component.Contents;
+            component.Children = component.Children(4:-1:1);
+
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, ...
+                previousContents(4:-1:1), ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'updated its ''Contents'' property correctly when ', ...
+                'the children were reordered.'] )
+
+        end % tContentsAreUpdatedAfterChildrenAreReordered
+
+        function tPlottingInAxesInComponentRespectsContents( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add two axes.
+            ax(1) = axes( 'Parent', component );
+            ax(2) = axes( 'Parent', component );
+
+            % Plot into these axes.
+            plot( ax(1), 1:10 )
+            plot( ax(2), 1:10 )
+
+            % Verify that the component's 'Contents' property is correct.
+            testCase.verifyNumElements( component.Contents, 2, ...
+                ['Plotting in axes in a ', ConstructorName, ...
+                ' component resulted in the incorrect number of ', ...
+                '''Contents''.'] )
+            diagnostic = ['Plotting in axes in a ', ConstructorName, ...
+                ' component resulted in an incorrect value for ', ...
+                'the ''Contents'' property.'];
+            testCase.verifySameHandle( ...
+                component.Contents(1), ax(1), diagnostic )
+            testCase.verifySameHandle( ...
+                component.Contents(2), ax(2), diagnostic )
+
+        end % tPlottingInAxesInComponentRespectsContents
+
+        function tAxesInComponentRemainsVisibleAfter3DRotation( ...
+                testCase, ConstructorName )
+
+            % Assume the component is rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add an axes.
+            ax = axes( 'Parent', component );
+
+            % Enable 3D rotation mode.
+            rotate3d( ax, 'on' )
+
+            % Verify that the axes is still visible.
+            testCase.verifyEqual( char( ax.Visible ), 'on', ...
+                ['Enabling 3D rotation mode on an axes within a ', ...
+                ConstructorName, ' component made the axes invisible.'] )
+
+        end % tAxesInComponentRemainsVisibleAfter3DRotation
+
+        function tEnablingDataCursorModePreservesAxesPosition( ...
+                testCase, ConstructorName )
+
+            % Data cursor mode only works in Java figures, so we need to
+            % exclude the unrooted and Web figure cases.
+            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreNotWebBased()
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add an axes.
+            ax = axes( 'Parent', component );
+
+            % Ensure that the axes is not too small.
+            if isprop( component, 'ButtonSize' )
+                component.ButtonSize = [200, 200];
+            end % if
+
+            % Plot into the axes.
+            p = plot( ax, 1:10 );
+
+            % Enable data cursor mode.
+            dcm = datacursormode( component.Parent );
+            dcm.Enable = 'on';
+            drawnow()
+
+            % Capture the current axes position, add a datatip, then
+            % capture the axes position again.
+            oldPosition = ax.Position;
+            dcm.createDatatip( p );
+            drawnow()
+            newPosition = ax.Position;
+
+            % Verify that the axes 'Position' property has not changed.
+            testCase.verifyEqual( newPosition, oldPosition, ...
+                ['Enabling data cursor mode on an axes in a ', ...
+                ConstructorName, ' component caused the axes ', ...
+                '''Position'' property to change.'] )
+
+        end % tEnablingDataCursorModePreservesAxesPosition
+
+        function tContentsRespectAddingAxesAndControl( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add an axes.
+            ax = axes( 'Parent', component );
+
+            % Add a control.
+            c = uicontrol( 'Parent', component );
+
+            % Verify the 'Contents' property is correct initially.
+            diagnostic = ['Adding an axes and a control to a ', ...
+                ConstructorName, ' component resulted in an ', ...
+                'incorrect value for the ''Contents'' property.'];
+            testCase.verifyEqual( ...
+                component.Contents, [ax; c], diagnostic )
+
+            % Wait, and then repeat the verification.
+            pause( 0.1 )
+            testCase.verifyEqual( ...
+                component.Contents, [ax; c], diagnostic )
+
+        end % tContentsRespectAddingAxesAndControl
 
         function tContainerEnableGetMethod( testCase, ConstructorName )
 
-            % Filter the test if the container does not have get and set 
+            % Filter the test if the container does not have get and set
             % methods for the 'Enable' property.
             testCase.assumeComponentHasEnableGetSetMethods( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = feval( ConstructorName, 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Verify that the 'Enable' property is set to 'on'.
-            testCase.verifyEqual( container.Enable, 'on', ...
+            testCase.verifyEqual( component.Enable, 'on', ...
                 ['The ''Enable'' property of the ', ConstructorName, ...
                 'container is not set to ''on''.'] )
 
@@ -464,20 +586,18 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         function tContainerEnableSetMethod( testCase, ConstructorName )
 
-            % Filter the test if the container does not have get and set 
+            % Filter the test if the container does not have get and set
             % methods for the 'Enable' property.
             testCase.assumeComponentHasEnableGetSetMethods( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = feval( ConstructorName, 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Check that setting 'on' or 'off' is accepted.
             for enable = {'on', 'off'}
                 enableSetter = ...
-                    @() set( container, 'Enable', enable{1} );
+                    @() set( component, 'Enable', enable{1} );
                 testCase.verifyWarningFree( enableSetter, ...
                     [ConstructorName, ' has not accepted a value ', ...
                     'of ''', enable{1}, ...
@@ -486,7 +606,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
             % Check that setting an invalid value causes an error.
             errorID = 'uiextras:InvalidPropertyValue';
-            invalidSetter = @() set( container, 'Enable', {} );
+            invalidSetter = @() set( component, 'Enable', {} );
             testCase.verifyError( invalidSetter, errorID, ...
                 [ConstructorName, ' has not produced an ', ...
                 'error with the expected ID when the ''Enable'' ', ...
@@ -502,17 +622,15 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testCase.assumeComponentHasDynamicEnableProperty( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = feval( ConstructorName, 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Verify that the 'Enable' property exists and is set to
             % 'on'.
-            testCase.assertTrue( isprop( container, 'Enable' ), ...
+            testCase.assertTrue( isprop( component, 'Enable' ), ...
                 [ConstructorName, ' does not ', ...
                 'have the ''Enable'' property.'] )
-            testCase.verifyTrue( strcmp( container.Enable, 'on' ), ...
+            testCase.verifyTrue( strcmp( component.Enable, 'on' ), ...
                 ['The ''Enable'' property of the ', ...
                 ConstructorName, ' is not set to ''on''.'] )
 
@@ -526,15 +644,13 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testCase.assumeComponentHasDynamicEnableProperty( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = uiextras.BoxPanel( 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Check that setting 'on' or 'off' is accepted.
             for enable = {'on', 'off'}
                 enableSetter = ...
-                    @() set( container, 'Enable', enable{1} );
+                    @() set( component, 'Enable', enable{1} );
                 testCase.verifyWarningFree( enableSetter, ...
                     [ConstructorName, ' has not accepted a value ', ...
                     'of ''', enable{1}, ...
@@ -548,7 +664,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
                 errorID = ...
                     'MATLAB:datatypes:onoffboolean:IncorrectValue';
             end % if
-            invalidSetter = @() set( container, 'Enable', {} );
+            invalidSetter = @() set( component, 'Enable', {} );
             testCase.verifyError( invalidSetter, errorID, ...
                 [ConstructorName, ' has not produced an ', ...
                 'error with the expected ID when the ''Enable'' ', ...
@@ -563,21 +679,19 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testCase.assumeComponentHasSelectedChildProperty( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = feval( ConstructorName, 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Verify that the 'SelectedChild' property is equal to [].
-            testCase.verifyEqual( container.SelectedChild, [], ...
+            testCase.verifyEqual( component.SelectedChild, [], ...
                 ['The ''SelectedChild'' property of ', ...
                 ConstructorName, ' is not equal to [].'] )
 
-            % Add a child to the box panel.
-            uicontrol( container )
+            % Add a child to the component.
+            uicontrol( component )
 
             % Verify that the 'SelectedChild' property is equal to 1.
-            testCase.verifyEqual( container.SelectedChild, 1, ...
+            testCase.verifyEqual( component.SelectedChild, 1, ...
                 ['The ''SelectedChild'' property of ', ...
                 ConstructorName, ' is not equal to 1.'] )
 
@@ -590,14 +704,12 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             testCase.assumeComponentHasSelectedChildProperty( ...
                 ConstructorName )
 
-            % Create a container.
-            fig = testCase.FigureFixture.Figure;
-            container = feval( ConstructorName, 'Parent', fig );
-            testCase.addTeardown( @() delete( container ) )
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % Verify that setting the 'SelectedChild' property is
             % warning-free.
-            setter = @() set( container, 'SelectedChild', 1 );
+            setter = @() set( component, 'SelectedChild', 1 );
             testCase.verifyWarningFree( setter, ...
                 [ConstructorName, ' did not accept setting the ', ...
                 '''SelectedChild'' property.'] )
@@ -620,44 +732,67 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
 
         end % constructComponent
 
-        function [obj, rgb] = hBuildRGBBox(testcase, type)
-            % creates a Box of requested type and adds 3 uicontrols with
-            % red, green, and blue background colours, with an empty space
-            % between green and blue.
-            obj = testcase.constructComponent( type );
-            rgb = [
-                uicontrol('Parent', obj, 'BackgroundColor', 'r')
-                uicontrol('Parent', obj, 'BackgroundColor', 'g')
-                uiextras.Empty('Parent', obj)
-                uicontrol('Parent', obj, 'BackgroundColor', 'b') ];
-        end
+        function [component, componentChildren] = ...
+                constructComponentWithChildren( testCase, constructorName )
 
-        function assumeRooted( testcase )
-            %check that container is rooted
-            testcase.assumeFalse( ...
-                strcmp( testcase.FigureFixture.Type, testcase.ParentType.Unrooted ), ...
-                'Not applicable to unrooted graphics.' );
-        end % assumeRooted
+            % Create a component of the type specified by the
+            % constructorName input. Add three buttons with red, green, and
+            % blue background colors, with an empty space between green and
+            % blue. Return the four child references in the output argument
+            % componentChildren.
+            component = testCase.constructComponent( constructorName );
+            componentChildren = [
+                uicontrol( 'Parent', component, 'BackgroundColor', 'r' )
+                uicontrol( 'Parent', component, 'BackgroundColor', 'g' )
+                uiextras.Empty( 'Parent', component )
+                uicontrol( 'Parent', component, 'BackgroundColor', 'b' )];
 
-        function assumeNotWeb( testcase )
-            %check that container is not Web graphics
-            testcase.assumeFalse( ...
-                isfield( testcase.ParentType, 'WebFigure' ) && ...
-                strcmp( testcase.FigureFixture.Type, testcase.ParentType.WebFigure ) , ...
-                'Not applicable to Web graphics.' );
-        end % assumeNotWeb
+        end % constructComponentWithChildren
 
-        function assumeDisplay( testcase )
-            %check that environment has a display, for mouse tests
-            thisFolder = fileparts( mfilename( 'fullpath' ) );
-            batFolder = fullfile( matlabroot, 'test', 'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            testcase.assumeFalse( ...
-                strcmp( thisFolder, batFolder ), ...
-                'Not applicable to headless BaT environment.');
-            testcase.assumeTrue( ...
-                isempty( getenv( 'JENKINS_HOME' ) ), ...
-                'Not applicable to headless Jenkins environment.');
-        end % assumeDisplay
+        function assumeGraphicsAreRooted( testCase )
+
+            % Assume that the component under test is rooted (i.e., there
+            % is a nonempty top-level figure or uifigure ancestor).
+            unrooted = strcmp( testCase.FigureFixture.Type, ...
+                testCase.ParentType.Unrooted );
+            testCase.assumeFalse( unrooted, ...
+                'This test is not applicable to unrooted components.' )
+
+        end % assumeGraphicsAreRooted
+
+        function assumeGraphicsAreNotWebBased( testCase )
+
+            % Assume that the component under test does not have a
+            % top-level web figure ancestor.
+            webBased = strcmp( testCase.FigureFixture.Type, ...
+                testCase.ParentType.WebFigure );
+            testCase.assumeFalse( webBased, ...
+                ['This test is not applicable to components ', ...
+                'based in web figures.'] )
+
+        end % assumeGraphicsAreNotWebBased
+
+        function assumeTestEnvironmentHasDisplay( testCase )
+
+            % Check that the test environment has a display. This is
+            % required for the mouse tests used for the flexible
+            % containers.
+            currentFolder = fileparts( mfilename( 'fullpath' ) );
+            BaTFolder = fullfile( matlabroot(), 'test', ...
+                'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
+            inBaTFolder = strcmp( currentFolder, BaTFolder );
+            testCase.assumeFalse( inBaTFolder, ...
+                ['This test is not applicable in the BaT ', ...
+                'environment. A display is required to run ', ...
+                'the mouse tests.'] )
+
+            % Check that the test environment is not Jenkins.
+            isJenkins = ~isempty( getenv( 'JENKINS_HOME' ) );
+            testCase.assumeFalse( isJenkins, ...
+                ['This test is not applicable when running in ', ...
+                'the Jenkins environment.'] )
+
+        end % assumeTestEnvironmentHasDisplay
 
     end % methods
 
@@ -671,8 +806,8 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             condition = strncmp( ConstructorName, namespace, ...
                 length( namespace ) );
             testCase.assumeTrue( condition, ...
-                ['The component ', ConstructorName, ' is not from the ', ...
-                namespace, ' namespace.'] )
+                ['The component ', ConstructorName, ...
+                ' is not from the ', namespace, ' namespace.'] )
 
         end % assumeComponentIsFromNamespace
 

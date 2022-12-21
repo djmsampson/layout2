@@ -1,9 +1,10 @@
 classdef GridTests < matlab.unittest.TestCase 
     %GRIDTESTS Extra tests for Grid and GridFlex.
     
-    properties (Abstract, TestParameter)
-        ConstructorName;
-    end
+    properties ( TestParameter, Abstract )
+        % The constructor name, or class, of the component under test.
+        ConstructorName
+    end % properties ( TestParameter, Abstract )
     
     methods (Test)
         function testGridContents(testcase, ConstructorName)
@@ -26,9 +27,9 @@ classdef GridTests < matlab.unittest.TestCase
             testcase.verifyEqual(obj.Contents, u([1:4,6]) );
             
             % Reparent a child when not unparented
-            if ~strcmp(testcase.parentStr,'[]')
-                fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-                set(u(1), 'Parent', fx.FigureHandle)
+            if ~strcmp(testcase.ParentType ,'unrooted')
+                fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture(testcase.ParentType));
+                set(u(1), 'Parent', fx.Figure)
            
                 testcase.verifyEqual(obj.Contents, u([2 3 4 6]));
             end

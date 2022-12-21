@@ -3,7 +3,7 @@ classdef FlexSharedTests < ContainerSharedTests
     
     methods ( Test )
         
-        function testMouseOverDividerInDockedFigure( testcase, ContainerType )
+        function testMouseOverDividerInDockedFigure( testcase, ConstructorName )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
             
@@ -11,12 +11,12 @@ classdef FlexSharedTests < ContainerSharedTests
             import matlab.unittest.constraints.Matches
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeRooted()
-            testcase.assumeNotWeb()
-            testcase.assumeDisplay()
+            testcase.assumeGraphicsAreRooted()
+            testcase.assumeGraphicsAreNotWebBased()
+            testcase.assumeTestEnvironmentHasDisplay()
             
             % Build the flex
-            c = testcase.hCreateObj( ContainerType );
+            c = testcase.constructComponent( ConstructorName );
             f = c.Parent;
             f.WindowStyle = 'docked';
             figure( f ) % bring to front
@@ -45,19 +45,20 @@ classdef FlexSharedTests < ContainerSharedTests
             
         end % testMouseOverDividerInDockedFigure
         
-        function testMousePointerUpdateOnFlexChange( testcase, ContainerType )
+        function testMousePointerUpdateOnFlexChange( testcase, ConstructorName )
             % g1367326: Add test for g1346921: Mouse pointer gets confused
             % when moving between adjacent flex containers
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeRooted()
-            testcase.assumeDisplay()
+            testcase.assumeGraphicsAreRooted()
+            testcase.assumeTestEnvironmentHasDisplay()
             
             % Build
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            f = fx.FigureHandle;
+            %fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture(testcase.parentStr));
+            %f = fx.FigureHandle;
+            f = testcase.FigureFixture.Figure;
             % Layout is component based
-            switch ContainerType
+            switch ConstructorName
                 case 'uiextras.VBoxFlex'
                     childType = 'VBoxFlex';
                     parentType = 'HBox';
@@ -117,18 +118,19 @@ classdef FlexSharedTests < ContainerSharedTests
             
         end % testMousePointerUpdateOnFlexChange
         
-        function testMousePointerUpdateOnFlexClick( testcase, ContainerType )
+        function testMousePointerUpdateOnFlexClick( testcase, ConstructorName )
             % g1367337: Update flex container pointer on mouse press event
             
             % Abort for unparented cases and in unsuitable environments
-            testcase.assumeRooted()
-            testcase.assumeDisplay()
+            testcase.assumeGraphicsAreRooted()
+            testcase.assumeTestEnvironmentHasDisplay()
             
-            temp = strsplit( ContainerType, '.' );
+            temp = strsplit( ConstructorName, '.' );
             ComponentName = temp{2};
             % Build
-            fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            f = fx.FigureHandle;
+            %fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
+            %f = fx.FigureHandle;
+            f = testcase.FigureFixture.Figure;
             nChildren = 4;
             h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
             b1 = gobjects( 1, nChildren );

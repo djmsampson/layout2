@@ -19,7 +19,7 @@ classdef tScrollingPanel < ContainerSharedTests ...
         
         function testFillingPosition(testcase, ContainerType)
             %testLayoutInTab  Test layout in panel
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             obj = testcase.hCreateObj(ContainerType, testcase.ConstructorArgs{:});
             c = uicontrol( 'Parent', obj );
             testcase.verifyEqual( c.Position, [1 1 obj.Position(3:4)] )
@@ -33,7 +33,7 @@ classdef tScrollingPanel < ContainerSharedTests ...
         end
         
         function testHorizontalPosition(testcase, ContainerType)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             obj = testcase.hCreateObj(ContainerType);
             set( obj, 'Units', 'pixels', 'Position', [10 10 400 400] );
             c = uicontrol( 'Parent', obj );
@@ -59,7 +59,7 @@ classdef tScrollingPanel < ContainerSharedTests ...
         end
         
         function testMinimumWidths(testcase, ContainerType)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             obj = testcase.hCreateObj(ContainerType);
             h = uix.HBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
             for ii = 1:4
@@ -79,7 +79,7 @@ classdef tScrollingPanel < ContainerSharedTests ...
         end
         
         function testMinimumHeights(testcase, ContainerType)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             obj = testcase.hCreateObj(ContainerType);
             v = uix.VBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
             for ii = 1:4

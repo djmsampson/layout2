@@ -24,6 +24,6 @@ end % switch/case
 % Enforce that a minimum MATLAB version is required.
 testCase.assumeFalse( ...
     verLessThan( 'matlab', versionNumber ), ...
-    ['Test not applicable prior to MATLAB ', versionString, '.'] )
+    ['This test is not applicable prior to MATLAB ', versionString, '.'] )
 
 end % assumeMATLABVersionIsAtLeast

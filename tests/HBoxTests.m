@@ -7,7 +7,7 @@ classdef HBoxTests < matlab.unittest.TestCase
     
     methods (Test) 
         function testResizeFigureRetainsElementSizesInHBoxes(testcase, ConstructorName)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ConstructorName, 'Width');
             
@@ -26,9 +26,9 @@ classdef HBoxTests < matlab.unittest.TestCase
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'pixels');            
             % If unparented, reparent to a figure
-            if strcmp(testcase.parentStr,'[]')
-                fx = testcase.applyFixture(FigureFixture('figure'));
-                obj.Parent = fx.FigureHandle;
+            if strcmp(testcase.ParentType,'unrooted')
+                fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture('legacy'));
+                obj.Parent = fx.Figure;
             end
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 1 250 500] );
@@ -38,8 +38,8 @@ classdef HBoxTests < matlab.unittest.TestCase
         function testMinimumSizes(testcase, ConstructorName)
             %testMinimumSizes Test that minimum size is honored (g1329485)
             
-            obj = testcase.hCreateObj(ConstructorName, ...
-                {'Units', 'pixels', 'Position', [1 1 1000 500]});  
+            obj = testcase.constructComponent(ConstructorName, ...
+                'Units', 'pixels', 'Position', [1 1 1000 500]);  
             
             for ii = 1:5 
                 ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
@@ -52,9 +52,9 @@ classdef HBoxTests < matlab.unittest.TestCase
             obj.Position(3) = 400; 
             
             % If unparented, reparent to a figure
-            if strcmp(testcase.parentStr,'[]')
-                fx = testcase.applyFixture(FigureFixture('figure'));
-                obj.Parent = fx.FigureHandle;
+            if strcmp(testcase.ParentType,'unrooted')
+                fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture('legacy'));
+                obj.Parent = fx.Figure;
             end
             
             for ii = 1:5
@@ -68,7 +68,7 @@ classdef HBoxTests < matlab.unittest.TestCase
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute
-            [obj, ~] = testcase.hBuildRGBBox(type);
+            [obj, ~] = testcase.constructComponentsWithChildren(type);
             set(obj, 'Position',[400 400 750 750]);
             set(obj, 'Units', 'normalized', 'Position', [0 0 1 1]); % fill
             set(obj, 'Padding', 10, 'Spacing', 10);

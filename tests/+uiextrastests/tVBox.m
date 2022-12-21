@@ -2,8 +2,8 @@ classdef tVBox < VBoxTests & ContainerSharedTests
     %TVBOX Tests for uiextras.VBox.
 
     properties ( TestParameter )
-        % The container type (constructor name).
-        ContainerType = {'uiextras.VBox'}
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uiextras.VBox'}
         % Name-value pair input arguments to use when testing the component
         % constructor.
         ConstructorInputArguments = {{

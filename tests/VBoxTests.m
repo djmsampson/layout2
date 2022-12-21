@@ -7,7 +7,7 @@ classdef VBoxTests < matlab.unittest.TestCase
     
     methods (Test)       
         function testResizeFigureRetainsElementSizesInVBoxes(testcase, ConstructorName)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ConstructorName, 'Heights');
             
@@ -21,14 +21,16 @@ classdef VBoxTests < matlab.unittest.TestCase
            
         function testAxesPositionInVBoxes(testcase, ConstructorName)
             %testAxesPosition  Test that axes get positioned properly
-            obj = testcase.hCreateObj(ConstructorName, ...
-                {'Units', 'pixels', 'Position', [1 1 500 500], 'Spacing', 0});
+            obj = testcase.constructComponent(ConstructorName, ...
+                'Units', 'pixels', 'Position', [1 1 500 500], 'Spacing', 0);
             ax1 = axes( 'Parent', obj, 'ActivePositionProperty', 'OuterPosition', 'Units', 'pixels');
             ax2 = axes( 'Parent', obj, 'ActivePositionProperty', 'Position', 'Units', 'pixels');
             % If unparented, reparent to a figure
-            if strcmp(testcase.parentStr,'[]')
-                fx = testcase.applyFixture(FigureFixture('figure'));
-                obj.Parent = fx.FigureHandle;
+            if strcmp(testcase.ParentType, 'unrooted')
+                %fx = testcase.applyFixture(FigureFixture('figure'));
+                %obj.Parent = fx.FigureHandle;
+                fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture('figure'));
+                obj.Parent = fx.Figure;
             end
             % Check that the axes sizes are correct.
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 251 500 250] );
@@ -37,10 +39,10 @@ classdef VBoxTests < matlab.unittest.TestCase
         
         function testMinimumSizes(testcase, ConstructorName)
             %testMinimumSizes Test that minimum size is honored (g1329485)
-            testcase.assumeRooted()
+            testcase.assumeGraphicsAreRooted()
 
-            obj = testcase.hCreateObj(ConstructorName, ...
-                {'Units', 'pixels', 'Position', [1 1 500 1000]});  
+            obj = testcase.constructComponent(ConstructorName, ...
+                'Units', 'pixels', 'Position', [1 1 500 1000]);  
             
             for ii = 1:5 
                 ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
@@ -63,7 +65,7 @@ classdef VBoxTests < matlab.unittest.TestCase
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute
-            [obj, ~] = testcase.hBuildRGBBox(type);
+            [obj, ~] = testcase.constructComponentWithChildren(type);
             set(obj, 'Position',[400 400 750 750]);
             set(obj, 'Units', 'normalized', 'Position', [0 0 1 1]); % fill
             set(obj,'Padding', 10, 'Spacing', 10);
