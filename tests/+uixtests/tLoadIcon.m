@@ -88,8 +88,9 @@ classdef tLoadIcon < matlab.unittest.TestCase
 
             % Prepare the image data.
             currentFolder = fileparts( mfilename( 'fullpath' ) );
-            testImageFile = fullfile( currentFolder, 'Icons', ...
-                'GreenTileAlpha.png' );
+            parentFolder = fileparts( currentFolder );
+            testImageFile = fullfile( parentFolder, ...
+                '+utilities', 'Icons', 'GreenTileAlpha.png' );
             testImage = imread( testImageFile );
             cdata = uix.loadIcon( testImageFile );
 
@@ -123,8 +124,9 @@ classdef tLoadIcon < matlab.unittest.TestCase
             % Attempt to load a binary image (an unsupported type).
             testImageFile = 'Binary.png';
             currentFolder = fileparts( mfilename( 'fullpath' ) );
-            testImagePath = fullfile( currentFolder, ...
-                'Icons', testImageFile );
+            parentFolder = fileparts( currentFolder );
+            testImagePath = fullfile( parentFolder, ...
+                '+utilities', 'Icons', testImageFile );
             f = @() uix.loadIcon( testImagePath );
             testCase.verifyError( f, 'uix:InvalidArgument', ...
                 ['uix.loadIcon has not errored when ', ...
@@ -155,7 +157,9 @@ classdef tLoadIcon < matlab.unittest.TestCase
 
             % Prepare the image data.
             currentFolder = fileparts( mfilename( 'fullpath' ) );
-            testImageFile = fullfile( currentFolder, 'Icons', filename );
+            parentFolder = fileparts( currentFolder );
+            testImageFile = fullfile( parentFolder, ...
+                '+utilities', 'Icons', filename );
             testImage = imread( testImageFile );
             cdata = uix.loadIcon( testImageFile );
 

@@ -2,28 +2,30 @@ classdef PanelContainerTests < utilities.mixin.ContainerTests
     %PANELCONTAINERTESTS Additional tests common to all panel containers.
 
     properties ( TestParameter )
-        failingSelection = {2.4, int32(2), [2, 3, 4], 5}
-    end
+        % Collection of invalid values for the 'Selection' property, used
+        % to test that panels issue an error.
+        InvalidSelection = {2.4, int32( 2 ), [2, 3, 4], 5}
+    end % properties ( TestParameter )
 
-    properties
+    properties ( Access = private )
+        % Warning state associated with a specific issue.
         G1218142
-    end
+    end % properties ( Access = private )
 
     methods ( TestClassSetup )
 
         function suppressWarnings( testCase )
-            testCase.G1218142 = warning('off','uix:G1218142');
-        end
 
-    end
+            % Suppress this warning during the test procedure. Restore the
+            % original warning state when the test completes.
+            warningID = 'uix:G1218142';
+            testCase.G1218142 = warning( 'query', warningID );
+            warning( 'off', warningID )
+            testCase.addTeardown( @() warning( testCase.G1218142 ) )
 
-    methods ( TestClassTeardown )
+        end % suppressWarnings
 
-        function restoreWarnings(testcase)
-            warning(testcase.G1218142)
-        end
-
-    end
+    end % methods ( TestClassSetup )
 
     methods ( Test )
 
@@ -60,16 +62,16 @@ classdef PanelContainerTests < utilities.mixin.ContainerTests
 
         end
 
-        function testSelectableEmptyPanelSetSelectionErrors( testCase, ConstructorName, failingSelection)
+        function testSelectableEmptyPanelSetSelectionErrors( testCase, ConstructorName, InvalidSelection)
             objEmpty = testCase.constructComponent(ConstructorName);
 
-            testCase.verifyError(@()set(objEmpty, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
+            testCase.verifyError(@()set(objEmpty, 'Selection', InvalidSelection), 'uix:InvalidPropertyValue');
         end
 
-        function testSelectableRGBPanelSetSelectionErrors(testCase, ConstructorName, failingSelection)
+        function testSelectableRGBPanelSetSelectionErrors(testCase, ConstructorName, InvalidSelection)
             [obj4Children, ~] = testCase.constructComponentWithChildren(ConstructorName);
 
-            testCase.verifyError(@()set(obj4Children, 'Selection', failingSelection), 'uix:InvalidPropertyValue');
+            testCase.verifyError(@()set(obj4Children, 'Selection', InvalidSelection), 'uix:InvalidPropertyValue');
         end
 
         function testSelectablePanelSetSelectionSucceeds(testCase, ConstructorName)
