@@ -1,4 +1,4 @@
-classdef tGrid < GridTests & ContainerSharedTests
+classdef tGrid < utilities.mixin.GridContainerTests
     %TGRID Tests for uiextras.Grid.
 
     properties ( TestParameter )

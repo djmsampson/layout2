@@ -39,7 +39,7 @@ classdef tSetPosition < matlab.unittest.TestCase
         function tSetPositionErrorsWithNonPixelUnitsForObjectWithoutUnits( testCase )
 
             % Create a dummy object (which has no 'Units' property).
-            dummy = uixtests.ActivePositionPropertyTestDummy();
+            dummy = utilities.ActivePositionPropertyTestDummy();
             % Invoke uix.setPosition with the dummy and non-pixel units.
             f = @() uix.setPosition( dummy, zeros( 1, 4 ), 'inches' );
             testCase.verifyError( f, 'uix:InvalidOperation', ...
@@ -93,7 +93,7 @@ classdef tSetPosition < matlab.unittest.TestCase
         function tSetPositionErrorsForUnknownActivePositionPropertyValue( testCase )
 
             % Create a test dummy.
-            dummy = uixtests.ActivePositionPropertyTestDummy( 'dummy' );
+            dummy = utilities.ActivePositionPropertyTestDummy( 'dummy' );
             % Verify that with an unknown 'ActivePositionProperty', an
             % error is thrown.
             f = @() uix.setPosition( dummy, zeros( 1, 4 ), 'pixels' );

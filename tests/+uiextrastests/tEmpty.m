@@ -3,8 +3,9 @@ classdef tEmpty < matlab.unittest.TestCase
     %utilize the shared container tests.
 
     properties ( ClassSetupParameter )
-        % Graphics parent type.
-        ParentType = parentTypes()
+        % Graphics parent type ('legacy'|'web'|'unrooted'). See also
+        % parentTypes.
+        ParentType = utilities.parentTypes()
     end % properties ( ClassSetupParameter )
 
     properties
@@ -23,14 +24,14 @@ classdef tEmpty < matlab.unittest.TestCase
         function assumeMinimumMATLABVersion( testCase )
 
             % This collection of tests requires MATLAB R2014b or later.
-            assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
+            utilities.assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
 
         end % assumeMinimumMATLABVersion
 
         function setupToolboxPath( testCase )
 
             % Apply a path fixture for the GUI Layout Toolbox main folder.
-            applyGLTFolderFixture( testCase )
+            utilities.applyGLTFolderFixture( testCase )
 
         end % setupToolboxPath
 
@@ -39,7 +40,7 @@ classdef tEmpty < matlab.unittest.TestCase
             % Apply a custom fixture to provide the top-level parent
             % graphics object for the GUI Layout Toolbox components during
             % the test procedures.
-            applyFigureFixture( testCase, ParentType )
+            utilities.applyFigureFixture( testCase, ParentType )
 
         end % setupFigureFixture
 
@@ -47,7 +48,7 @@ classdef tEmpty < matlab.unittest.TestCase
 
             % Disable GUI Layout Toolbox tracking during the test
             % procedures.
-            disableTracking( testCase )
+            utilities.disableTracking( testCase )
 
         end % disableTracking
 

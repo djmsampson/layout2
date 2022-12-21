@@ -1,10 +1,5 @@
-classdef PanelTests < matlab.unittest.TestCase
-    %PANELTESTS Extra tests for panels
-
-    properties ( TestParameter, Abstract )
-        % The constructor name, or class, of the component under test.
-        ConstructorName
-    end % properties ( TestParameter, Abstract )
+classdef PanelContainerTests < utilities.mixin.ContainerTests
+    %PANELCONTAINERTESTS Additional tests common to all panel containers.
 
     properties ( TestParameter )
         failingSelection = {2.4, int32(2), [2, 3, 4], 5}

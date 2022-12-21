@@ -1,4 +1,4 @@
-classdef tHButtonBox < ContainerSharedTests
+classdef tHButtonBox < utilities.mixin.ContainerTests
     %THBUTTONBOX Tests for uiextras.HButtonBox.
 
     properties ( TestParameter )

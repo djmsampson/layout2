@@ -10,7 +10,7 @@ assert( isa( testCase, 'matlab.unittest.TestCase' ) && ...
     'First input must be a valid scalar TestCase instance.' )
 
 % Locate the GLT folder based on the current location.
-testsFolder = fileparts( mfilename( 'fullpath' ) );
+testsFolder = fileparts( fileparts( mfilename( 'fullpath' ) ) );
 projectFolder = fileparts( testsFolder );
 toolboxFolder = fullfile( projectFolder, 'tbx', 'layout' );
 

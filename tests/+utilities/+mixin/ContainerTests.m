@@ -1,11 +1,11 @@
-classdef ContainerSharedTests < matlab.unittest.TestCase
-    %CONTAINERSHAREDTESTS Tests common to all GUI Layout Toolbox
-    %containers, including both the +uiextras and +uix packages.
+classdef ContainerTests < matlab.unittest.TestCase
+    %CONTAINERTESTS Tests common to all GUI Layout Toolbox containers,
+    %across both the +uiextras and +uix packages.
 
     properties ( ClassSetupParameter )
-        % Graphics parent type ('legacy'|'web'|'unrooted'). See also 
+        % Graphics parent type ('legacy'|'web'|'unrooted'). See also
         % parentTypes.
-        ParentType = parentTypes()
+        ParentType = utilities.parentTypes()
     end % properties ( ClassSetupParameter )
 
     properties ( TestParameter, Abstract )
@@ -26,7 +26,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         % matlab.unittest.fixtures.FigureFixture.
         FigureFixture
         % Current GUI Layout Toolbox tracking status, to be restored after
-        % the tests run. Tracking is disabled whilst the tests run.
+        % the tests run. Tracking will be disabled whilst the tests run.
         CurrentTrackingStatus = 'unset'
     end % properties
 
@@ -62,14 +62,14 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function assumeMinimumMATLABVersion( testCase )
 
             % This collection of tests requires MATLAB R2014b or later.
-            assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
+            utilities.assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
 
         end % assumeMinimumMATLABVersion
 
         function setupToolboxPath( testCase )
 
             % Apply a path fixture for the GUI Layout Toolbox main folder.
-            applyGLTFolderFixture( testCase )
+            utilities.applyGLTFolderFixture( testCase )
 
         end % setupToolboxPath
 
@@ -78,7 +78,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             % Apply a custom fixture to provide the top-level parent
             % graphics object for the GUI Layout Toolbox components during
             % the test procedures.
-            applyFigureFixture( testCase, ParentType )
+            utilities.applyFigureFixture( testCase, ParentType )
 
         end % setupFigureFixture
 
@@ -87,7 +87,7 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
             % Disable GUI Layout Toolbox tracking during the test
             % procedures. Restore the previous tracking state when the
             % tests are complete.
-            disableTracking( testCase )
+            utilities.disableTracking( testCase )
 
         end % disableTracking
 
@@ -320,13 +320,13 @@ classdef ContainerSharedTests < matlab.unittest.TestCase
         function tConstructorErrorsWithBadArguments( ...
                 testCase, ConstructorName )
 
-            % Test with an invalid name.
+            % Test with providing the name of a property only.
             invalidConstructor = @() testCase.constructComponent( ...
                 ConstructorName, 'BackgroundColor' );
             testCase.verifyError( ...
                 invalidConstructor, 'uix:InvalidArgument' )
 
-            % Test with an invalid property value.
+            % Test with providing a property value only.
             invalidConstructor = @() testCase.constructComponent( ...
                 ConstructorName, 200 );
             testCase.verifyError( ...

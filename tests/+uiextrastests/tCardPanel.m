@@ -1,4 +1,4 @@
-classdef tCardPanel < PanelTests & ContainerSharedTests
+classdef tCardPanel < utilities.mixin.PanelContainerTests
     %TCARDPANEL Tests for uiextras.CardPanel.
 
     properties ( TestParameter )

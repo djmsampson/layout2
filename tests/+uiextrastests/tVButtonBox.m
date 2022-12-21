@@ -1,4 +1,4 @@
-classdef tVButtonBox < ContainerSharedTests
+classdef tVButtonBox < utilities.mixin.ContainerTests
     %TVBUTTONBOX Tests for uiextras.VButtonBox.
 
     properties ( TestParameter )

@@ -1,9 +1,6 @@
-classdef HBoxTests < matlab.unittest.TestCase
-    %HBOXTESTS Extra tests for HBox and HBoxFlex.
-    
-    properties (Abstract, TestParameter)
-        ConstructorName;
-    end
+classdef HorizontalLayoutTests < utilities.mixin.ContainerTests
+    %HORIZONTALLAYOUTTESTS Additional tests common to all horizontal layout
+    %containers.
     
     methods (Test) 
         function testResizeFigureRetainsElementSizesInHBoxes(testcase, ConstructorName)

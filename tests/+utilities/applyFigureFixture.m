@@ -15,7 +15,7 @@ if strcmp( ParentType, 'web' )
     % Filter all tests using a web figure graphics parent,
     % unless the MATLAB version supports the creation of
     % uicontrol objects in web figures.
-    assumeMATLABVersionIsAtLeast( testCase, 'R2022a' )
+    utilities.assumeMATLABVersionIsAtLeast( testCase, 'R2022a' )
 end % if
 
 % Create the figure fixture using the corresponding parent

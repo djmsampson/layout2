@@ -1,5 +1,5 @@
-classdef tScrollingPanel < ContainerSharedTests ...
-        & PanelTests
+classdef tScrollingPanel < ContainerTests ...
+        & PanelContainerTests
     %TSCROLLINGPANEL unit tests for uix.ScrollingPanel
     
     properties (TestParameter)

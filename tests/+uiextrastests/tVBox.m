@@ -1,4 +1,4 @@
-classdef tVBox < VBoxTests & ContainerSharedTests
+classdef tVBox < utilities.mixin.VerticalLayoutTests
     %TVBOX Tests for uiextras.VBox.
 
     properties ( TestParameter )

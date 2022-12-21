@@ -1,5 +1,6 @@
-classdef FlexSharedTests < ContainerSharedTests
-    %FLEXSHAREDTESTS Shared test accross all Flex classes
+classdef FlexibleContainerTests < utilities.mixin.ContainerTests
+    %FLEXIBLECONTAINERTESTS Additional tests common to all flexible
+    %containers.
     
     methods ( Test )
         
@@ -167,9 +168,9 @@ classdef FlexSharedTests < ContainerSharedTests
             
         end % testMousePointerUpdateOnFlexClick
         
-    end
+    end % methods ( Test )
     
-end
+end % class
 
 function p = getFigureOrigin( f )
 %getFigureOrigin  Get location on screen of figure origin

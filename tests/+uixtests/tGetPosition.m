@@ -71,7 +71,7 @@ classdef tGetPosition < matlab.unittest.TestCase
         function tGetPositionErrorsForUnknownActivePositionPropertyValue( testCase )
 
             % Create a test dummy.
-            dummy = uixtests.ActivePositionPropertyTestDummy( 'dummy' );
+            dummy = utilities.ActivePositionPropertyTestDummy( 'dummy' );
             % Verify that with an unknown 'ActivePositionProperty', an
             % error is thrown.
             f = @() uix.getPosition( dummy, 'pixels' );
@@ -86,7 +86,7 @@ classdef tGetPosition < matlab.unittest.TestCase
         function tGetPositionAssumesPixelsWhenUnitsAreNotPresent( testCase )
 
             % Create a test dummy (with no 'Units' property).
-            dummy = uixtests.ActivePositionPropertyTestDummy( 'position' );
+            dummy = utilities.ActivePositionPropertyTestDummy( 'position' );
             p = uix.getPosition( dummy, 'pixels' );
             % Verify that the position is returned correctly.
             testCase.verifyEqual( p, dummy.Position, ...

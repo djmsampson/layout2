@@ -1,4 +1,4 @@
-classdef tTabPanel < PanelTests & ContainerSharedTests
+classdef tTabPanel < utilities.mixin.PanelContainerTests
     %TTABPANEL Tests for uiextras.TabPanel.
 
     properties ( TestParameter )
@@ -125,9 +125,9 @@ classdef tTabPanel < PanelTests & ContainerSharedTests
             callbackInvoked = false;
 
             % Cover other callback options.
-            callbackOptions = {'uiextrastests.noop', ...
-                @uiextrastests.noop, ...
-                {@uiextrastests.noop}};
+            callbackOptions = {'utilities.noop', ...
+                @utilities.noop, ...
+                {@utilities.noop}};
 
             for callback = callbackOptions
                 % Assign the callback.

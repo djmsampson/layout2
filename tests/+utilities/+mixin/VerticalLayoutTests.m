@@ -1,24 +1,21 @@
-classdef VBoxTests < matlab.unittest.TestCase
-%VBOXTESTS Extra tests for VBox and VBoxFlex.
+classdef VerticalLayoutTests < utilities.mixin.ContainerTests
+    %VERTICALLAYOUTTESTS Additional tests common to all vertical layout
+    %containers.    
 
-    properties (Abstract, TestParameter)
-        ConstructorName;
-    end
-    
-    methods (Test)       
+    methods (Test)
         function testResizeFigureRetainsElementSizesInVBoxes(testcase, ConstructorName)
             testcase.assumeGraphicsAreRooted()
             % create RGB box and resize the whole figure
             [obj, expectedSizes] = testcase.hCreateAxesAndResizeFigure(ConstructorName, 'Heights');
-            
+
             actualSizes(1) = obj.Contents(1).Position(4);
             actualSizes(2) = obj.Contents(2).Position(4);
             actualSizes(3) = obj.Contents(3).Position(4);
             actualSizes(4) = obj.Contents(4).Position(4);
-            
+
             testcase.verifyEqual(actualSizes, expectedSizes);
         end
-           
+
         function testAxesPositionInVBoxes(testcase, ConstructorName)
             %testAxesPosition  Test that axes get positioned properly
             obj = testcase.constructComponent(ConstructorName, ...
@@ -36,32 +33,32 @@ classdef VBoxTests < matlab.unittest.TestCase
             testcase.verifyEqual( get( ax1, 'OuterPosition' ), [1 251 500 250] );
             testcase.verifyEqual( get( ax2, 'Position' ), [1 1 500 250] );
         end
-        
+
         function testMinimumSizes(testcase, ConstructorName)
             %testMinimumSizes Test that minimum size is honored (g1329485)
             testcase.assumeGraphicsAreRooted()
 
             obj = testcase.constructComponent(ConstructorName, ...
-                'Units', 'pixels', 'Position', [1 1 500 1000]);  
-            
-            for ii = 1:5 
+                'Units', 'pixels', 'Position', [1 1 500 1000]);
+
+            for ii = 1:5
                 ui(ii) = uicontrol( 'Parent', obj, 'String', num2str( ii ) );  %#ok<AGROW>
             end
-            
-            obj.Heights = [100 100 -1 -1 -2]; 
+
+            obj.Heights = [100 100 -1 -1 -2];
             obj.MinimumHeights(:) = 100;
 
-            % Squeeze bottom, verify that all elements obey their MinimumHeight setting                
-            obj.Position(4) = 400; 
-            
+            % Squeeze bottom, verify that all elements obey their MinimumHeight setting
+            obj.Position(4) = 400;
+
             for ii = 1:5
                 testcase.verifyEqual(ui(ii).Position(4), 100);
             end
         end
 
     end
-    
-    methods      
+
+    methods
         function [obj, expectedSizes] = hCreateAxesAndResizeFigure(testcase, type, resizedParameter)
             % create RGB box and set sizes to something relative and
             % absolute
@@ -70,14 +67,14 @@ classdef VBoxTests < matlab.unittest.TestCase
             set(obj, 'Units', 'normalized', 'Position', [0 0 1 1]); % fill
             set(obj,'Padding', 10, 'Spacing', 10);
             set(obj,resizedParameter, [-3, -1, -1, 50]);
-            
+
             % resize figure
-            obj.Parent.Position = [600, 600, 200, 200];            
+            obj.Parent.Position = [600, 600, 200, 200];
             testcase.assertNumElements(obj.Contents, 4, ...
                 sprintf('created box with %d elements instead of 4\n', numel(obj.Contents)) );
-            
+
             % test rgb ui elements have correct sizes.
-            
+
             % After the absolute sized element (50), the padding (2x10) and
             % the spacing (3x10), remaining space is divided between three
             % elements.
@@ -85,6 +82,6 @@ classdef VBoxTests < matlab.unittest.TestCase
             expectedSizes = [relativePartPxSize*3, relativePartPxSize, relativePartPxSize, 50];
         end
     end
-    
+
 end
 
