@@ -157,9 +157,9 @@ classdef ( Abstract ) FlexibleContainerTests < ...
             import java.awt.Robot;
             import java.awt.event.*;
             mouse = javaObjectEDT( 'java.awt.Robot' );
-            drawnow
+            drawnow()
             javaMethodEDT( 'mousePress', mouse, InputEvent.BUTTON1_MASK );
-            drawnow
+            drawnow()
             % Still sometimes needs a pose for the cursor change to take
             % effect
             pause( 0.01 )
@@ -190,7 +190,7 @@ switch f.WindowStyle
         
         figure( f ) % bring to front
         pause( t )
-        li = event.listener( f, 'WindowMouseMotion', @onMouseMotion ); %#ok<NASGU>
+        li = event.listener( f, 'WindowMouseMotion', @onMouseMotion ); 
         r = groot(); % graphics root
         m = r.MonitorPositions; % get monitor positions
         p = [NaN NaN]; % initialize result

@@ -49,18 +49,18 @@ classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
                 testCase, ConstructorName )
 
             % Exclude the unrooted case.
-            testCase.assumeGraphicsAreRooted()           
+            testCase.assumeGraphicsAreRooted()
 
             % Create the component and resize its parent figure.
             [component, expectedSizes] = testCase...
                 .createComponentWithChildrenAndResizeFigure( ...
-                ConstructorName, testCase.Dimension );
+                ConstructorName );
 
             % Extract the widths of the component's contents.
             actualSizes = NaN( 1, 4 );
             for k = 1 : 4
                 actualSizes(k) = component...
-                    .Contents(1).Position(testCase.DimensionIndex);
+                    .Contents(k).Position(testCase.DimensionIndex);
             end % for
 
             % Verify that the sizes are correct.
@@ -74,7 +74,7 @@ classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
         function tAxesArePositionedCorrectly( testCase, ConstructorName )
 
             % Exclude the unrooted case.
-            testCase.assumeGraphicsAreRooted()            
+            testCase.assumeGraphicsAreRooted()
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -128,7 +128,7 @@ classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
 
             % Squeeze the component, then verify that all elements in the
             % container respect the 'Minimum*' values.
-            component.Position(3) = 400;
+            component.Position(testCase.DimensionIndex) = 400;
             for k = 1 : length( buttons )
                 testCase.verifyEqual( ...
                     buttons(k).Position(testCase.DimensionIndex), ...
@@ -143,11 +143,11 @@ classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
 
     end % methods ( Test, Sealed )
 
-    methods ( Sealed, Access = protected )        
+    methods ( Sealed, Access = protected )
 
         function [component, expectedSizes] = ...
                 createComponentWithChildrenAndResizeFigure( ...
-                testCase, ConstructorName, gridDimension )
+                testCase, ConstructorName )
 
             % Create the component with children.
             component = testCase...
@@ -161,20 +161,30 @@ classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
                 'Position', [0, 0, 1, 1], ...
                 'Padding', padding, ...
                 'Spacing', spacing, ...
-                gridDimension, componentSizes )
+                testCase.Dimension, componentSizes )
 
-            % Resize the component's parent figure.
-            figureWidth = 200;
-            component.Parent.Position = [600, 600, figureWidth, 200];
-
-            % Compute the expected sizes of the controls within the
-            % component.
-            relativePartSizePixels = ...
-                (figureWidth - componentSizes(4) - 2 * padding - ...
-                (length( componentSizes ) - 1) * spacing) / ...
-                sum( (-1) * componentSizes(1:3) );
-            expectedSizes = (-1) * relativePartSizePixels * ...
-                [componentSizes(1:3), 0] + [zeros( 1, 3 ), 50];
+            % If the figure is docked, it cannot be resized.
+            parentFigure = component.Parent;
+            if strcmp( parentFigure.WindowStyle, 'docked' )
+                numKids = length( component.Contents );
+                expectedSizes = NaN( 1, numKids );
+                for k = 1 : numKids
+                    expectedSizes(k) = component.Contents(k)...
+                        .Position(testCase.DimensionIndex);
+                end % for
+            else
+                % Resize the component's parent figure.
+                newSize = 200;
+                parentFigure.Position = [600, 600, newSize, newSize];
+                % Compute the expected sizes of the controls within the
+                % component.
+                relativePartSizePixels = ...
+                    (newSize - componentSizes(4) - 2 * padding - ...
+                    (length( componentSizes ) - 1) * spacing) / ...
+                    sum( (-1) * componentSizes(1:3) );
+                expectedSizes = (-1) * relativePartSizePixels * ...
+                    [componentSizes(1:3), 0] + [zeros( 1, 3 ), 50];
+            end % if
 
         end % createComponentWithChildrenAndResizeFigure
 
