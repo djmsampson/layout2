@@ -1,5 +1,7 @@
-classdef PanelContainerTests < utilities.mixin.ContainerTests
-    %PANELCONTAINERTESTS Additional tests common to all panel containers.
+classdef ( Abstract ) PanelContainerTests < utilities.mixin.ContainerTests
+    %PANELCONTAINERTESTS Additional tests common to all panel containers
+    %(*.CardPanel, *.Panel, *.TabPanel, *.BoxPanel, and
+    %uix.ScrollingPanel).
 
     properties ( TestParameter )
         % Collection of invalid values for the 'Selection' property, used
@@ -8,8 +10,8 @@ classdef PanelContainerTests < utilities.mixin.ContainerTests
     end % properties ( TestParameter )
 
     properties ( Access = private )
-        % Warning state associated with a specific issue.
-        G1218142
+        % State associated with the warning with ID 'uix:G1218142'.
+        WarningState
     end % properties ( Access = private )
 
     methods ( TestClassSetup )
@@ -19,87 +21,188 @@ classdef PanelContainerTests < utilities.mixin.ContainerTests
             % Suppress this warning during the test procedure. Restore the
             % original warning state when the test completes.
             warningID = 'uix:G1218142';
-            testCase.G1218142 = warning( 'query', warningID );
+            testCase.WarningState = warning( 'query', warningID );
             warning( 'off', warningID )
-            testCase.addTeardown( @() warning( testCase.G1218142 ) )
+            testCase.addTeardown( @() warning( testCase.WarningState ) )
 
         end % suppressWarnings
 
     end % methods ( TestClassSetup )
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
-        function testLayoutInPanel( testCase, ConstructorName )
-            %testLayoutInTab  Test layout in panel
-            obj = testCase.constructComponent(ConstructorName);
+        function tContentsRespectPlacingBoxInPanel( ...
+                testCase, ConstructorName )
 
-            b = uiextras.HBox( 'Parent', obj );
-            testCase.verifyEqual( obj.Contents, b );
-        end
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
-        function testSelectablePanelContents( testCase, ConstructorName )
-            %testChildren  Test adding and removing children
-            [obj, actualContents] = testCase.constructComponentWithChildren(ConstructorName);
-            testCase.assertEqual( obj.Contents, actualContents );
+            % Add a box.
+            box = uiextras.HBox( 'Parent', component );
 
-            obj.Selection = 2;
+            % Verify that the 'Contents' property is correct.
+            testCase.verifyEqual( component.Contents, box )
 
-            % if the panel is unparented all children are automatically
-            % visible, but on reparenting we need to make sure the
-            % visibility is correctly set. So reparent obj at this point.
-            % Make a copy of the obj to test with both figure and uifigure
+        end % tContentsRespectPlacingBoxInPanel
 
-            if strcmp(testCase.ParentType, 'unrooted')
-                fxFig = testCase.applyFixture(matlab.unittest.fixtures.FigureFixture('legacy'));
-                obj.Parent = fxFig.FigureHandle;
-            end
+        function tPanelContentsHaveCorrectVisibility( ...
+                testCase, ConstructorName )
 
-            % Make sure the "selected" child is visible
-            testCase.verifyEqual(char(obj.Contents(2).Visible), 'on');
-            % Make sure the "hidden" children are invisible
-            testCase.verifyEqual(char(obj.Contents(1).Visible), 'off');
-            testCase.verifyEqual(char(obj.Contents(3).Visible), 'off');
+            % Create the component with children.
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
 
-        end
+            % Select one of the children.
+            selectionIndex = 2;
+            component.Selection = selectionIndex;
 
-        function testSelectableEmptyPanelSetSelectionErrors( testCase, ConstructorName, InvalidSelection)
-            objEmpty = testCase.constructComponent(ConstructorName);
+            % Verify that the selected child is visible.
+            selectedKidVisibility = char( kids(2).Visible );
+            testCase.verifyEqual( selectedKidVisibility, 'on', ...
+                ['The selected child in the ', ConstructorName, ...
+                ' component is not visible.'] )
+            % Verify that the other children are not visible.
+            for k = [1, 3, 4]
+                kidVisibility = char( kids(k).Visible );
+                testCase.verifyEqual( kidVisibility, 'off', ...
+                    ['The unselected child in the ', ...
+                    ConstructorName, ' component is visible.'] )
+            end % for
 
-            testCase.verifyError(@()set(objEmpty, 'Selection', InvalidSelection), 'uix:InvalidPropertyValue');
-        end
+        end % tPanelContentsHaveCorrectVisibility
 
-        function testSelectableRGBPanelSetSelectionErrors(testCase, ConstructorName, InvalidSelection)
-            [obj4Children, ~] = testCase.constructComponentWithChildren(ConstructorName);
+        function tSettingInvalidSelectionErrors( ...
+                testCase, ConstructorName, InvalidSelection )
 
-            testCase.verifyError(@()set(obj4Children, 'Selection', InvalidSelection), 'uix:InvalidPropertyValue');
-        end
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
 
-        function testSelectablePanelSetSelectionSucceeds(testCase, ConstructorName)
-            objEmpty = testCase.constructComponent(ConstructorName);
-            [obj4Children, ~] = testCase.constructComponentWithChildren(ConstructorName);
-            set(objEmpty, 'Selection', 0);
-            set(obj4Children, 'Selection', 2);
+            % Verify that setting an invalid value for the 'Selection'
+            % property throws an error.
+            invalidSetter = ...
+                @() set( component, 'Selection', InvalidSelection );
+            testCase.verifyError( invalidSetter, ...
+                'uix:InvalidPropertyValue', ...
+                ['The ', ConstructorName, ' component did not throw ', ...
+                'the expected exception when the ''Selection'' ', ...
+                'property was set to an invalid value.'] )
 
-            testCase.verifyEqual(get(objEmpty, 'Selection'), 0);
-            testCase.verifyEqual(get(obj4Children, 'Selection'), 2);
-        end
+        end % tSettingInvalidSelectionErrors
 
-        function testAddInvisibleUicontrolToPanel(testCase, ConstructorName)
-            % test for g1129721 where adding an invisible uicontrol to a
-            % panel causes a segv.
-            obj = testCase.constructComponent(ConstructorName);
-            f = ancestor(obj, 'figure');
-            % b1 = uicontrol('Parent', f, 'Visible', 'off');
-            b1 = uicontainer('Parent', f, 'Visible', 'off');
-            b1.Parent = obj; % used to crash
-            testCase.verifyLength(obj.Contents, 1)
-            b2 = uicontrol('Parent', f, 'Internal', true, 'Visible', 'off');
-            b2.Parent = obj; % used to crash
-            testCase.verifyLength(obj.Contents, 1)
-            b2.Internal = false;
-            testCase.verifyLength(obj.Contents, 2)
-        end
+        function tSettingInvalidSelectionErrorsWhenChildrenArePresent( ...
+                testCase, ConstructorName, InvalidSelection )
 
-    end % methods ( Test )
+            % Create the component.
+            component = testCase.constructComponentWithChildren( ...
+                ConstructorName );
+
+            % Verify that setting an invalid value for the 'Selection'
+            % property throws an error.
+            invalidSetter = ...
+                @() set( component, 'Selection', InvalidSelection );
+            testCase.verifyError( invalidSetter, ...
+                'uix:InvalidPropertyValue', ...
+                ['The ', ConstructorName, ' component did not throw ', ...
+                'the expected exception when the ''Selection'' ', ...
+                'property was set to an invalid value.'] )
+
+        end % tSettingInvalidSelectionErrorsWhenChildrenArePresent
+
+        function tSettingSelectionPropertyIsCorrect( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the 'Selection' property.
+            component.Selection = 0;
+
+            % Verify that the 'Selection' property has been set correctly.
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['Setting the ''Selection'' property on the ', ...
+                ConstructorName, ' component when it has no ', ...
+                'children did not return 0.'] )
+
+        end % tSettingSelectionPropertyIsCorrect
+
+        function tSettingSelectionPropertyWithChildrenIsCorrect( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponentWithChildren( ...
+                ConstructorName );
+
+            % Set the 'Selection' property.
+            component.Selection = 2;
+
+            % Verify that the 'Selection' property has been set correctly.
+            testCase.verifyEqual( component.Selection, 2, ...
+                ['Setting the ''Selection'' property on the ', ...
+                ConstructorName, ' component when it has ', ...
+                'children did not return the correct value.'] )
+
+        end % tSettingSelectionPropertyWithChildrenIsCorrect
+
+        function tAddingInvisibleContainerIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Create an invisible container then reparent it to the
+            % component.
+            container = uicontainer( 'Parent', [], 'Visible', 'off' );
+            testCase.addTeardown( @() delete( container ) )
+            reparenter = @() set( container, 'Parent', component );
+            testCase.verifyWarningFree( reparenter, ...
+                ['Reparenting an invisible container to the ', ...
+                ConstructorName, ' component was not warning-free.'] )
+
+        end % tAddingInvisibleContainerIsWarningFree
+
+        function tAddingInvisibleControlIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Create an invisible control then reparent it to the
+            % component.
+            button = uicontrol( 'Parent', [], 'Visible', 'off' );
+            testCase.addTeardown( @() delete( button ) )
+            reparenter = @() set( button, 'Parent', component );
+            testCase.verifyWarningFree( reparenter, ...
+                ['Reparenting an invisible control to the ', ...
+                ConstructorName, ' component was not warning-free.'] )            
+
+        end % tAddingInvisibleControlIsWarningFree
+
+        function tAddingInternalControlDoesNotAffectContents( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add an internal control to the component.
+            button = uicontrol( 'Parent', component, 'Internal', true );
+
+            % Verify that the component's 'Contents' property remains
+            % empty.
+            testCase.verifyEmpty( component.Contents, ...
+                ['Adding an internal control to the ', ...
+                ConstructorName, ' component did not leave the ', ...
+                '''Contents'' property empty.'] )
+
+            % Switch the 'Internal' property of the button to false and
+            % verify that the 'Contents' property of the component updates.
+            button.Internal = false;
+            testCase.verifyNumElements( component.Contents, 1, ...
+                ['The ''Contents'' property of the ', ConstructorName, ...
+                ' component did not update when an internal control ', ...
+                'was switched to non-internal.'] )
+
+        end % tAddingInternalControlDoesNotAffectContents
+
+    end % methods ( Test, Sealed )
 
 end % class

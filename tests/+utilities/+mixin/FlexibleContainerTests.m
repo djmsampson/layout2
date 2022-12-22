@@ -1,8 +1,9 @@
-classdef FlexibleContainerTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) FlexibleContainerTests < ...
+        utilities.mixin.ContainerTests
     %FLEXIBLECONTAINERTESTS Additional tests common to all flexible
-    %containers.
+    %containers (*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
     
-    methods ( Test )
+    methods ( Test, Sealed )
         
         function testMouseOverDividerInDockedFigure( testcase, ConstructorName )
             % g1334965: Add test for g1330841: Mouse-over-divider detection

@@ -1,36 +1,85 @@
-classdef GridContainerTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) GridContainerTests < utilities.mixin.ContainerTests
     %GRIDCONTAINERTESTS Additional tests common to all grid containers.
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
-        function testGridContents(testcase, ConstructorName)
-            %testContents  Test adding and removing children
-            obj = testcase.hCreateObj(ConstructorName);
-            u = [
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'r' )
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'g' )
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'b' )
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'y' )
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'm' )
-                uicontrol( 'Parent', obj, 'BackgroundColor', 'c' )
-                ];
-            testcase.assertEqual( obj.Contents, u );
+        function tAddingChildUpdatesGridContents( ...
+                testCase, ConstructorName )
 
-            % Reshape
-            set(obj, 'RowSizes', [-1 200], 'ColumnSizes', [-1 100 -1] );
+            % Create the grid.
+            [component, kids] = testCase...
+                .createGridWithChildren( ConstructorName );
 
-            delete( u(5) );
-            testcase.verifyEqual(obj.Contents, u([1:4,6]) );
+            % Add a new child.
+            newKid = uicontrol( component );
 
-            % Reparent a child when not unparented
-            if ~strcmp(testcase.ParentType ,'unrooted')
-                fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture(testcase.ParentType));
-                set(u(1), 'Parent', fx.Figure)
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, [kids; newKid], ...
+                ['Adding a new child to the ', ConstructorName, ...
+                ' component did not update the ''Contents'' property ', ...
+                'correctly.'] )
+            
+        end % tAddingChildUpdatesGridContents
 
-                testcase.verifyEqual(obj.Contents, u([2 3 4 6]));
-            end
-        end
+        function tRemovingChildUpdatesGridContents( ...
+                testCase, ConstructorName )
 
-    end % methods ( Test )
+            % Create the grid.
+            [component, kids] = testCase...
+                .createGridWithChildren( ConstructorName );
+
+            % Remove a child.
+            delete( kids(5) )
+
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, kids([1:4, 6]), ...
+                ['Removing a child from the ', ConstructorName, ...
+                ' component did not update the ''Contents'' property ', ...
+                'correctly.'] )
+
+        end % tRemovingChildUpdatesGridContents
+
+        function tReparentingChildUpdatesGridContents( ...
+                testCase, ConstructorName )
+
+            % Create the grid.
+            [component, kids] = testCase...
+                .createGridWithChildren( ConstructorName );
+
+            % Reparent a child.
+            kids(5).Parent = [];
+            testCase.addTeardown( @() delete( kids(5) ) )
+
+            % Verify that the 'Contents' property has been updated.
+            testCase.verifyEqual( component.Contents, kids([1:4, 6]), ...
+                ['Reparenting a child from the ', ConstructorName, ...
+                ' component did not update the ''Contents'' property ', ...
+                'correctly.'] )
+
+        end % tReparentingChildUpdatesGridContents
+
+    end % methods ( Test, Sealed )
+
+    methods ( Sealed, Access = protected )
+
+        function [component, kids] = createGridWithChildren( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add six controls.
+            kids = gobjects( 6, 1 );
+            for k = 1 : length( kids )
+                kids(k) = uicontrol( 'Parent', component );
+            end % for
+
+            % Reshape the grid to be 2-by-3.
+            set( component, 'RowSizes', [-1, 200], ...
+                'ColumnSizes', [-1, 100, 1] )
+
+        end % createGridWithChildren
+
+    end % methods ( Sealed, Access = protected )
 
 end % class

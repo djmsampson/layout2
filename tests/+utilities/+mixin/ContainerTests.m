@@ -1,4 +1,4 @@
-classdef ContainerTests < matlab.unittest.TestCase
+classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
     %CONTAINERTESTS Tests common to all GUI Layout Toolbox containers,
     %across both the +uiextras and +uix packages.
 
@@ -93,7 +93,7 @@ classdef ContainerTests < matlab.unittest.TestCase
 
     end % methods ( TestClassSetup )
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tConstructorWithNoArgumentsIsWarningFree( ...
                 testCase, ConstructorName )
@@ -716,9 +716,9 @@ classdef ContainerTests < matlab.unittest.TestCase
 
         end % tSetSelectedChild
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
-    methods
+    methods ( Sealed )
 
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
@@ -794,9 +794,9 @@ classdef ContainerTests < matlab.unittest.TestCase
 
         end % assumeTestEnvironmentHasDisplay
 
-    end % methods
+    end % methods ( Sealed )
 
-    methods ( Access = protected )
+    methods ( Sealed, Access = protected )
 
         function assumeComponentIsFromNamespace( testCase, ...
                 ConstructorName, namespace )
@@ -848,7 +848,7 @@ classdef ContainerTests < matlab.unittest.TestCase
 
         end % assumeComponentHasSelectedChildProperty
 
-    end % methods ( Access = protected )
+    end % methods ( Sealed, Access = protected )
 
 end % class
 
