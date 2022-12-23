@@ -1,4 +1,4 @@
-classdef EnableUicontrolFixture < matlab.unittest.fixtures.Fixture
+classdef UIControlFixture < matlab.unittest.fixtures.Fixture
     % Custom fixture to allow uicontrol to work when a container is
     % parented to a uifigure
     properties (Access = private)

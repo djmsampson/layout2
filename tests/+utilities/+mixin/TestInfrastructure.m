@@ -22,7 +22,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         CurrentTrackingStatus = 'unset'
     end % properties ( Access = protected )
 
-    methods ( TestClassSetup )
+    methods ( Sealed, TestClassSetup )
 
         function assumeMinimumMATLABVersion( testCase )
 
@@ -96,7 +96,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % disableTracking
 
-    end % methods ( TestClassSetup )
+    end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )
 
