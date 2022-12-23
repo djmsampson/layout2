@@ -1,5 +1,5 @@
-classdef tHBoxFlex < utilities.mixin.LayoutTests & ...
-        utilities.mixin.FlexibleContainerTests
+classdef tHBoxFlex < utilities.mixin.BoxTests & ...
+        utilities.mixin.FlexTests
     %THBOXFLEX Tests for uiextras.HBoxFlex.
 
     properties ( TestParameter )

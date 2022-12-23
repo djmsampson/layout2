@@ -1,5 +1,5 @@
-classdef tGridFlex < utilities.mixin.FlexibleContainerTests & ...
-        utilities.mixin.GridContainerTests
+classdef tGridFlex < utilities.mixin.FlexTests & ...
+        utilities.mixin.GridTests
     %TGRIDFLEX Tests for uiextras.GridFlex.
 
     properties ( TestParameter )

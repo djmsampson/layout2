@@ -1,24 +1,7 @@
-classdef tSet < matlab.unittest.TestCase
+classdef tSet < utilities.mixin.TestInfrastructure
     %TSET Tests for uix.set.
 
-    properties ( Access = private )
-        % Figure fixture.
-        Fixture
-    end % properties ( Access = private )
-
-    methods ( TestClassSetup )
-
-        function applyFigureFixture( testCase )
-
-            % Create and store the legacy figure fixture.
-            figFix = matlab.unittest.fixtures.FigureFixture( 'legacy' );
-            testCase.Fixture = testCase.applyFixture( figFix );
-
-        end % applyFigureFixture
-
-    end % methods ( TestClassSetup )
-
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tSetErrorsWithIncorrectInputArguments( testCase )
 
@@ -38,7 +21,7 @@ classdef tSet < matlab.unittest.TestCase
         function tSetWithOneArgumentIsWarningFree( testCase )
 
             % Call uix.set with one input argument.
-            f = @() uix.set( testCase.Fixture.Figure );
+            f = @() uix.set( testCase.FigureFixture.Figure );
             testCase.verifyWarningFree( f, ...
                 ['uix.set has issued a warning when called ', ...
                 'with one input argument.'] )
@@ -47,8 +30,12 @@ classdef tSet < matlab.unittest.TestCase
 
         function tSetLeavesInputUnchangedWhenNoOtherArgumentsAreGiven( testCase )
 
+            % This test only applies to Java figures.
+            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreNotWebBased()
+
             % Make a copy of the figure from the fixture.
-            fig1 = testCase.Fixture.Figure;
+            fig1 = testCase.FigureFixture.Figure;
             fig2 = copyobj( fig1, groot() );
             testCase.addTeardown( @() delete( fig2 ) );
             % Invoke uix.set on the figure from the fixture.
@@ -64,26 +51,28 @@ classdef tSet < matlab.unittest.TestCase
 
         function tSetAssignsPropertyValuesCorrectly( testCase )
 
+            % Assume that the figure is non-empty.
+            testCase.assumeGraphicsAreRooted()
+
             % Set some figure properties using uix.set.
             pairs = {'Color', [1, 0, 0], ...
                 'Name', 'Test Figure', ...
                 'Units', 'normalized', ...
                 'Position', [0.25, 0.25, 0.50, 0.50]};
-            fig = testCase.Fixture.Figure;
+            fig = testCase.FigureFixture.Figure;
             uix.set( fig, pairs{:} )
 
             % Verify that the figure properties were assigned correctly.
-            for k = 1:length( pairs )/2
-                name = pairs{2*k-1};
-                value = pairs{2*k};
+            for k = 1 : 2 : length( pairs )-1
+                name = pairs{k};
+                value = pairs{k+1};
                 testCase.verifyEqual( fig.(name), value, ...
-                    ['uix.set has not assigned the figure''s ''', name, ...
-                    'property correctly.'] )
+                    ['uix.set has not assigned the figure''s ''', ...
+                    name, ''' property correctly.'] )
             end % for
 
         end % tSetAssignsPropertyValuesCorrectly
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class
-

@@ -1,29 +1,15 @@
-classdef tGetPosition < matlab.unittest.TestCase
+classdef tGetPosition < utilities.mixin.TestInfrastructure
     %TGETPOSITION Tests for uix.getPosition.
 
-    properties ( Access = private )
-        % Figure fixture.
-        Fixture
-    end % properties ( Access = private )
-
-    methods ( TestClassSetup )
-
-        function applyFigureFixture( testCase )
-
-            % Create and store the legacy figure fixture.
-            figFix = matlab.unittest.fixtures.FigureFixture( 'legacy' );
-            testCase.Fixture = testCase.applyFixture( figFix );
-
-        end % applyFigureFixture
-
-    end % methods ( TestClassSetup )
-
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tGetPositionReturnsExpectedDataType( testCase )
 
+            % Assume that the figure is non-empty.
+            testCase.assumeGraphicsAreRooted()
+
             % Verify that the output of uix.getPosition is of type double.
-            p = uix.getPosition( testCase.Fixture.Figure, 'pixels' );
+            p = uix.getPosition( testCase.FigureFixture.Figure, 'pixels' );
             testCase.verifyClass( p, 'double', ...
                 ['uix.getPosition has returned an ', ...
                 'output not of type double.'] )
@@ -32,8 +18,11 @@ classdef tGetPosition < matlab.unittest.TestCase
 
         function tGetPositionReturnsExpectedSize( testCase )
 
+            % Assume that the figure is non-empty.
+            testCase.assumeGraphicsAreRooted()
+
             % Verify that the output of uix.getPosition is of size 1-by-4.
-            p = uix.getPosition( testCase.Fixture.Figure, 'pixels' );
+            p = uix.getPosition( testCase.FigureFixture.Figure, 'pixels' );
             testCase.verifySize( p, [1, 4], ...
                 ['uix.getPosition has returned an ', ...
                 'output with size not equal to [1, 4].'] )
@@ -44,7 +33,7 @@ classdef tGetPosition < matlab.unittest.TestCase
 
             % Create an axes with 'ActivePositionProperty' set to
             % 'position'.
-            fig = testCase.Fixture.Figure;
+            fig = testCase.FigureFixture.Figure;
             ax = axes( 'Parent', fig, ...
                 'ActivePositionProperty', 'position' );
             testCase.addTeardown( @() delete( ax ) )
@@ -98,8 +87,11 @@ classdef tGetPosition < matlab.unittest.TestCase
 
         function tGetPositionConvertsUnitsCorrectly( testCase )
 
+            % Assume that the figure is non-empty.
+            testCase.assumeGraphicsAreRooted()
+
             % Create a figure with normalized units.
-            fig = testCase.Fixture.Figure;
+            fig = testCase.FigureFixture.Figure;
             fig.Units = 'normalized';
             % Compute the figure's position in pixels.
             p = uix.getPosition( fig, 'pixels' );
@@ -112,6 +104,6 @@ classdef tGetPosition < matlab.unittest.TestCase
 
         end % tGetPositionConvertsUnitsCorrectly
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

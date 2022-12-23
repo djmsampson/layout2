@@ -1,12 +1,6 @@
-classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
+classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
     %CONTAINERTESTS Tests common to all GUI Layout Toolbox containers,
-    %across both the +uiextras and +uix packages.
-
-    properties ( ClassSetupParameter )
-        % Graphics parent type ('legacy'|'web'|'unrooted'). See also
-        % parentTypes.
-        ParentType = utilities.parentTypes()
-    end % properties ( ClassSetupParameter )
+    %across both the +uiextras and +uix packages.    
 
     properties ( TestParameter, Abstract )
         % The constructor name, or class, of the component under test.
@@ -18,17 +12,6 @@ classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
         % methods.
         GetSetNameValuePairs
     end % properties ( TestParameter, Abstract )
-
-    properties
-        % Figure fixture, providing the top-level parent
-        % graphics object for the components during the test procedures.
-        % See also the ParentType class setup parameter and
-        % matlab.unittest.fixtures.FigureFixture.
-        FigureFixture
-        % Current GUI Layout Toolbox tracking status, to be restored after
-        % the tests run. Tracking will be disabled whilst the tests run.
-        CurrentTrackingStatus = 'unset'
-    end % properties
 
     properties ( Constant )
         % List of containers with get and set methods for the 'Enable'
@@ -56,42 +39,6 @@ classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
             'uiextras.Panel'
             }
     end % properties ( Constant )
-
-    methods ( TestClassSetup )
-
-        function assumeMinimumMATLABVersion( testCase )
-
-            % This collection of tests requires MATLAB R2014b or later.
-            utilities.assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
-
-        end % assumeMinimumMATLABVersion
-
-        function setupToolboxPath( testCase )
-
-            % Apply a path fixture for the GUI Layout Toolbox main folder.
-            utilities.applyGLTFolderFixture( testCase )
-
-        end % setupToolboxPath
-
-        function setupFigureFixture( testCase, ParentType )
-
-            % Apply a custom fixture to provide the top-level parent
-            % graphics object for the GUI Layout Toolbox components during
-            % the test procedures.
-            utilities.applyFigureFixture( testCase, ParentType )
-
-        end % setupFigureFixture
-
-        function disableTrackingDuringTests( testCase )
-
-            % Disable GUI Layout Toolbox tracking during the test
-            % procedures. Restore the previous tracking state when the
-            % tests are complete.
-            utilities.disableTracking( testCase )
-
-        end % disableTracking
-
-    end % methods ( TestClassSetup )
 
     methods ( Test, Sealed )
 
@@ -718,19 +665,7 @@ classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
 
     end % methods ( Test, Sealed )
 
-    methods ( Sealed )
-
-        function component = constructComponent( ...
-                testCase, constructorName, varargin )
-
-            % Construct the component under test, using the figure fixture,
-            % and passing through any arguments for the component
-            % constructor.
-            component = feval( constructorName, ...
-                'Parent', testCase.FigureFixture.Figure, varargin{:} );
-            testCase.addTeardown( @() delete( component ) )
-
-        end % constructComponent
+    methods ( Sealed, Access = protected )        
 
         function [component, componentChildren] = ...
                 constructComponentWithChildren( testCase, constructorName )
@@ -747,56 +682,7 @@ classdef ( Abstract ) ContainerTests < matlab.unittest.TestCase
                 uiextras.Empty( 'Parent', component )
                 uicontrol( 'Parent', component, 'BackgroundColor', 'b' )];
 
-        end % constructComponentWithChildren
-
-        function assumeGraphicsAreRooted( testCase )
-
-            % Assume that the component under test is rooted (i.e., there
-            % is a nonempty top-level figure or uifigure ancestor).
-            unrooted = strcmp( testCase.FigureFixture.Type, ...
-                testCase.ParentType.Unrooted );
-            testCase.assumeFalse( unrooted, ...
-                'This test is not applicable to unrooted components.' )
-
-        end % assumeGraphicsAreRooted
-
-        function assumeGraphicsAreNotWebBased( testCase )
-
-            % Assume that the component under test does not have a
-            % top-level web figure ancestor.
-            webBased = strcmp( testCase.FigureFixture.Type, ...
-                testCase.ParentType.WebFigure );
-            testCase.assumeFalse( webBased, ...
-                ['This test is not applicable to components ', ...
-                'based in web figures.'] )
-
-        end % assumeGraphicsAreNotWebBased
-
-        function assumeTestEnvironmentHasDisplay( testCase )
-
-            % Check that the test environment has a display. This is
-            % required for the mouse tests used for the flexible
-            % containers.
-            currentFolder = fileparts( mfilename( 'fullpath' ) );
-            BaTFolder = fullfile( matlabroot(), 'test', ...
-                'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            inBaTFolder = strcmp( currentFolder, BaTFolder );
-            testCase.assumeFalse( inBaTFolder, ...
-                ['This test is not applicable in the BaT ', ...
-                'environment. A display is required to run ', ...
-                'the mouse tests.'] )
-
-            % Check that the test environment is not Jenkins.
-            isJenkins = ~isempty( getenv( 'JENKINS_HOME' ) );
-            testCase.assumeFalse( isJenkins, ...
-                ['This test is not applicable when running in ', ...
-                'the Jenkins environment.'] )
-
-        end % assumeTestEnvironmentHasDisplay
-
-    end % methods ( Sealed )
-
-    methods ( Sealed, Access = protected )
+        end % constructComponentWithChildren    
 
         function assumeComponentIsFromNamespace( testCase, ...
                 ConstructorName, namespace )

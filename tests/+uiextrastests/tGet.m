@@ -1,7 +1,7 @@
-classdef tGet < matlab.unittest.TestCase
+classdef tGet < utilities.mixin.TestInfrastructure
     %TGET Tests for uiextras.get.
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tGetErrorsWithNotExactlyTwoInputs( testCase )
 
@@ -32,6 +32,6 @@ classdef tGet < matlab.unittest.TestCase
 
         end % tGetIssuesDeprecationErrorWithTwoInputs
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

@@ -1,7 +1,7 @@
-classdef tSet < matlab.unittest.TestCase
+classdef tSet < utilities.mixin.TestInfrastructure
     %TSET Tests for uiextras.set.
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tSetErrorsWithNotExactlyThreeInputs( testCase )
 
@@ -23,15 +23,15 @@ classdef tSet < matlab.unittest.TestCase
 
         function tSetIssuesDeprecationWarningWithThreeInputs( testCase )
 
-            % Test that the function throws a warning when called with 
+            % Test that the function throws a warning when called with
             % three inputs.
             f = @() uiextras.set( 0, 0, 0 );
             testCase.verifyWarning( f, ...
                 'uiextras:Deprecated', ...
                 'uiextras.set has not thrown a deprecation warning.' )
 
-        end % tSetIssuesDeprecationWarningWithThreeInputs 
+        end % tSetIssuesDeprecationWarningWithThreeInputs
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

@@ -1,5 +1,5 @@
-classdef tVBoxFlex < utilities.mixin.LayoutTests & ...
-        utilities.mixin.FlexibleContainerTests
+classdef tVBoxFlex < utilities.mixin.BoxTests & ...
+        utilities.mixin.FlexTests
     %TVBOXFLEX Tests for uiextras.VBoxFlex.
 
     properties ( TestParameter )

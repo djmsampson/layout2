@@ -1,24 +1,7 @@
-classdef tSetPosition < matlab.unittest.TestCase
+classdef tSetPosition < utilities.mixin.TestInfrastructure
     %TSETPOSITION Tests for uix.setPosition.
 
-    properties ( Access = private )
-        % Figure fixture.
-        Fixture
-    end % properties ( Access = private )
-
-    methods ( TestClassSetup )
-
-        function applyFigureFixture( testCase )
-
-            % Create and store the legacy figure fixture.
-            figFix = matlab.unittest.fixtures.FigureFixture( 'legacy' );
-            testCase.Fixture = testCase.applyFixture( figFix );
-
-        end % applyFigureFixture
-
-    end % methods ( TestClassSetup )
-
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tSetPositionErrorsWithIncorrectInputArguments( testCase )
 
@@ -51,12 +34,15 @@ classdef tSetPosition < matlab.unittest.TestCase
 
         function tFigurePositionIsSetCorrectly( testCase )
 
+            % Assume that the figure is non-empty.
+            testCase.assumeGraphicsAreRooted()
+
             % Attempt to reposition the figure.
             requiredPosition = [0.25, 0.25, 0.50, 0.50];
-            uix.setPosition( testCase.Fixture.Figure, ...
-                requiredPosition, 'normalized' )
-            testCase.verifyEqual( testCase.Fixture.Figure.Position, ...
-                requiredPosition, ['uix.setPosition has not set the ', ...
+            fig = testCase.FigureFixture.Figure;
+            uix.setPosition( fig, requiredPosition, 'normalized' )
+            testCase.verifyEqual( fig.Position, requiredPosition, ...
+                ['uix.setPosition has not set the ', ...
                 'required position of the figure correctly.'] )
 
         end % tFigurePositionIsSetCorrectly
@@ -65,7 +51,7 @@ classdef tSetPosition < matlab.unittest.TestCase
 
             % Create an axes with 'ActivePositionProperty' set to
             % 'position'.
-            fig = testCase.Fixture.Figure;
+            fig = testCase.FigureFixture.Figure;
             ax = axes( 'Parent', fig, ...
                 'ActivePositionProperty', 'position' );
             testCase.addTeardown( @() delete( ax ) )
@@ -105,6 +91,6 @@ classdef tSetPosition < matlab.unittest.TestCase
 
         end % tSetPositionErrorsForUnknownActivePositionPropertyValue
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

@@ -1,4 +1,4 @@
-classdef tPanel < utilities.mixin.PanelContainerTests
+classdef tPanel < utilities.mixin.PanelTests
     %TPANEL Tests for uiextras.Panel.
 
     properties ( TestParameter )

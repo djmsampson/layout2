@@ -1,4 +1,4 @@
-classdef ( Abstract ) LayoutTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) BoxTests < utilities.mixin.ContainerTests
     %LAYOUTTESTS Additional tests common to all layout containers
     %(*.HBox, *.VBox, *.HBoxFlex, *.VBoxFlex).
 

@@ -1,7 +1,7 @@
-classdef tLayoutRoot < matlab.unittest.TestCase
+classdef tLayoutRoot < utilities.mixin.TestInfrastructure
     %TLAYOUTROOT Tests for the layoutRoot function.
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tLayoutRootReturnsCorrectType( testCase )
 
@@ -35,6 +35,6 @@ classdef tLayoutRoot < matlab.unittest.TestCase
 
         end % tLayoutRootReturnsCorrectFolder
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

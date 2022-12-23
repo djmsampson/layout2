@@ -1,60 +1,8 @@
-classdef tEmpty < matlab.unittest.TestCase
+classdef tEmpty < utilities.mixin.TestInfrastructure
     %TEMPTY Tests for uiextras.Empty. Empty is not a container, so does not
     %utilize the shared container tests.
 
-    properties ( ClassSetupParameter )
-        % Graphics parent type ('legacy'|'web'|'unrooted'). See also
-        % parentTypes.
-        ParentType = utilities.parentTypes()
-    end % properties ( ClassSetupParameter )
-
-    properties
-        % Figure fixture, providing the top-level parent
-        % graphics object for the containers during the test procedures.
-        % See also the ParentType class setup parameter and
-        % matlab.unittest.fixtures.FigureFixture.
-        FigureFixture
-        % Current GUI Layout Toolbox tracking status, to be restored after
-        % the tests run. Tracking is disabled whilst the tests run.
-        CurrentTrackingStatus = 'unset'
-    end % properties
-
-    methods ( TestClassSetup )
-
-        function assumeMinimumMATLABVersion( testCase )
-
-            % This collection of tests requires MATLAB R2014b or later.
-            utilities.assumeMATLABVersionIsAtLeast( testCase, 'R2014b' )
-
-        end % assumeMinimumMATLABVersion
-
-        function setupToolboxPath( testCase )
-
-            % Apply a path fixture for the GUI Layout Toolbox main folder.
-            utilities.applyGLTFolderFixture( testCase )
-
-        end % setupToolboxPath
-
-        function setupFigureFixture( testCase, ParentType )
-
-            % Apply a custom fixture to provide the top-level parent
-            % graphics object for the GUI Layout Toolbox components during
-            % the test procedures.
-            utilities.applyFigureFixture( testCase, ParentType )
-
-        end % setupFigureFixture
-
-        function disableTrackingDuringTests( testCase )
-
-            % Disable GUI Layout Toolbox tracking during the test
-            % procedures.
-            utilities.disableTracking( testCase )
-
-        end % disableTracking
-
-    end % methods ( TestClassSetup )
-
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tConstructorIsWarningFree( testCase )
 
@@ -196,6 +144,6 @@ classdef tEmpty < matlab.unittest.TestCase
 
         end % tColorUpdatesWhenComponentIsReparented
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
 end % class

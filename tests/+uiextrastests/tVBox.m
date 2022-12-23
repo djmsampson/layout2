@@ -1,4 +1,4 @@
-classdef tVBox < utilities.mixin.LayoutTests
+classdef tVBox < utilities.mixin.BoxTests
     %TVBOX Tests for uiextras.VBox.
 
     properties ( TestParameter )

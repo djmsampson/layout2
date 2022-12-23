@@ -1,4 +1,4 @@
-classdef ( Abstract ) GridContainerTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) GridTests < utilities.mixin.ContainerTests
     %GRIDCONTAINERTESTS Additional tests common to all grid containers.
 
     methods ( Test, Sealed )

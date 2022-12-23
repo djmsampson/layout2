@@ -1,4 +1,4 @@
-classdef tHBox < utilities.mixin.LayoutTests
+classdef tHBox < utilities.mixin.BoxTests
     %THBOX Tests for uiextras.HBox.
 
     properties ( TestParameter )

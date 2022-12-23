@@ -1,7 +1,7 @@
-classdef tLoadIcon < matlab.unittest.TestCase
+classdef tLoadIcon < utilities.mixin.TestInfrastructure
     %TLOADICON Tests for uix.loadIcon.
 
-    methods ( Test )
+    methods ( Test, Sealed )
 
         function tLoadIconErrorsWithIncorrectNargin( testCase )
 
@@ -134,7 +134,7 @@ classdef tLoadIcon < matlab.unittest.TestCase
 
         end % tLoadIconErrorsOnUnsupportedImageType
 
-    end % methods
+    end % methods ( Test, Sealed )
 
     methods ( Access = private )
 
