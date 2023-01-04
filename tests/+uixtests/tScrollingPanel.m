@@ -1,20 +1,16 @@
-classdef tScrollingPanel < utilities.mixin.PanelTests
+classdef tScrollingPanel < utilities.mixin.SharedPanelTests
     %TSCROLLINGPANEL Tests for uix.ScrollingPanel.
 
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
         ConstructorName = {'uix.ScrollingPanel'}
-        % Name-value pair input arguments to use when testing the component
-        % constructor.
-        ConstructorInputArguments = {{
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
             'Tag', 'Test', ...
-            'Visible', 'on'
-            }}
-        % Name-value pairs to use when testing the component's get and set
-        % methods.
-        GetSetNameValuePairs = {{
+            'Visible', 'on', ...
             'Heights', 50 * ones( 4, 1 ), ...
             'MinimumHeights', 20 * ones( 4, 1 ), ...
             'VerticalOffsets', [5; 5; 5; 0], ...
@@ -24,7 +20,7 @@ classdef tScrollingPanel < utilities.mixin.PanelTests
             'HorizontalOffsets', [5; 5; 5; 0], ...
             'HorizontalSteps', 5 * ones( 4, 1 ), ...
             'MouseWheelEnabled', 'on', ...
-            'BackgroundColor', [1, 1, 0] ...
+            'BackgroundColor', [1, 1, 0]
             }}
         % Properties accepting both a row vector and a column vector.
         VectorAcceptingProperties = {
@@ -61,7 +57,7 @@ classdef tScrollingPanel < utilities.mixin.PanelTests
             %testLayoutInTab  Test layout in panel
             testCase.assumeGraphicsAreRooted()
 
-            obj = testCase.constructComponent(ConstructorName, testCase.ConstructorInputArguments{1}{:});
+            obj = testCase.constructComponent(ConstructorName, testCase.NameValuePairs{1}{:});
             c = uicontrol( 'Parent', obj );
             testCase.verifyEqual( c.Position, [1 1 obj.Position(3:4)] )
             p = obj.Position;

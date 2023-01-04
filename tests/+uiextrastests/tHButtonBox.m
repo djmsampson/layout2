@@ -1,12 +1,12 @@
-classdef tHButtonBox < utilities.mixin.ContainerTests
+classdef tHButtonBox < utilities.mixin.SharedContainerTests
     %THBUTTONBOX Tests for uiextras.HButtonBox.
 
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
         ConstructorName = {'uiextras.HButtonBox'}
-        % Name-value pair input arguments to use when testing the component
-        % constructor.
-        ConstructorInputArguments = {{
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
             'BackgroundColor', [0, 0, 1], ...
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
@@ -14,12 +14,7 @@ classdef tHButtonBox < utilities.mixin.ContainerTests
             'Spacing', 5, ...
             'Tag', 'test', ...
             'Visible', 'on', ...
-            'ButtonSize', [200, 25]
-            }}
-        % Name-value pairs to use when testing the component's get and set
-        % methods.
-        GetSetNameValuePairs = {{
-            'BackgroundColor', [0, 1, 0], ...
+            'ButtonSize', [200, 25], ...
             'HorizontalAlignment', 'right', ...
             'VerticalAlignment', 'top'
             }}

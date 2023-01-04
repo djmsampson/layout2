@@ -1,5 +1,5 @@
-classdef ( Abstract ) FlexTests < ...
-        utilities.mixin.ContainerTests
+classdef ( Abstract ) SharedFlexTests < ...
+        utilities.mixin.SharedContainerTests
     %FLEXIBLECONTAINERTESTS Additional tests common to all flexible
     %containers (*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
     
@@ -61,13 +61,13 @@ classdef ( Abstract ) FlexTests < ...
             f = testcase.FigureFixture.Figure;
             % Layout is component based
             switch ConstructorName
-                case 'uiextras.VBoxFlex'
+                case {'uiextras.VBoxFlex', 'uix.VBoxFlex'}
                     childType = 'VBoxFlex';
                     parentType = 'HBox';
-                case 'uiextras.HBoxFlex'
+                case {'uiextras.HBoxFlex', 'uix.HBoxFlex'}
                     childType = 'HBoxFlex';
                     parentType = 'VBox';
-                case 'uiextras.GridFlex'
+                case {'uiextras.GridFlex', 'uix.GridFlex'}
                     childType = 'GridFlex';
                     parentType = 'Grid';
             end

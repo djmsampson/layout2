@@ -1,12 +1,12 @@
-classdef tPanel < utilities.mixin.PanelTests
+classdef tPanel < utilities.mixin.SharedPanelTests
     %TPANEL Tests for uiextras.Panel.
 
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
         ConstructorName = {'uiextras.Panel'}
-        % Name-value pair input arguments to use when testing the component
-        % constructor.
-        ConstructorInputArguments = {{
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
             'Units', 'pixels', ...
             'Position', [10, 10, 400, 400], ...
             'Padding', 5, ...
@@ -16,11 +16,7 @@ classdef tPanel < utilities.mixin.PanelTests
             'FontName', 'SansSerif', ...
             'FontSize', 20, ...
             'FontUnits', 'points', ...
-            'FontWeight', 'bold'
-            }}
-        % Name-value pairs to use when testing the component's get and set
-        % methods.
-        GetSetNameValuePairs = {{
+            'FontWeight', 'bold', ...
             'BackgroundColor', [1, 1, 0]
             }}
     end % properties ( TestParameter )

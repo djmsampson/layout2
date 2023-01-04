@@ -1,23 +1,35 @@
-classdef tGrid
-    %TGRID Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    properties
-        Property1
-    end
-    
-    methods
-        function obj = tGrid(inputArg1,inputArg2)
-            %TGRID Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
-    end
-end
+classdef tGrid < utilities.mixin.SharedGridTests
+    %TGRID Tests for uix.Grid.
 
+    properties ( TestParameter )
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uix.Grid'}
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
+            'BackgroundColor', [0, 0, 1], ...
+            'Units', 'pixels', ...
+            'Position', [10, 10, 400, 400], ...
+            'Padding', 5, ...
+            'Spacing', 5, ...
+            'Tag', 'test' ...
+            'Visible', 'on', ...
+            'Widths', double.empty( 0, 1 ), ...
+            'Heights', double.empty( 0, 1 ), ...
+            'MinimumWidths', double.empty( 0, 1 ), ...
+            'MinimumHeights', double.empty( 0, 1 )
+            }}
+    end % properties ( TestParameter )
+
+    properties ( Constant )
+        % Grid dimension name-value pairs used when testing the component's
+        % get/set methods.
+        GridDimensionNameValuePairs = {
+            'Heights', [-10, -1, 20], ...
+            'Widths', [-0.5, 50], ...
+            'MinimumHeights', [2, 2, 2], ...
+            'MinimumWidths', [2, 2]
+            }
+    end % properties ( Constant )
+
+end % class

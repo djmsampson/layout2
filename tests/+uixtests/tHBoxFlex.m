@@ -1,23 +1,33 @@
-classdef tHBoxFlex
-    %THBOXFLEX Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    properties
-        Property1
-    end
-    
-    methods
-        function obj = tHBoxFlex(inputArg1,inputArg2)
-            %THBOXFLEX Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
-    end
-end
+classdef tHBoxFlex < utilities.mixin.SharedBoxTests & ...
+        utilities.mixin.SharedFlexTests
+    %THBOXFLEX Tests for uix.HBoxFlex.
 
+    properties ( TestParameter )
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uix.HBoxFlex'}
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
+            'BackgroundColor', [0, 0, 1], ...
+            'Units', 'pixels', ...
+            'Position', [10, 10, 400, 400], ...
+            'Padding', 5, ...
+            'Spacing', 5, ...
+            'Tag', 'test', ...
+            'Visible', 'on', ...
+            'DividerMarkings', 'off', ...
+            'Widths', double.empty( 0, 1 ), ...
+            'MinimumWidths', double.empty( 0, 1 )
+            }}
+    end % properties ( TestParameter )
+
+    properties ( Constant )
+        % Box dimension name-value pairs used when testing the component's
+        % get/set methods.
+        BoxDimensionNameValuePairs = {
+            'Widths', [-1, -2, 100, -1], ...
+            'MinimumWidths', [0, 1, 2, 0]
+            }
+    end % properties ( Constant )
+
+end % class

@@ -1,4 +1,4 @@
-classdef ( Abstract ) PanelTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) SharedPanelTests < utilities.mixin.SharedContainerTests
     %PANELCONTAINERTESTS Additional tests common to all panel containers
     %(*.CardPanel, *.Panel, *.TabPanel, *.BoxPanel, and
     %uix.ScrollingPanel).

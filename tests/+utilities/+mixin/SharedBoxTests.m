@@ -1,6 +1,12 @@
-classdef ( Abstract ) BoxTests < utilities.mixin.ContainerTests
+classdef ( Abstract ) SharedBoxTests < utilities.mixin.SharedContainerTests
     %LAYOUTTESTS Additional tests common to all layout containers
     %(*.HBox, *.VBox, *.HBoxFlex, *.VBoxFlex).
+
+    properties ( Constant, Abstract )
+        % Box dimension name-value pairs used when testing the component's
+        % get/set methods.
+        BoxDimensionNameValuePairs
+    end % properties ( Constant, Abstract )
 
     properties ( Access = protected )
         % Layout orientation ('horizontal'|'vertical').
@@ -140,6 +146,77 @@ classdef ( Abstract ) BoxTests < utilities.mixin.ContainerTests
             end % for
 
         end % tMinimumSizesAreRespected
+
+        function tSettingBoxDimensionsAssignsValuesCorrectly( ...
+                testCase, ConstructorName )
+
+            % Create a component with children.
+            component = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Set each box dimension and verify that it has been assigned
+            % correctly.
+            boxPairs = testCase.BoxDimensionNameValuePairs;
+            for k = 1 : 2 : length( boxPairs )-1
+                % Extract the current name-value pair.
+                propertyName = boxPairs{k};
+                propertyValue = boxPairs{k+1};
+                % Assign the current property value.
+                component.(propertyName) = propertyValue;
+                % Verify that it has been assigned correctly, up to the
+                % vector orientation.
+                actualValue = component.(propertyName)(:);
+                expectedValue = propertyValue(:);
+                testCase.verifyEqual( actualValue, ...
+                    expectedValue, ['The ', ConstructorName, ...
+                    ' component did not assign the ''', propertyName, ...
+                    ''' property correctly.'] )
+            end % for
+
+        end % tSettingBoxDimensionsAssignsValuesCorrectly
+
+        function tReorderingContentsUpdatesBoxDimensions( testCase, ...
+                ConstructorName )
+
+            % Create a component with children.
+            component = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Determine the dimension property name ('Widths' or
+            % 'Heights').
+            hNames = {'uiextras.HBox', 'uix.HBox', ...
+                'uiextras.HBoxFlex', 'uix.HBoxFlex'}; 
+            if ismember( ConstructorName, hNames )
+                propertyName = 'Widths';
+            else
+                propertyName = 'Heights';
+            end % if
+
+            % Set the dimension values.
+            oneToFour = 1:4;
+            component.(propertyName) = -oneToFour;
+            minimumPropertyName = ['Minimum', propertyName];
+            component.(minimumPropertyName) = oneToFour;
+
+            % Reorder the children.
+            component.Contents = component.Contents(end:-1:1);
+
+            % Verify that the box dimensions have been updated.
+            expectedDimensionValue = flip( -oneToFour(:) );
+            actualDimensionValue = component.(propertyName)(:);
+            expectedMinimumDimensionValue = flip( oneToFour(:) );
+            actualMinimumDimensionValue = ...
+                component.(minimumPropertyName)(:);
+            diagnostic = @( prop ) ['Reordering the contents of the ', ...
+                ConstructorName, ' component did not update the ''', ...
+                prop, ''' property correctly.'];
+            testCase.verifyEqual( actualDimensionValue, ...
+                expectedDimensionValue, diagnostic( propertyName ) )
+            testCase.verifyEqual( actualMinimumDimensionValue, ...
+                expectedMinimumDimensionValue, ...
+                diagnostic( minimumPropertyName ) )
+
+        end % tReorderingContentsUpdatesBoxDimensions
 
     end % methods ( Test, Sealed )
 

@@ -1,16 +1,13 @@
-classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
+classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
     %CONTAINERTESTS Tests common to all GUI Layout Toolbox containers,
-    %across both the +uiextras and +uix packages.    
+    %across both the +uiextras and +uix packages.
 
     properties ( TestParameter, Abstract )
         % The constructor name, or class, of the component under test.
         ConstructorName
-        % Name-value pair input arguments to use when testing the component
-        % constructor.
-        ConstructorInputArguments
-        % Name-value pairs to use when testing the component's get and set
-        % methods.
-        GetSetNameValuePairs
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs
     end % properties ( TestParameter, Abstract )
 
     properties ( Constant )
@@ -36,7 +33,9 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
         % List of containers that have the 'SelectedChild' property.
         ContainersWithSelectedChildProperty = {
             'uiextras.BoxPanel', ...
-            'uiextras.Panel'
+            'uiextras.CardPanel', ...
+            'uiextras.Panel', ...
+            'uiextras.TabPanel'
             }
     end % properties ( Constant )
 
@@ -190,12 +189,12 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
         end % tConstructorWithParentArgumentReturnsScalarComponent
 
         function tConstructorIsWarningFreeWithArguments( ...
-                testCase, ConstructorName, ConstructorInputArguments )
+                testCase, ConstructorName, NameValuePairs )
 
             % Verify that creating the component and passing additional
             % input arguments to the constructor is warning-free.
             creator = @() testCase.constructComponent( ...
-                ConstructorName, ConstructorInputArguments{:} );
+                ConstructorName, NameValuePairs{:} );
             testCase.verifyWarningFree( creator, ...
                 ['The ', ConstructorName, ' constructor was not ', ...
                 'warning-free when called with additional ', ...
@@ -204,11 +203,11 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
         end % tConstructorIsWarningFreeWithArguments
 
         function tConstructorWithArgumentsReturnsScalarComponent( ...
-                testCase, ConstructorName, ConstructorInputArguments )
+                testCase, ConstructorName, NameValuePairs )
 
             % Call the component constructor.
             component = testCase.constructComponent( ...
-                ConstructorName, ConstructorInputArguments{:} );
+                ConstructorName, NameValuePairs{:} );
 
             % Assert that the type is correct.
             testCase.assertClass( component, ConstructorName, ...
@@ -228,20 +227,23 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
         end % tConstructorWithArgumentsReturnsScalarComponent
 
         function tConstructorSetsNameValuePairsCorrectly( ...
-                testCase, ConstructorName, ConstructorInputArguments )
+                testCase, ConstructorName, NameValuePairs )
 
             % Call the component constructor.
             component = testCase.constructComponent( ...
-                ConstructorName, ConstructorInputArguments{:} );
+                ConstructorName, NameValuePairs{:} );
 
             % Verify that the component constructor has correctly assigned
             % the name-value pairs.
-            for k = 1 : 2 : length( ConstructorInputArguments )-1
-                propertyName = ConstructorInputArguments{k};
-                propertyValue = ConstructorInputArguments{k+1};
+            for k = 1 : 2 : length( NameValuePairs )-1
+                propertyName = NameValuePairs{k};
+                propertyValue = NameValuePairs{k+1};
                 actualValue = component.(propertyName);
-                classOfPropertyValue = class( propertyValue );
-                actualValue = feval( classOfPropertyValue, actualValue );
+                if ~isa( propertyValue, 'function_handle' )
+                    classOfPropertyValue = class( propertyValue );
+                    actualValue = feval( ...
+                        classOfPropertyValue, actualValue );
+                end % if
                 testCase.verifyEqual( actualValue, propertyValue, ...
                     ['The ', ConstructorName, ' constructor has not ', ...
                     'assigned the ''', propertyName, ''' property ', ...
@@ -282,22 +284,26 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
         end % tConstructorErrorsWithBadArguments
 
         function tGetAndSetMethodsFunctionCorrectly( ...
-                testCase, ConstructorName, GetSetNameValuePairs )
+                testCase, ConstructorName, NameValuePairs )
 
-            % Construct the component, with children.
-            component = testCase.constructComponentWithChildren( ...
-                ConstructorName );
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
 
             % For each property, set its value and verify that the
             % component has correctly assigned the value.
-            for k = 1 : 2 : length( GetSetNameValuePairs )
+            for k = 1 : 2 : length( NameValuePairs )
                 % Extract the current name-value pair.
-                propertyName = GetSetNameValuePairs{k};
-                propertyValue = GetSetNameValuePairs{k+1};
+                propertyName = NameValuePairs{k};
+                propertyValue = NameValuePairs{k+1};
                 % Set the property in the component.
                 component.(propertyName) = propertyValue;
-                % Verify that the property has been assigned correctly.
+                % Verify that the property has been assigned correctly, up
+                % to a possible data type conversion.
                 actual = component.(propertyName);
+                if ~isa( propertyValue, 'function_handle' )
+                    propertyClass = class( propertyValue );
+                    actual = feval( propertyClass, actual );
+                end % if
                 testCase.verifyEqual( actual, propertyValue, ...
                     ['Setting the ''', propertyName, ''' property of ', ...
                     'the ', ConstructorName, ' object did not store ', ...
@@ -629,8 +635,16 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
 
-            % Verify that the 'SelectedChild' property is equal to [].
-            testCase.verifyEqual( component.SelectedChild, [], ...
+            % Verify that the 'SelectedChild' property is equal to [] (for
+            % Panel and BoxPanel) or 0 (for CardPanel and TabPanel).
+            if ismember( ConstructorName, ...
+                    {'uiextras.CardPanel', 'uiextras.TabPanel'} )
+                expectedValue = 0;
+            else
+                expectedValue = [];
+            end % if
+            testCase.verifyEqual( component.SelectedChild, ...
+                expectedValue, ...
                 ['The ''SelectedChild'' property of ', ...
                 ConstructorName, ' is not equal to [].'] )
 
@@ -652,7 +666,8 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
                 ConstructorName )
 
             % Create the component.
-            component = testCase.constructComponent( ConstructorName );
+            component = testCase.constructComponentWithChildren( ...
+                ConstructorName );
 
             % Verify that setting the 'SelectedChild' property is
             % warning-free.
@@ -665,7 +680,7 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
 
     end % methods ( Test, Sealed )
 
-    methods ( Sealed, Access = protected )        
+    methods ( Sealed, Access = protected )
 
         function [component, componentChildren] = ...
                 constructComponentWithChildren( testCase, constructorName )
@@ -682,7 +697,7 @@ classdef ( Abstract ) ContainerTests < utilities.mixin.TestInfrastructure
                 uiextras.Empty( 'Parent', component )
                 uicontrol( 'Parent', component, 'BackgroundColor', 'b' )];
 
-        end % constructComponentWithChildren    
+        end % constructComponentWithChildren
 
         function assumeComponentIsFromNamespace( testCase, ...
                 ConstructorName, namespace )
