@@ -520,6 +520,28 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
 
         end % tContentsRespectAddingAxesAndControl
 
+        function tSettingContentsAcceptsRowOrientation( ...
+                testCase, ConstructorName )
+
+            % Create a component with children.
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
+
+            % Permute the 'Contents' property and set it as a row vector
+            % (rather than a column vector).
+            flipPerm = length( kids ) : -1 : 1;
+            component.Contents = transpose( component.Contents(flipPerm) );
+
+            % Verify that the 'Contents' property has been updated
+            % correctly.
+            testCase.verifySameHandle( component.Contents, ...
+                kids(flipPerm), ...
+                ['Setting the ''Contents'' property of the ', ...
+                ConstructorName, ' component as a row vector did not ', ...
+                'assign the value correctly.'] )
+
+        end % tSettingContentsAcceptsRowOrientation
+
         function tContainerEnableGetMethod( testCase, ConstructorName )
 
             % Filter the test if the container does not have get and set
