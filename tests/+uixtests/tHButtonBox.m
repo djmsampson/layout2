@@ -1,23 +1,9 @@
-classdef tHButtonBox
-    %THBUTTONBOX Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    properties
-        Property1
-    end
-    
-    methods
-        function obj = tHButtonBox(inputArg1,inputArg2)
-            %THBUTTONBOX Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
-    end
-end
+classdef tHButtonBox < utilities.mixin.SharedButtonBoxTests
+    %THBUTTONBOX Tests for uix.HButtonBox.
 
+    properties ( TestParameter )
+        % The constructor name, or class, of the component under test.
+        ConstructorName = {'uix.HButtonBox'}        
+    end % properties ( TestParameter )
+
+end % class

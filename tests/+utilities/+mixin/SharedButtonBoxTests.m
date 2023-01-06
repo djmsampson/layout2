@@ -1,0 +1,85 @@
+classdef SharedButtonBoxTests < utilities.mixin.SharedContainerTests
+    %SHAREDBUTTONBOXTESTS Tests common to button boxes.
+
+    properties ( TestParameter )
+        % Name-value pair arguments to use when testing the component's
+        % constructor and get/set methods.
+        NameValuePairs = {{
+            'BackgroundColor', [0, 0, 1], ...
+            'Units', 'pixels', ...
+            'Position', [10, 10, 400, 400], ...
+            'Padding', 5, ...
+            'Spacing', 5, ...
+            'Tag', 'test', ...
+            'Visible', 'on', ...
+            'ButtonSize', [200, 25], ...
+            'HorizontalAlignment', 'right', ...
+            'VerticalAlignment', 'top'
+            }}
+    end % properties ( TestParameter )
+
+    methods ( Test, Sealed )
+
+        function tShrinkToFitIsWarningFree( testCase, ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that adding many buttons is warning-free (this will
+            % the shrink-to-fit code). Do this for each possible
+            % 'HorizontalAlignment' and 'VerticalAlignment' value.
+            buttonAdder = @addLotsOfButtons;
+            hAlignments = {'left', 'center', 'right'};
+            vAlignments = {'top', 'middle', 'bottom'};
+            for k1 = 1 : length( hAlignments )
+                for k2 = 1 : length( vAlignments )
+                    delete( component.Children )
+                    component.HorizontalAlignment = hAlignments{k1};
+                    component.VerticalAlignment = vAlignments{k2};
+                    testCase.verifyWarningFree( buttonAdder, ...
+                        ['Adding many buttons to the ', ...
+                        ConstructorName, ' component was not ', ...
+                        'warning-free. There could ', ...
+                        'be a problem in the shrink-to-fit code.'] )
+                end % for k2
+            end % for k1
+
+            function addLotsOfButtons()
+
+                for kk = 1 : 25
+                    uicontrol( component )
+                end % for
+
+            end % addLotsOfButtons
+
+        end % tShrinkToFitIsWarningFree
+
+        function tShrinkToFitForLargeButtonsIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set a large value for the button dimension.
+            hComponentNames = {'uiextras.HButtonBox', 'uix.HButtonBox'};
+            if ismember( ConstructorName, hComponentNames )
+                % Add a tall button in HButtonBoxes.
+                index = 2;
+            else
+                % Add a wide button in VButtonBoxes.
+                index = 1;
+            end % if
+            component.ButtonSize(index) = 2000;
+
+            % Verify that adding a button is warning-free.
+            buttonAdder = @() uicontrol( component );
+            testCase.verifyWarningFree( buttonAdder, ...
+                ['Adding a tall button to the ', ConstructorName, ...
+                ' component was not warning-free. There could be ', ...
+                'a problem in the shrink-to-fit code.'] )
+
+        end % tShrinkToFitForLargeButtonsIsWarningFree
+
+    end % methods ( Test, Sealed )
+
+end % class
