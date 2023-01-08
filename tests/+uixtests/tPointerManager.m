@@ -1,23 +1,73 @@
-classdef tPointerManager
-    %TPOINTERMANAGER Summary of this class goes here
-    %   Detailed explanation goes here
+classdef tPointerManager < utilities.mixin.TestInfrastructure
+    %TPOINTERMANAGER Tests for uix.PointerManager.    
     
-    properties
-        Property1
-    end
-    
-    methods
-        function obj = tPointerManager(inputArg1,inputArg2)
-            %TPOINTERMANAGER Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
-    end
-end
+    methods ( Test, Sealed )
 
+        function tGetInstanceReturnsScalarObject( testCase )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Get an instance of the PointerManager.
+            fig = testCase.FigureFixture.Figure;
+            PM = uix.PointerManager.getInstance( fig );
+
+            % Verify that the object is scalar.
+            testCase.verifySize( PM, [1, 1], ...
+                ['The getInstance() method of uix.PointerManager ', ...
+                'did not return a scalar object.'] )
+
+            % Test again.
+            PM = uix.PointerManager.getInstance( fig );
+            testCase.verifySize( PM, [1, 1], ...
+                ['The getInstance() method of uix.PointerManager ', ...
+                'did not return a scalar object.'] )
+
+        end % tGetInstanceReturnsScalarObject
+
+        function tSettingAndUnsettingPointerIsCorrect( testCase )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Get an instance of the PointerManager.
+            fig = testCase.FigureFixture.Figure;
+            PM = uix.PointerManager.getInstance( fig );
+
+            % Set the figure pointer.
+            pointer = 'circle';
+            PM.setPointer( fig, pointer );
+            testCase.verifyEqual( fig.Pointer, pointer, ...
+                ['The setPointer() method of uix.PointerManager ', ...
+                'did not set the figure''s ''Pointer'' property.'] )
+
+            % Unset it.
+            PM.unsetPointer( fig, 1 )
+            testCase.verifyEqual( fig.Pointer, 'arrow', ...
+                ['The unsetPointer() method of uix.PointerManager ', ...
+                'did not unset the figure''s ''Pointer'' property.'] )
+
+        end % tSettingAndUnsettingPointerIsCorrect
+
+        function tSettingFigurePointerIsWarningFree( testCase )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Get an instance of the PointerManager.
+            fig = testCase.FigureFixture.Figure;
+            PM = uix.PointerManager.getInstance( fig );
+
+            % Verify that setting the figure's 'Pointer' property is
+            % warning-free.
+            setter = @() set( fig, 'Pointer', 'circle' );
+            testCase.verifyWarningFree( setter, ...
+                ['Setting the figure''s ''Pointer'' property when ', ...
+                'a uix.PointerManager object is managing the figure ', ...
+                'is not warning-free.'] )
+
+        end % tSettingFigurePointerIsWarningFree
+        
+    end % methods ( Test, Sealed )
+
+end % class
