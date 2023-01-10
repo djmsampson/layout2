@@ -1,4 +1,4 @@
-classdef ActivePositionPropertyTestDummy < handle
+classdef ActivePositionPropertyDummy < handle
     %ACTIVEPOSITIONPROPERTYTESTDUMMY Dummy for use in tests for
     %uix.getPosition and uix.setPosition.
 
@@ -11,7 +11,7 @@ classdef ActivePositionPropertyTestDummy < handle
 
     methods
 
-        function obj = ActivePositionPropertyTestDummy( ...
+        function obj = ActivePositionPropertyDummy( ...
                 activePositionProperty )
 
             if nargin == 1

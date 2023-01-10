@@ -60,7 +60,7 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
         function tGetPositionErrorsForUnknownActivePositionPropertyValue( testCase )
 
             % Create a test dummy.
-            dummy = utilities.ActivePositionPropertyTestDummy( 'dummy' );
+            dummy = utilities.ActivePositionPropertyDummy( 'dummy' );
             % Verify that with an unknown 'ActivePositionProperty', an
             % error is thrown.
             f = @() uix.getPosition( dummy, 'pixels' );
@@ -75,7 +75,7 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
         function tGetPositionAssumesPixelsWhenUnitsAreNotPresent( testCase )
 
             % Create a test dummy (with no 'Units' property).
-            dummy = utilities.ActivePositionPropertyTestDummy( 'position' );
+            dummy = utilities.ActivePositionPropertyDummy( 'position' );
             p = uix.getPosition( dummy, 'pixels' );
             % Verify that the position is returned correctly.
             testCase.verifyEqual( p, dummy.Position, ...

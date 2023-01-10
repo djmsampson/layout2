@@ -8,6 +8,10 @@ end % arguments
 nargoutchk( 0, 1 )
 
 % Create the test suite.
+ID = "MATLAB:dispatcher:nameConflict";
+w = warning( "query", ID );
+warningCleanup = onCleanup( @() warning( w ) );
+warning( "off", ID )
 suite = testsuite( testFileSpec, ...
     "IncludeSubfolders", true, ...
     "IncludeSubpackages", true );

@@ -35,7 +35,7 @@ classdef tText < utilities.mixin.TestInfrastructure
 
             % Clear uix.Text from memory so that Constant properties are
             % reloaded during the test process.
-            evalin( 'base', 'clear( ''Text'' )' )
+            clear( 'Text' )
 
         end % clearText
 
@@ -198,6 +198,84 @@ classdef tText < utilities.mixin.TestInfrastructure
             end % for
 
         end % tSettingVerticalAlignmentTriggersRedraw
+
+        function tMacOffsetIsSetCorrectly( testCase )
+
+            % Assume we are not on the Mac platform.
+            testCase.assumeNotMac()
+
+            % Clear uix.Text from memory. This forces the Constant
+            % properties to be redefined when an object of type uix.Text is
+            % created.
+            clear( 'Text' )
+
+            % Set up a path fixture for ismac(). Disable the name conflict
+            % warning for the duration of the test.
+            ID = 'MATLAB:dispatcher:nameConflict';
+            w = warning( 'query', ID );
+            testCase.addTeardown( @() warning( w ) )
+            warning( 'off', ID )
+            currentFolder = fileparts( mfilename( 'fullpath' ) );
+            testsFolder = fileparts( currentFolder );
+            targetFolder = fullfile( testsFolder, 'Shadows', 'ismac' );
+            fixture = matlab.unittest.fixtures.PathFixture( targetFolder );
+            testCase.applyFixture( fixture );
+
+            % Create an object.
+            fig = testCase.FigureFixture.Figure;
+            testCase.assumeEmpty( fig )
+            t = uix.Text( 'Parent', fig );
+            testCase.addTeardown( @() delete( t ) )
+
+            % Obtain the offset value. Disable the warning about converting
+            % an object to a structure for the duration of the test.
+            ID = 'MATLAB:structOnObject';
+            w = warning( 'query', ID );
+            testCase.addTeardown( @() warning( w ) )
+            warning( 'off', ID )
+            s = struct( t );
+            testCase.verifyEqual( s.Margin, 20, ...
+                ['The uix.Text constructor did not set the ', ...
+                '''Margin'' property to 20.'] )
+
+        end % tMacOffsetIsSetCorrectly
+
+        function tOffsetIsSetCorrectlyInOlderVersions( testCase )
+
+            % This test is only for MATLAB R2015b and later, and for
+            % unparented graphics.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
+            testCase.assumeEmptyFigureParent()
+
+            % Clear uix.Text from memory. This forces the Constant
+            % properties to be redefined when an object of type uix.Text is
+            % created.
+            clear( 'Text' )
+
+            % Set up a path fixture for verLessThan().
+            currentFolder = fileparts( mfilename( 'fullpath' ) );
+            testsFolder = fileparts( currentFolder );
+            targetFolder = fullfile( ...
+                testsFolder, 'Shadows', 'verLessThan' );
+            fixture = matlab.unittest.fixtures.PathFixture( targetFolder );
+            testCase.applyFixture( fixture );
+
+            % Create an object.
+            fig = testCase.FigureFixture.Figure;
+            t = uix.Text( 'Parent', fig );
+
+            % Obtain the offset value. Disable the warning about converting
+            % an object to a structure for the duration of the test.
+            ID = 'MATLAB:structOnObject';
+            w = warning( 'query', ID );
+            testCase.addTeardown( @() warning( w ) )
+            warning( 'off', ID )
+            s = struct( t );
+            testCase.verifyEqual( s.Margin, 18, ...
+                ['The uix.Text constructor did not set the ', ...
+                '''Margin'' property to 18.'] )
+
+        end % tOffsetIsSetCorrectlyInOlderVersions
 
     end % methods ( Test, Sealed )
 

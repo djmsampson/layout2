@@ -111,6 +111,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             switch versionString
                 case 'R2014b'
                     versionNumber = '8.4';
+                case 'R2015b'
+                    versionNumber = '8.6';
                 case 'R2022a'
                     versionNumber = '9.12';
                 otherwise
@@ -137,6 +139,17 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 'This test is not applicable to unrooted components.' )
 
         end % assumeGraphicsAreRooted
+
+        function assumeEmptyFigureParent( testCase )
+
+            % Assume that the figure fixture provides an empty figure
+            % parent.
+            unrooted = strcmp( testCase.FigureFixture.Type, ...
+                testCase.ParentType.Unrooted );
+            testCase.assumeTrue( unrooted, ...
+                'This test is applicable with an empty figure parent.' )
+            
+        end % assumeEmptyFigureParent
 
         function assumeGraphicsAreNotWebBased( testCase )
 
@@ -171,6 +184,14 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 'the Jenkins environment.'] )
 
         end % assumeTestEnvironmentHasDisplay
+
+        function assumeNotMac( testCase )
+
+            % Assume that the platform is not Mac.
+            testCase.assumeFalse( ismac(), ...
+                'This test is not applicable on the Mac platform.' )
+
+        end % assumeNotMac
 
         function component = constructComponent( ...
                 testCase, constructorName, varargin )

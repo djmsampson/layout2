@@ -22,7 +22,7 @@ classdef tSetPosition < utilities.mixin.TestInfrastructure
         function tSetPositionErrorsWithNonPixelUnitsForObjectWithoutUnits( testCase )
 
             % Create a dummy object (which has no 'Units' property).
-            dummy = utilities.ActivePositionPropertyTestDummy();
+            dummy = utilities.ActivePositionPropertyDummy();
             % Invoke uix.setPosition with the dummy and non-pixel units.
             f = @() uix.setPosition( dummy, zeros( 1, 4 ), 'inches' );
             testCase.verifyError( f, 'uix:InvalidOperation', ...
@@ -79,7 +79,7 @@ classdef tSetPosition < utilities.mixin.TestInfrastructure
         function tSetPositionErrorsForUnknownActivePositionPropertyValue( testCase )
 
             % Create a test dummy.
-            dummy = utilities.ActivePositionPropertyTestDummy( 'dummy' );
+            dummy = utilities.ActivePositionPropertyDummy( 'dummy' );
             % Verify that with an unknown 'ActivePositionProperty', an
             % error is thrown.
             f = @() uix.setPosition( dummy, zeros( 1, 4 ), 'pixels' );
