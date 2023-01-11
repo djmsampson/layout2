@@ -11,16 +11,18 @@ classdef tScrollingPanel < utilities.mixin.SharedPanelTests
             'Position', [10, 10, 400, 400], ...
             'Tag', 'Test', ...
             'Visible', 'on', ...
-            'Heights', 50 * ones( 4, 1 ), ...
-            'MinimumHeights', 20 * ones( 4, 1 ), ...
-            'VerticalOffsets', [5; 5; 5; 0], ...
-            'VerticalSteps', 5 * ones( 4, 1 ), ...
-            'Widths', 50 * ones( 4, 1 ), ...
-            'MinimumWidths', 20 * ones( 4, 1 ), ...
-            'HorizontalOffsets', [5; 5; 5; 0], ...
-            'HorizontalSteps', 5 * ones( 4, 1 ), ...
+            'Selection', 0, ...
+            'Padding', 5, ...
             'MouseWheelEnabled', 'on', ...
-            'BackgroundColor', [1, 1, 0]
+            'BackgroundColor', [1, 1, 0], ...
+            'Heights', double.empty( 0, 1 ), ...
+            'MinimumHeights', double.empty( 0, 1 ), ...
+            'VerticalOffsets', double.empty( 0, 1 ), ...
+            'VerticalSteps', double.empty( 0, 1 ), ...
+            'Widths', double.empty( 0, 1 ), ...
+            'MinimumWidths', double.empty( 0, 1 ), ...
+            'HorizontalOffsets', double.empty( 0, 1 ), ...
+            'HorizontalSteps', double.empty( 0, 1 )
             }}
         % Properties accepting both a row vector and a column vector.
         VectorAcceptingProperties = {
@@ -35,8 +37,8 @@ classdef tScrollingPanel < utilities.mixin.SharedPanelTests
                 testCase, ConstructorName, VectorAcceptingProperties )
 
             % Create the component with children.
-            [component, kids] = testCase.constructComponentWithChildren( ...
-                ConstructorName );
+            [component, kids] = testCase...
+                .constructComponentWithChildren( ConstructorName );
 
             % Set the property as a row vector.
             value = 5 * ones( 1, length( kids ) );
@@ -53,87 +55,221 @@ classdef tScrollingPanel < utilities.mixin.SharedPanelTests
 
         end % tSettingPropertyAsRowStoresValue
 
-        function testFillingPosition( testCase, ConstructorName )
-            %testLayoutInTab  Test layout in panel
+        function tContentsPositionIsFullWhenPanelIsResized( ...
+                testCase, ConstructorName )
+
+            % Assume that the component is rooted.
             testCase.assumeGraphicsAreRooted()
 
-            obj = testCase.constructComponent(ConstructorName, testCase.NameValuePairs{1}{:});
-            c = uicontrol( 'Parent', obj );
-            testCase.verifyEqual( c.Position, [1 1 obj.Position(3:4)] )
-            p = obj.Position;
-            for ii = 1:8
-                o = 50 * [sin( pi*ii/8 ) cos( pi*ii/8 )];
-                obj.Position = p + [0 0 o];
+            % Create a scrolling panel.
+            scrollPanel = testCase.constructComponent( ...
+                ConstructorName, 'Units', 'pixels' );
+
+            % Add a child.
+            c = uicontrol( 'Parent', scrollPanel, 'Units', 'pixels' );
+
+            % Verify the initial position of the child.
+            expectedPosition = [1, 1, scrollPanel.Position(3:4)];
+            testCase.verifyEqual( c.Position, expectedPosition, ...
+                ['Adding a child to ', ConstructorName, ' did not ', ...
+                'set the child''s ''Position'' property correctly.'] )
+
+            % Change the dimensions of the scrolling panel.
+            scrollPanelPos = scrollPanel.Position;
+            for k = 1 : 8
+                % Update the 'Position' property of the scrolling panel.
+                newDims = 50 * [sin( pi*k/8 ), cos( pi*k/8 )];
+                scrollPanel.Position = scrollPanelPos + [0, 0, newDims];
                 drawnow()
-                testCase.verifyEqual( c.Position, [1 1 obj.Position(3:4)], 'AbsTol', 1e-10 )
-            end
-        end
+                % Verify that the child still fills the scroll panel.
+                expectedPosition = [1, 1, scrollPanel.Position(3:4)];
+                testCase.verifyEqual( c.Position, expectedPosition, ...
+                    'AbsTol', 1e-10, ...
+                    ['Changing the dimensions of the scrolling ', ...
+                    'panel did not update the ''Position'' property ', ...
+                    'of its contents correctly.'] )
+            end % for
 
-        function testHorizontalPosition(testcase, ConstructorName)
-            testcase.assumeGraphicsAreRooted()
-            obj = testcase.constructComponent(ConstructorName);
-            set( obj, 'Units', 'pixels', 'Position', [10 10 400 400] );
-            c = uicontrol( 'Parent', obj );
-            obj.Widths = 600;
-            obj.Heights = 500;
-            testcase.verifyEqual( c.Position, [1 -99 600 500] )
-            obj.Position(3) = 420;
-            testcase.verifyEqual( c.Position, [1 -99 600 500] )
-            obj.Position(3) = 380;
-            testcase.verifyEqual( c.Position, [1 -99 600 500] )
-            obj.Position(3) = 400;
-            testcase.verifyEqual( c.Position, [1 -99 600 500] )
-            obj.HorizontalOffsets = 50;
-            testcase.verifyEqual( c.Position, [-49 -99 600 500] )
-            obj.Position(3) = 420;
-            testcase.verifyEqual( c.Position, [-49 -99 600 500] )
-            obj.Position(3) = 380;
-            testcase.verifyEqual( c.Position, [-49 -99 600 500] )
-            obj.Position(3) = 400;
-            testcase.verifyEqual( c.Position, [-49 -99 600 500] )
-            obj.Position(3) = 490;
+        end % tContentsPositionIsFullWhenPanelIsResized
 
-        end
+        function tContentsPositionUpdatesWhenPanelIsResized( ...
+                testCase, ConstructorName )
 
-        function testMinimumWidths(testcase, ConstructorName)
-            testcase.assumeGraphicsAreRooted()
-            obj = testcase.constructComponent(ConstructorName);
-            h = uix.HBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
-            for ii = 1:4
-                b(ii) = uicontrol( 'Parent', h, 'String', ii );
-            end
-            h.MinimumWidths(:) = 100;
-            obj.MinimumWidths = 450;
-            obj.MinimumHeights = 450;
-            set( obj, 'Units', 'pixels', 'Position', [10 10 200 200] );
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ...
+                ConstructorName, ...
+                'Units', 'pixels', ...
+                'Position', [10, 10, 400, 400] );
 
-            testcase.verifyEqual( h.Position(3), 450 )
-            testcase.verifyEqual( h.Position(4), 450 )
-            for ii = 1:4
-                testcase.verifyEqual( b(ii).Position(3), 100 )
-            end
+            % Add a child.
+            c = uicontrol( 'Parent', scrollPanel, 'Units', 'pixels' );
 
-        end
+            % Set the dimensions.
+            scrollPanel.Widths = 500;
+            scrollPanel.Heights = 600;
 
-        function testMinimumHeights(testcase, ConstructorName)
-            testcase.assumeGraphicsAreRooted()
-            obj = testcase.constructComponent(ConstructorName);
-            v = uix.VBoxFlex( 'Parent', obj, 'Padding', 10, 'Spacing', 10 );
-            for ii = 1:4
-                b(ii) = uicontrol( 'Parent', v, 'String', ii );
-            end
-            v.MinimumHeights(:) = 100;
-            obj.MinimumWidths = 450;
-            obj.MinimumHeights = 450;
-            set( obj, 'Units', 'pixels', 'Position', [10 10 200 200] );
+            % Verify its initial position.
+            scrollPanelDims = [scrollPanel.Widths, scrollPanel.Heights];
+            expectedPosition = [1, -199, scrollPanelDims];
+            testCase.verifyEqual( c.Position, expectedPosition, ...
+                ['The initial position of a child of the scrolling ', ...
+                'panel is incorrect.'] )
 
-            testcase.verifyEqual( v.Position(3), 450 )
-            testcase.verifyEqual( v.Position(4), 450 )
-            for ii = 1:4
-                testcase.verifyEqual( b(ii).Position(4), 100 )
-            end
+            % Run through a series of changes to the 'Position' property of
+            % the scrolling panel.
+            for width = [420, 380, 500]
+                scrollPanel.Position(3) = width;
+                testCase.verifyEqual( c.Position, expectedPosition, ...
+                    ['Changing the width of the scrolling panel ', ...
+                    'resulted in an incorrect position for its ', ...
+                    'contents.'] )
+            end % for
 
-        end
+            % Change the 'HorizontalOffsets' property.
+            scrollPanel.HorizontalOffsets = 50;
+            expectedPosition = [-19, -199, scrollPanelDims];
+            testCase.verifyEqual( c.Position, expectedPosition, ...
+                ['Changing the ''HorizontalOffsets'' property of ', ...
+                'the scrolling panel resulted in an incorrect ', ...
+                'position for its contents.'] )
+
+            % Change the 'VerticalOffsets' property.
+            scrollPanel.VerticalOffsets = 50;
+            expectedPosition = [-19, -148, scrollPanelDims];
+            testCase.verifyEqual( c.Position, expectedPosition, ...
+                ['Changing the ''VerticalOffsets'' property of ', ...
+                'the scrolling panel resulted in an incorrect ', ...
+                'position for its contents.'] )
+
+        end % tContentsPositionUpdatesWhenPanelIsResized
+
+        function tPanelRespectsMinimumWidths( testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ...
+                ConstructorName, ...
+                'Units', 'pixels', ...
+                'Position', [10, 10, 200, 200] );
+
+            % Fill it with some controls.
+            hBox = uix.HBoxFlex( 'Parent', scrollPanel, ...
+                'Padding', 10, ...
+                'Spacing', 10 );
+            n = 4;
+            b = gobjects( n, 1 );
+            for k = 1 : n
+                b(k) = uicontrol( 'Parent', hBox, 'String', k );
+            end % for
+
+            % Set dimensions.
+            hBox.MinimumWidths(:) = 100;
+            set( scrollPanel, 'MinimumWidths', 450, ...
+                'MinimumHeights', 450 )
+
+            % Verify the dimensions of the h-box.
+            testCase.verifyEqual( hBox.Position(3:4), [450, 450], ...
+                ['Setting the minimum dimensions of the scrolling ', ...
+                'panel resulted in incorrect dimensions for its ', ...
+                'contents.'] )
+
+            % Verify the dimensions of the controls.
+            for k = 1 : n
+                testCase.verifyEqual( b(k).Position(3), 100, ...
+                    ['Setting the minimum dimensions of the ', ...
+                    'scrolling panel resulted in incorrect ', ...
+                    'dimensions for its children''s children.'] )
+            end % for
+
+        end % tPanelRespectsMinimumWidths
+
+        function tPanelRespectsMinimumHeights( testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ...
+                ConstructorName, ...
+                'Units', 'pixels', ...
+                'Position', [10, 10, 200, 200] );
+
+            % Fill it with some controls.
+            vBox = uix.VBoxFlex( 'Parent', scrollPanel, ...
+                'Padding', 10, ...
+                'Spacing', 10 );
+            n = 4;
+            b = gobjects( n, 1 );
+            for k = 1 : n
+                b(k) = uicontrol( 'Parent', vBox, 'String', k );
+            end % for
+
+            % Set dimensions.
+            vBox.MinimumHeights(:) = 100;
+            set( scrollPanel, 'MinimumWidths', 450, ...
+                'MinimumHeights', 450 )
+
+            % Verify the dimensions of the v-box.
+            testCase.verifyEqual( vBox.Position(3:4), [450, 450], ...
+                ['Setting the minimum dimensions of the scrolling ', ...
+                'panel resulted in incorrect dimensions for its ', ...
+                'contents.'] )
+
+            % Verify the dimensions of the controls.
+            for k = 1 : n
+                testCase.verifyEqual( b(k).Position(4), 100, ...
+                    ['Setting the minimum dimensions of the ', ...
+                    'scrolling panel resulted in incorrect ', ...
+                    'dimensions for its children''s children.'] )
+            end % for
+
+        end % tPanelRespectsMinimumHeights
+
+        function tSettingEmptyParentFromNonEmptyIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ConstructorName );
+            testCase.addTeardown( @() delete( scrollPanel ) )
+
+            % Verify that setting an empty value for the 'Parent' property
+            % is warning-free.
+            f = @() set( scrollPanel, 'Parent', [] );
+            testCase.verifyWarningFree( f, ...
+                ['The ', ConstructorName, ' component was not ', ...
+                'warning-free when its ''Parent'' property was ', ...
+                'changed from a nonempty value to an empty value.'] )
+
+        end % tSettingEmptyParentFromNonEmptyIsWarningFree
+
+        function tOffsetsAreCorrectInThePresenceOfSliders( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', scrollPanel, ...
+                'Units', 'pixels', ...
+                'Position', [1, 1, 1000, 1000] )
+
+            % Adjust the dimensions.
+            set( scrollPanel, 'Widths', 600, 'Heights', 600 )
+
+            % Verify the offsets.
+            testCase.verifyEqual( scrollPanel.VerticalOffsets, 0, ...
+                ['The ''VerticalOffsets'' property on the ', ...
+                'scrolling panel is not correct when a large ', ...
+                'child was added and the dimensions of the panel ', ...
+                'were large.'] )
+            testCase.verifyEqual( scrollPanel.HorizontalOffsets, 0, ...
+                ['The ''HorizontalOffsets'' property on the ', ...
+                'scrolling panel is not correcte when a large ', ...
+                'child was added and the dimensions of the panel ', ...
+                'were large.'] )
+
+        end % tOffsetsAreCorrectInThePresenceOfSliders
 
     end % methods ( Test, Sealed )
 
