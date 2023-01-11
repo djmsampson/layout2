@@ -4,11 +4,11 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
     properties ( ClassSetupParameter )
         % Top-level graphics parent type ('legacy'|'web'|'unrooted'). The
-        % corresponding name ('JavaFigure'|'WebFigure'|'Unrooted') appears
+        % corresponding name ('JavaFigure'|'WebFigure'|'Empty') appears
         % in test results and diagnostics.
         ParentType = struct( 'JavaFigure', 'legacy', ...
             'WebFigure', 'web', ...
-            'Unrooted', 'unrooted' )
+            'Empty', 'unrooted' )
     end % properties ( ClassSetupParameter )
 
     properties ( Access = protected )
@@ -30,6 +30,13 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.assumeMATLABVersionIsAtLeast( 'R2014b' )
 
         end % assumeMinimumMATLABVersion
+
+        function clearPersistentData( ~ )
+
+            % Clear classes and functions containing persistent data.
+            clear( 'Container', 'TabPanel', 'tracking' )
+
+        end % clearPersistentData
 
         function addToolboxPath( testCase )
 
@@ -84,8 +91,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.CurrentTrackingStatus = uix.tracking( 'query' );
 
             % Disable tracking for the duration of the tests.
-            uix.tracking( 'off' )
             testCase.addTeardown( @restoreTrackingStatus )
+            uix.tracking( 'off' )            
 
             function restoreTrackingStatus()
 
@@ -111,6 +118,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             switch versionString
                 case 'R2014b'
                     versionNumber = '8.4';
+                case 'R2015a'
+                    versionNumber = '8.5';
                 case 'R2015b'
                     versionNumber = '8.6';
                 case 'R2022a'
@@ -134,22 +143,35 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             % Assume that the component under test is rooted (i.e., there
             % is a nonempty top-level figure or uifigure ancestor).
             unrooted = strcmp( testCase.FigureFixture.Type, ...
-                testCase.ParentType.Unrooted );
+                testCase.ParentType.Empty );
             testCase.assumeFalse( unrooted, ...
                 'This test is not applicable to unrooted components.' )
 
         end % assumeGraphicsAreRooted
 
-        function assumeEmptyFigureParent( testCase )
+        function assumeComponentHasEmptyParent( testCase )
 
             % Assume that the figure fixture provides an empty figure
             % parent.
             unrooted = strcmp( testCase.FigureFixture.Type, ...
-                testCase.ParentType.Unrooted );
+                testCase.ParentType.Empty );
             testCase.assumeTrue( unrooted, ...
-                'This test is applicable with an empty figure parent.' )
+                ['This test is only applicable to components with ', ...
+                'an empty parent.'] )
+
+        end % assumeComponentHasEmptyParent
+
+        function assumeGraphicsAreWebBased( testCase )
+
+            % Assume that the component under test has a top-level web
+            % figure ancestor.
+            webBased = strcmp( testCase.FigureFixture.Type, ...
+                testCase.ParentType.WebFigure );
+            testCase.assumeTrue( webBased, ...
+                ['This test is only applicable to components ', ...
+                'based in web figures.'] )
             
-        end % assumeEmptyFigureParent
+        end % assumeGraphicsAreWebBased
 
         function assumeGraphicsAreNotWebBased( testCase )
 
@@ -161,7 +183,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 ['This test is not applicable to components ', ...
                 'based in web figures.'] )
 
-        end % assumeGraphicsAreNotWebBased
+        end % assumeGraphicsAreNotWebBased    
 
         function assumeTestEnvironmentHasDisplay( testCase )
 

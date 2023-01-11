@@ -56,7 +56,7 @@ classdef tPointerManager < utilities.mixin.TestInfrastructure
 
             % Get an instance of the PointerManager.
             fig = testCase.FigureFixture.Figure;
-            PM = uix.PointerManager.getInstance( fig );
+            uix.PointerManager.getInstance( fig );
 
             % Verify that setting the figure's 'Pointer' property is
             % warning-free.

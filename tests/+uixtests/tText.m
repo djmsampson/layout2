@@ -243,9 +243,9 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tOffsetIsSetCorrectlyInOlderVersions( testCase )
 
             % This test is only for MATLAB R2015b and later, and for
-            % unparented graphics.
+            % graphics with an empty parent.
             testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
-            testCase.assumeEmptyFigureParent()
+            testCase.assumeComponentHasEmptyParent()
 
             % Clear uix.Text from memory. This forces the Constant
             % properties to be redefined when an object of type uix.Text is
