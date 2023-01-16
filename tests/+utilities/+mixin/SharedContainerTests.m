@@ -700,6 +700,47 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
 
         end % tSetSelectedChild
 
+        function tAutoResizeChildrenIsNotAProperty( ...
+                testCase, ConstructorName )
+
+            % This test is only for containers (not panels).            
+            testCase.assumeComponentIsAContainer( ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that it does not have the 'AutoResizeChildren'
+            % property.
+            hasAutoResizeChildren = ...
+                isprop( component, 'AutoResizeChildren' );
+            testCase.verifyFalse( hasAutoResizeChildren, ...
+                ['The ', ConstructorName, ' component has the ', ...
+                '''AutoResizeChildren'' property. '] )
+
+        end % tAutoResizeChildrenIsNotAProperty
+
+        function tAutoResizeChildrenIsOffForPanels( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels (not containers).            
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % The 'AutoResizeChildren' property was added to
+            % matlab.ui.container.Panel in R2017a, so we need to check
+            % whether this property exists to accommodate older releases.
+            if isprop( component, 'AutoResizeChildren' )
+                autoResizeKids = char( component.AutoResizeChildren );
+                testCase.verifyEqual( autoResizeKids, 'off', ...
+                    ['Expected the ''AutoResizeChildren'' property ', ...
+                    'of the ', ConstructorName, ' component to be ', ...
+                    '''off''.'] )
+            end % if
+
+        end % tAutoResizeChildrenIsOffForPanels
+
     end % methods ( Test, Sealed )
 
     methods ( Sealed, Access = protected )
@@ -770,6 +811,34 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
                 'the ''SelectedChild'' property.'] )
 
         end % assumeComponentHasSelectedChildProperty
+
+        function assumeComponentIsAPanel( testCase, ConstructorName )
+
+            % Assume that the component, specified by ConstructorName, has
+            % matlab.ui.container.Panel as one of its superclasses.
+            panelClassName = 'matlab.ui.container.Panel';
+            isapanel = ismember( panelClassName, ...
+                superclasses( ConstructorName ) );
+            testCase.assumeTrue( isapanel, ...
+                ['This test is only applicable to subclasses of ', ...
+                panelClassName, '.'] )
+
+        end % assumeComponentIsAPanel
+
+        function assumeComponentIsAContainer( testCase, ConstructorName )
+
+            % Assume that the component, specified by ConstructorName, has
+            % uix.Container (and thus
+            % matlab.ui.container.internal.UIContainer) as one of its
+            % superclasses.
+            containerClassName = 'uix.Container';
+            isacontainer = ismember( containerClassName, ...
+                superclasses( ConstructorName ) );
+            testCase.assumeTrue( isacontainer, ...
+                ['This test is only applicable to subclasses of ', ...
+                containerClassName, '.'] )
+
+        end % assumeComponentIsAContainer
 
     end % methods ( Sealed, Access = protected )
 
