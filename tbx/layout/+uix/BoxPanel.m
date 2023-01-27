@@ -291,9 +291,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MaximizeTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MaximizeTooltipString'' must be a string.' )
+            value = validateScalarStringOrCharacterArray( value, ...
+                'MaximizeTooltipString' );
             
             % Set
             obj.MaximizeTooltipString = value;
@@ -306,9 +305,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MinimizeTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MinimizeTooltipString'' must be a string.' )
+            value = validateScalarStringOrCharacterArray( value, ...
+                'MinimizeTooltipString' );
             
             % Set
             obj.MinimizeTooltipString = value;
@@ -321,9 +319,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.UndockTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''UndockTooltipString'' must be a string.' )
+            value = validateScalarStringOrCharacterArray( value, ...
+                'UndockTooltipString' );
             
             % Set
             obj.UndockTooltipString = value;
@@ -336,9 +333,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.DockTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''DockTooltipString'' must be a string.' )
+            value = validateScalarStringOrCharacterArray( value, ...
+                'DockTooltipString' );
             
             % Set
             obj.DockTooltipString = value;
@@ -351,9 +347,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.HelpTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HelpTooltipString'' must be a string.' )
+            value = validateScalarStringOrCharacterArray( value, ...
+                'HelpTooltipString' );
             
             % Set
             obj.HelpTooltipString = value;
@@ -365,11 +360,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.CloseTooltipString( obj, value )
             
-            % assert that value is a char array
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''CloseTooltipString'' must be a string.' )
+            % Check
+            value = validateScalarStringOrCharacterArray( value, ...
+                'CloseTooltipString' );
             
+            % Set
             obj.CloseTooltipString = value;
             
             % Mark as dirty
@@ -644,3 +639,26 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     end % helper methods
     
 end % classdef
+
+function value = validateScalarStringOrCharacterArray( value, propertyName )
+%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a 
+%scalar string or a character array.
+
+% Check if we have a string scalar.
+if isa( value, 'string' ) && isscalar( value )
+    % Convert the string to a character array, handling the missing case
+    % separately.
+    if ismissing( value )
+        value = '';
+    else
+        value = char( value );
+    end % if
+end % if
+
+% Check that we have a character array.
+assert( ischar( value ), ...
+    'uix:InvalidPropertyValue', ...
+    ['Property ''', propertyName, ''' must be a scalar ', ...
+    'string or a character array.'] )
+
+end % validateScalarStringOrCharacterArray

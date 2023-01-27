@@ -1,6 +1,18 @@
 classdef ( Abstract ) BoxPanelTests < utilities.mixin.SharedPanelTests
     %BOXPANELTESTS Tests common to box panels.
 
+    properties ( Constant )
+        % Box panel properties that should support both strings and
+        % character arrays.
+        TooltipStringProperties = {
+            'MaximizeTooltipString';
+            'MinimizeTooltipString';
+            'UndockTooltipString';
+            'DockTooltipString';
+            'HelpTooltipString';
+            'CloseTooltipString'}
+    end % properties ( Constant )
+
     methods ( Test, Sealed )
 
         function tPassingShadowColorToConstructorIsCorrect( ...
@@ -153,6 +165,91 @@ classdef ( Abstract ) BoxPanelTests < utilities.mixin.SharedPanelTests
                 'switch off the axes'' ''ContentsVisible'' property.'] )
 
         end % tAxesSelectionWhenMinimizedIsCorrect
+
+        function tTooltipStringPropertiesSupportStrings( ...
+                testCase, ConstructorName )
+
+            % This test is only valid for MATLAB R2016b onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );                        
+
+            % Create a string (in a way that's compatible with R2016b and
+            % won't cause errors in earlier versions). Note that double
+            % quotes are not accepted in code files in R2016b and earlier.
+            testString = string( 'Test' ); %#ok<STRQUOT> 
+
+            % For each tooltip string property, verify that it supports
+            % setting a string value (storing it as a character array).
+            expectedValue = char( testString );
+            tooltipStringProperties = testCase.TooltipStringProperties;
+            for k = 1 : length( tooltipStringProperties )
+                propertyName = tooltipStringProperties{k};
+                component.(propertyName) = testString;
+                testCase.verifyEqual( component.(propertyName), ...
+                    expectedValue, ['Setting the ''', propertyName, ...
+                    ''' property with a string value on the ', ...
+                    ConstructorName, ' component did not assign the ', ...
+                    'value correctly.'] )
+            end % for
+
+        end % tTooltipStringPropertiesSupportStrings
+
+        function tTooltipStringPropertiesSupportMissingStrings( ...
+                testCase, ConstructorName )
+
+            % This test is only valid for MATLAB R2016b onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );                        
+
+            % Create a missing string.
+            testString = string( NaN );
+
+            % For each tooltip string property, verify that setting a
+            % missing value stores the 0-by-0 character array.
+            expectedValue = char.empty( 0, 0 );
+            tooltipStringProperties = testCase.TooltipStringProperties;
+            for k = 1 : length( tooltipStringProperties )
+                propertyName = tooltipStringProperties{k};
+                component.(propertyName) = testString;
+                testCase.verifyEqual( component.(propertyName), ...
+                    expectedValue, ['Setting the ''', propertyName, ...
+                    ''' property with a missing string value on the ', ...
+                    ConstructorName, ' component did not assign the ', ...
+                    'value correctly.'] )
+            end % for
+
+        end % tTooltipStringPropertiesSupportMissingStrings
+
+        function tTooltipStringPropertiesErrorForNonScalarStrings( ...
+                testCase, ConstructorName )
+
+            % This test is only valid for MATLAB R2016b onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Create a non-scalar string.
+            testString = string( {'A', 'B'} ); %#ok<STRCLQT>
+
+            % For each tooltip string property, verify that setting a
+            % non-scalar value causes an error.
+            tooltipStringProperties = testCase.TooltipStringProperties;
+            for k = 1 : length( tooltipStringProperties )
+                propertyName = tooltipStringProperties{k};
+                f = @() set( component, propertyName, testString );
+                testCase.verifyError( f, 'uix:InvalidPropertyValue', ...
+                    ['Setting the ''', propertyName, ...
+                    ''' property with a non-scalar string value on ', ...
+                    'the ', ConstructorName, ' component did not ', ...
+                    'cause the value correctly.'] )
+            end % for
+
+        end % tTooltipStringPropertiesErrorForNonScalarStrings
 
     end % methods ( Test, Sealed )
 
