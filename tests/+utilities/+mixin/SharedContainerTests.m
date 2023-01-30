@@ -741,6 +741,55 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
 
         end % tAutoResizeChildrenIsOffForPanels
 
+        function tSettingAutoResizeChildrenToOnIsOverridden( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels (not containers).            
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % This test is only for web graphics.
+            testCase.assumeGraphicsAreWebBased()
+
+            % The 'AutoResizeChildren' property was added to
+            % matlab.ui.container.Panel in R2017a, so we need to be in this
+            % version or later to run this test.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
+
+            % Create the component, setting 'AutoResizeChildren' to 'on'.
+            component = testCase.constructComponent( ConstructorName, ...
+                'AutoResizeChildren', 'on' );
+            
+            % Verify that the constructor switched this property off.
+            autoResizeKids = char( component.AutoResizeChildren );
+            testCase.verifyEqual( autoResizeKids, 'off', ...
+                ['The ', ConstructorName, ' constructor did not ', ...
+                'turn off the ''AutoResizeChildren'' property.'] )
+
+        end % tSettingAutoResizeChildrenToOnIsOverridden
+
+        function tSettingAutoResizeChildrenToOffIsPreserved( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels (not containers).
+            testCase.assumeComponentIsAPanel( ConstructorName )           
+
+            % The 'AutoResizeChildren' property was added to
+            % matlab.ui.container.Panel in R2017a, so we need to be in this
+            % version or later to run this test.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
+
+            % Create the component, setting 'AutoResizeChildren' to 'on'.
+            component = testCase.constructComponent( ConstructorName, ...
+                'AutoResizeChildren', 'off' );
+
+            % Verify that the constructor switched this property off.
+            autoResizeKids = char( component.AutoResizeChildren );
+            testCase.verifyEqual( autoResizeKids, 'off', ...
+                ['The ', ConstructorName, ' constructor did not ', ...
+                'turn off the ''AutoResizeChildren'' property.'] )
+
+        end % tSettingAutoResizeChildrenToOffIsPreserved
+
     end % methods ( Test, Sealed )
 
     methods ( Sealed, Access = protected )

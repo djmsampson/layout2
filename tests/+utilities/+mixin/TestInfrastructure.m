@@ -124,6 +124,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '8.6';
                 case 'R2016b'
                     versionNumber = '9.1';
+                case 'R2017a'
+                    versionNumber = '9.2';
                 case 'R2022a'
                     versionNumber = '9.12';
                 otherwise

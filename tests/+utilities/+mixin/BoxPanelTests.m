@@ -249,7 +249,7 @@ classdef ( Abstract ) BoxPanelTests < utilities.mixin.SharedPanelTests
                     'cause the value correctly.'] )
             end % for
 
-        end % tTooltipStringPropertiesErrorForNonScalarStrings
+        end % tTooltipStringPropertiesErrorForNonScalarStrings        
 
     end % methods ( Test, Sealed )
 
