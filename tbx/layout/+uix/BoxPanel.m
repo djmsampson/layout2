@@ -133,13 +133,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 @obj.onTitleChanged );
             
             % Draw buttons
-            obj.redrawButtons()
-
-            % Ensure that the AutoResizeChildren panel property is turned 
-            % off. This property was added to panels in R2017a.
-            if isprop( obj, 'AutoResizeChildren' )
-                varargin = [varargin, {'AutoResizeChildren', 'off'}];
-            end % if
+            obj.redrawButtons()            
             
             % Set properties
             try

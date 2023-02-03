@@ -19,13 +19,7 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
             %  p = uix.Panel() constructs a standard panel.
             %
             %  p = uix.Panel(p1,v1,p2,v2,...) sets parameter p1 to value
-            %  v1, etc.
-
-            % Ensure that the AutoResizeChildren panel property is turned 
-            % off. This property was added to panels in R2017a.
-            if isprop( obj, 'AutoResizeChildren' )
-                varargin = [varargin, {'AutoResizeChildren', 'off'}];
-            end % if
+            %  v1, etc.           
             
             % Set properties
             try
