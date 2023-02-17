@@ -9,7 +9,7 @@ classdef tFigureObserver < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             FO = uix.FigureObserver( fig );
 
             % Verify the size of the object.
@@ -40,7 +40,7 @@ classdef tFigureObserver < utilities.mixin.TestInfrastructure
         function tConstructorAssignsFigureAncestor( testCase )
 
             % Create an axes on the test figure (which may be empty).
-            fig = testCase.FigureFixture.Figure;
+            fig = ancestor( testCase.ParentFixture.Parent, 'figure' );
             ax = axes( 'Parent', fig );
             testCase.addTeardown( @() delete( ax ) )
 

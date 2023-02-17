@@ -39,7 +39,7 @@ classdef tSetPosition < utilities.mixin.TestInfrastructure
 
             % Attempt to reposition the figure.
             requiredPosition = [0.25, 0.25, 0.50, 0.50];
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             uix.setPosition( fig, requiredPosition, 'normalized' )
             testCase.verifyEqual( fig.Position, requiredPosition, ...
                 ['uix.setPosition has not set the ', ...
@@ -51,7 +51,7 @@ classdef tSetPosition < utilities.mixin.TestInfrastructure
 
             % Create an axes with 'ActivePositionProperty' set to
             % 'position'.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             ax = axes( 'Parent', fig, ...
                 'ActivePositionProperty', 'position' );
             testCase.addTeardown( @() delete( ax ) )

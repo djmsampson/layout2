@@ -15,7 +15,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             testCase.assumeGraphicsAreWebBased()
 
             % Create a tab panel.
-            testFig = testCase.FigureFixture.Figure;
+            testFig = testCase.ParentFixture.Parent;
             tabPanel = feval( ConstructorName, 'Parent', testFig );
 
             % Add two controls.

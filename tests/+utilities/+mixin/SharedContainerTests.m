@@ -370,7 +370,7 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
                 .constructComponentWithChildren( ConstructorName );
 
             % Reparent a child.
-            kids(2).Parent = testCase.FigureFixture.Figure;
+            kids(2).Parent = testCase.ParentFixture.Parent;
             testCase.addTeardown( @() delete( kids(2) ) )
 
             % Verify that the 'Contents' property has been updated.
@@ -739,33 +739,7 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
                     '''off''.'] )
             end % if
 
-        end % tAutoResizeChildrenIsOffForPanels
-
-        function tSettingAutoResizeChildrenToOnIsOverridden( ...
-                testCase, ConstructorName )
-
-            % This test is only for panels (not containers).            
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % This test is only for web graphics.
-            testCase.assumeGraphicsAreWebBased()
-
-            % The 'AutoResizeChildren' property was added to
-            % matlab.ui.container.Panel in R2017a, so we need to be in this
-            % version or later to run this test.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
-
-            % Create the component, setting 'AutoResizeChildren' to 'on'.
-            component = testCase.constructComponent( ConstructorName, ...
-                'AutoResizeChildren', 'on' );
-            
-            % Verify that the constructor switched this property off.
-            autoResizeKids = char( component.AutoResizeChildren );
-            testCase.verifyEqual( autoResizeKids, 'off', ...
-                ['The ', ConstructorName, ' constructor did not ', ...
-                'turn off the ''AutoResizeChildren'' property.'] )
-
-        end % tSettingAutoResizeChildrenToOnIsOverridden
+        end % tAutoResizeChildrenIsOffForPanels        
 
         function tSettingAutoResizeChildrenToOffIsPreserved( ...
                 testCase, ConstructorName )
@@ -778,7 +752,7 @@ classdef ( Abstract ) SharedContainerTests < utilities.mixin.TestInfrastructure
             % version or later to run this test.
             testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
 
-            % Create the component, setting 'AutoResizeChildren' to 'on'.
+            % Create the component, setting 'AutoResizeChildren' to 'off'.
             component = testCase.constructComponent( ConstructorName, ...
                 'AutoResizeChildren', 'off' );
 

@@ -1,14 +1,13 @@
-classdef FigureFixture < matlab.unittest.fixtures.Fixture
-    %FIGUREFIXTURE Provide either a Java figure (created with the figure
-    %function), or a web figure (created with the uifigure function) to act
-    %as the top-level graphics parent for the components under test.
-    %Alternatively, return an empty figure object (0-by-1) for testing
-    %components in an unrooted state.
+classdef ParentFixture < matlab.unittest.fixtures.Fixture
+    %PARENTFIXTURE Provide either a Java figure (created with the figure
+    %function), a web figure (created with the uifigure function), an empty
+    %figure object (0-by-1), or an unparented panel to act as the top-level
+    %graphics parent for the components under test.
 
     properties ( SetAccess = private )
         % Top-level graphics object, acting as the parent object of the
         % component under test.
-        Figure
+        Parent
         % Parent type, specified as a string.
         Type
     end % properties ( SetAccess = private )
@@ -18,38 +17,40 @@ classdef FigureFixture < matlab.unittest.fixtures.Fixture
         function setup( fixture )
             %SETUP Set up the fixture. Either create a new Java figure, a
             %new web figure with its "AutoResizeChildren" property set to
-            %"off", or return an empty figure.
+            %"off", an empty figure, or an unrooted panel.
 
             switch fixture.Type
                 case 'legacy'
-                    fixture.Figure = figure();
+                    fixture.Parent = figure();
                 case 'web'
                     % Create a new web figure.
-                    fixture.Figure = uifigure( ...
+                    fixture.Parent = uifigure( ...
                         'AutoResizeChildren', 'off' );
                 case 'unrooted'
                     % Create an empty figure.
-                    fixture.Figure = matlab.ui.Figure.empty( 0, 1 );
+                    fixture.Parent = matlab.ui.Figure.empty( 0, 1 );
+                case 'panel'
+                    fixture.Parent = uipanel( 'Parent', [] );
                 otherwise
-                    error( 'FigureFixture:UnrecognizedOption', ...
-                        'Unrecognized figure fixture option %s.', ...
+                    error( 'ParentFixture:UnrecognizedOption', ...
+                        'Unrecognized parent fixture option %s.', ...
                         fixture.Type )
             end % switch/case
 
-            % Delete the figure when the fixture is torn down.
-            fixture.addTeardown( @() delete( fixture.Figure ) );
+            % Delete the parent when the fixture is torn down.
+            fixture.addTeardown( @() delete( fixture.Parent ) );
 
         end % setup
 
-        function fixture = FigureFixture( type )
-            %FIGUREFIXTURE Construct the fixture, given (optionally) the
-            %type ('legacy', 'web', or 'unrooted'). The default fixture
-            %type is 'unrooted'.
+        function fixture = ParentFixture( type )
+            %PARENTFIXTURE Construct the fixture, given (optionally) the
+            %type ('legacy', 'web', 'unrooted', or 'panel'). The default
+            %fixture type is 'unrooted'.
 
             if nargin == 1
                 type = validatestring( type, ...
-                    {'legacy', 'web', 'unrooted'}, ...
-                    'FigureFixture', 'the parent type', 1 );
+                    {'legacy', 'web', 'unrooted', 'panel'}, ...
+                    'ParentFixture', 'the parent type', 1 );
             else
                 type = 'unrooted';
             end % if
@@ -68,9 +69,12 @@ classdef FigureFixture < matlab.unittest.fixtures.Fixture
                 case 'unrooted'
                     fixture.SetupDescription = ...
                         'Return an empty figure (0-by-1).';
+                case 'panel'
+                    fixture.SetupDescription = ...
+                        'Create an unparented panel.';
             end % switch/case
 
-            fixture.TeardownDescription = 'Delete the figure.';
+            fixture.TeardownDescription = 'Delete the parent graphics.';
 
         end % constructor
 
@@ -79,7 +83,7 @@ classdef FigureFixture < matlab.unittest.fixtures.Fixture
     methods ( Access = protected )
 
         function tf = isCompatible( fixture1, fixture2 )
-            %ISCOMPATIBLE Determine whether two FigureFixture objects are
+            %ISCOMPATIBLE Determine whether two ParentFixture objects are
             %compatible.
 
             tf = strcmp( fixture1.Type, fixture2.Type );

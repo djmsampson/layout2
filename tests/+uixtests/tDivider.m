@@ -46,7 +46,7 @@ classdef tDivider < utilities.mixin.TestInfrastructure
         function tConstructorSetsParentCorrectly( testCase )
 
             % Construct the divider.
-            parent = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             d = uix.Divider( 'Parent', parent );
 
             % Verify that the 'Parent' argument has been assigned.
@@ -63,7 +63,7 @@ classdef tDivider < utilities.mixin.TestInfrastructure
         function tConstructorSetsNameValuePairsCorrectly( testCase )
 
             % Construct the divider.
-            parent = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             pairs = testCase.NameValuePairs;
             d = uix.Divider( 'Parent', parent, pairs{:} );
 
@@ -83,7 +83,7 @@ classdef tDivider < utilities.mixin.TestInfrastructure
         function tIsMouseOverMethodReturnsLogicalScalar( testCase )
 
             % Create a divider.
-            parent = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             d = uix.Divider( 'Parent', parent );
 
             % Invoke the isMouseOver() method, with some fake event data.
@@ -103,7 +103,7 @@ classdef tDivider < utilities.mixin.TestInfrastructure
         function tResizingDividerIsWarningFree( testCase )
 
             % Create a divider.
-            parent = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             d = uix.Divider( 'Parent', parent );
 
             % Verify that resizing the divider is warning-free.
@@ -118,7 +118,7 @@ classdef tDivider < utilities.mixin.TestInfrastructure
         function tChangingOrientationIsWarningFree( testCase )
 
             % Create a divider.
-            parent = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             d = uix.Divider( 'Parent', parent );
 
             % Verify that changing the 'Orientation' property is

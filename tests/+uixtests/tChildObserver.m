@@ -31,7 +31,7 @@ classdef tChildObserver < utilities.mixin.TestInfrastructure
 
             % Use two handles to the test figure.
             testCase.assumeGraphicsAreRooted()
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             f = @() uix.ChildObserver( [fig, fig] );
             testCase.verifyError( f, 'uix:InvalidArgument', ...
                 ['The uix.ChildObserver constructor has accepted ', ...

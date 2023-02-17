@@ -3,20 +3,22 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
     %Toolbox test classes.
 
     properties ( ClassSetupParameter )
-        % Top-level graphics parent type ('legacy'|'web'|'unrooted'). The
-        % corresponding name ('JavaFigure'|'WebFigure'|'Empty') appears
+        % Top-level graphics parent type 
+        % ('legacy'|'web'|'unrooted'|'panel'). The corresponding name 
+        % ('JavaFigure'|'WebFigure'|'Empty'|'UnparentedPanel') appears
         % in test results and diagnostics.
         ParentType = struct( 'JavaFigure', 'legacy', ...
             'WebFigure', 'web', ...
-            'Empty', 'unrooted' )
+            'Empty', 'unrooted', ...
+            'UnparentedPanel', 'panel' )
     end % properties ( ClassSetupParameter )
 
     properties ( Access = protected )
-        % Figure fixture, providing the top-level parent
+        % Parent fixture, providing the top-level parent
         % graphics object for the components during the test procedures.
         % See also the ParentType class setup parameter and
-        % matlab.unittest.fixtures.FigureFixture.
-        FigureFixture
+        % matlab.unittest.fixtures.ParentFixture.
+        ParentFixture
         % Current GUI Layout Toolbox tracking status, to be restored after
         % the tests run. Tracking will be disabled whilst the tests run.
         CurrentTrackingStatus = 'unset'
@@ -58,12 +60,12 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % addToolboxPath
 
-        function applyFigureFixture( testCase, ParentType )
+        function applyParentFixture( testCase, ParentType )
 
             % Apply a custom fixture to provide the top-level parent
             % graphics object for the GUI Layout Toolbox components during
             % the test procedures.
-            % See also matlab.unittest.fixtures.FigureFixture
+            % See also matlab.unittest.fixtures.ParentFixture
 
             if strcmp( ParentType, 'web' )
                 % Filter all tests using a web figure graphics parent,
@@ -72,14 +74,14 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
             end % if
 
-            % Create the figure fixture using the corresponding parent
+            % Create the parent fixture using the corresponding parent
             % type.
-            figureFixture = matlab.unittest.fixtures...
-                .FigureFixture( ParentType );
-            testCase.FigureFixture = ...
-                testCase.applyFixture( figureFixture );
+            parentFixture = matlab.unittest.fixtures...
+                .ParentFixture( ParentType );
+            testCase.ParentFixture = ...
+                testCase.applyFixture( parentFixture );
 
-        end % applyFigureFixture
+        end % applyParentFixture
 
         function disableTracking( testCase )
 
@@ -146,9 +148,10 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
             % Assume that the component under test is rooted (i.e., there
             % is a nonempty top-level figure or uifigure ancestor).
-            unrooted = strcmp( testCase.FigureFixture.Type, ...
-                testCase.ParentType.Empty );
-            testCase.assumeFalse( unrooted, ...
+            rooted = ismember( testCase.ParentFixture.Type, ...
+                {testCase.ParentType.JavaFigure, ...
+                testCase.ParentType.WebFigure} );
+            testCase.assumeTrue( rooted, ...
                 'This test is not applicable to unrooted components.' )
 
         end % assumeGraphicsAreRooted
@@ -157,9 +160,9 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
             % Assume that the figure fixture provides an empty figure
             % parent.
-            unrooted = strcmp( testCase.FigureFixture.Type, ...
+            hasEmptyParent = strcmp( testCase.ParentFixture.Type, ...
                 testCase.ParentType.Empty );
-            testCase.assumeTrue( unrooted, ...
+            testCase.assumeTrue( hasEmptyParent, ...
                 ['This test is only applicable to components with ', ...
                 'an empty parent.'] )
 
@@ -169,7 +172,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
             % Assume that the component under test has a top-level web
             % figure ancestor.
-            webBased = strcmp( testCase.FigureFixture.Type, ...
+            webBased = strcmp( testCase.ParentFixture.Type, ...
                 testCase.ParentType.WebFigure );
             testCase.assumeTrue( webBased, ...
                 ['This test is only applicable to components ', ...
@@ -181,7 +184,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
             % Assume that the component under test does not have a
             % top-level web figure ancestor.
-            webBased = strcmp( testCase.FigureFixture.Type, ...
+            webBased = strcmp( testCase.ParentFixture.Type, ...
                 testCase.ParentType.WebFigure );
             testCase.assumeFalse( webBased, ...
                 ['This test is not applicable to components ', ...
@@ -222,11 +225,11 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
 
-            % Construct the component under test, using the figure fixture,
+            % Construct the component under test, using the parent fixture,
             % and passing through any arguments for the component
             % constructor.
             component = feval( constructorName, ...
-                'Parent', testCase.FigureFixture.Figure, varargin{:} );
+                'Parent', testCase.ParentFixture.Parent, varargin{:} );
             testCase.addTeardown( @() delete( component ) )
 
         end % constructComponent

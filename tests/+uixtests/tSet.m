@@ -21,7 +21,7 @@ classdef tSet < utilities.mixin.TestInfrastructure
         function tSetWithOneArgumentIsWarningFree( testCase )
 
             % Call uix.set with one input argument.
-            f = @() uix.set( testCase.FigureFixture.Figure );
+            f = @() uix.set( testCase.ParentFixture.Parent );
             testCase.verifyWarningFree( f, ...
                 ['uix.set has issued a warning when called ', ...
                 'with one input argument.'] )
@@ -35,7 +35,7 @@ classdef tSet < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreNotWebBased()
 
             % Make a copy of the figure from the fixture.
-            fig1 = testCase.FigureFixture.Figure;
+            fig1 = testCase.ParentFixture.Parent;
             fig2 = copyobj( fig1, groot() );
             testCase.addTeardown( @() delete( fig2 ) );
             % Invoke uix.set on the figure from the fixture.
@@ -59,7 +59,7 @@ classdef tSet < utilities.mixin.TestInfrastructure
                 'Name', 'Test Figure', ...
                 'Units', 'normalized', ...
                 'Position', [0.25, 0.25, 0.50, 0.50]};
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             uix.set( fig, pairs{:} )
 
             % Verify that the figure properties were assigned correctly.

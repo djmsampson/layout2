@@ -46,8 +46,8 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tConstructorReturnsScalarObject( testCase )
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Verify that the output is scalar.
             testCase.verifySize( t, [1, 1], ...
@@ -71,9 +71,9 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tConstructorAssignsNameValuePairs( testCase )
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             pairs = testCase.NameValuePairs;
-            t = uix.Text( 'Parent', fig, pairs{:} );
+            t = uix.Text( 'Parent', parent, pairs{:} );
 
             % Verify that each name-value pair has been set correctly.
             for k = 1 : 2 : length( pairs )-1
@@ -94,8 +94,8 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tGetBeingDeletedReturnsCorrectValue( testCase )
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Verify that 'BeingDeleted' is either 'on' or 'off'.
             beingDeleted = char( t.BeingDeleted );
@@ -108,8 +108,8 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tGetExtentReturnsCorrectValue( testCase )
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Verify that 'Extent' is a 4-element numeric vector containing
             % nonnegative values.
@@ -129,8 +129,8 @@ classdef tText < utilities.mixin.TestInfrastructure
         function tGetTypeReturnsCorrectValue( testCase )
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Verify the 'Type' property is correct.
             testCase.verifyEqual( t.Type, 'uicontrol', ...
@@ -163,8 +163,8 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Set the 'HorizontalAlignment' property.
             hAlignments = {'left', 'center', 'right'};
@@ -184,8 +184,8 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Set the 'VerticalAlignment' property.
             vAlignments = {'bottom', 'middle', 'top'};
@@ -222,9 +222,9 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.applyFixture( fixture );
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            testCase.assumeEmpty( fig )
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            testCase.assumeEmpty( parent )
+            t = uix.Text( 'Parent', parent );
             testCase.addTeardown( @() delete( t ) )
 
             % Obtain the offset value. Disable the warning about converting
@@ -261,8 +261,8 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.applyFixture( fixture );
 
             % Create an object.
-            fig = testCase.FigureFixture.Figure;
-            t = uix.Text( 'Parent', fig );
+            parent = testCase.ParentFixture.Parent;
+            t = uix.Text( 'Parent', parent );
 
             % Obtain the offset value. Disable the warning about converting
             % an object to a structure for the duration of the test.

@@ -28,6 +28,6 @@ classdef tHBoxFlex < utilities.mixin.SharedBoxTests & ...
             'Widths', [-1, -2, 100, -1], ...
             'MinimumWidths', [0, 1, 2, 0]
             }
-    end % properties ( Constant )
+    end % properties ( Constant )   
 
 end % class

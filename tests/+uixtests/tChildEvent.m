@@ -14,14 +14,14 @@ classdef tChildEvent < utilities.mixin.TestInfrastructure
 
         function tConstructorStoresInput( testCase )
 
-            fig = testCase.FigureFixture.Figure;
-            CE = uix.ChildEvent( fig );
+            parent = testCase.ParentFixture.Parent;
+            CE = uix.ChildEvent( parent );
             diagnostic = ['The uix.ChildEvent constructor did not ', ...
                 'store the given input in its ''Child'' property.'];
-            if isempty( fig )
+            if isempty( parent )
                 testCase.verifyEmpty( CE.Child, diagnostic )
             else
-                testCase.verifySameHandle( CE.Child, fig, diagnostic )
+                testCase.verifySameHandle( CE.Child, parent, diagnostic )
             end % if
 
         end % tConstructorStoresInput

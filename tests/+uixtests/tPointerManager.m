@@ -9,7 +9,7 @@ classdef tPointerManager < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Get an instance of the PointerManager.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             PM = uix.PointerManager.getInstance( fig );
 
             % Verify that the object is scalar.
@@ -31,7 +31,7 @@ classdef tPointerManager < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Get an instance of the PointerManager.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             PM = uix.PointerManager.getInstance( fig );
 
             % Set the figure pointer.
@@ -55,7 +55,7 @@ classdef tPointerManager < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Get an instance of the PointerManager.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             uix.PointerManager.getInstance( fig );
 
             % Verify that setting the figure's 'Pointer' property is

@@ -12,7 +12,7 @@ classdef tFlex < utilities.mixin.TestInfrastructure
             FD = utilities.FlexDummy();
 
             % Set the pointer.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             FD.dummySetPointer( fig, 'circle' );
 
             % Delete the dummy.
@@ -34,7 +34,7 @@ classdef tFlex < utilities.mixin.TestInfrastructure
             FD = utilities.FlexDummy();
 
             % Set the pointer.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             pointer = 'circle';
             FD.dummySetPointer( fig, pointer );
 
@@ -55,7 +55,7 @@ classdef tFlex < utilities.mixin.TestInfrastructure
             FD = utilities.FlexDummy();
 
             % Set the pointer.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             initialPointer = 'circle';
             FD.dummySetPointer( fig, initialPointer );
 
@@ -80,7 +80,7 @@ classdef tFlex < utilities.mixin.TestInfrastructure
             FD = utilities.FlexDummy();
 
             % Set the pointer.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             initialPointer = 'circle';
             FD.dummySetPointer( fig, initialPointer );
 

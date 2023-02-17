@@ -76,8 +76,8 @@ classdef EmptyTests < utilities.mixin.TestInfrastructure
                 testCase, ConstructorName )
 
             % Create an HBox containing an empty component and a uicontrol.
-            testFig = testCase.FigureFixture.Figure;
-            hBox = uiextras.HBox( 'Parent', testFig, ...
+            parent = testCase.ParentFixture.Parent;
+            hBox = uiextras.HBox( 'Parent', parent, ...
                 'Units', 'pixels', ...
                 'Position', [1, 1, 500, 500] );
             testCase.addTeardown( @() delete( hBox ) )
@@ -96,9 +96,9 @@ classdef EmptyTests < utilities.mixin.TestInfrastructure
                 testCase, ConstructorName )
 
             % Create an HBox with a specific color.
-            testFig = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             requiredColor = [1, 0, 0];
-            hBox = uiextras.HBox( 'Parent', testFig, ...
+            hBox = uiextras.HBox( 'Parent', parent, ...
                 'BackgroundColor', requiredColor );
             testCase.addTeardown( @() delete( hBox ) )
 
@@ -118,8 +118,8 @@ classdef EmptyTests < utilities.mixin.TestInfrastructure
                 testCase, ConstructorName )
 
             % Create an HBox and add an empty component.
-            testFig = testCase.FigureFixture.Figure;
-            hBox = uiextras.HBox( 'Parent', testFig );
+            parent = testCase.ParentFixture.Parent;
+            hBox = uiextras.HBox( 'Parent', parent );
             testCase.addTeardown( @() delete( hBox ) )
             emptyComponent = feval( ConstructorName, 'Parent', hBox );
 
@@ -140,9 +140,9 @@ classdef EmptyTests < utilities.mixin.TestInfrastructure
                 testCase, ConstructorName )
 
             % Create an HBox with a specific color.
-            testFig = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             requiredColor = [1, 0, 0];
-            hBox = uiextras.HBox( 'Parent', testFig, ...
+            hBox = uiextras.HBox( 'Parent', parent, ...
                 'BackgroundColor', requiredColor );
             testCase.addTeardown( @() delete( hBox ) )
 

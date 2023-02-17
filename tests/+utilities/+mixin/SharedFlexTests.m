@@ -1,22 +1,85 @@
 classdef ( Abstract ) SharedFlexTests < ...
         utilities.mixin.SharedContainerTests
-    %FLEXIBLECONTAINERTESTS Additional tests common to all flexible
-    %containers (*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
-    
+    %SHAREDFLEXTESTS Additional tests common to all flexible containers
+    %(*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
+
     methods ( Test, Sealed )
-        
-        function testMouseOverDividerInDockedFigure( testcase, ConstructorName )
+
+        function tDraggingDividerIsWarningFree( testCase, ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add children.
+            uicontrol( component )
+            uicontrol( component )
+
+            % Identify the dividers.
+            c = hgGetTrueChildren( component );
+            d = findobj( c, 'Tag', 'uix.Divider', 'Visible', 'on' );
+
+            % Wait until the figure renders.
+            pause( 5 )
+
+            % The direction of the drag operation will be either horizontal
+            % or vertical.
+            if ~isempty( strfind( ConstructorName, 'VBox' ) ) %#ok<*STREMP>
+                offset = [0, 10];
+            else
+                % Offset for h-boxes and grids.
+                offset = [10, 0];
+            end % if
+
+            testCase.verifyWarningFree( @dragger, ...
+                ['Dragging a divider in the ', ConstructorName, ...
+                ' component was not warning-free.'] )
+
+            function dragger()
+
+                % Move the mouse pointer.
+                r = groot();
+                testFig = ancestor( component, 'figure' );
+                r.PointerLocation = testFig.Position(1:2) + ...
+                    d.Position(1:2) + [0, d.Position(4)/2];
+
+                % Simulate a click and drag operation on the divider.
+
+                % Create the robot.
+                bot = java.awt.Robot();
+
+                % Click.
+                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+                % Drag.
+                for k = 1 : 10
+                    pointerLoc = r.PointerLocation;
+                    r.PointerLocation = pointerLoc + offset;
+                    pause( 0.05 )
+                end % for
+
+                % Let go.
+                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
+
+            end % dragger
+
+        end % tDraggingDividerIsWarningFree
+
+        function tHoveringMouseOverDividerInDockedFigure( testcase, ConstructorName )
             % g1334965: Add test for g1330841: Mouse-over-divider detection
             % does not work for docked figures in R2015b
-            
+
             import matlab.unittest.constraints.Eventually
             import matlab.unittest.constraints.Matches
-            
+
             % Abort for unparented cases and in unsuitable environments
             testcase.assumeGraphicsAreRooted()
             testcase.assumeGraphicsAreNotWebBased()
             testcase.assumeTestEnvironmentHasDisplay()
-            
+
             % Build the flex
             c = testcase.constructComponent( ConstructorName );
             f = c.Parent;
@@ -44,21 +107,19 @@ classdef ( Abstract ) SharedFlexTests < ...
                 testcase.verifyThat( @()f.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
                     sprintf( 'Wrong pointer in divider %d', ii ) );
             end
-            
+
         end % testMouseOverDividerInDockedFigure
-        
+
         function testMousePointerUpdateOnFlexChange( testcase, ConstructorName )
             % g1367326: Add test for g1346921: Mouse pointer gets confused
             % when moving between adjacent flex containers
-            
+
             % Abort for unparented cases and in unsuitable environments
             testcase.assumeGraphicsAreRooted()
             testcase.assumeTestEnvironmentHasDisplay()
-            
-            % Build
-            %fx = testcase.applyFixture(matlab.unittest.fixtures.FigureFixture(testcase.parentStr));
-            %f = fx.FigureHandle;
-            f = testcase.FigureFixture.Figure;
+
+            % Build           
+            f = testcase.ParentFixture.Parent;
             % Layout is component based
             switch ConstructorName
                 case {'uiextras.VBoxFlex', 'uix.VBoxFlex'}
@@ -117,22 +178,21 @@ classdef ( Abstract ) SharedFlexTests < ...
             testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
             moveMouseTo( figureOrigin + getpixelcenter( b1(1), true ) )
             testcase.verifyEqual( f.Pointer, 'arrow' );
-            
+
         end % testMousePointerUpdateOnFlexChange
-        
+
         function testMousePointerUpdateOnFlexClick( testcase, ConstructorName )
             % g1367337: Update flex container pointer on mouse press event
-            
+
             % Abort for unparented cases and in unsuitable environments
             testcase.assumeGraphicsAreRooted()
             testcase.assumeTestEnvironmentHasDisplay()
-            
+
             temp = strsplit( ConstructorName, '.' );
             ComponentName = temp{2};
             % Build
-            %fx = testcase.applyFixture(FigureFixture(testcase.parentStr));
-            %f = fx.FigureHandle;
-            f = testcase.FigureFixture.Figure;
+            
+            f = testcase.ParentFixture.Parent;
             nChildren = 4;
             h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
             b1 = gobjects( 1, nChildren );
@@ -166,11 +226,11 @@ classdef ( Abstract ) SharedFlexTests < ...
             testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
             Robot().mouseRelease( InputEvent.BUTTON1_MASK );
             drawnow
-            
+
         end % testMousePointerUpdateOnFlexClick
-        
+
     end % methods ( Test )
-    
+
 end % class
 
 function p = getFigureOrigin( f )
@@ -183,35 +243,36 @@ function p = getFigureOrigin( f )
 %  scaling is changed after MATLAB starts.
 
 switch f.WindowStyle
-    
+
     case 'docked'
-        
+
         t = 0.1; % pause during screen sweep
-        
+
         figure( f ) % bring to front
         pause( t )
-        li = event.listener( f, 'WindowMouseMotion', @onMouseMotion ); 
+        li = event.listener( f, 'WindowMouseMotion', @onMouseMotion );
         r = groot(); % graphics root
         m = r.MonitorPositions; % get monitor positions
+        m = sortrows( m, [1, 2], {'descend', 'descend'} );
         p = [NaN NaN]; % initialize result
         for ii = 1:size( m, 1 ) % sweep monitors
             nx = ceil( m(ii,3)/f.Position(3) ) + 1;
             ny = ceil( m(ii,4)/f.Position(4) ) + 1;
             x = linspace( m(ii,1), m(ii,1)+m(ii,3), nx*2 ); % horizontal grid
             y = linspace( m(ii,2), m(ii,2)+m(ii,4), ny*2 ); % vertical grid
-            for jj = 1:numel( x ) % sweep horizontally
-                for kk = 1:numel( y ) % sweep vertically
+            for kk = 1:numel( y ) % sweep vertically
+                for jj = 1:numel( x ) % sweep horizontally
                     r.PointerLocation = [x(jj), y(kk)]; % move pointer
                     pause( t ) % wait
                     if ~all( isnan( p ) ), return, end % found figure
                 end
             end
         end
-        
+
     otherwise
-        
+
         p = f.Position(1:2);
-        
+
 end % switch
 
     function onMouseMotion( ~, e )

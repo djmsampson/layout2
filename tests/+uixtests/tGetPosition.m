@@ -9,7 +9,7 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Verify that the output of uix.getPosition is of type double.
-            p = uix.getPosition( testCase.FigureFixture.Figure, 'pixels' );
+            p = uix.getPosition( testCase.ParentFixture.Parent, 'pixels' );
             testCase.verifyClass( p, 'double', ...
                 ['uix.getPosition has returned an ', ...
                 'output not of type double.'] )
@@ -22,7 +22,7 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Verify that the output of uix.getPosition is of size 1-by-4.
-            p = uix.getPosition( testCase.FigureFixture.Figure, 'pixels' );
+            p = uix.getPosition( testCase.ParentFixture.Parent, 'pixels' );
             testCase.verifySize( p, [1, 4], ...
                 ['uix.getPosition has returned an ', ...
                 'output with size not equal to [1, 4].'] )
@@ -33,8 +33,8 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
 
             % Create an axes with 'ActivePositionProperty' set to
             % 'position'.
-            fig = testCase.FigureFixture.Figure;
-            ax = axes( 'Parent', fig, ...
+            parent = testCase.ParentFixture.Parent;
+            ax = axes( 'Parent', parent, ...
                 'ActivePositionProperty', 'position' );
             testCase.addTeardown( @() delete( ax ) )
 
@@ -91,7 +91,7 @@ classdef tGetPosition < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Create a figure with normalized units.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             fig.Units = 'normalized';
             % Compute the figure's position in pixels.
             p = uix.getPosition( fig, 'pixels' );

@@ -136,7 +136,7 @@ classdef tNode < utilities.mixin.TestInfrastructure
             testCase.assumeGraphicsAreRooted()
 
             % Create a node.
-            fig = testCase.FigureFixture.Figure;
+            fig = testCase.ParentFixture.Parent;
             N = uix.Node( fig );
 
         end % createNode

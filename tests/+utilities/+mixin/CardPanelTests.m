@@ -114,9 +114,9 @@ classdef ( Abstract ) CardPanelTests < utilities.mixin.SharedPanelTests
         function cardPanel = createCardPanelWithControls( testCase )
 
             % Create a CardPanel with three controls.
-            fig = testCase.FigureFixture.Figure;
+            parent = testCase.ParentFixture.Parent;
             cardPanelConstructor = testCase.ConstructorName{1};
-            cardPanel = feval( cardPanelConstructor, 'Parent', fig );
+            cardPanel = feval( cardPanelConstructor, 'Parent', parent );
             testCase.addTeardown( @() delete( cardPanel ) )
             uicontrol( 'Parent', cardPanel, ...
                 'Style', 'frame', ...
