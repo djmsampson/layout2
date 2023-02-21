@@ -5,13 +5,14 @@ function results = runToolboxTests()
 rootFolder = fileparts( mfilename( 'fullpath' ) );
 
 % Disable the warning about name conflicts.
-ID = "MATLAB:dispatcher:nameConflict";
-w = warning( "query", ID );
+ID = 'MATLAB:dispatcher:nameConflict';
+w = warning( 'query', ID );
 warningCleanup = onCleanup( @() warning( w ) );
-warning( "off", ID )
+warning( 'off', ID )
 
 % Run the tests.
-results = runtests( rootFolder, 'IncludeSubfolders', true, ...
+results = runtests( rootFolder, ...
+    'IncludeSubfolders', true, ...
     'IncludeSubpackages', true );
 
 end % runToolboxTests

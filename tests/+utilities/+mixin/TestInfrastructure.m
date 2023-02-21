@@ -3,8 +3,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
     %Toolbox test classes.
 
     properties ( ClassSetupParameter )
-        % Top-level graphics parent type 
-        % ('legacy'|'web'|'unrooted'|'panel'). The corresponding name 
+        % Top-level graphics parent type
+        % ('legacy'|'web'|'unrooted'|'panel'). The corresponding name
         % ('JavaFigure'|'WebFigure'|'Empty'|'UnparentedPanel') appears
         % in test results and diagnostics.
         ParentType = struct( 'JavaFigure', 'legacy', ...
@@ -94,7 +94,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
             % Disable tracking for the duration of the tests.
             testCase.addTeardown( @restoreTrackingStatus )
-            uix.tracking( 'off' )            
+            uix.tracking( 'off' )
 
             function restoreTrackingStatus()
 
@@ -177,7 +177,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.assumeTrue( webBased, ...
                 ['This test is only applicable to components ', ...
                 'based in web figures.'] )
-            
+
         end % assumeGraphicsAreWebBased
 
         function assumeGraphicsAreNotWebBased( testCase )
@@ -190,7 +190,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 ['This test is not applicable to components ', ...
                 'based in web figures.'] )
 
-        end % assumeGraphicsAreNotWebBased    
+        end % assumeGraphicsAreNotWebBased
 
         function assumeTestEnvironmentHasDisplay( testCase )
 

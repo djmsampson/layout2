@@ -3,47 +3,74 @@ classdef ( Abstract ) SharedFlexTests < ...
     %SHAREDFLEXTESTS Additional tests common to all flexible containers
     %(*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
 
+    properties ( TestParameter )
+        % Sample flexible layout children sizes.
+        ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
+    end % properties ( TestParameter )
+
     methods ( Test, Sealed )
 
-        function tDraggingDividerIsWarningFree( testCase, ConstructorName )
+        function tDraggingDividerIsWarningFree( ...
+                testCase, ConstructorName, ChildrenSizes )
 
             % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
 
             % Create a component.
-            component = testCase.constructComponent( ConstructorName );
+            component = testCase.constructComponent( ConstructorName, ...
+                'Spacing', 10 );
 
             % Add children.
             uicontrol( component )
-            uicontrol( component )
+            uicontrol( component )            
 
             % Identify the dividers.
             c = hgGetTrueChildren( component );
             d = findobj( c, 'Tag', 'uix.Divider', 'Visible', 'on' );
 
             % Wait until the figure renders.
-            pause( 5 )
-
-            % The direction of the drag operation will be either horizontal
-            % or vertical.
-            if ~isempty( strfind( ConstructorName, 'VBox' ) ) %#ok<*STREMP>
-                offset = [0, 10];
+            fig = ancestor( component, 'figure' );
+            isuifigure = isempty( get( fig, 'JavaFrame_I' ) );
+            if isuifigure
+                pause( 5 )
             else
-                % Offset for h-boxes and grids.
-                offset = [10, 0];
+                pause( 1 )
             end % if
 
-            testCase.verifyWarningFree( @dragger, ...
-                ['Dragging a divider in the ', ConstructorName, ...
-                ' component was not warning-free.'] )
+            % The direction of the drag operation will be either horizontal
+            % or vertical. Set either the 'Widths' or 'Heights' property.
+            isvbox = ~isempty( ...
+                strfind( ConstructorName, 'VBox' ) ); %#ok<*STREMP>
+            if isvbox
+                dragOffsets = {[0, 10], [0, -10]};
+                component.Heights = ChildrenSizes;
+            else
+                % Offsets for h-boxes and grids.
+                dragOffsets = {[10, 0], [-10, 0]};
+                component.Widths = ChildrenSizes;
+            end % if
 
-            function dragger()
+            % Drag the divider in both directions.
+            for offset = dragOffsets
+                if isvbox
+                    initialOffset = [d.Position(3)/2, 0];
+                else
+                    initialOffset = [0, d.Position(4)/2];
+                end % if
+                testCase.verifyWarningFree( ...
+                    @() dragger( offset{1} ), ...
+                    ['Dragging a divider in the ', ConstructorName, ...
+                    ' component was not warning-free.'] )
+                pause( 0.5 )
+            end % for
+
+            function dragger( offset )
 
                 % Move the mouse pointer.
                 r = groot();
                 testFig = ancestor( component, 'figure' );
                 r.PointerLocation = testFig.Position(1:2) + ...
-                    d.Position(1:2) + [0, d.Position(4)/2];
+                    d.Position(1:2) + initialOffset;
 
                 % Simulate a click and drag operation on the divider.
 
@@ -68,59 +95,111 @@ classdef ( Abstract ) SharedFlexTests < ...
 
         end % tDraggingDividerIsWarningFree
 
-        function tHoveringMouseOverDividerInDockedFigure( testcase, ConstructorName )
-            % g1334965: Add test for g1330841: Mouse-over-divider detection
-            % does not work for docked figures in R2015b
+        function tClickingFlexibleLayoutIsWarningFree( ...
+                testCase, ConstructorName )
 
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Move the mouse pointer.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                getpixelcenter( component, true );
+
+            % Verify that clicking on it is warning-free.
+            testCase.verifyWarningFree( @clicker, ...
+                ['Clicking on a ', ConstructorName, ' component ', ...
+                'was not warning-free.'] )
+
+            function clicker()
+
+                % Create the robot.
+                bot = java.awt.Robot();
+
+                % Click.
+                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.25 )               
+
+                % Let go.
+                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
+                
+            end % clicker
+
+        end % tClickingFlexibleLayoutIsWarningFree
+
+        function tMouseOverDividerInDockedFigureUpdatesPointer( ...
+                testCase, ConstructorName )
+
+            % This test only applies to figures that can be docked.
+            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreNotWebBased()
+
+            % Create the flexible container.
+            component = testCase.constructComponent( ConstructorName, ...
+                'Padding', 10, ...
+                'Spacing', 10 );
+
+            % Add controls to the component.
+            for k = 1 : 9
+                uicontrol( 'Parent', component );
+            end % for
+
+            % Dock the test figure, focus it, and
+            testFig = ancestor( component, 'figure' );
+            testFig.WindowStyle = 'docked';
+            figure( testFig ) % bring to front
+
+            % Ensure that grids are two-dimensional.
+            if isa( component, 'uix.GridFlex' )
+                component.Widths = [-1, -1, -1];
+            end % if
+
+            % Find the dividers.
+            c = hgGetTrueChildren( component );
+            d = findobj( c, 'Tag', 'uix.Divider', 'Visible', 'on' );
+
+            % Move the mouse to the figure origin.
+            figureOrigin = getFigureOrigin( testFig );
+            moveMouseTo( figureOrigin )
+
+            % Check that we start with an arrow pointer.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['The mouse pointer over the ', ConstructorName, ...
+                ' component is not ''arrow'' when hovering over the ', ...
+                'lower left corner of the component.'] )
+
+            % Move the mouse over the dividers, and verify that the mouse
+            % pointer updates.
             import matlab.unittest.constraints.Eventually
             import matlab.unittest.constraints.Matches
 
-            % Abort for unparented cases and in unsuitable environments
-            testcase.assumeGraphicsAreRooted()
-            testcase.assumeGraphicsAreNotWebBased()
-            testcase.assumeTestEnvironmentHasDisplay()
+            for k = 1 : numel( d )
+                moveMouseTo( figureOrigin + getpixelcenter( d(k), true ) )
+                pointerFun = @() testFig.Pointer;
+                testCase.verifyThat( pointerFun, ...
+                    Eventually( Matches( '(left|right|top|bottom)' ) ), ...
+                    ['The mouse pointer over the ' ConstructorName, ...
+                    ' component did not update to ''left'', ''right''', ...
+                    ', ''top'', or ''bottom'' when moved over the ', ...
+                    'dividers in the flexible layout.'] )
+            end % for
 
-            % Build the flex
-            c = testcase.constructComponent( ConstructorName );
-            f = c.Parent;
-            f.WindowStyle = 'docked';
-            figure( f ) % bring to front
-            for ii = 1:9
-                uicontrol( 'Parent', c );
-            end
-            c.Padding = 10;
-            c.Spacing = 10;
-            % In case of grid, make sure you have a grid
-            if isa( c, 'uiextras.GridFlex' )
-                c.Widths = [-1 -1 -1];
-            end
-            % Find some dividers
-            d = findobj( hgGetTrueChildren( c ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            % Move to lower bottom
-            figureOrigin = getFigureOrigin( f );
-            moveMouseTo( figureOrigin )
-            % Check you start with an arrow pointer
-            testcase.verifyEqual( f.Pointer, 'arrow', 'Pointer should be arrow to start with' )
-            % Move over dividers and make sure you get the right ones
-            for ii = 1:numel( d )
-                moveMouseTo( figureOrigin + getpixelcenter( d(ii), true ) )
-                testcase.verifyThat( @()f.Pointer, Eventually( Matches( '(left|right|top|bottom)' ) ),...
-                    sprintf( 'Wrong pointer in divider %d', ii ) );
-            end
+        end % tMouseOverDividerInDockedFigureUpdatesPointer
 
-        end % testMouseOverDividerInDockedFigure
+        function tMousePointerUpdatesOnFlexChange( ...
+                testCase, ConstructorName )
 
-        function testMousePointerUpdateOnFlexChange( testcase, ConstructorName )
-            % g1367326: Add test for g1346921: Mouse pointer gets confused
-            % when moving between adjacent flex containers
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
 
-            % Abort for unparented cases and in unsuitable environments
-            testcase.assumeGraphicsAreRooted()
-            testcase.assumeTestEnvironmentHasDisplay()
+            % Create the component
+            testFig = testCase.ParentFixture.Parent;
 
-            % Build           
-            f = testcase.ParentFixture.Parent;
-            % Layout is component based
+            % Determine the layout based on the component type.
             switch ConstructorName
                 case {'uiextras.VBoxFlex', 'uix.VBoxFlex'}
                     childType = 'VBoxFlex';
@@ -131,158 +210,403 @@ classdef ( Abstract ) SharedFlexTests < ...
                 case {'uiextras.GridFlex', 'uix.GridFlex'}
                     childType = 'GridFlex';
                     parentType = 'Grid';
-            end
-            p = uiextras.(parentType)( 'Parent', f );
-            nChildren = 9;
-            c1 = uiextras.(childType)( 'Parent', p, 'Spacing', 10 );
-            b1 = gobjects( 1, nChildren );
-            for ii = 1:nChildren
-                b1(ii) = uicontrol( 'Parent', c1 );
-            end
-            c2 = uiextras.(childType)( 'Parent', p, 'Spacing', 10 );
-            b2 = gobjects( 1, nChildren );
-            for ii = 1:nChildren
-                b2(ii) = uicontrol( 'Parent', c2 );
-            end
+            end % switch/case
+
+            % Create the parent component, add two child layouts, then
+            % populate the child layouts with buttons.
+            parentComponent = uix.(parentType)( 'Parent', testFig );
+            numChildren = 9;
+
+            kid1 = uix.(childType)( 'Parent', parentComponent, ...
+                'Spacing', 10 );
+            buttons1 = gobjects( 1, numChildren );
+            for k = 1:numChildren
+                buttons1(k) = uicontrol( 'Parent', kid1 );
+            end % for
+
+            kid2 = uix.(childType)( 'Parent', parentComponent, ...
+                'Spacing', 10 );
+            buttons2 = gobjects( 1, numChildren );
+            for k = 1:numChildren
+                buttons2(k) = uicontrol( 'Parent', kid2 );
+            end % for
+
+            % Ensure that grids are two-dimensional.
             if strcmp( childType, 'GridFlex' )
-                p.Widths = -1;
-                c1.Widths = [-1 -1 -1];
-                c2.Widths = [-1 -1 -1];
-            end
-            % Find the dividers
-            d1 = findobj( hgGetTrueChildren( c1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            d2 = findobj( hgGetTrueChildren( c2 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            % Mark test elements
-            b1(1).BackgroundColor = 'r';
-            b2(2).BackgroundColor = 'g';
-            d1(end).BackgroundColor = 'c';
-            d2(end).BackgroundColor = 'm';
-            % Get figure origin
-            figureOrigin = getFigureOrigin( f );
-            % Move over a button
-            moveMouseTo( figureOrigin + getpixelcenter( b1(1), true ) )
-            testcase.verifyEqual( f.Pointer, 'arrow' );
-            % Move over a divider
-            moveMouseTo( figureOrigin + getpixelcenter( d1(end), true ) )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            % Move to the matching divider of the other flex
-            moveMouseTo( figureOrigin + getpixelcenter( d2(end), true ) )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            % Move back to a button
-            moveMouseTo( figureOrigin + getpixelcenter( b2(2), true ) )
-            testcase.verifyMatches( f.Pointer, 'arrow' );
-            % And the other way around
-            moveMouseTo( figureOrigin + getpixelcenter( d2(end), true ) )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            moveMouseTo( figureOrigin + getpixelcenter( d1(end), true ) )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            moveMouseTo( figureOrigin + getpixelcenter( b1(1), true ) )
-            testcase.verifyEqual( f.Pointer, 'arrow' );
+                parentComponent.Widths = -1;
+                kid1.Widths = [-1, -1, -1];
+                kid2.Widths = [-1, -1, -1];
+            end % if
 
-        end % testMousePointerUpdateOnFlexChange
+            % Find the dividers.
+            allKids1 = hgGetTrueChildren( kid1 );
+            div1 = findobj( allKids1, 'Tag', 'uix.Divider', ...
+                'Visible', 'on' );
+            allKids2 = hgGetTrueChildren( kid2 );
+            div2 = findobj( allKids2, 'Tag', 'uix.Divider', ...
+                'Visible', 'on' );
 
-        function testMousePointerUpdateOnFlexClick( testcase, ConstructorName )
-            % g1367337: Update flex container pointer on mouse press event
+            % Highlight the test elements.
+            buttons1(1).BackgroundColor = 'r';
+            buttons2(2).BackgroundColor = 'g';
+            div1(end).BackgroundColor = 'c';
+            div2(end).BackgroundColor = 'm';
 
-            % Abort for unparented cases and in unsuitable environments
-            testcase.assumeGraphicsAreRooted()
-            testcase.assumeTestEnvironmentHasDisplay()
+            % Move the mouse over a button.
+            figureOrigin = getFigureOrigin( testFig );
+            buttonCenter = figureOrigin + ...
+                getpixelcenter( buttons1(1), true );
+            moveMouseTo( buttonCenter )
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['The mouse pointer did not change to ''arrow''', ...
+                ' when moved over a button in a ', ConstructorName, ...
+                ' component.'] )
 
-            temp = strsplit( ConstructorName, '.' );
-            ComponentName = temp{2};
-            % Build
+            % Move the mouse over a divider.
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( div1(end), true );
+            moveMouseTo( dividerCenter )
+            testCase.verifyMatches( testFig.Pointer, ...
+                '(left|right|top|bottom)', ...
+                ['The mouse pointer did not change to ''left'', ', ...
+                '''right'', ''top'', or ''bottom'' when moved over ', ...
+                'a divider in a ', ConstructorName, ' component.'] )
+
+            % Move the mouse over the matching divider of the other
+            % flexible component.
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( div2(end), true );
+            moveMouseTo( dividerCenter )
+            testCase.verifyMatches( testFig.Pointer, ...
+                '(left|right|top|bottom)', ...
+                ['The mouse pointer did not change to ''left'', ', ...
+                '''right'', ''top'', or ''bottom'' when moved over ', ...
+                'a divider in a ', ConstructorName, ' component.'] )
+
+            % Move the mouse back to a button.
+            buttonCenter = figureOrigin + ...
+                getpixelcenter( buttons2(2), true );
+            moveMouseTo( buttonCenter )
+            testCase.verifyMatches( testFig.Pointer, 'arrow', ...
+                ['The mouse pointer did not change to ''arrow''', ...
+                ' when moved over a button in a ', ConstructorName, ...
+                ' component.'] )
+
+            % Repeat the test in reverse.
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( div2(end), true );
+            moveMouseTo( dividerCenter )
+            testCase.verifyMatches( testFig.Pointer, ...
+                '(left|right|top|bottom)', ...
+                ['The mouse pointer did not change to ''left'', ', ...
+                '''right'', ''top'', or ''bottom'' when moved over ', ...
+                'a divider in a ', ConstructorName, ' component.'] )
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( div1(end), true );
+            moveMouseTo( dividerCenter )
+            testCase.verifyMatches( testFig.Pointer, ...
+                '(left|right|top|bottom)', ...
+                ['The mouse pointer did not change to ''left'', ', ...
+                '''right'', ''top'', or ''bottom'' when moved over ', ...
+                'a divider in a ', ConstructorName, ' component.'] )
+            buttonCenter = figureOrigin + ...
+                getpixelcenter( buttons1(1), true );
+            moveMouseTo( buttonCenter )
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['The mouse pointer did not change to ''arrow''', ...
+                ' when moved over a button in a ', ConstructorName, ...
+                ' component.'] )
+
+        end % tMousePointerUpdatesOnFlexChange
+
+        function tMousePointerUpdatesOverDivider( ...
+                testCase, ConstructorName )
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Move the mouse to the center of a divider.
+            testFig = ancestor( component, 'figure' );
+            figureOrigin = getFigureOrigin( testFig );
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( dividers(1), true );
+            moveMouseTo( dividerCenter )
+            testCase.verifyMatches( testFig.Pointer, ...
+                '(left|right|top|bottom)', ...
+                ['The mouse pointer did not change to ''left'', ', ...
+                '''right'', ''top'', or ''bottom'' when moved over ', ...
+                'a divider in a ', ConstructorName, ' component.'] )
+
+        end % tMousePointerUpdatesOverDivider
+
+        function tClickingDividerIsWarningFree( testCase, ConstructorName )
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Move the mouse to the center of a divider.
+            testFig = ancestor( component, 'figure' );
+            figureOrigin = getFigureOrigin( testFig );
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( dividers(1), true );
+            moveMouseTo( dividerCenter )
+
+            % Verify that clicking the divider is warning-free.
+            testCase.verifyWarningFree( @clicker, ...
+                ['Clicking the divider in a ', ConstructorName, ...
+                ' component was not warning-free.'] )
+
+            function clicker()
+
+                % Create the robot.
+                bot = java.awt.Robot();
+
+                % Click.
+                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+                % Let go.
+                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+            end % clicker
+
+        end % tClickingDividerIsWarningFree
+
+        function tSettingBackgroundColorUpdatesDividers( ...
+                testCase, ConstructorName )
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Set the background color.
+            newColor = [1, 0, 0];
+            component.BackgroundColor = newColor;
+
+            % Verify that the dividers have been updated.
+            diagnostic = ['Setting the ''BackgroundColor'' of ', ...
+                'a ', ConstructorName, ' component did not ', ...
+                'update the color of the dividers correctly.'];
+            for k = 1 : length( dividers )
+                testCase.verifyEqual( dividers(k).BackgroundColor, ...
+                    newColor, diagnostic )
+                testCase.verifyEqual( dividers(k).ForegroundColor, ...
+                    newColor, diagnostic )
+            end % for
+
+        end % tSettingBackgroundColorUpdatesDividers
+
+        function tTurningOffDividerMarkingsSetsDividerMarkingsProperty( ...
+                testCase, ConstructorName )
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Switch off the divider markings.
+            component.DividerMarkings = 'off';
+
+            % Verify that the 'Markings' property of the dividers has been
+            % reset.
+            backgroundColorGrayLevel = 0.94;
+            for k = 1 : length( dividers )
+                dividerCData = dividers(k).CData;
+                expectedValue = backgroundColorGrayLevel * ...
+                    ones( size( dividerCData ) );
+                testCase.verifyEqual( dividerCData, expectedValue, ...
+                    ['Setting the ''DividerMarkings'' ', ...
+                    'property of the ', ConstructorName, ...
+                    ' component to ''off'' has not set the divider''s', ...
+                    ' ''Markings'' property to the expected value.'] )
+            end % for
+
+        end % tTurningOffDividerMarkingsSetsDividerMarkingsProperty
+
+        function tReparentingToEmptyFigureIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
             
-            f = testcase.ParentFixture.Parent;
-            nChildren = 4;
-            h1 = uiextras.(ComponentName)( 'Parent', f, 'Spacing', 10 );
-            b1 = gobjects( 1, nChildren );
-            for ii = 1:nChildren
-                b1(ii) = uicontrol( 'Parent', h1 );
-            end
-            % Find the dividers
-            d1 = findobj( hgGetTrueChildren( h1 ), 'Tag', 'uix.Divider', 'Visible', 'on' );
-            % Where will be the divider?
-            figureOrigin = getFigureOrigin( f );
-            dividerPosition = figureOrigin + getpixelcenter( d1(1), true );
-            % Unparent
-            h1.Parent = [];
-            % Place the mouse
-            moveMouseTo( dividerPosition )
-            testcase.verifyEqual( f.Pointer, 'arrow' );
-            % Parent
-            h1.Parent = f;
-            % Bring figure back into focus
-            figure( f );
-            % Click and check pointer
-            import java.awt.Robot;
-            import java.awt.event.*;
-            mouse = javaObjectEDT( 'java.awt.Robot' );
-            drawnow()
-            javaMethodEDT( 'mousePress', mouse, InputEvent.BUTTON1_MASK );
-            drawnow()
-            % Still sometimes needs a pose for the cursor change to take
-            % effect
-            pause( 0.01 )
-            testcase.verifyMatches( f.Pointer, '(left|right|top|bottom)' );
-            Robot().mouseRelease( InputEvent.BUTTON1_MASK );
-            drawnow
+            % Verify that setting its 'Parent' property to [] is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', [] );
+            testCase.verifyWarningFree( reparenter, ...
+                ['Reparenting the ', ConstructorName, ' component to ', ...
+                'an empty value was not warning-free.'] )
 
-        end % testMousePointerUpdateOnFlexClick
+        end % tReparentingToEmptyFigureIsWarningFree
+
+        function tDeletingChildRestoresPointer( testCase, ConstructorName )
+
+            % This test is for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
+
+            % Delete all the children.
+            delete( component.Children )
+            pause( 0.5 )
+
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Deleting the children of a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
+
+        end % tDeletingChildRestoresPointer
+
+        function tReparentingLayoutRestoresPointer( ...
+                testCase, ConstructorName )
+
+            % This test is for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
+
+            % Reparent the layout.
+            component.Parent = [];
+
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Reparenting a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
+
+        end % tReparentingLayoutRestoresPointer
 
     end % methods ( Test )
+
+    methods ( Access = private )
+
+        function [component, dividers] = ...
+                createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName )
+
+            % Create the component and add children.
+            component = testCase.constructComponent( ConstructorName, ...
+                'Spacing', 10 );
+            numChildren = 4;
+            buttons = gobjects( 1, numChildren );
+            for k = 1:numChildren
+                buttons(k) = uicontrol( 'Parent', component );
+            end % for
+
+            % Find the dividers.
+            allKids = hgGetTrueChildren( component );
+            dividers = findobj( allKids, 'Tag', 'uix.Divider', ...
+                'Visible', 'on' );
+
+        end % createFlexibleLayoutWithChildren
+
+    end % methods ( Access = private )
 
 end % class
 
 function p = getFigureOrigin( f )
-%getFigureOrigin  Get location on screen of figure origin
+%GETFIGUREORIGIN Get figure origin location onscreen.
 %
-%  p = getFigureOrigin(f) returns the location on screen of the bottom-left
-%  corner of the figure f.
+%  p = getFigureOrigin( f ) returns the location onscreen of the
+%  bottom-left corner of the figure f.
 %
 %  The method used is unreliable if the display resolution or
 %  scaling is changed after MATLAB starts.
 
-switch f.WindowStyle
+if ~strcmp( f.WindowStyle, 'docked' )
 
-    case 'docked'
+    % Undocked figures return their position as expected.
+    p = f.Position(1:2);
 
-        t = 0.1; % pause during screen sweep
+else
+    % Docked figures are problematic and require special treatment to find
+    % their correct position.
 
-        figure( f ) % bring to front
-        pause( t )
-        li = event.listener( f, 'WindowMouseMotion', @onMouseMotion );
-        r = groot(); % graphics root
-        m = r.MonitorPositions; % get monitor positions
-        m = sortrows( m, [1, 2], {'descend', 'descend'} );
-        p = [NaN NaN]; % initialize result
-        for ii = 1:size( m, 1 ) % sweep monitors
-            nx = ceil( m(ii,3)/f.Position(3) ) + 1;
-            ny = ceil( m(ii,4)/f.Position(4) ) + 1;
-            x = linspace( m(ii,1), m(ii,1)+m(ii,3), nx*2 ); % horizontal grid
-            y = linspace( m(ii,2), m(ii,2)+m(ii,4), ny*2 ); % vertical grid
-            for kk = 1:numel( y ) % sweep vertically
-                for jj = 1:numel( x ) % sweep horizontally
-                    r.PointerLocation = [x(jj), y(kk)]; % move pointer
-                    pause( t ) % wait
-                    if ~all( isnan( p ) ), return, end % found figure
-                end
-            end
-        end
+    % Pause duration during screen sweep.
+    t = 0.1;
 
-    otherwise
+    % Focus the figure.
+    figure( f )
+    pause( t )
 
-        p = f.Position(1:2);
+    % As the mouse moves, update the pointer location.
+    li = event.listener( f, 'WindowMouseMotion', @onMouseMotion );
 
-end % switch
+    % Determine the monitor positions, sorting by primary monitor.
+    r = groot();
+    m = r.MonitorPositions;
+    m = sortrows( m, [1, 2], {'descend', 'descend'} );
+
+    % Initialize the position.
+    p = [NaN, NaN];
+
+    % Sweep monitors.
+    for ii = 1:size( m, 1 )
+        nx = ceil( m(ii,3)/f.Position(3) ) + 1;
+        ny = ceil( m(ii,4)/f.Position(4) ) + 1;
+        % Create a search grid.
+        x = linspace( m(ii,1), m(ii,1) + m(ii,3), 2*nx );
+        y = linspace( m(ii,2), m(ii,2) + m(ii,4), 2*ny );
+        % Sweep vertically.
+        for kk = 1:numel( y )
+            % Sweep horizontally.
+            for jj = 1:numel( x )
+                % Move the pointer.
+                r.PointerLocation = [x(jj), y(kk)];
+                % Wait.
+                pause( t )
+                % Stop if we've found the figure.
+                if ~all( isnan( p ) ), return, end
+            end % for
+        end % for
+    end % for
+
+end % if
 
     function onMouseMotion( ~, e )
-        p = r.PointerLocation - e.Point + [1 1]; % set output
-    end
+
+        p = r.PointerLocation - e.Point + [1, 1];
+
+    end % onMouseMotion
 
 end % getFigureOrigin
 
 function c = getpixelcenter( varargin )
-%getpixelcenter  Get center of object in pixel units
+%GETPIXELCENTER Get center of object in pixel units.
 
 p = getpixelposition( varargin{:} );
 c = p(1:2) + p(3:4)/2;
@@ -290,20 +614,23 @@ c = p(1:2) + p(3:4)/2;
 end % getpixelcenter
 
 function moveMouseTo( new )
-%moveMouseTo  Move mouse to new position
+%MOVEMOUSETO Move mouse pointer to new position.
 %
-%  moveMouseTo(p) moves the mouse to the location p.
+%  moveMouseTo( p ) moves the mouse to the location p.
 
-n = 5; % number of steps
-t = 0.1; % pause during move
+% Number of steps in transition.
+n = 5;
+
+% Pause duration.
+t = 0.1;
 
 r = groot();
 old = r.PointerLocation;
 x = linspace( old(1), new(1), n );
 y = linspace( old(2), new(2), n );
-for ii = 2:n
-    r.PointerLocation = [x(ii) y(ii)];
-    pause( t ) % wait
-end
+for k = 2 : n
+    r.PointerLocation = [x(k), y(k)];
+    pause( t )
+end % for
 
 end % moveMouseTo

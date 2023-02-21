@@ -33,7 +33,7 @@ runner.addPlugin( coveragePlugin )
 
 % Run the tests.
 results = runner.run( suite );
-if nargout == 1    
+if nargout == 1
     varargout{1} = results;
 end % if
 
