@@ -4,4 +4,3 @@ function tf = ismac( varargin )
 tf = true;
 
 end % ismac
-

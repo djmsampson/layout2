@@ -222,6 +222,22 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeNotMac
 
+        function assumeNotUnix( testCase )
+
+            % Assume that the platform is not Unix.
+            testCase.assumeFalse( isunix(), ...
+                'This test is not applicable on the Unix platform.' )
+
+        end % assumeNotUnix
+
+        function assumeNotDeployed( testCase )
+
+            % Assume that the test is not running in deployed mode.
+            testCase.assumeFalse( isdeployed(), ...
+                'This test is not applicable in deployed mode.' )
+
+        end % assumeNotDeployed
+
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
 
