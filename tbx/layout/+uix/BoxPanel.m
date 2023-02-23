@@ -291,7 +291,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MaximizeTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'MaximizeTooltipString' );
             
             % Set
@@ -305,7 +305,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MinimizeTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'MinimizeTooltipString' );
             
             % Set
@@ -319,7 +319,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.UndockTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'UndockTooltipString' );
             
             % Set
@@ -333,7 +333,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.DockTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'DockTooltipString' );
             
             % Set
@@ -347,7 +347,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.HelpTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'HelpTooltipString' );
             
             % Set
@@ -361,7 +361,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.CloseTooltipString( obj, value )
             
             % Check
-            value = validateScalarStringOrCharacterArray( value, ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
                 'CloseTooltipString' );
             
             % Set
@@ -639,26 +639,3 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
     end % helper methods
     
 end % classdef
-
-function value = validateScalarStringOrCharacterArray( value, propertyName )
-%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a 
-%scalar string or a character array.
-
-% Check if we have a string scalar.
-if isa( value, 'string' ) && isscalar( value )
-    % Convert the string to a character array, handling the missing case
-    % separately.
-    if ismissing( value )
-        value = '';
-    else
-        value = char( value );
-    end % if
-end % if
-
-% Check that we have a character array.
-assert( ischar( value ), ...
-    'uix:InvalidPropertyValue', ...
-    ['Property ''', propertyName, ''' must be a scalar ', ...
-    'string or a character array.'] )
-
-end % validateScalarStringOrCharacterArray

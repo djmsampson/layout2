@@ -271,6 +271,27 @@ classdef tScrollingPanel < utilities.mixin.SharedPanelTests
 
         end % tOffsetsAreCorrectInThePresenceOfSliders
 
+        function tStringSupportForMouseWheelEnabled( ...
+                testCase, ConstructorName )
+
+            % Assume we are in R2016b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a scrolling panel.
+            testCase.assumeGraphicsAreRooted()
+            scrollPanel = testCase.constructComponent( ConstructorName );
+
+            % Verify that setting a string value is accepted.
+            expectedValue = 'off';
+            scrollPanel.MouseWheelEnabled = ...
+                string( expectedValue ); %#ok<*STRQUOT>
+            testCase.verifyEqual( scrollPanel.MouseWheelEnabled, ...
+                expectedValue, ['The ', ConstructorName, ...
+                ' component did not accept a string value for the ', ...
+                '''MouseWheelEnabled''', ' property.'] )
+            
+        end % tStringSupportForMouseWheelEnabled
+
     end % methods ( Test, Sealed )
 
 end % class

@@ -29,8 +29,8 @@ classdef ( Abstract ) SharedFlexTests < ...
             d = findobj( c, 'Tag', 'uix.Divider', 'Visible', 'on' );
 
             % Wait until the figure renders.
-            fig = ancestor( component, 'figure' );
-            isuifigure = isempty( get( fig, 'JavaFrame_I' ) );
+            testFig = ancestor( component, 'figure' );
+            isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )
             else
@@ -50,6 +50,10 @@ classdef ( Abstract ) SharedFlexTests < ...
                 component.Widths = ChildrenSizes;
             end % if
 
+            % Obtain a reference to the graphics root, for moving the mouse
+            % pointer.
+            r = groot();                
+
             % Drag the divider in both directions.
             for offset = dragOffsets
                 if isvbox
@@ -57,6 +61,10 @@ classdef ( Abstract ) SharedFlexTests < ...
                 else
                     initialOffset = [0, d.Position(4)/2];
                 end % if
+                % Move the mouse pointer.                
+                r.PointerLocation = testFig.Position(1:2) + ...
+                    d.Position(1:2) + initialOffset;
+                drawnow()
                 testCase.verifyWarningFree( ...
                     @() dragger( offset{1} ), ...
                     ['Dragging a divider in the ', ConstructorName, ...
@@ -64,13 +72,7 @@ classdef ( Abstract ) SharedFlexTests < ...
                 pause( 0.5 )
             end % for
 
-            function dragger( offset )
-
-                % Move the mouse pointer.
-                r = groot();
-                testFig = ancestor( component, 'figure' );
-                r.PointerLocation = testFig.Position(1:2) + ...
-                    d.Position(1:2) + initialOffset;
+            function dragger( offset )                
 
                 % Simulate a click and drag operation on the divider.
 
@@ -509,6 +511,27 @@ classdef ( Abstract ) SharedFlexTests < ...
                 '''Pointer'' property.'] )
 
         end % tReparentingLayoutRestoresPointer
+
+        function tStringSupportForDividerMarkings( ...
+                testCase, ConstructorName )
+
+            % Assume we are in R2016b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the 'DividerMarkings' property.
+
+            component.DividerMarkings = string( 'off' ); %#ok<*STRQUOT>
+
+            % Verify that this syntax is supported.
+            testCase.verifyEqual( component.DividerMarkings, 'off', ...
+                ['The ', ConstructorName, ' component did not ', ...
+                'accept a string value for the ''DividerMarkings''', ...
+                ' property.'] )
+
+        end % tStringSupportForDividerMarkings
 
     end % methods ( Test )
 

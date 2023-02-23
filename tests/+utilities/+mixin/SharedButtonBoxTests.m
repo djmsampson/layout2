@@ -80,6 +80,33 @@ classdef SharedButtonBoxTests < utilities.mixin.SharedContainerTests
 
         end % tShrinkToFitForLargeButtonsIsWarningFree
 
+        function tStringSupportForAlignmentProperties( ...
+                testCase, ConstructorName )
+
+            % Assume we are in R2016b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the 'HorizontalAlignment' and 'VerticalAlignment'
+            % properties as strings.
+            diagnostic = @( prop ) ['The ', ConstructorName, ...
+                ' component did not accept a string value for the ''', ...
+                prop, ''' property.'];
+            expectedValue = 'left';
+            component.HorizontalAlignment = ...
+                string( expectedValue ); %#ok<*STRQUOT>
+            testCase.verifyEqual( component.HorizontalAlignment, ...
+                expectedValue, diagnostic( 'HorizontalAlignment' ) )
+
+            expectedValue = 'top';
+            component.VerticalAlignment = string( expectedValue );
+            testCase.verifyEqual( component.VerticalAlignment, ...
+                expectedValue, diagnostic( 'VerticalAlignment' ) )
+
+        end % tStringSupportForAlignmentProperties
+
     end % methods ( Test, Sealed )
 
 end % class
