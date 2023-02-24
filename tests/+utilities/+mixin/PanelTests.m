@@ -1,4 +1,4 @@
-classdef PanelTests < utilities.mixin.SharedPanelTests
+classdef ( Abstract ) PanelTests < utilities.mixin.SharedPanelTests
     %PANELTESTS Tests common to panels.
 
     properties ( TestParameter )

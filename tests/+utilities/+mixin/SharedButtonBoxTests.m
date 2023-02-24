@@ -1,4 +1,4 @@
-classdef SharedButtonBoxTests < utilities.mixin.SharedContainerTests
+classdef ( Abstract ) SharedButtonBoxTests < utilities.mixin.SharedContainerTests
     %SHAREDBUTTONBOXTESTS Tests common to button boxes.
 
     properties ( TestParameter )

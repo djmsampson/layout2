@@ -1,4 +1,4 @@
-classdef TabPanelTests < utilities.mixin.SharedPanelTests
+classdef ( Abstract ) TabPanelTests < utilities.mixin.SharedPanelTests
     %TABPANELTESTS Tests common to tab panels.
 
     properties ( TestParameter )

@@ -1,4 +1,4 @@
-classdef EmptyTests < utilities.mixin.TestInfrastructure
+classdef ( Abstract ) EmptyTests < utilities.mixin.TestInfrastructure
     %EMPTYTESTS Tests common to uiextras.Empty and uix.Empty.
 
     properties ( TestParameter, Abstract )
