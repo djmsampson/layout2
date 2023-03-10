@@ -607,7 +607,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         
     end % template methods
     
-    methods( Access = private )
+    methods( Access = ?matlab.unittest.TestCase )
         
         function onSliderScrolling( obj, ~, ~ )
             %onSliderScrolling  Event handler

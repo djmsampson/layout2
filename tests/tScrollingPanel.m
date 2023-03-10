@@ -29,6 +29,12 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
             'VerticalSteps', ...
             'HorizontalSteps'
             }
+        % Whether to manually update the test figure's 'CurrentPoint'
+        % property during the test. This is needed by tests for the mouse
+        % wheel scroll callbacks.
+        UpdateFigureCurrentPoint = {false, true}
+        % Scrolling panel dimensions.
+        ScrollingPanelDimension = {{'Widths', 1000}, {'Heights', 1000}}
     end % properties ( TestParameter )
 
     methods ( Test, Sealed )
@@ -289,8 +295,147 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
                 expectedValue, ['The ', ConstructorName, ...
                 ' component did not accept a string value for the ', ...
                 '''MouseWheelEnabled''', ' property.'] )
-            
+
         end % tStringSupportForMouseWheelEnabled
+
+        function tOnSliderScrollingMethodRaisesScrollingEvent( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            scrollPanel = testCase.constructComponent( ConstructorName );
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( scrollPanel, 'Scrolling', @onSliderScrolling );
+
+            function onSliderScrolling( ~, ~ )
+
+                eventRaised = true;
+
+            end % onSliderScrolling
+
+            % Invoke the method.
+            scrollPanel.onSliderScrolling()
+
+            % Verify that the event was raised.
+            testCase.verifyTrue( eventRaised, ...
+                ['The ''onSliderScrolling'' method of ', ...
+                ConstructorName, ' did not raise the ''Scrolling''', ...
+                ' event.'] )
+
+        end % tOnSliderScrollingMethodRaisesScrollingEvent
+
+        function tOnSliderScrolledMethodRaisesScrolledEvent( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            scrollPanel = testCase.constructComponent( ConstructorName );
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( scrollPanel, 'Scrolled', @onSliderScrolled );
+
+            function onSliderScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onSliderScrolled
+
+            % Invoke the method.
+            scrollPanel.onSliderScrolled()
+
+            % Verify that the event was raised.
+            testCase.verifyTrue( eventRaised, ...
+                ['The ''onSliderScrolled'' method of ', ...
+                ConstructorName, ' did not raise the ''Scrolled''', ...
+                ' event.'] )
+
+        end % tOnSliderScrolledMethodRaisesScrolledEvent
+
+        function tOnMouseScrolledReturnsWhenNoSelectionExists( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel.
+            scrollPanel = testCase.constructComponent( ConstructorName );
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( scrollPanel, 'Scrolled', @onMouseScrolled );
+
+            function onMouseScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onMouseScrolled
+
+            % Invoke the method.
+            scrollPanel.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ...
+                ['The ''onMouseScrolled'' method of ', ...
+                ConstructorName, ' raised the ''Scrolled'' event', ...
+                ' when the ''Selection'' property was 0.'] )
+
+        end % tOnMouseScrolledReturnsWhenNoSelectionExists
+
+        function tOnMouseScrolledRaisesScrolledEvent( ...
+                testCase, ConstructorName, UpdateFigureCurrentPoint, ...
+                ScrollingPanelDimension )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            scrollPanel = testCase.constructComponent( ...
+                ConstructorName, 'Units', 'normalized', ...
+                'Position', [0.2, 0.2, 0.6, 0.6] );
+
+            % Add a child and enable scrolling.
+            uicontrol( scrollPanel )
+            set( scrollPanel, ScrollingPanelDimension{:} )
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( scrollPanel, 'Scrolled', @onMouseScrolled );
+
+            function onMouseScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onMouseScrolled
+
+            % Move the mouse pointer over the scrolling panel.
+            panelPosition = getpixelposition( scrollPanel );
+            testFigure = ancestor( scrollPanel, 'figure' );
+            figurePosition = testFigure.Position;
+            r = groot();
+            midPanelOffset = 0.5 * panelPosition(3:4);
+            r.PointerLocation = figurePosition(1:2) + midPanelOffset;
+            if UpdateFigureCurrentPoint
+                testFigure.CurrentPoint = midPanelOffset;
+            end % if
+            drawnow()
+
+            % Invoke the method with some fake event data.
+            eventData.VerticalScrollCount = 0;
+            eventData.VerticalScrollAmount = 1;
+            scrollPanel.onMouseScrolled( [], eventData )
+
+            % Verify that the event was raised.
+            if UpdateFigureCurrentPoint
+                testCase.verifyTrue( eventRaised, ...
+                    ['The ''onMouseScrolled'' method of ', ...
+                    ConstructorName, ' did not raise the ''Scrolled''', ...
+                    ' event when a child was added to the component.'] )
+            else
+                testCase.verifyFalse( eventRaised, ...
+                    ['The ''onMouseScrolled'' method of ', ...
+                    ConstructorName, ' raised the ''Scrolled''', ...
+                    ' event when a child was added to the component.'] )
+            end % if
+
+        end % tOnMouseScrolledRaisesScrolledEvent
 
     end % methods ( Test, Sealed )
 
