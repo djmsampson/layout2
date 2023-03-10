@@ -1,4 +1,4 @@
-classdef tSet < utilities.mixin.TestInfrastructure
+classdef tSet < glttestutilities.TestInfrastructure
     %TSET Tests for uix.set.
 
     methods ( Test, Sealed )

@@ -1,4 +1,4 @@
-classdef tChildObserver < utilities.mixin.TestInfrastructure
+classdef tChildObserver < glttestutilities.TestInfrastructure
     %TCHILDOBSERVER Tests for uix.ChildObserver.
 
     methods ( Test, Sealed )

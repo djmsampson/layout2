@@ -1,4 +1,4 @@
-classdef tTracking < utilities.mixin.TestInfrastructure
+classdef tTracking < glttestutilities.TestInfrastructure
     %TTRACKING Tests for uix.Tracking.
 
     methods ( TestMethodSetup )
@@ -139,8 +139,8 @@ classdef tTracking < utilities.mixin.TestInfrastructure
             warning( 'off', ID )
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
-            targetFolder = ...
-                fullfile( testsFolder, 'Shadows', 'isdeployed' );
+            targetFolder = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'isdeployed' );
             fixture = matlab.unittest.fixtures.PathFixture( targetFolder );
             testCase.applyFixture( fixture );
 
@@ -168,10 +168,10 @@ classdef tTracking < utilities.mixin.TestInfrastructure
             warning( 'off', ID )
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
-            targetFolder1 = ...
-                fullfile( testsFolder, 'Shadows', 'ismac' );
-            targetFolder2 = ...
-                fullfile( testsFolder, 'Shadows', 'ispc' );
+            targetFolder1 = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'ismac' );
+            targetFolder2 = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'ispc' );
             targetFolders = {targetFolder1, targetFolder2};
             fixture = ...
                 matlab.unittest.fixtures.PathFixture( targetFolders );
@@ -198,10 +198,10 @@ classdef tTracking < utilities.mixin.TestInfrastructure
             warning( 'off', ID )
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
-            targetFolder1 = ...
-                fullfile( testsFolder, 'Shadows', 'isunix_true' );
-            targetFolder2 = ...
-                fullfile( testsFolder, 'Shadows', 'ispc' );
+            targetFolder1 = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'isunix_true' );
+            targetFolder2 = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'ispc' );
             targetFolders = {targetFolder1, targetFolder2};
             fixture = ...
                 matlab.unittest.fixtures.PathFixture( targetFolders );

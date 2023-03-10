@@ -1,4 +1,4 @@
-classdef tContainer < utilities.mixin.TestInfrastructure
+classdef tContainer < glttestutilities.TestInfrastructure
     %TCONTAINER Tests for uix.Container.
 
     methods ( Test, Sealed )

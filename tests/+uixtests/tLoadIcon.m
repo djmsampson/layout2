@@ -1,4 +1,4 @@
-classdef tLoadIcon < utilities.mixin.TestInfrastructure
+classdef tLoadIcon < glttestutilities.TestInfrastructure
     %TLOADICON Tests for uix.loadIcon.
 
     methods ( Test, Sealed )
@@ -90,7 +90,7 @@ classdef tLoadIcon < utilities.mixin.TestInfrastructure
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             parentFolder = fileparts( currentFolder );
             testImageFile = fullfile( parentFolder, ...
-                '+utilities', 'Icons', 'GreenTileAlpha.png' );
+                '+glttestutilities', 'Icons', 'GreenTileAlpha.png' );
             testImage = imread( testImageFile );
             cdata = uix.loadIcon( testImageFile );
 
@@ -126,7 +126,7 @@ classdef tLoadIcon < utilities.mixin.TestInfrastructure
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             parentFolder = fileparts( currentFolder );
             testImagePath = fullfile( parentFolder, ...
-                '+utilities', 'Icons', testImageFile );
+                '+glttestutilities', 'Icons', testImageFile );
             f = @() uix.loadIcon( testImagePath );
             testCase.verifyError( f, 'uix:InvalidArgument', ...
                 ['uix.loadIcon has not errored when ', ...
@@ -159,7 +159,7 @@ classdef tLoadIcon < utilities.mixin.TestInfrastructure
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             parentFolder = fileparts( currentFolder );
             testImageFile = fullfile( parentFolder, ...
-                '+utilities', 'Icons', filename );
+                '+glttestutilities', 'Icons', filename );
             testImage = imread( testImageFile );
             cdata = uix.loadIcon( testImageFile );
 

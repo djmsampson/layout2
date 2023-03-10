@@ -1,4 +1,4 @@
-classdef tUnset < utilities.mixin.TestInfrastructure
+classdef tUnset < glttestutilities.TestInfrastructure
     %TUNSET Tests for uiextras.unset.
 
     methods ( Test, Sealed )

@@ -1,4 +1,4 @@
-classdef tChildEvent < utilities.mixin.TestInfrastructure
+classdef tChildEvent < glttestutilities.TestInfrastructure
     %TCHILDEVENT Tests for uix.ChildEvent.
 
     methods ( Test, Sealed )

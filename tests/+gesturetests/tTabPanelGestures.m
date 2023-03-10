@@ -1,5 +1,5 @@
 classdef tTabPanelGestures < matlab.uitest.TestCase & ...
-        utilities.mixin.TestInfrastructure
+        glttestutilities.TestInfrastructure
     %TABPANELGESTURETESTS Interactive gesture tests for tab panels.
 
     properties ( TestParameter )

@@ -1,4 +1,4 @@
-classdef tCalcPixelSizes < utilities.mixin.TestInfrastructure
+classdef tCalcPixelSizes < glttestutilities.TestInfrastructure
     %TCALCPIXELSIZES Tests for uix.calcPixelSizes.
 
     methods ( Test, Sealed )

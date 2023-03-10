@@ -1,4 +1,4 @@
-classdef tSelectionData < utilities.mixin.TestInfrastructure
+classdef tSelectionData < glttestutilities.TestInfrastructure
     %TSELECTIONDATA Tests for uix.SelectionData.
 
     methods ( Test, Sealed )

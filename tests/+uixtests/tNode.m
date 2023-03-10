@@ -1,4 +1,4 @@
-classdef tNode < utilities.mixin.TestInfrastructure
+classdef tNode < glttestutilities.TestInfrastructure
     %TNODE Tests for uix.Node.
 
     methods ( Test, Sealed )

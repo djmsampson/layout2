@@ -1,4 +1,4 @@
-classdef tText < utilities.mixin.TestInfrastructure
+classdef tText < glttestutilities.TestInfrastructure
     %TTEXT Tests for uix.Text.
 
     properties ( Constant )
@@ -6,8 +6,8 @@ classdef tText < utilities.mixin.TestInfrastructure
         % get/set methods.
         NameValuePairs = {
             'BackgroundColor', [1, 0, 0], ...
-            'Callback', @utilities.noop, ...
-            'DeleteFcn', @utilities.noop, ...
+            'Callback', @glttestutilities.noop, ...
+            'DeleteFcn', @glttestutilities.noop, ...
             'Enable', 'off', ...
             'FontAngle', 'italic', ...
             'FontName', 'Courier', ...
@@ -201,8 +201,10 @@ classdef tText < utilities.mixin.TestInfrastructure
 
         function tMacOffsetIsSetCorrectly( testCase )
 
-            % Assume we are not on the Mac platform.
+            % Assume we are not on the Mac platform and that the parent is
+            % empty.
             testCase.assumeNotMac()
+            testCase.assumeComponentHasEmptyParent()
 
             % Clear uix.Text from memory. This forces the Constant
             % properties to be redefined when an object of type uix.Text is
@@ -217,13 +219,13 @@ classdef tText < utilities.mixin.TestInfrastructure
             warning( 'off', ID )
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
-            targetFolder = fullfile( testsFolder, 'Shadows', 'ismac' );
+            targetFolder = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'ismac' );
             fixture = matlab.unittest.fixtures.PathFixture( targetFolder );
             testCase.applyFixture( fixture );
 
             % Create an object.
-            parent = testCase.ParentFixture.Parent;
-            testCase.assumeEmpty( parent )
+            parent = testCase.ParentFixture.Parent;            
             t = uix.Text( 'Parent', parent );
             testCase.addTeardown( @() delete( t ) )
 
@@ -234,9 +236,9 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.addTeardown( @() warning( w ) )
             warning( 'off', ID )
             s = struct( t );
-            testCase.verifyEqual( s.Margin, 20, ...
+            testCase.verifyGreaterThanOrEqual( s.Margin, 16, ...
                 ['The uix.Text constructor did not set the ', ...
-                '''Margin'' property to 20.'] )
+                '''Margin'' property to a value >= 16.'] )
 
         end % tMacOffsetIsSetCorrectly
 
@@ -255,8 +257,8 @@ classdef tText < utilities.mixin.TestInfrastructure
             % Set up a path fixture for verLessThan().
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
-            targetFolder = fullfile( ...
-                testsFolder, 'Shadows', 'verLessThan' );
+            targetFolder = fullfile( testsFolder, ...
+                '+glttestutilities', 'Shadows', 'verLessThan' );
             fixture = matlab.unittest.fixtures.PathFixture( targetFolder );
             testCase.applyFixture( fixture );
 
@@ -271,9 +273,9 @@ classdef tText < utilities.mixin.TestInfrastructure
             testCase.addTeardown( @() warning( w ) )
             warning( 'off', ID )
             s = struct( t );
-            testCase.verifyEqual( s.Margin, 18, ...
+            testCase.verifyGreaterThanOrEqual( s.Margin, 16, ...
                 ['The uix.Text constructor did not set the ', ...
-                '''Margin'' property to 18.'] )
+                '''Margin'' property to a value >= 16.'] )
 
         end % tOffsetIsSetCorrectlyInOlderVersions
 

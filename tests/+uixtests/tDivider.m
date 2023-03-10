@@ -1,4 +1,4 @@
-classdef tDivider < utilities.mixin.TestInfrastructure
+classdef tDivider < glttestutilities.TestInfrastructure
     %TDIVIDER Tests for uix.Divider.
 
     properties ( Constant )

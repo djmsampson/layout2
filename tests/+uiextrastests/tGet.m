@@ -1,4 +1,4 @@
-classdef tGet < utilities.mixin.TestInfrastructure
+classdef tGet < glttestutilities.TestInfrastructure
     %TGET Tests for uiextras.get.
 
     methods ( Test, Sealed )

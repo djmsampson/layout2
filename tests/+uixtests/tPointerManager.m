@@ -1,4 +1,4 @@
-classdef tPointerManager < utilities.mixin.TestInfrastructure
+classdef tPointerManager < glttestutilities.TestInfrastructure
     %TPOINTERMANAGER Tests for uix.PointerManager.    
     
     methods ( Test, Sealed )

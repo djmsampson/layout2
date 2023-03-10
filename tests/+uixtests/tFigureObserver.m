@@ -1,4 +1,4 @@
-classdef tFigureObserver < utilities.mixin.TestInfrastructure
+classdef tFigureObserver < glttestutilities.TestInfrastructure
     %TFIGUREOBSERVER Tests for uix.FigureObserver.
 
     methods ( Test, Sealed )
