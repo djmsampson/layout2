@@ -3,7 +3,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
     %(*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
 
     properties ( TestParameter )
-        % Sample flexible layout children sizes.
+        % Sample flexible layout children sizes. We need all pairwise 
+        % combinations of relative and fixed sizes.
         ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
     end % properties ( TestParameter )
 
@@ -38,8 +39,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % The direction of the drag operation will be either horizontal
             % or vertical. Set either the 'Widths' or 'Heights' property.
-            isvbox = ~isempty( ...
-                strfind( ConstructorName, 'VBox' ) ); %#ok<*STREMP>
+            isvbox = isa( component, 'uix.VBox' );
             if isvbox
                 dragOffsets = {[0, 10], [0, -10]};
                 component.Heights = ChildrenSizes;
@@ -387,7 +387,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );
+                testCase, ConstructorName );            
 
             % Set the background color.
             newColor = [1, 0, 0];
@@ -411,7 +411,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );
+                testCase, ConstructorName );           
 
             % Switch off the divider markings.
             component.DividerMarkings = 'off';
@@ -521,7 +521,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             component = testCase.constructComponent( ConstructorName );
 
             % Set the 'DividerMarkings' property.
-
             component.DividerMarkings = string( 'off' ); %#ok<*STRQUOT>
 
             % Verify that this syntax is supported.
@@ -548,6 +547,12 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             for k = 1:numChildren
                 buttons(k) = uicontrol( 'Parent', component );
             end % for
+
+            % Ensure that we have multiple rows and columns if the
+            % component is a grid.
+            if isa( component, 'uix.Grid' )
+                component.Widths = [-1, -1];
+            end % if
 
             % Find the dividers.
             allKids = hgGetTrueChildren( component );
