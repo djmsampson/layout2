@@ -14,7 +14,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName, ChildrenSizes )
 
             % Assume that the graphics are rooted.
-            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreRooted()            
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -30,6 +30,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Wait until the figure renders.
             testFig = ancestor( component, 'figure' );
+            % Ensure the figure is not docked.
+            testFig.WindowStyle = 'normal'; 
             isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )
@@ -108,6 +110,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Move the mouse pointer.
             r = groot();
             testFig = ancestor( component, 'figure' );
+            testFig.WindowStyle = 'normal';
             r.PointerLocation = testFig.Position(1:2) + ...
                 getpixelcenter( component, true );
 
@@ -152,6 +155,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Dock the test figure, focus it, and
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'docked';
+            windowStyleCleanup = onCleanup( ...
+                @() set( testFig, 'WindowStyle', 'normal' ) );
             figure( testFig ) % bring to front
 
             % Ensure that grids are two-dimensional.
@@ -199,6 +204,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
+            testFig.WindowStyle = 'normal';
 
             % Determine the layout based on the component type.
             switch ConstructorName
