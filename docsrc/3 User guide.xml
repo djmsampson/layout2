@@ -451,8 +451,6 @@ panel = <fcnref>uix.BoxPanel</fcnref>( 'Parent', fig, 'Title', 'Panel' );</code>
         </example>
     </subsection>
 </section>
-
-
     
 <!-- ****************************************************************** -->
 <section name="Advanced maneuvers with panels" staticref="BoxPanelFancyStuff">
@@ -586,9 +584,6 @@ for simple applications.</p>
             cause it to re-appear in full and the window to grow again.</p>
 
         </subsection>
-    
-        
-        
         
     <subsection name="Dock and undock" staticref="PanelDock">
         <keywords>Undock</keywords>
@@ -705,11 +700,6 @@ for simple applications.</p>
     
 </section>
 
-
-
-
-
-
     <!-- ****************************************************************** -->
     <section name="Using layouts inside GUIDE GUIs" staticref="LayoutsGUIDE">
         <keywords>GUIDE</keywords>
@@ -755,10 +745,7 @@ g.Heights = [-1 -1];</code>
                  )</small></p>
 
     </section>
-        
 
-    
-    
     <!-- ****************************************************************** -->
     <section name="Deploying GUIs using the MATLAB Compiler" staticref="Compiling">
         <keywords>Compiler</keywords>
@@ -866,7 +853,6 @@ at startup are helper functions:</p>
                  )</small></p>
 </subsection>
 
-
 <subsection name="createInterface" staticref="demoBrowserCreateInterface">
     <p>The interface creation is handled in the <code>createInterface</code>
         subfunction. This has two distinct sections: menu building and widget arrangement.
@@ -961,7 +947,6 @@ whichMenu = <matlabfcn>strcmpi</matlabfcn>( demoName, <matlabfcn>get</matlabfcn>
                      | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); demoBrowser; cd(p)">run</a> ]
                  )</small></p>
     </subsection>
-        
 
         <subsection name="onListSelection" staticref="demoBrowserOnListSelection">
             <p>Finally, let's have a look at how one of the callbacks works: "onListSelection", the function
@@ -992,7 +977,6 @@ redrawDemo();</code>
                      | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); demoBrowser; cd(p)">run</a> ]
                  )</small></p>
         </subsection>
-        
 
         <subsection name="Running it" staticref="demoBrowserRun">
             <p>When the main function is launched (click 
