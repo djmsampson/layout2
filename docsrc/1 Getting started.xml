@@ -129,21 +129,22 @@ package "uiextras" provides support for legacy property values.</p>
         property of any uifigure, uipanel or uitab parents must be switched off.</p>
     <p>For example, to create a flexible grid in a web figure, use the following code.</p>
 
-<pre>
->> f = uifigure("AutoResizeChildren", "off");
->> g = uix.GridFlex("Parent", f);
-</pre>
+    <example>
+        <code>f = <matlabfcn>uifigure</matlabfcn>('AutoResizeChildren', 'off');
+g = <matlabfcn>uix.GridFlex</matlabfcn>('Parent', f);</code>
+    </example>
 
     <p>To create a card panel containing two buttons within a standard panel, use the 
     following code.</p>
 
-<pre>
->> f = uifigure("AutoResizeChildren", "off");
->> p = uipanel("Parent", f, "Title", "Card Panel", "Units", "normalized", "Position", [0.25, 0.25, 0.50, 0.50], "AutoResizeChildren", "off");
->> cp = uix.CardPanel("Parent", p);
->> uibutton(cp, "Text", "Button 1");
->> uibutton(cp, "Text", "Button 2");
-</pre>
+    <example>
+        <code>f = <matlabfcn>uifigure</matlabfcn>('AutoResizeChildren', 'off');
+p = <matlabfcn>uipanel</matlabfcn>('Parent', f, 'Title', 'Card Panel', 'Units', 'normalized', 'Position', ...
+    [0.25, 0.25, 0.50, 0.50], 'AutoResizeChildren', 'off');
+cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
+<matlabfcn>uibutton</matlabfcn>(cp, 'Text', 'Button 1');
+<matlabfcn>uibutton</matlabfcn>(cp, 'Text', 'Button 2');</code>
+    </example>
 
     <p>The following table summarizes the compatibility of GUI Layout Toolbox layouts 
     with web graphics starting in MATLAB R2020b. At a high level:</p>
