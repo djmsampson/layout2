@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3000730109" file="C:\Development\layout2\GUI Layout Toolbox.prj" location="C:\Development\layout2" name="GUI Layout Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3000730109" file="C:\Development\layout2\toolbox.prj" location="C:\Development\layout2" name="toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>GUI Layout Toolbox</param.appname>
     <param.authnamewatermark>David Sampson</param.authnamewatermark>
     <param.email>dsampson@mathworks.com</param.email>
@@ -17,7 +17,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
 
 This version is for MATLAB R2014b and later.  For R2014a and earlier, see [version 1](http://www.mathworks.com/matlabcentral/fileexchange/27758-gui-layout-toolbox).</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.3.5</param.version>
+    <param.version>2.3.6</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -26,7 +26,7 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.9</item>
+      <item>9.14</item>
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
@@ -122,27 +122,8 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2020b</root>
-      <toolboxes>
-        <toolbox name="matlabcoder" />
-        <toolbox name="embeddedcoder" />
-        <toolbox name="neuralnetwork" />
-      </toolboxes>
-      <toolbox>
-        <matlabcoder>
-          <enabled>true</enabled>
-        </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
-      <toolbox>
-        <neuralnetwork>
-          <enabled>true</enabled>
-        </neuralnetwork>
-      </toolbox>
+      <root>C:\Program Files\MATLAB\R2023a</root>
+      <toolboxes />
     </matlab>
     <platform>
       <unix>false</unix>
