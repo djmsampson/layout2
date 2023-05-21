@@ -125,17 +125,78 @@ package "uiextras" provides support for legacy property values.</p>
 
   <inlinesubsection name="Web graphics support">
 
+    <h4>Support</h4>
+    <p>The following table summarizes the compatibility of GUI Layout Toolbox layouts 
+    with web graphics starting in MATLAB R2020b.</p>
+    <p>In summary:</p>
+    <ul>
+        <li>Simpler layouts are compatible from R2020b.</li>
+        <li>Layouts relying on uicontrol, namely the flexible layouts and ScrollingPanel 
+            and TabPanel, are compatible from R2022a.</li>
+        <li>Layouts derived from uipanel (Panel and BoxPanel) are compatible from 
+            R2022b.</li>
+    </ul>
+
+    <p>In detail:</p>
+
+    <table frame="box" rules="all" class="PROPERTYTABLE">
+        <tr>
+            <th class="PROPERTYTABLE">Layout</th>
+            <th class="PROPERTYTABLE">From</th>
+            <th class="PROPERTYTABLE">Comments</th>
+        </tr>
+        <tr>
+            <td class="PROPERTYTABLE">uix.CardPanel<br/>uix.HBox<br/>uix.VBox<br/>
+                uix.HButtonBox<br/>uix.VButtonBox<br/>uix.Grid<br/>uix.Empty</td>
+            <td class="PROPERTYTABLE">R2020b</td>
+            <td class="PROPERTYTABLE"></td>
+        </tr>
+        <tr>
+            <td class="PROPERTYTABLE">uix.ScrollingPanel<br/>uix.HBoxFlex<br/>uix.VBoxFlex
+                <br/>uix.GridFlex</td>
+            <td class="PROPERTYTABLE">R2022a</td>
+            <td class="PROPERTYTABLE">These layouts rely upon <matlabfcn>uicontrol</matlabfcn> 
+                support in web graphics.</td>
+        </tr>
+        <tr>
+            <td class="PROPERTYTABLE">uix.TabPanel</td>
+            <td class="PROPERTYTABLE">R2022a</td>
+            <td class="PROPERTYTABLE">This layout relies upon <matlabfcn>uicontrol</matlabfcn> 
+                support in web graphics. Use <matlabfcn>uitabgroup</matlabfcn> and 
+                <matlabfcn>uitab</matlabfcn> unless you require the ability to disable 
+                individual tabs.</td>
+        </tr>
+        <tr>
+            <td class="PROPERTYTABLE">uix.Panel</td>
+            <td class="PROPERTYTABLE">R2022b</td>
+            <td class="PROPERTYTABLE">In R2022b, due to a bug, <code>Units</code> and 
+                <code>Position</code> specified during construction are not honored, and the 
+                panel is placed in the default position. As a workaround, set the panel 
+                <code>Units</code> and <code>Position</code> after construction. This bug 
+                is fixed in R2023a.</td>
+        </tr>
+        <tr>
+            <td class="PROPERTYTABLE">uix.BoxPanel</td>
+            <td class="PROPERTYTABLE">R2022b</td>
+            <td class="PROPERTYTABLE">The implementation has not yet been updated to support 
+                web graphics. As a , two panel titles appear, one as part of 
+             (due to the appearance of uipanel in uifigure). The BoxPanel 
+                layout requires further work for full compatibility with web graphics and is 
+                a current work in progress.</td>
+        </tr>
+    </table>
+
+    <h4>Usage</h4>
     <p>To use GUI Layout Toolbox layouts in web graphics, the AutoResizeChildren 
-        property of any uifigure, uipanel or uitab parents must be switched off.</p>
-    <p>For example, to create a flexible grid in a web figure, use the following code.</p>
+        property of any ancestor uifigure, uipanel or uitab must be switched off.</p>
+    <p>For example, to create a flexible grid in a web figure:</p>
 
     <example>
         <code>f = <matlabfcn>uifigure</matlabfcn>('AutoResizeChildren', 'off');
 g = <matlabfcn>uix.GridFlex</matlabfcn>('Parent', f);</code>
     </example>
 
-    <p>To create a card panel containing two buttons within a standard panel, use the 
-    following code.</p>
+    <p>To create a <code>uix.CardPanel</code> containing two buttons within a standard panel:</p>
 
     <example>
         <code>f = <matlabfcn>uifigure</matlabfcn>('AutoResizeChildren', 'off');
@@ -145,64 +206,6 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
 <matlabfcn>uibutton</matlabfcn>(cp, 'Text', 'Button 1');
 <matlabfcn>uibutton</matlabfcn>(cp, 'Text', 'Button 2');</code>
     </example>
-
-    <p>The following table summarizes the compatibility of GUI Layout Toolbox layouts 
-    with web graphics starting in MATLAB R2020b. At a high level:</p>
-    <ul>
-        <li>Simpler layouts are compatible from R2020b.</li>
-        <li>Layouts relying on uicontrol, namely the flexible layouts and ScrollingPanel 
-            and TabPanel, are compatible from R2022a.</li>
-        <li>Layouts derived from uipanel (Panel and BoxPanel) are compatible from 
-            R2022b.</li>
-    </ul>
-
-
-    <table frame="box" rules="all" class="PROPERTYTABLE">
-        <tr>
-            <th class="PROPERTYTABLE">Layout</th>
-            <th class="PROPERTYTABLE">Web Graphics Compatibility</th>
-            <th class="PROPERTYTABLE">Comments</th>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.CardPanel<br/>uix.HBox<br/>uix.VBox<br/>
-                uix.HButtonBox<br/>uix.VButtonBox<br/>uix.Grid<br/>uix.Empty</td>
-            <td class="PROPERTYTABLE">From R2020b</td>
-            <td class="PROPERTYTABLE">Simpler layouts (i.e., layouts that do not rely on 
-                uicontrol support in web graphics) started working with web graphics in 
-                R2020b.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.ScrollingPanel<br/>uix.HBoxFlex<br/>uix.VBoxFlex
-                <br/>uix.GridFlex</td>
-            <td class="PROPERTYTABLE">From R2022a</td>
-            <td class="PROPERTYTABLE">These layouts require uicontrol support in web graphics 
-                (introduced in R2022a) and error in web graphics in R2021b.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.TabPanel</td>
-            <td class="PROPERTYTABLE">From R2022a</td>
-            <td class="PROPERTYTABLE">The TabPanel layout requires uicontrol support in web 
-                graphics (introduced in R2022a) and errors in R2021b. We recommend using 
-                uitabgroup and uitab unless you also need the ability to disable/enable 
-                individual tabs.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.Panel</td>
-            <td class="PROPERTYTABLE">From R2022b</td>
-            <td class="PROPERTYTABLE">Errors in R2022a. In R2022b, the panel initially 
-                appears in the default web graphics panel position, even when using 
-                normalized units and position [0, 0, 1, 1]. As a workaround, set the panel’s 
-                position after construction. This issue is fixed in R2023a.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.BoxPanel</td>
-            <td class="PROPERTYTABLE">From R2022b</td>
-            <td class="PROPERTYTABLE">Errors in R2022a. When used in web graphics, two panel 
-                titles appear (due to the appearance of uipanel in uifigure). The BoxPanel 
-                layout requires further work for full compatibility with web graphics and is 
-                a current work in progress.</td>
-        </tr>
-    </table>
 
   </inlinesubsection> 
   
