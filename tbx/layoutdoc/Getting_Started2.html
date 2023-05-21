@@ -135,20 +135,26 @@ package "uiextras" provides support for legacy property values.</p>
       <h2><a name="3">&nbsp;</a>2.3: Web graphics support&nbsp;<a href="Getting_Started2.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
       
 
+    <p>In R2016a, MathWorks introduced Javascript-based MATLAB graphics ("web 
+        graphics") alongside the earlier Java-based system. Web graphics offers additional 
+        components and deployment technologies, has been maturing ever since. Web graphics is 
+        accessed by creating a figure using <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a> rather than 
+        <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>.</p>
+    <p>Many developers using GUI Layout Toolbox have requested web graphics support. This 
+        actually depends mostly on feature completeness of web graphics itself, rather than 
+        changes to GUI Layout Toolbox.</p>
+    <p>From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022b, 
+        all but one layout type is supported, and this will be addressed in a future release.</p>
+
     <h4>Support</h4>
-    <p>The following table summarizes the compatibility of GUI Layout Toolbox layouts 
-    with web graphics starting in MATLAB R2020b.</p>
-    <p>In summary:</p>
     <ul>
-        <li>Simpler layouts are compatible from R2020b.</li>
-        <li>Layouts relying on uicontrol, namely the flexible layouts and ScrollingPanel 
-            and TabPanel, are compatible from R2022a.</li>
-        <li>Layouts derived from uipanel (Panel and BoxPanel) are compatible from 
-            R2022b.</li>
+        <li>Simple box, grid and card layouts are supported from R2020b.</li>
+        <li>Flexible box and grid layouts are supported from R2022a, as are scrolling and 
+            tab layouts.</li>
+        <li>Box panel is not yet supported.</li>
     </ul>
 
     <p>In detail:</p>
-
     <table frame="box" rules="all" class="PROPERTYTABLE">
         <tr>
             <th class="PROPERTYTABLE">Layout</th>
@@ -162,52 +168,52 @@ package "uiextras" provides support for legacy property values.</p>
             <td class="PROPERTYTABLE"/>
         </tr>
         <tr>
-            <td class="PROPERTYTABLE">uix.ScrollingPanel<br/>uix.HBoxFlex<br/>uix.VBoxFlex
-                <br/>uix.GridFlex</td>
+            <td class="PROPERTYTABLE">uix.HBoxFlex<br/>uix.VBoxFlex<br/>uix.VBoxFlex
+                <br/>uix.ScrollingPanel</td>
             <td class="PROPERTYTABLE">R2022a</td>
-            <td class="PROPERTYTABLE">These layouts rely upon <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a> 
-                support in web graphics.</td>
+            <td class="PROPERTYTABLE">The implementations use 
+                <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>, so rely on <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a> 
+                support in web graphics that was introduced in R2022a.</td>
         </tr>
         <tr>
             <td class="PROPERTYTABLE">uix.TabPanel</td>
             <td class="PROPERTYTABLE">R2022a</td>
-            <td class="PROPERTYTABLE">This layout relies upon <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a> 
-                support in web graphics. Use <a href="matlab:doc uitabgroup"><code class="FUNCTION">uitabgroup</code></a> and 
-                <a href="matlab:doc uitab"><code class="FUNCTION">uitab</code></a> unless you require the ability to disable 
-                individual tabs.</td>
+            <td class="PROPERTYTABLE">The implementation uses 
+                <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>, so relies on <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a> 
+                support in web graphics that was introduced in R2022a. Use 
+                <a href="matlab:doc uitabgroup"><code class="FUNCTION">uitabgroup</code></a> and <a href="matlab:doc uitab"><code class="FUNCTION">uitab</code></a> unless you 
+                require the ability to disable tabs.</td>
         </tr>
         <tr>
             <td class="PROPERTYTABLE">uix.Panel</td>
             <td class="PROPERTYTABLE">R2022b</td>
             <td class="PROPERTYTABLE">In R2022b, due to a bug, <code>Units</code> and 
-                <code>Position</code> specified during construction are not honored, and the 
+                <code>Position</code> specified during construction are ignored, and the 
                 panel is placed in the default position. As a workaround, set the panel 
                 <code>Units</code> and <code>Position</code> after construction. This bug 
                 is fixed in R2023a.</td>
         </tr>
         <tr>
             <td class="PROPERTYTABLE">uix.BoxPanel</td>
-            <td class="PROPERTYTABLE">R2022b</td>
+            <td class="PROPERTYTABLE">Unsupported</td>
             <td class="PROPERTYTABLE">The implementation has not yet been updated to support 
-                web graphics. As a , two panel titles appear, one as part of 
-             (due to the appearance of uipanel in uifigure). The BoxPanel 
-                layout requires further work for full compatibility with web graphics and is 
-                a current work in progress.</td>
+                web graphics.</td>
         </tr>
     </table>
 
     <h4>Usage</h4>
-    <p>To use GUI Layout Toolbox layouts in web graphics, the AutoResizeChildren 
-        property of any ancestor uifigure, uipanel or uitab must be switched off.</p>
-    <p>For example, to create a flexible grid in a web figure:</p>
+    <p>To use GUI Layout Toolbox layouts in web graphics, the <code>AutoResizeChildren</code> 
+        property of any ancestor <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a>, <a href="matlab:doc uipanel"><code class="FUNCTION">uipanel</code></a> 
+        or <a href="matlab:doc uitab"><code class="FUNCTION">uitab</code></a> must be set to <code>'off'</code>, otherwise the 
+        layouts will not resize as expected.</p>
 
+    <p>For example, to create a flexible grid in a <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a>:</p>
     <example>
         <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a>('AutoResizeChildren', 'off');
 g = <a href="matlab:doc uix.GridFlex"><code class="FUNCTION">uix.GridFlex</code></a>('Parent', f);</font></pre>
     </example>
 
-    <p>To create a <code>uix.CardPanel</code> containing two buttons within a standard panel:</p>
-
+    <p>To create a card panel in a <a href="matlab:doc uipanel"><code class="FUNCTION">uipanel</code></a>:</p>
     <example>
         <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a>('AutoResizeChildren', 'off');
 p = <a href="matlab:doc uipanel"><code class="FUNCTION">uipanel</code></a>('Parent', f, 'Title', 'Card Panel', 'Units', 'normalized', 'Position', ...
