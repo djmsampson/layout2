@@ -1,0 +1,52 @@
+name: GUI Layout Toolbox Continuous Integration
+
+# Controls when the workflow will run. 
+on:
+
+  # Triggers the workflow on push or pull request events, but only for the master branch.
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # This allows the workflow run to be run manually from the Actions tab in GitHub.
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel.
+jobs:
+
+  # Run GUI Layout Toolbox tests.
+  run-GLT-tests:
+
+    # Define the job strategy.
+    strategy:
+
+      # Set up the job strategy matrix to define the different job configurations.
+      matrix:
+        
+        # List of operating systems to run the tests on.
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+        # List of MATLAB releases over which to run the tests.
+        matlab-version: [R2020a, R2020b, R2021a, R2021b, R2022a, R2022b, R2023a]
+    
+    # Specify the runner that the job will run on.
+    runs-on: ${{ matrix.os }}
+
+    # Steps define a sequence of tasks to be executed as part of the job.
+    steps:
+      
+      # Check out the repository under $GITHUB_WORKSPACE, so that the job can access it.
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      # Set up MATLAB on the runner.
+      - name: Set up MATLAB on the runner
+        uses: matlab-actions/setup-matlab@v1
+        release: ${{ matrix.matlab-version }}
+
+      # Run the GLT tests.
+      - name: Run the GLT tests
+        uses: matlab-actions/run-command@v1
+        with:
+          command: results = runToolboxTests().assertSuccess();
