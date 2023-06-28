@@ -43,7 +43,8 @@ jobs:
       # Set up MATLAB on the runner.
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v1
-        release: ${{ matrix.matlab-version }}
+        with:
+          release: ${{ .matrix.matlab-version }}
 
       # Run the GLT tests.
       - name: Run the GLT tests
