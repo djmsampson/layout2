@@ -60,7 +60,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             }}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed )
+    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
 
         function tDraggingRowDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
@@ -104,7 +104,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
             % Drag the divider in both directions.
             for offset = dragOffsets
-                % Move the mouse pointer.                
+                % Move the mouse pointer.
                 r.PointerLocation = testFig.Position(1:2) + ...
                     d(1).Position(1:2) + d(1).Position(3:4)/2;
                 drawnow()
@@ -140,6 +140,6 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
         end % tDraggingRowDividerIsWarningFree
 
-    end % methods ( Test, Sealed )
+    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
 
 end % class

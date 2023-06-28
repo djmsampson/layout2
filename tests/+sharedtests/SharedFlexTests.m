@@ -3,18 +3,18 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
     %(*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
 
     properties ( TestParameter )
-        % Sample flexible layout children sizes. We need all pairwise 
+        % Sample flexible layout children sizes. We need all pairwise
         % combinations of relative and fixed sizes.
         ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed )
+    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
 
         function tDraggingDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
 
             % Assume that the graphics are rooted.
-            testCase.assumeGraphicsAreRooted()            
+            testCase.assumeGraphicsAreRooted()
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -31,7 +31,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Wait until the figure renders.
             testFig = ancestor( component, 'figure' );
             % Ensure the figure is not docked.
-            testFig.WindowStyle = 'normal'; 
+            testFig.WindowStyle = 'normal';
             isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )
@@ -196,6 +196,48 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tMouseOverDividerInDockedFigureUpdatesPointer
 
+        function tClickingDividerIsWarningFree( testCase, ConstructorName )
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Move the mouse to the center of a divider.
+            testFig = ancestor( component, 'figure' );
+            figureOrigin = getFigureOrigin( testFig );
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( dividers(1), true );
+            moveMouseTo( dividerCenter )
+
+            % Verify that clicking the divider is warning-free.
+            testCase.verifyWarningFree( @clicker, ...
+                ['Clicking the divider in a ', ConstructorName, ...
+                ' component was not warning-free.'] )
+
+            function clicker()
+
+                % Create the robot.
+                bot = java.awt.Robot();
+
+                % Click.
+                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+                % Let go.
+                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+            end % clicker
+
+        end % tClickingDividerIsWarningFree
+
+    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+
+    methods ( Test, Sealed )
+
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
@@ -350,50 +392,12 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tMousePointerUpdatesOverDivider
 
-        function tClickingDividerIsWarningFree( testCase, ConstructorName )
-
-            % This test is only for rooted components.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create the layout and add children.
-            [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );
-
-            % Move the mouse to the center of a divider.
-            testFig = ancestor( component, 'figure' );
-            figureOrigin = getFigureOrigin( testFig );
-            dividerCenter = figureOrigin + ...
-                getpixelcenter( dividers(1), true );
-            moveMouseTo( dividerCenter )
-
-            % Verify that clicking the divider is warning-free.
-            testCase.verifyWarningFree( @clicker, ...
-                ['Clicking the divider in a ', ConstructorName, ...
-                ' component was not warning-free.'] )
-
-            function clicker()
-
-                % Create the robot.
-                bot = java.awt.Robot();
-
-                % Click.
-                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
-                pause( 0.5 )
-
-                % Let go.
-                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
-                pause( 0.5 )
-
-            end % clicker
-
-        end % tClickingDividerIsWarningFree
-
         function tSettingBackgroundColorUpdatesDividers( ...
                 testCase, ConstructorName )
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );            
+                testCase, ConstructorName );
 
             % Set the background color.
             newColor = [1, 0, 0];
@@ -417,7 +421,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );           
+                testCase, ConstructorName );
 
             % Switch off the divider markings.
             component.DividerMarkings = 'off';
