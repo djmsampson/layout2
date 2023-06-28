@@ -29,6 +29,7 @@ if headless
 end % if
 
 % Run the tests.
-results = runtests( suite );
+runner = testrunner( 'textoutput' );
+results = runner.run( suite );
 
 end % runToolboxTests
