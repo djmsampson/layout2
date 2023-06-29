@@ -542,6 +542,8 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Check that setting an invalid value causes an error.
             if verLessThan( 'matlab', '9.9' )
                 errorID = 'uiextras:InvalidPropertyValue';
+            elseif verLessThan( 'matlab', '9.13' )
+                errorID = 'MATLAB:datatypes:InvalidEnumValueFor';
             else
                 errorID = ...
                     'MATLAB:datatypes:onoffboolean:IncorrectValue';
