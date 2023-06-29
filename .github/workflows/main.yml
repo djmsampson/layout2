@@ -25,10 +25,10 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [macos-latest]
+        os: [windows-latest]
 
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [R2023a]
+        matlab-version: [R2021a, R2021b, R2022a, R2022b, R2023a]
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
