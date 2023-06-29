@@ -28,7 +28,7 @@ jobs:
         os: [windows-latest] #TODO: Add ubuntu-latest and macos-latest
 
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [R2020a, R2020b, R2021a, R2021b, R2022a, R2022b, R2023a]
+        matlab-version: [R2021a, R2021b, R2022a, R2022b, R2023a]
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
