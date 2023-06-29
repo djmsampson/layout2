@@ -234,10 +234,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tClickingDividerIsWarningFree
 
-    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
-
-    methods ( Test, Sealed )
-
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
@@ -392,6 +388,74 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tMousePointerUpdatesOverDivider
 
+        function tDeletingChildRestoresPointer( testCase, ConstructorName )
+
+            % This test is for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
+
+            % Delete all the children.
+            delete( component.Children )
+            pause( 0.5 )
+
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Deleting the children of a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
+
+        end % tDeletingChildRestoresPointer
+
+        function tReparentingLayoutRestoresPointer( ...
+                testCase, ConstructorName )
+
+            % This test is for rooted components.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
+
+            % Reparent the layout.
+            component.Parent = [];
+
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Reparenting a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
+
+        end % tReparentingLayoutRestoresPointer
+
+    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+
+    methods ( Test, Sealed )
+
         function tSettingBackgroundColorUpdatesDividers( ...
                 testCase, ConstructorName )
 
@@ -457,70 +521,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tReparentingToEmptyFigureIsWarningFree
 
-        function tDeletingChildRestoresPointer( testCase, ConstructorName )
-
-            % This test is for rooted components.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create a component with children.
-            [component, dividers] = testCase...
-                .createFlexibleLayoutWithChildren( ConstructorName );
-
-            % Increase the spacing.
-            component.Spacing = 10;
-
-            % Move the mouse over a divider.
-            r = groot();
-            testFig = ancestor( component, 'figure' );
-            r.PointerLocation = testFig.Position(1:2) + ...
-                dividers(1).Position(1:2);
-            pause( 0.5 )
-
-            % Delete all the children.
-            delete( component.Children )
-            pause( 0.5 )
-
-            % Verify that the figure's 'Pointer' property has been
-            % restored.
-            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
-                ['Deleting the children of a ', ConstructorName, ...
-                ' component did not restore the figure''s ', ...
-                '''Pointer'' property.'] )
-
-        end % tDeletingChildRestoresPointer
-
-        function tReparentingLayoutRestoresPointer( ...
-                testCase, ConstructorName )
-
-            % This test is for rooted components.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create a component with children.
-            [component, dividers] = testCase...
-                .createFlexibleLayoutWithChildren( ConstructorName );
-
-            % Increase the spacing.
-            component.Spacing = 10;
-
-            % Move the mouse over a divider.
-            r = groot();
-            testFig = ancestor( component, 'figure' );
-            r.PointerLocation = testFig.Position(1:2) + ...
-                dividers(1).Position(1:2);
-            pause( 0.5 )
-
-            % Reparent the layout.
-            component.Parent = [];
-
-            % Verify that the figure's 'Pointer' property has been
-            % restored.
-            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
-                ['Reparenting a ', ConstructorName, ...
-                ' component did not restore the figure''s ', ...
-                '''Pointer'' property.'] )
-
-        end % tReparentingLayoutRestoresPointer
-
         function tStringSupportForDividerMarkings( ...
                 testCase, ConstructorName )
 
@@ -541,7 +541,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tStringSupportForDividerMarkings
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
     methods ( Access = private )
 
