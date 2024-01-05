@@ -16,7 +16,7 @@ on:
 jobs:
 
   # Run the GUI Layout Toolbox tests in the Java desktop environment.
-  run-GLT-tests-Java-desktop:
+  run-GLT-tests:
 
     # Define the job strategy.
     strategy:
@@ -25,10 +25,13 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
 
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [R2021a, R2021b, R2022a, R2022b, R2023a, R2023b]
+        matlab-version: [ R2023b ]
+
+        # MATLAB startup options (none or the JavaScript Desktop (-webui)).
+        matlab-startup-options: [ '', -webui ]
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
@@ -51,55 +54,11 @@ jobs:
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v1
         with:
+          startup-options: ${{ matrix.matlab-startup-options }}
           release: ${{ matrix.matlab-version }}
 
       # Run the GLT tests.
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
         with:
-          command: openProject("project.prj"); results = runToolboxTests().assertSuccess();
-
-  # Run the GUI Layout Toolbox tests in the JavaScript desktop environment.
-  run-GLT-tests-JavaScript-desktop:
-
-    # Define the job strategy.
-    strategy:
-
-      # Set up the job strategy matrix to define the different job configurations.
-      matrix:
-        
-        # List of operating systems to run the tests on.
-        os: [ubuntu-latest]
-
-        # List of MATLAB releases over which to run the tests.
-        matlab-version: [R2023b]
-    
-    # Specify the runner that the job will run on.
-    runs-on: ${{ matrix.os }}
-
-    # Steps define a sequence of tasks to be executed as part of the job.
-    steps:
-      
-      # Check out the repository under $GITHUB_WORKSPACE, so that the job can access it.
-      - name: Check out the repository
-        uses: actions/checkout@v4
-
-      # Start the display server to enable the GUI Layout Toolbox tests that use mouse gestures.
-      - name: Start display server
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-
-      # Set up MATLAB on the runner.
-      - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v1
-        with:
-          release: ${{ matrix.matlab-version }}
-
-      # Run the GLT tests.
-      - name: Run the GLT tests
-        uses: matlab-actions/run-command@v1
-        with:
-          startup-options: -webui
           command: openProject("project.prj"); results = runToolboxTests().assertSuccess();
