@@ -131,6 +131,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '9.2';
                 case 'R2022a'
                     versionNumber = '9.12';
+                case 'R2023b'
+                    versionNumber = '23.2';
                 otherwise
                     error( ['AssumeMATLABVersionIsAtLeast:', ...
                         'InvalidVersionString'], ...

@@ -7,12 +7,16 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
         ConstructorName = {'uiextras.TabPanel', 'uix.TabPanel'}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    methods ( Test, Sealed )
 
         function tClickingTabPassesEventData( testCase, ConstructorName )
 
             % Assume that we are in the web graphics case.
             testCase.assumeGraphicsAreWebBased()
+
+            % Using the App Testing Framework with GitHub Actions is
+            % supported from R2023b onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
 
             % Create a tab panel.
             testFig = testCase.ParentFixture.Parent;
@@ -21,7 +25,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Add two controls.
             uicontrol( 'Parent', tabPanel )
             uicontrol( 'Parent', tabPanel )
-            
+
             % Create a listener.
             eventRaised = false;
             eventData = struct();
@@ -40,7 +44,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Use the app testing framework to click the second tab to
             % change the selection.
             testCase.press( testFig, [2*tabWidth-5, figureHeight-10] )
-            
+
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
                 ['Clicking on another tab to change the selection ', ...
@@ -66,6 +70,6 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
         end % tClickingTabPassesEventData
 
-    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    end % methods ( Test, Sealed )
 
 end % class
