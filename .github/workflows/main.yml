@@ -31,7 +31,7 @@ jobs:
         matlab-version: [ R2023b ]
 
         # MATLAB startup options (none or the JavaScript Desktop (-webui)).
-        matlab-startup-options: [ '', -webui ]
+        matlab-startup-options: [ '' ]
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
