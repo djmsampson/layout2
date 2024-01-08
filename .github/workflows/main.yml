@@ -45,7 +45,7 @@ jobs:
 
       # Start the display server on the runner.
       - name: Start display server
-        if: ${{ matrix.os }} == ubuntu-latest
+        if: ${{ run-GLT-tests.strategy.matrix.os }} == ubuntu-latest
         run: |
           sudo apt-get install -y xvfb
           Xvfb :99 &
