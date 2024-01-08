@@ -43,7 +43,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      # Start the display server to enable the GUI Layout Toolbox tests that use mouse gestures.
+      # Start the display server on the runner.
       - name: Start display server
         run: |
           sudo apt-get install -y xvfb
@@ -61,4 +61,4 @@ jobs:
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
         with:
-          command: openProject("project.prj"); results = runToolboxTests().assertSuccess();
+          command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
