@@ -7,7 +7,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
         ConstructorName = {'uiextras.TabPanel', 'uix.TabPanel'}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed )
+    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
 
         function tClickingTabPassesEventData( testCase, ConstructorName )
 
@@ -71,6 +71,6 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
         end % tClickingTabPassesEventData
 
-    end % methods ( Test, Sealed )
+    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
 
 end % class

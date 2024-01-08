@@ -25,7 +25,7 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [ windows-latest ]
+        os: [ macos-latest ]
 
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2023b ]
