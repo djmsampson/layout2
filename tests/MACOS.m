@@ -21,14 +21,16 @@ CommonNameValuePairs = {
             'Visible', 'on'
             };
 
-f = uifigure;
-p = uipanel( f );
+f = uifigure( "AutoResizeChildren", "off" );
+p1 = uix.Panel( "Parent", f );
+p2 = uiextras.Panel( "Parent", f );
 
 for k = 1 : height( CommonNameValuePairs )
     n = CommonNameValuePairs{k, 1};
     v = CommonNameValuePairs{k, 2};
     try
-        p.(n) = v;
+        p1.(n) = v;
+        p2.(n) = v;
     catch e
         disp( "Failed to set property " + n + "." )
     end
