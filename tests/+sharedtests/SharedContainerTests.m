@@ -540,7 +540,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             end % for
 
             % Check that setting an invalid value causes an error.
-            if verLessThan( 'matlab', '9.9' )
+            if verLessThan( 'matlab', '9.9' ) %#ok<*VERLESSMATLAB>
                 errorID = 'uiextras:InvalidPropertyValue';
             elseif verLessThan( 'matlab', '9.13' )
                 errorID = 'MATLAB:datatypes:InvalidEnumValueFor';
@@ -753,19 +753,28 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 % Extract the current name-value pair.
                 propertyName = NameValuePairs{k};
                 propertyValue = NameValuePairs{k+1};
-                % Set the property in the component.
-                component.(propertyName) = propertyValue;
-                % Verify that the property has been assigned correctly, up
-                % to a possible data type conversion.
-                actual = component.(propertyName);
-                if ~isa( propertyValue, 'function_handle' )
-                    propertyClass = class( propertyValue );
-                    actual = feval( propertyClass, actual );
-                end % if
-                testCase.verifyEqual( actual, propertyValue, ...
-                    ['Setting the ''', propertyName, ''' property of ', ...
-                    'the ', ConstructorName, ' object did not store ', ...
-                    'the value correctly.'] )
+                try
+                    % Set the property in the component.
+                    component.(propertyName) = propertyValue;
+                    % Verify that the property has been assigned correctly,
+                    % up to a possible data type conversion.
+                    actual = component.(propertyName);
+                    if ~isa( propertyValue, 'function_handle' )
+                        propertyClass = class( propertyValue );
+                        actual = feval( propertyClass, actual );
+                    end % if
+                    testCase.verifyEqual( actual, propertyValue, ...
+                        ['Setting the ''', propertyName, ...
+                        ''' property of the ', ConstructorName, ...
+                        ' object did not store the value correctly.'] )
+                catch e
+                    newExc = MException( ['SharedContainerTests:', ...
+                        'SettingPropertyCausedError'], ...
+                        ['Setting the property ', propertyName, ...
+                        ' caused an error.'] );
+                    newExc.addCause( e )
+                    newExc.throw()
+                end % try/catch
             end % for
 
         end % tGetAndSetMethodsFunctionCorrectly
