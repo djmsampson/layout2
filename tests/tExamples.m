@@ -2,28 +2,21 @@ classdef tExamples < glttestutilities.TestInfrastructure
     %tExamples Tests for the layout documentation examples.
 
     properties ( TestParameter )
-        % Example script names.
-        ScriptFile = {'axesexample', ...
-            'colorbarexample', ...
-            'gridflexpositioning', ...
-            'hierarchyexample', ...
-            'paneltabexample', ...
-            'visibleexample'}
-        % Variables representing the main figure/app window in each
-        % example.
-        FigureVariable = {'window', 'window', 'f', ...
-            'window', 'window', 'fig'}
+        % Example script names and corresponding figure variables.
+        ScriptFile = {{'axesexample', 'window'}; ...
+            {'colorbarexample', 'window'}; ...
+            {'gridflexpositioning', 'f'}; ...
+            {'hierarchyexample', 'window'}; ...
+            {'paneltabexample', 'window'}; ...
+            {'visibleexample', 'fig'}}
     end % properties ( TestParameter )
 
     properties ( TestParameter )
-        % Example function names.
-        FunctionFile = {'callbackexample', ...
-            'demoBrowser', ...
-            'dockexample', ...            
-            'minimizeexample'}
-        % Variables representing the main figure/app window in each
-        % example.
-        OutputVariable = {'f', 'gui', 'fig', 'fig'}
+        % Example function names and corresponding figure variables.
+        FunctionFile = {{'callbackexample', 'f'}; ...
+            {'demoBrowser', 'gui'}; ...
+            {'dockexample', 'fig'}; ...
+            {'minimizeexample', 'fig'}}
     end % properties ( TestParameter )
 
     methods ( TestClassSetup )
@@ -45,10 +38,10 @@ classdef tExamples < glttestutilities.TestInfrastructure
 
     end % methods ( TestClassSetup )
 
-    methods ( Test, Sealed, ParameterCombination = 'sequential' )
+    methods ( Test, Sealed )
 
         function tRunningExampleScriptIsWarningFree( ...
-                testCase, ScriptFile, FigureVariable )
+                testCase, ScriptFile )
 
             % Do not repeat this test for each parent type.
             testCase.assumeComponentHasEmptyParent()
@@ -69,18 +62,18 @@ classdef tExamples < glttestutilities.TestInfrastructure
             testCase.addTeardown( @() fclose( fileID ) );
 
             % Read the example contents.
-            exampleContent = fileread( [ScriptFile, '.m'] );
+            exampleContent = fileread( [ScriptFile{1}, '.m'] );
 
             % Write a wrapper function to the temporary file, providing an
             % output using the output variable name.
             fprintf( fileID, 'function %s = %s()\n\n', ...
-                FigureVariable, tempFilename );
+                ScriptFile{2}, tempFilename );
             fprintf( fileID, '%s', exampleContent );
 
             % Verify that running the wrapper function is warning-free.
             runner = @() exampleRunner( tempFilename );
             testCase.verifyWarningFree( runner, ['Running the ', ...
-                ScriptFile, ' example was not warning-free.'] )
+                ScriptFile{1}, ' example was not warning-free.'] )
 
             function exampleRunner( file )
 
@@ -107,7 +100,7 @@ classdef tExamples < glttestutilities.TestInfrastructure
         end % tGuideAppIsWarningFree
 
         function tRunningExampleFunctionIsWarningFree( ...
-                testCase, FunctionFile, OutputVariable )
+                testCase, FunctionFile )
 
             % Do not repeat this test for each parent type.
             testCase.assumeComponentHasEmptyParent()
@@ -128,7 +121,7 @@ classdef tExamples < glttestutilities.TestInfrastructure
             testCase.addTeardown( @() fclose( fileID ) );
 
             % Read the example contents.
-            exampleContent = fileread( [FunctionFile, '.m'] );
+            exampleContent = fileread( [FunctionFile{1}, '.m'] );
 
             % Remove the function definition line.
             exampleContent = strsplit( exampleContent, '\n' );
@@ -137,18 +130,18 @@ classdef tExamples < glttestutilities.TestInfrastructure
             % Write a wrapper function to the temporary file, providing an
             % output using the output variable name.
             fprintf( fileID, 'function %s = %s()\n\n', ...
-                OutputVariable, tempFilename );
-            fprintf( fileID, '%s', exampleContent );            
+                FunctionFile{2}, tempFilename );
+            fprintf( fileID, '%s', exampleContent );
 
             % Verify that running the wrapper function is warning-free.
             runner = @() exampleRunner( tempFilename );
             testCase.verifyWarningFree( runner, ['Running the ', ...
-                FunctionFile, ' example was not warning-free.'] )
+                FunctionFile{1}, ' example was not warning-free.'] )
 
             function exampleRunner( file )
 
                 fig = feval( file );
-                if strcmp( FunctionFile, 'demoBrowser' )
+                if strcmp( FunctionFile{1}, 'demoBrowser' )
                     testCase.addTeardown( @() delete( fig.Window ) )
                 else
                     testCase.addTeardown( @() delete( fig ) )
