@@ -772,7 +772,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                         'SettingPropertyCausedError'], ...
                         ['Setting the property ', propertyName, ...
                         ' caused an error.'] );
-                    newExc.addCause( e )
+                    newExc = newExc.addCause( e );
                     newExc.throw()
                 end % try/catch
             end % for
