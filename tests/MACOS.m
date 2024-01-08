@@ -31,6 +31,7 @@ for k = 1 : height( CommonNameValuePairs )
     try
         p1.(n) = v;
         p2.(n) = v;
+        disp( "Set property " + n + " without problems." )
     catch e
         disp( "Failed to set property " + n + "." )
     end

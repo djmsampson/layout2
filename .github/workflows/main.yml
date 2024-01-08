@@ -56,12 +56,12 @@ jobs:
       # Set up MATLAB on the runner.
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v1
-        with:
-          startup-options: ${{ matrix.matlab-startup-options }}
+        with:          
           release: ${{ matrix.matlab-version }}
 
       # Run the GLT tests.
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
         with:
+          startup-options: ${{ matrix.matlab-startup-options }}
           command: openProject("project.prj"); MACOS
