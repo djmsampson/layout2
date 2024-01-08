@@ -23,7 +23,7 @@ CommonNameValuePairs = {
 
 f = uifigure( "AutoResizeChildren", "off" );
 p1 = uix.Panel( "Parent", f );
-p2 = uiextras.Panel( "Parent", f );
+p2 = uiextras.Panel( 'Parent', f );
 
 for k = 1 : height( CommonNameValuePairs )
     n = CommonNameValuePairs{k, 1};
