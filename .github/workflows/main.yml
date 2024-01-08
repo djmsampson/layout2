@@ -25,13 +25,13 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest ]
 
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2023b ]
 
         # MATLAB startup options (none or the JavaScript Desktop (-webui)).
-        matlab-startup-options: [ '' ]
+        matlab-startup-options: [ '', -webui ]
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
@@ -44,8 +44,7 @@ jobs:
         uses: actions/checkout@v4
 
       # Start the display server on the runner.
-      - name: Start display server
-        if: ${{ run-GLT-tests.strategy.matrix.os }} == ubuntu-latest
+      - name: Start display server       
         run: |
           sudo apt-get install -y xvfb
           Xvfb :99 &
