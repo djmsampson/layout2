@@ -1,4 +1,4 @@
-function demoBrowser()
+function varargout = demoBrowser()
 %demoBrowser: an example of using layouts to build a user interface
 %
 %   demoBrowser() opens a simple GUI that allows several of MATLAB's
@@ -24,6 +24,12 @@ redrawDemo();
 
 % Explicitly call the demo display so that it gets included if we deploy
 displayEndOfDemoMessage('')
+
+% Return output.
+if nargout > 0
+    nargoutchk( 1, 1 )
+    varargout{1} = gui.Window;
+end % if
 
 %-------------------------------------------------------------------------%
     function data = createData()

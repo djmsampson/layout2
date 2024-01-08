@@ -1,4 +1,4 @@
-function dockexample()
+function varargout = dockexample()
 %DOCKEXAMPLE: An example of using the panelbox dock/undock functionality
 
 %  Copyright 2009-2020 The MathWorks, Inc.
@@ -29,6 +29,12 @@ uicontrol( 'Style', 'PushButton', 'String', 'Button 5', 'Parent', box2 );
 set( panel{1}, 'DockFcn', {@nDock, 1} );
 set( panel{2}, 'DockFcn', {@nDock, 2} );
 set( panel{3}, 'DockFcn', {@nDock, 3} );
+
+% Return output.
+if nargout > 0
+    nargoutchk( 1, 1 )
+    varargout{1} = fig;
+end % if
 
 %-------------------------------------------------------------------------%
     function nDock( eventSource, eventData, whichpanel ) %#ok<INUSL>

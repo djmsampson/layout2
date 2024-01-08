@@ -13,10 +13,11 @@ classdef tExamples < glttestutilities.TestInfrastructure
 
     properties ( TestParameter )
         % Example function names and corresponding figure variables.
-        FunctionFile = {{'callbackexample', 'f'}; ...
-            {'demoBrowser', 'gui'}; ...
-            {'dockexample', 'fig'}; ...
-            {'minimizeexample', 'fig'}}
+        FunctionFile = {'callbackexample', ...
+            'demoBrowser', ...
+            'dockexample', ...
+            'guideApp', ...
+            'minimizeexample'}
     end % properties ( TestParameter )
 
     methods ( TestClassSetup )
@@ -84,72 +85,24 @@ classdef tExamples < glttestutilities.TestInfrastructure
 
         end % tRunningExampleScriptIsWarningFree
 
-        function tGuideAppIsWarningFree( testCase )
-
-            testCase.verifyWarningFree( @guideAppRunner, ...
-                ['Running the guideApp documentation example ', ...
-                'was not warning-free.'] )
-
-            function guideAppRunner()
-
-                f = guideApp();
-                testCase.addTeardown( @() delete( f ) )
-
-            end % guideAppRunner
-
-        end % tGuideAppIsWarningFree
-
-        function tRunningExampleFunctionIsWarningFree( ...
-                testCase, FunctionFile )
+        function tExampleFunctionIsWarningFree( testCase, FunctionFile )
 
             % Do not repeat this test for each parent type.
             testCase.assumeComponentHasEmptyParent()
 
-            % Assume that we are in MATLAB R2016a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016a' )
+            % Verify that launching the example is warning-free.
+            testCase.verifyWarningFree( @appRunner, ...
+                ['Running the ', FunctionFile, ' example was not ', ...
+                'warning-free.'])
 
-            % Create a working folder fixture.
-            tempFolderFixture = matlab.unittest.fixtures...
-                .WorkingFolderFixture();
-            testCase.applyFixture( tempFolderFixture )
+            function appRunner()
 
-            % Create a temporary file.
-            [~, tempFilename] = fileparts( tempname );
-            tempFullFilename = fullfile( ...
-                tempFolderFixture.Folder, [tempFilename, '.m'] );
-            fileID = fopen( tempFullFilename, 'w' );
-            testCase.addTeardown( @() fclose( fileID ) );
+                fig = feval( FunctionFile );
+                testCase.addTeardown( @() delete( fig ) )
 
-            % Read the example contents.
-            exampleContent = fileread( [FunctionFile{1}, '.m'] );
+            end % appRunner
 
-            % Remove the function definition line.
-            exampleContent = strsplit( exampleContent, '\n' );
-            exampleContent = [exampleContent{2:end}];
-
-            % Write a wrapper function to the temporary file, providing an
-            % output using the output variable name.
-            fprintf( fileID, 'function %s = %s()\n\n', ...
-                FunctionFile{2}, tempFilename );
-            fprintf( fileID, '%s', exampleContent );
-
-            % Verify that running the wrapper function is warning-free.
-            runner = @() exampleRunner( tempFilename );
-            testCase.verifyWarningFree( runner, ['Running the ', ...
-                FunctionFile{1}, ' example was not warning-free.'] )
-
-            function exampleRunner( file )
-
-                fig = feval( file );
-                if strcmp( FunctionFile{1}, 'demoBrowser' )
-                    testCase.addTeardown( @() delete( fig.Window ) )
-                else
-                    testCase.addTeardown( @() delete( fig ) )
-                end % if
-
-            end % exampleRunner
-
-        end % tRunningExampleFunctionIsWarningFree
+        end % tExampleFunctionIsWarningFree
 
     end % methods ( Test, Sealed )
 
