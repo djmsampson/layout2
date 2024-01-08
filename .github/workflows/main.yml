@@ -15,28 +15,28 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
 
-  # Run the GUI Layout Toolbox tests in the Java desktop environment.
-  run-GLT-tests:
+  # Run the GUI Layout Toolbox tests on Linux.
+  run-GLT-tests-Linux:
 
     # Define the job strategy.
     strategy:
 
       # Set up the job strategy matrix to define the different job configurations.
-      matrix:
+      matrix:        
         
-        # List of operating systems to run the tests on.
-        os: [ macos-latest ]
-
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [ R2023b ]
-
-        # MATLAB startup options (none or the JavaScript Desktop (-webui)).
-        matlab-startup-options: [ '', -webui ]
+        matlab-version: [ R2020a, R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+        matlab-startup-options: [ '' ]
+        
+        # MATLAB startup options (none or the JavaScript Desktop (-webui)). Valid for R2023b onwards.
+        include:
+          - matlab-version: [ R2023b ]
+            matlab-startup-options: [ '-webui' ]
     
     # Specify the runner that the job will run on.
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
-    # Don't fail the entire run if one job fails.
+    # Don't fail the entire job if one element fails.
     continue-on-error: true
 
     # Steps define a sequence of tasks to be executed as part of the job.
@@ -47,11 +47,11 @@ jobs:
         uses: actions/checkout@v4
 
       # Start the display server on the runner.
-      #- name: Start display server       
-      #  run: |
-      #    sudo apt-get install -y xvfb
-      #    Xvfb :99 &
-      #    echo "DISPLAY=:99" >> $GITHUB_ENV
+      - name: Start display server       
+        run: |
+          sudo apt-get install -y xvfb
+          Xvfb :99 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       # Set up MATLAB on the runner.
       - name: Set up MATLAB on the runner
@@ -62,6 +62,6 @@ jobs:
       # Run the GLT tests.
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
-        with:
+        with:          
           startup-options: ${{ matrix.matlab-startup-options }}
-          command: openProject("project.prj"); results = runtests("tPanel").assertSuccess();
+          command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
