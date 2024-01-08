@@ -1,6 +1,6 @@
 name: GUI Layout Toolbox Continuous Integration
       
-# Controls when the workflow will run. 
+# Controls when the workflow will run.
 on:
 
   # Triggers the workflow on push or pull request events, but only for the master branch.
@@ -25,11 +25,15 @@ jobs:
       matrix:        
         
         # List of MATLAB releases over which to run the tests.
-        matlab-versions-before-R2023b: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a ]
-        matlab-versions-from-R2023b: [ R2023b ]
-        
-        # MATLAB startup options (none or the JavaScript Desktop (-webui)). Valid for R2023b onwards.        
-        matlab-startup-options-from-R2023b: [ '', 'webui' ]        
+        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+
+        # MATLAB startup options (none or the JavaScript Desktop (-webui)). The latter is valid for R2023b onwards.
+        matlab-startup-options: [ '' ]
+
+        # Include the additional job(s) for running the tests in the JavaScript Desktop from R2023b onwards.
+        include:
+          - matlab-version: [ R2023b ]
+            matlab-startup-options: [ '-webui' ]
     
     # Specify the runner that the job will run on.
     runs-on: ubuntu-latest
@@ -56,24 +60,11 @@ jobs:
         uses: matlab-actions/setup-matlab@v2-beta
         with:     
           products: MATLAB  
-          release: ${{ matrix.matlab-versions-before-R2023b }}
-
-      # Run the GLT tests.
-      - name: Run the GLT tests
-        uses: matlab-actions/run-command@v1
-        with:          
-          command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
-
-      # Set up MATLAB on the runner (from R2023b).
-      - name: Set up MATLAB on the runner (from R2023b).
-        uses: matlab-actions/setup-matlab@v2-beta
-        with:
-          products: MATLAB
-          release: ${{ matrix.matlab-versions-from-R2023b }}
+          release: ${{ matrix.matlab-version }}
 
       # Run the GLT tests.
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
         with:
-          startup-options: ${{ matrix.matlab-startup-options-from-R2023b }}
+          startup-options: ${{ matrix.matlab-startup-options }}         
           command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
