@@ -25,13 +25,13 @@ jobs:
       matrix:        
         
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [ R2020a, R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+        matlab-version: [ R2020a, R2020b, R2021a, R2021b, R2022a, R2022b, R2023a ]
         matlab-startup-options: [ '' ]
         
         # MATLAB startup options (none or the JavaScript Desktop (-webui)). Valid for R2023b onwards.
         include:
           - matlab-version: [ R2023b ]
-            matlab-startup-options: [ '-webui' ]
+            matlab-startup-options: [ '', '-webui' ]
     
     # Specify the runner that the job will run on.
     runs-on: ubuntu-latest
@@ -55,8 +55,9 @@ jobs:
 
       # Set up MATLAB on the runner.
       - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v1
-        with:          
+        uses: matlab-actions/setup-matlab@v2-beta
+        with:     
+          products: MATLAB  
           release: ${{ matrix.matlab-version }}
 
       # Run the GLT tests.
