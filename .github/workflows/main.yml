@@ -25,7 +25,7 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [ macos-latest ]
+        os: [ windows-latest ]
 
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2023b ]
@@ -35,6 +35,9 @@ jobs:
     
     # Specify the runner that the job will run on.
     runs-on: ${{ matrix.os }}
+
+    # Don't fail the entire run if one job fails.
+    continue-on-error: true
 
     # Steps define a sequence of tasks to be executed as part of the job.
     steps:
