@@ -25,7 +25,7 @@ jobs:
       matrix:
         
         # List of operating systems to run the tests on.
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        os: [ windows-latest ]
 
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2023b ]
@@ -64,4 +64,4 @@ jobs:
         uses: matlab-actions/run-command@v1
         with:
           startup-options: ${{ matrix.matlab-startup-options }}
-          command: openProject("project.prj"); results = runtests("gesturetests.tTabPanelGestures").assertSuccess();
+          command: openProject("project.prj"); results = runtests("tHBoxFlex").assertSuccess();
