@@ -25,10 +25,11 @@ jobs:
       matrix:        
         
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+        matlab-versions-before-R2023b: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a ]
+        matlab-versions-from-R2023b: [ R2023b ]
         
-        # MATLAB startup options (none or the JavaScript Desktop (-webui)). Valid for R2023b onwards.
-        matlab-startup-options: [ '', 'webui' ]        
+        # MATLAB startup options (none or the JavaScript Desktop (-webui)). Valid for R2023b onwards.        
+        matlab-startup-options-from-R2023b: [ '', 'webui' ]        
     
     # Specify the runner that the job will run on.
     runs-on: ubuntu-latest
@@ -50,17 +51,29 @@ jobs:
           Xvfb :99 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
-      # Set up MATLAB on the runner.
-      - name: Set up MATLAB on the runner
+      # Set up MATLAB on the runner (before R2023b).
+      - name: Set up MATLAB on the runner (before )
         uses: matlab-actions/setup-matlab@v2-beta
         with:     
           products: MATLAB  
-          release: ${{ matrix.matlab-version }}
+          release: ${{ matrix.matlab-versions-before-R2023b }}
 
       # Run the GLT tests.
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
-        with:       
-          if: $ {{ matrix.matlab-version }} == R2023b   
-          startup-options: ${{ matrix.matlab-startup-options }}
+        with:          
+          command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
+
+      # Set up MATLAB on the runner (from R2023b).
+      - name: Set up MATLAB on the runner (from R2023b).
+        uses: matlab-actions/setup-matlab@v2-beta
+        with:
+          products: MATLAB
+          release: ${{ matrix.matlab-versions-from-R2023b }}
+
+      # Run the GLT tests.
+      - name: Run the GLT tests
+        uses: matlab-actions/run-command@v1
+        with:
+          startup-options: ${{ matrix.matlab-startup-options-from-R2023b }}
           command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
