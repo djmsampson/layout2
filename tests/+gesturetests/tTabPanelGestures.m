@@ -18,9 +18,10 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % supported from R2023b onwards.
             testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
 
-            % Create a tab panel.
+            % Create a tab panel in a grid layout.
             testFig = testCase.ParentFixture.Parent;
-            tabPanel = feval( ConstructorName, 'Parent', testFig );
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
+            tabPanel = feval( ConstructorName, 'Parent', testGrid );
 
             % Add two controls.
             uicontrol( 'Parent', tabPanel )

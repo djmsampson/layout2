@@ -61,4 +61,4 @@ jobs:
       - name: Run the GLT tests
         uses: matlab-actions/run-command@v1
         with:
-          command: openProject("project.prj"); results = runtests("tTabPanel").assertSuccess();
+          command: openProject("project.prj"); results = runToolboxTests(true).assertSuccess();

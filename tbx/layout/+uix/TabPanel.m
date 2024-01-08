@@ -863,9 +863,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             
             if ~isempty( prop )
-                obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
-                    findprop( obj.Parent, prop ), 'PostSet', ...
-                    @( src, evt ) obj.updateParentBackgroundColor( prop ) );
+                foundProp = findprop( obj.Parent, prop );
+                if foundProp.SetObservable
+                    obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
+                        foundProp, 'PostSet', ...
+                        @( src, evt ) obj.updateParentBackgroundColor( prop ) );
+                else
+                    obj.ParentBackgroundColorListener = [];
+                end % if
             else
                 obj.ParentBackgroundColorListener = [];
             end
