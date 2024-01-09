@@ -92,4 +92,4 @@ jobs:
         uses: matlab-actions/run-command@v1        
         with:
           startup-options: ${{ matrix.matlab-startup-options }}             
-          command: openProject("project.prj"); results = runToolboxTests(true).assertSuccess();
+          command: openProject("project.prj"); results = runToolboxTests("ExcludeMouseTests", true).assertSuccess();

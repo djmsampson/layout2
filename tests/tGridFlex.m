@@ -60,7 +60,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             }}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
         function tDraggingRowDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
@@ -140,6 +140,6 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
         end % tDraggingRowDividerIsWarningFree
 
-    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
 end % class

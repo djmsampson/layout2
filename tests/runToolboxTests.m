@@ -1,17 +1,17 @@
-function results = runToolboxTests( headless )
+function results = runToolboxTests( namedArgs )
 %RUNTOOLBOXTESTS Run the GUI Layout Toolbox tests.
 %
 % results = runToolboxTests() runs all GLT tests and returns the results.
 %
-% results = runToolboxTests( true ) indicates that we are running in 
-% headless MATLAB, and runs all GLT tests compatible with this mode of 
-% execution and returns the results.
+% results = runToolboxTests( 'ExcludeMouseTests', true ) excludes tests
+% that use either the Java robot or MATLAB to perform mouse interactions 
+% and returns the results.
 %
-% results = runToolboxTests( false ) indicates that we are running in 
-% desktop MATLAB, and runs all GLT tests and returns the results.
+% results = runToolboxTests( 'ExcludeMouseTests', false ) runs all GLT 
+% tests and returns the results.
 
-arguments
-    headless(1, 1) logical = false
+arguments    
+    namedArgs.ExcludeMouseTests(1, 1) logical = false    
 end % arguments
 
 % Record the current folder (the tests directory).
@@ -28,18 +28,21 @@ suite = testsuite( rootFolder, ...
     'IncludeSubfolders', true, ...
     'IncludeSubpackages', true );
 
-% Filter the test suite if we're running the tests in headless mode. Remove
-% all tests which have the 'IncompatibleWithHeadlessMode' test tag.
-if headless    
+% Filter the test suite using the user-specified parameters. This
+% determines the tests to exclude based on their tags.
+if namedArgs.ExcludeMouseTests    
     suiteIdx = 1 : length( suite );
     filterFun = @( idx ) ~isempty( suite(idx).Tags ) && ...
-        all( strcmp( suite(idx).Tags, 'IncompatibleWithHeadlessMode' ) );
+        all( strcmp( suite(idx).Tags, 'MovesMouse' ) );
     excludeIdx = arrayfun( filterFun, suiteIdx );
     suite(excludeIdx) = [];
 end % if
 
 % Run the tests, recording text output.
-runner = testrunner( 'textoutput' );
+runner = matlab.unittest.TestRunner.withTextOutput( ...
+    'LoggingLevel', 'Verbose', ...
+    'OutputDetail', 'Verbose', ...
+    'Verbosity', 'Verbose' );
 results = runner.run( suite );
 
 end % runToolboxTests

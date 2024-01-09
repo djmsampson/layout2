@@ -8,7 +8,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
         function tDraggingDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
@@ -452,7 +452,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tReparentingLayoutRestoresPointer
 
-    end % methods ( Test, Sealed, TestTags = {'IncompatibleWithHeadlessMode'} )
+    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
     methods ( Test, Sealed )
 
