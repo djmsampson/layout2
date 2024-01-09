@@ -39,10 +39,7 @@ if namedArgs.ExcludeMouseTests
 end % if
 
 % Run the tests, recording text output.
-runner = matlab.unittest.TestRunner.withTextOutput( ...
-    'LoggingLevel', 'Verbose', ...
-    'OutputDetail', 'Verbose', ...
-    'Verbosity', 'Verbose' );
+runner = matlab.unittest.TestRunner.withTextOutput();
 results = runner.run( suite );
 
 end % runToolboxTests
