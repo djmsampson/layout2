@@ -195,29 +195,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 ['This test is not applicable to components ', ...
                 'based in web figures.'] )
 
-        end % assumeGraphicsAreNotWebBased
-
-        function assumeTestEnvironmentHasDisplay( testCase )
-
-            % Check that the test environment has a display. This is
-            % required for the mouse tests used for the flexible
-            % containers.
-            currentFolder = fileparts( mfilename( 'fullpath' ) );
-            BaTFolder = fullfile( matlabroot(), 'test', ...
-                'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            inBaTFolder = strcmp( currentFolder, BaTFolder );
-            testCase.assumeFalse( inBaTFolder, ...
-                ['This test is not applicable in the BaT ', ...
-                'environment. A display is required to run ', ...
-                'the mouse tests.'] )
-
-            % Check that the test environment is not Jenkins.
-            isJenkins = ~isempty( getenv( 'JENKINS_HOME' ) );
-            testCase.assumeFalse( isJenkins, ...
-                ['This test is not applicable when running in ', ...
-                'the Jenkins environment.'] )
-
-        end % assumeTestEnvironmentHasDisplay
+        end % assumeGraphicsAreNotWebBased        
 
         function assumeNotMac( testCase )
 
