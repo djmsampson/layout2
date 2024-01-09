@@ -25,7 +25,7 @@ jobs:
       matrix:
 
         # List of platforms on which to run the tests.
-        platform: [ubuntu-latest, windows-latest, macos-latest]
+        platform: [ ubuntu-latest, windows-latest, macos-latest ]
         
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
@@ -33,7 +33,7 @@ jobs:
         # Also run the tests in the JavaScript Desktop from R2023b onwards.
         include:
           - matlab-version: [ R2023b ]
-            matlab-startup-options: [ '-webui' ]
+            matlab-startup-options: [ -webui ]
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
@@ -56,15 +56,15 @@ jobs:
           Xvfb :99 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
-      # Set up MATLAB on the runner.
+      # Set up MATLAB on the runner. The tests require base MATLAB only.
       - name: Set up MATLAB on the runner.
         uses: matlab-actions/setup-matlab@v2-beta
         with:     
           products: MATLAB  
           release: ${{ matrix.matlab-version }}
 
-      # Run the GLT tests.
-      - name: Run the GLT tests
+      # Run the GUI Layout Toolbox tests.
+      - name: Run the GUI Layout Toolbox tests
         uses: matlab-actions/run-command@v1
         with:
           startup-options: ${{ matrix.matlab-startup-options }}             
