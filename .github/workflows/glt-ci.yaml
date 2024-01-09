@@ -28,19 +28,23 @@ jobs:
         platform: [ ubuntu-latest, windows-latest, macos-latest ]
         
         # List of MATLAB releases over which to run the tests.
-        matlab-version: [ R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
 
         # List of MATLAB startup options ('' (none) and '-webui' (for testing in the JavaScript Desktop)).
         matlab-startup-options: [ '' ]
 
         # Windows/Mac are supported from R2021a onwards. Ubuntu is supported from R2020b onwards.
-        # Include an additional Linux job for running the tests on R2020b.
-        # The tests may also be run in the JavaScript Desktop from R2023b onwards.
-        include:
+        # Exclude jobs on R2020b for both Windows and Mac.
+        exclude:
 
-          - platform: ubuntu-latest
+          - platform: windows-latest
             matlab-version: R2020b
-            matlab-startup-options: [ '' ]
+
+          - platform: macos-latest
+            matlab-version: R2020b
+
+        # The tests should also be run in the JavaScript Desktop from R2023b onwards.
+        include:         
 
           - platform: ubuntu-latest
             matlab-version: R2023b
