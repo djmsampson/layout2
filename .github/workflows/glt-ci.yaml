@@ -31,9 +31,9 @@ jobs:
         matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
 
         # Windows/Mac are supported from R2021a onwards. Ubuntu is supported from R2020b onwards.
-        exclude:
-          - platform: [ windows-latest, macos-latest ]
-            matlab-version: [ R2020b ]
+        #exclude:
+        #  - platform: [ windows-latest, macos-latest ]
+        #    matlab-version: [ R2020b ]
         
         # Also run the tests in the JavaScript Desktop from R2023b onwards.
         #include:
@@ -63,6 +63,7 @@ jobs:
 
       # Set up MATLAB on the runner.
       - name: Set up MATLAB on the runner.
+        if: ${{ matrix.platform == 'ubuntu-latest' || matrix.matlab-version != 'R2020b' }}
         uses: matlab-actions/setup-matlab@v2-beta
         with:
           # The tests require base MATLAB only.
