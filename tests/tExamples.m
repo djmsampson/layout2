@@ -30,10 +30,13 @@ classdef tExamples < glttestutilities.TestInfrastructure
             foldersToAdd = {fullfile( projectFolder, 'docsrc' ), ...
                 fullfile( projectFolder, 'docsrc', 'Examples' )};
 
-            % Apply a path fixture for these folders.
-            pathFixture = matlab.unittest.fixtures...
-                .PathFixture( foldersToAdd );
-            testCase.applyFixture( pathFixture )
+            % Apply path fixtures for these folders (a loop is needed 
+            % because the PathFixture is not vectorized until R2021a).
+            for k = 1 : numel( foldersToAdd )
+                pathFixture = matlab.unittest.fixtures...
+                    .PathFixture( foldersToAdd{k} );
+                testCase.applyFixture( pathFixture )
+            end % for
 
         end % addDocumentationFoldersToPath
 
