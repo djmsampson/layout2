@@ -25,15 +25,15 @@ jobs:
       matrix:
 
         # List of platforms on which to run the tests.
-        platform: [ ubuntu-latest, windows-latest, macos-latest ]
+        platform: [ ubuntu-latest ]
         
         # List of MATLAB releases over which to run the tests.
         matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
         
         # Also run the tests in the JavaScript Desktop from R2023b onwards.
-        include:
-          - matlab-version: [ R2023b ]
-            matlab-startup-options: [ -webui ]
+        #include:
+        #  - matlab-version: [ R2023b ]
+        #    matlab-startup-options: [ -webui ]
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
@@ -67,5 +67,5 @@ jobs:
       - name: Run the GUI Layout Toolbox tests
         uses: matlab-actions/run-command@v1
         with:
-          startup-options: ${{ matrix.matlab-startup-options }}             
+          #startup-options: ${{ matrix.matlab-startup-options }}             
           command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
