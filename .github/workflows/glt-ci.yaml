@@ -46,17 +46,8 @@ jobs:
         # The tests should also be run in the JavaScript Desktop from R2023b onwards.
         include:         
 
-          - platform: ubuntu-latest
-            matlab-version: R2023b
-            matlab-startup-options: -webui
-
-          - platform: windows-latest
-            matlab-version: R2023b
-            matlab-startup-options: -webui
-
-          - platform: macos-latest
-            matlab-version: R2023b
-            matlab-startup-options: -webui
+          - matlab-version: R2023b
+            matlab-startup-options: -webui          
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
