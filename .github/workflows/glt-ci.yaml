@@ -63,7 +63,7 @@ jobs:
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
 
-    # Don't fail the entire job if one element fails.
+    # Don't fail the entire run if one job fails.
     continue-on-error: true
 
     # Steps define a sequence of tasks to be executed as part of the job.
@@ -85,7 +85,7 @@ jobs:
       - name: Set up MATLAB on the runner.        
         uses: matlab-actions/setup-matlab@v2-beta
         with:
-          # The tests require base MATLAB only.
+          # The tests require only base MATLAB.
           products: MATLAB  
           release: ${{ matrix.matlab-version }}
 
