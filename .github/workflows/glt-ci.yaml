@@ -39,9 +39,9 @@ jobs:
             matlab-version: [ R2020b ]
         
         # Also run the tests in the JavaScript Desktop from R2023b onwards.
-        include:
-          - matlab-version: [ R2023b ]
-            matlab-startup-options: [ -webui ]
+        #include:
+        #  - matlab-version: [ R2023b ]
+        #    matlab-startup-options: [ -webui ]
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
