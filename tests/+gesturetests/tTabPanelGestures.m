@@ -11,12 +11,16 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
         function tClickingTabPassesEventData( testCase, ConstructorName )
 
-            % Assume that we are in the web graphics case.
+            % Assume that we are working in web graphics in at least
+            % R2018a.
             testCase.assumeGraphicsAreWebBased()
+            testCase.assumeMATLABVersionIsAtLeast( 'R2018a' )
 
             % Using the App Testing Framework with GitHub Actions is
             % supported from R2023b onwards.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            if isequal( getenv( 'GITHUB_ACTIONS' ), true ) 
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create a tab panel in a grid layout.
             testFig = testCase.ParentFixture.Parent;
