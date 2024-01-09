@@ -19,7 +19,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Using the App Testing Framework with GitHub Actions is
             % supported from R2023b onwards.
             ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && logical( ci )            
+            if ~isempty( ci )
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
