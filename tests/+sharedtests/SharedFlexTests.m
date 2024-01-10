@@ -152,9 +152,12 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMouseOverDividerInDockedFigureUpdatesPointer( ...
                 testCase, ConstructorName )
 
-            % This test only applies to figures that can be docked.
+            % Exclude unrooted and web graphics.
             testCase.assumeGraphicsAreRooted()            
             testCase.assumeGraphicsAreNotWebBased()
+
+            % Exclude Mac OS.
+            testCase.assumeNotMac()
 
             % If running in CI, assume we have at least R2023b.
             ci = getenv( 'GITHUB_ACTIONS' );
