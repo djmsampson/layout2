@@ -97,5 +97,5 @@ jobs:
         with:
           startup-options: ${{ matrix.matlab-startup-options }}
           #command: openProject("project.prj"); results = runToolboxTests("ExcludeMouseTests", false); failedTests = table(results([results.Failed])); disp(failedTests); results.assertSuccess;
-          command: openProject("project.prj"); results = runtests("tGridFlex"); failedTest = table(results([results.Failed])); disp(failedTests); results.assertSuccess();
+          command: openProject("project.prj"); results = runtests("tGridFlex"); failedTests = table(results([results.Failed])); disp(failedTests); results.assertSuccess();
           
