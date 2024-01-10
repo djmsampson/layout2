@@ -25,7 +25,7 @@ jobs:
       matrix:
 
         # List of platforms on which to run the tests.
-        platform: [ macos-latest] 
+        platform: [ windows-latest] 
         #platform: [ ubuntu-latest, windows-latest, macos-latest ]
         
         # List of MATLAB releases over which to run the tests.
@@ -33,8 +33,7 @@ jobs:
         #matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
 
         # We don't define any startup options until we reach R2023b (handled separately below).
-        #matlab-startup-options: [ '' ]
-        matlab-startup-options: [ '-webui' ]
+        matlab-startup-options: [ '', '-webui' ]        
 
         # Windows/Mac are supported from R2021a onwards. Ubuntu is supported from R2020b onwards.
         # Exclude jobs on R2020b for both Windows and Mac.
@@ -97,5 +96,5 @@ jobs:
         uses: matlab-actions/run-command@v1        
         with:
           startup-options: ${{ matrix.matlab-startup-options }}
-          #command: openProject("project.prj"); results = runToolboxTests("ExcludeMouseTests", true); failedTests = table(results([results.Failed])); disp(failedTests); results.assertSuccess;
-          command: openProject("project.prj"); results = runtests("tBoxPanel").assertSuccess();
+          command: openProject("project.prj"); results = runToolboxTests("ExcludeMouseTests", false); failedTests = table(results([results.Failed])); disp(failedTests); results.assertSuccess;
+          
