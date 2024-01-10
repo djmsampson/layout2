@@ -168,9 +168,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
 
             % Create an invisible control then reparent it to the
             % component.
-            newFigure = figure( 'Visible', 'off' );
-            testCase.addTeardown( @() delete( newFigure ) )            
-            button = uicontrol( 'Parent', newFigure, 'Visible', 'off' );
+            button = uicontrol( 'Parent', [], 'Visible', 'off' );
             testCase.addTeardown( @() delete( button ) )
             reparenter = @() set( button, 'Parent', component );
             testCase.verifyWarningFree( reparenter, ...
