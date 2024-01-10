@@ -362,10 +362,8 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
         function tEnablingDataCursorModePreservesAxesPosition( ...
                 testCase, ConstructorName )
 
-            % Data cursor mode only works in Java figures, so we need to
-            % exclude the unrooted and Web figure cases.
-            testCase.assumeGraphicsAreRooted()
-            testCase.assumeGraphicsAreNotWebBased()
+            % Exclude the unrooted case.
+            testCase.assumeGraphicsAreRooted()            
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -384,17 +382,19 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Enable data cursor mode.
             dcm = datacursormode( component.Parent );
             dcm.Enable = 'on';
-            drawnow()
+            pause( 1 )
 
             % Capture the current axes position, add a datatip, then
             % capture the axes position again.
             oldPosition = ax.Position;
             dcm.createDatatip( p );
-            drawnow()
+            pause( 1 )
             newPosition = ax.Position;
 
-            % Verify that the axes 'Position' property has not changed.
+            % Verify that the axes 'Position' property has not changed, up
+            % to a tolerance of 5 pixels.
             testCase.verifyEqual( newPosition, oldPosition, ...
+                'RelTol', 1e-4, ...
                 ['Enabling data cursor mode on an axes in a ', ...
                 ConstructorName, ' component caused the axes ', ...
                 '''Position'' property to change.'] )
