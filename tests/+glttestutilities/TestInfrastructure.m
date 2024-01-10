@@ -195,7 +195,16 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 ['This test is not applicable to components ', ...
                 'based in web figures.'] )
 
-        end % assumeGraphicsAreNotWebBased        
+        end % assumeGraphicsAreNotWebBased
+
+        function assumeJavaScriptDesktop( testCase )
+
+            isJSD = feature( 'webui' );
+            testCase.assumeTrue( isJSD, ...
+                ['This test is only applicable in the new desktop ', ...
+                'environment for MATLAB (the JavaScript Desktop).'] )
+
+        end % assumeJavaScriptDesktop
 
         function assumeNotMac( testCase )
 

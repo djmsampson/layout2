@@ -237,8 +237,10 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
+            % This test is only for rooted components in the JavaScript
+            % desktop environment.
             testCase.assumeGraphicsAreRooted()
+            testCase.assumeJavaScriptDesktop()
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
@@ -374,8 +376,10 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOverDivider( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
+            % This test is only for rooted components in the JavaScript
+            % Desktop.
             testCase.assumeGraphicsAreRooted()
+            testCase.assumeJavaScriptDesktop()
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
