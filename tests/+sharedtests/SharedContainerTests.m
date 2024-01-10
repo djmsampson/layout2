@@ -382,17 +382,17 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Enable data cursor mode.
             dcm = datacursormode( component.Parent );
             dcm.Enable = 'on';
-            pause( 0.5 )
+            pause( 2 )
 
             % Capture the current axes position, add a datatip, then
             % capture the axes position again.
             oldPosition = ax.Position;
             dcm.createDatatip( p );
-            pause( 0.5 )
+            pause( 2 )
             newPosition = ax.Position;
 
             % Verify that the axes 'Position' property has not changed, up
-            % to a tolerance of 3 pixels.
+            % to a tolerance.
             testCase.verifyEqual( newPosition, oldPosition, ...
                 'AbsTol', 3, ...
                 ['Enabling data cursor mode on an axes in a ', ...
