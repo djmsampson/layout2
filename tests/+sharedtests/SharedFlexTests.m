@@ -13,8 +13,15 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tDraggingDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
 
-            % Assume that the graphics are rooted.
+            % Assume that the graphics are rooted and in the JavaScript
+            % desktop.
             testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -101,8 +108,15 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tClickingFlexibleLayoutIsWarningFree( ...
                 testCase, ConstructorName )
 
-            % Assume that the graphics are rooted.
+            % Assume that the graphics are rooted and in the JavaScript
+            % desktop.
             testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -139,8 +153,14 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName )
 
             % This test only applies to figures that can be docked.
-            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreRooted()            
             testCase.assumeGraphicsAreNotWebBased()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the flexible container.
             component = testCase.constructComponent( ConstructorName, ...
@@ -199,7 +219,13 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tClickingDividerIsWarningFree( testCase, ConstructorName )
 
             % This test is only for rooted components.
-            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreRooted()            
+            
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
@@ -379,7 +405,12 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % This test is only for rooted components in the JavaScript
             % Desktop.
             testCase.assumeGraphicsAreRooted()
-            testCase.assumeJavaScriptDesktop()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
@@ -407,6 +438,12 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % This test is for rooted components.
             testCase.assumeGraphicsAreRooted()
 
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
+            
             % Create a component with children.
             [component, dividers] = testCase...
                 .createFlexibleLayoutWithChildren( ConstructorName );
@@ -439,6 +476,11 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % This test is for rooted components.
             testCase.assumeGraphicsAreRooted()
+            % If running in CI, assume we have the JavaScript desktop.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeJavaScriptDesktop()
+            end % if
 
             % Create a component with children.
             [component, dividers] = testCase...

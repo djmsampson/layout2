@@ -129,10 +129,30 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '9.1';
                 case 'R2017a'
                     versionNumber = '9.2';
+                case 'R2017b'
+                    versionNumber = '9.3';
                 case 'R2018a'
                     versionNumber = '9.4';
+                case 'R2018b'
+                    versionNumber = '9.5';
+                case 'R2019a'
+                    versionNumber = '9.6';
+                case 'R2019b'
+                    versionNumber = '9.7';
+                case 'R2020a'
+                    versionNumber = '9.8';
+                case 'R2020b'
+                    versionNumber = '9.9';
+                case 'R2021a'
+                    versionNumber = '9.10';
+                case 'R2021b'
+                    versionNumber = '9.11';                
                 case 'R2022a'
                     versionNumber = '9.12';
+                case 'R2022b'
+                    versionNumber = '9.13';
+                case 'R2023a'
+                    versionNumber = '9.14';
                 case 'R2023b'
                     versionNumber = '23.2';
                 otherwise
@@ -199,6 +219,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         function assumeJavaScriptDesktop( testCase )
 
+            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
             isJSD = feature( 'webui' );
             testCase.assumeTrue( isJSD, ...
                 ['This test is only applicable in the new desktop ', ...
