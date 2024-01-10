@@ -24,9 +24,8 @@ jobs:
       # Set up the job strategy matrix to define the different job configurations.
       matrix:
 
-        # List of platforms on which to run the tests.
-        platform: [ ubuntu-latest] 
-        #platform: [ ubuntu-latest, windows-latest, macos-latest ]
+        # List of platforms on which to run the tests.        
+        platform: [ ubuntu-latest, windows-latest, macos-latest ]
         
         # List of MATLAB releases over which to run the tests.        
         matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
@@ -36,15 +35,15 @@ jobs:
 
         # Windows/Mac are supported from R2021a onwards. Ubuntu is supported from R2020b onwards.
         # Exclude jobs on R2020b for both Windows and Mac.
-        # exclude:
+        exclude:
 
-        #   - platform: windows-latest
-        #     matlab-version: R2020b
-        #     matlab-startup-options: [ '' ]
+          - platform: windows-latest
+            matlab-version: R2020b
+            matlab-startup-options: [ '' ]
 
-        #   - platform: macos-latest
-        #     matlab-version: R2020b
-        #     matlab-startup-options: [ '' ]
+          - platform: macos-latest
+            matlab-version: R2020b
+            matlab-startup-options: [ '' ]
 
         # The tests should also be run in the JavaScript Desktop from R2023b onwards (this is the -webui startup option).
         include:         
@@ -53,13 +52,13 @@ jobs:
             matlab-version: R2023b
             matlab-startup-options: -webui          
 
-          # - platform: windows-latest
-          #   matlab-version: R2023b
-          #   matlab-startup-options: -webui
+          - platform: windows-latest
+            matlab-version: R2023b
+            matlab-startup-options: -webui
 
-          # - platform: macos-latest
-          #   matlab-version: R2023b
-          #   matlab-startup-options: -webui
+          - platform: macos-latest
+            matlab-version: R2023b
+            matlab-startup-options: -webui
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
