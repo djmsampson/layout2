@@ -241,7 +241,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.assumeFalse( isunix(), ...
                 'This test is not applicable on the Unix platform.' )
 
-        end % assumeNotUnix
+        end % assumeNotUnix        
 
         function assumeNotDeployed( testCase )
 

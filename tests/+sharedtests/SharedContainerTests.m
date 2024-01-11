@@ -363,7 +363,21 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 testCase, ConstructorName )
 
             % Exclude the unrooted case.
-            testCase.assumeGraphicsAreRooted()            
+            testCase.assumeGraphicsAreRooted()
+
+            % Exclude button boxes from this test.
+            testCase.assumeNotButtonBox( ConstructorName )
+
+            % Work around a bug in R2022a-R2023a by disabling a warning for
+            % the duration of the test.
+            v = ver( 'matlab' ); %#ok<VERMATLAB>
+            v = v.Version;
+            if ismember( v, {'9.12', '9.13', '9.14'} )
+                warningID = 'MATLAB:callback:DynamicPropertyEventError';
+                warningState = warning( 'query', warningID );
+                warning( 'off', warningID )
+                warningCleanup = onCleanup( @() warning( warningState ) );
+            end % if
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -888,6 +902,17 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 containerClassName, '.'] )
 
         end % assumeComponentIsAContainer
+
+        function assumeNotButtonBox( testCase, ConstructorName )
+
+            % Assume that the component, specified by ConstructorName, is
+            % not a button box.
+            isabuttonbox = ismember( 'uix.ButtonBox', ...
+                superclasses( ConstructorName ) );
+            testCase.assumeFalse( isabuttonbox, ...
+                'This test is not applicable to button boxes.' )
+            
+        end % assumeNotButtonBox
 
     end % methods ( Sealed, Access = protected )
 
