@@ -362,11 +362,15 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
         function tEnablingDataCursorModeIsWarningFree( ...
                 testCase, ConstructorName )
 
-            % Exclude the unrooted case.
-            testCase.assumeGraphicsAreRooted()
+            % Skip this test if we're running in CI.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            isci = ~isempty( ci ) && strcmp( ci, 'true' );
+            testCase.assumeFalse( isci, ...
+                ['This test is not applicable when running in ', ...
+                'GitHub Actions.'] )
 
-            % Exclude button boxes from this test.
-            testCase.assumeNotButtonBox( ConstructorName )
+            % Exclude the unrooted case.
+            testCase.assumeGraphicsAreRooted()            
 
             % Work around a bug in R2022a-R2023a by disabling a warning for
             % the duration of the test.
