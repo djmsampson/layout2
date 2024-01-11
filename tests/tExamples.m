@@ -2,28 +2,22 @@ classdef tExamples < glttestutilities.TestInfrastructure
     %tExamples Tests for the layout documentation examples.
 
     properties ( TestParameter )
-        % Example script names.
-        ScriptFile = {'axesexample', ...
-            'colorbarexample', ...
-            'gridflexpositioning', ...
-            'hierarchyexample', ...
-            'paneltabexample', ...
-            'visibleexample'}
-        % Variables representing the main figure/app window in each
-        % example.
-        FigureVariable = {'window', 'window', 'f', ...
-            'window', 'window', 'fig'}
+        % Example script names and corresponding figure variables.
+        ScriptFile = {{'axesexample', 'window'}; ...
+            {'colorbarexample', 'window'}; ...
+            {'gridflexpositioning', 'f'}; ...
+            {'hierarchyexample', 'window'}; ...
+            {'paneltabexample', 'window'}; ...
+            {'visibleexample', 'fig'}}
     end % properties ( TestParameter )
 
     properties ( TestParameter )
-        % Example function names.
+        % Example function names and corresponding figure variables.
         FunctionFile = {'callbackexample', ...
             'demoBrowser', ...
-            'dockexample', ...            
+            'dockexample', ...
+            'guideApp', ...
             'minimizeexample'}
-        % Variables representing the main figure/app window in each
-        % example.
-        OutputVariable = {'f', 'gui', 'fig', 'fig'}
     end % properties ( TestParameter )
 
     methods ( TestClassSetup )
@@ -36,19 +30,22 @@ classdef tExamples < glttestutilities.TestInfrastructure
             foldersToAdd = {fullfile( projectFolder, 'docsrc' ), ...
                 fullfile( projectFolder, 'docsrc', 'Examples' )};
 
-            % Apply a path fixture for these folders.
-            pathFixture = matlab.unittest.fixtures...
-                .PathFixture( foldersToAdd );
-            testCase.applyFixture( pathFixture )
+            % Apply path fixtures for these folders (a loop is needed 
+            % because the PathFixture is not vectorized until R2021a).
+            for k = 1 : numel( foldersToAdd )
+                pathFixture = matlab.unittest.fixtures...
+                    .PathFixture( foldersToAdd{k} );
+                testCase.applyFixture( pathFixture )
+            end % for
 
         end % addDocumentationFoldersToPath
 
     end % methods ( TestClassSetup )
 
-    methods ( Test, Sealed, ParameterCombination = 'sequential' )
+    methods ( Test, Sealed )
 
         function tRunningExampleScriptIsWarningFree( ...
-                testCase, ScriptFile, FigureVariable )
+                testCase, ScriptFile )
 
             % Do not repeat this test for each parent type.
             testCase.assumeComponentHasEmptyParent()
@@ -69,18 +66,18 @@ classdef tExamples < glttestutilities.TestInfrastructure
             testCase.addTeardown( @() fclose( fileID ) );
 
             % Read the example contents.
-            exampleContent = fileread( [ScriptFile, '.m'] );
+            exampleContent = fileread( [ScriptFile{1}, '.m'] );
 
             % Write a wrapper function to the temporary file, providing an
             % output using the output variable name.
             fprintf( fileID, 'function %s = %s()\n\n', ...
-                FigureVariable, tempFilename );
+                ScriptFile{2}, tempFilename );
             fprintf( fileID, '%s', exampleContent );
 
             % Verify that running the wrapper function is warning-free.
             runner = @() exampleRunner( tempFilename );
             testCase.verifyWarningFree( runner, ['Running the ', ...
-                ScriptFile, ' example was not warning-free.'] )
+                ScriptFile{1}, ' example was not warning-free.'] )
 
             function exampleRunner( file )
 
@@ -91,72 +88,24 @@ classdef tExamples < glttestutilities.TestInfrastructure
 
         end % tRunningExampleScriptIsWarningFree
 
-        function tGuideAppIsWarningFree( testCase )
-
-            testCase.verifyWarningFree( @guideAppRunner, ...
-                ['Running the guideApp documentation example ', ...
-                'was not warning-free.'] )
-
-            function guideAppRunner()
-
-                f = guideApp();
-                testCase.addTeardown( @() delete( f ) )
-
-            end % guideAppRunner
-
-        end % tGuideAppIsWarningFree
-
-        function tRunningExampleFunctionIsWarningFree( ...
-                testCase, FunctionFile, OutputVariable )
+        function tExampleFunctionIsWarningFree( testCase, FunctionFile )
 
             % Do not repeat this test for each parent type.
             testCase.assumeComponentHasEmptyParent()
 
-            % Assume that we are in MATLAB R2016a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016a' )
+            % Verify that launching the example is warning-free.
+            testCase.verifyWarningFree( @appRunner, ...
+                ['Running the ', FunctionFile, ' example was not ', ...
+                'warning-free.'])
 
-            % Create a working folder fixture.
-            tempFolderFixture = matlab.unittest.fixtures...
-                .WorkingFolderFixture();
-            testCase.applyFixture( tempFolderFixture )
+            function appRunner()
 
-            % Create a temporary file.
-            [~, tempFilename] = fileparts( tempname );
-            tempFullFilename = fullfile( ...
-                tempFolderFixture.Folder, [tempFilename, '.m'] );
-            fileID = fopen( tempFullFilename, 'w' );
-            testCase.addTeardown( @() fclose( fileID ) );
+                fig = feval( FunctionFile );
+                testCase.addTeardown( @() delete( fig ) )
 
-            % Read the example contents.
-            exampleContent = fileread( [FunctionFile, '.m'] );
+            end % appRunner
 
-            % Remove the function definition line.
-            exampleContent = strsplit( exampleContent, '\n' );
-            exampleContent = [exampleContent{2:end}];
-
-            % Write a wrapper function to the temporary file, providing an
-            % output using the output variable name.
-            fprintf( fileID, 'function %s = %s()\n\n', ...
-                OutputVariable, tempFilename );
-            fprintf( fileID, '%s', exampleContent );            
-
-            % Verify that running the wrapper function is warning-free.
-            runner = @() exampleRunner( tempFilename );
-            testCase.verifyWarningFree( runner, ['Running the ', ...
-                FunctionFile, ' example was not warning-free.'] )
-
-            function exampleRunner( file )
-
-                fig = feval( file );
-                if strcmp( FunctionFile, 'demoBrowser' )
-                    testCase.addTeardown( @() delete( fig.Window ) )
-                else
-                    testCase.addTeardown( @() delete( fig ) )
-                end % if
-
-            end % exampleRunner
-
-        end % tRunningExampleFunctionIsWarningFree
+        end % tExampleFunctionIsWarningFree
 
     end % methods ( Test, Sealed )
 

@@ -60,13 +60,19 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             }}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed )
+    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
         function tDraggingRowDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
 
             % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -104,7 +110,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
             % Drag the divider in both directions.
             for offset = dragOffsets
-                % Move the mouse pointer.                
+                % Move the mouse pointer.
                 r.PointerLocation = testFig.Position(1:2) + ...
                     d(1).Position(1:2) + d(1).Position(3:4)/2;
                 drawnow()
@@ -140,6 +146,6 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
         end % tDraggingRowDividerIsWarningFree
 
-    end % methods ( Test, Sealed )
+    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
 end % class
