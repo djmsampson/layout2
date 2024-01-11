@@ -359,7 +359,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         end % tAxesInComponentRemainsVisibleAfter3DRotation
 
-        function tEnablingDataCursorModePreservesAxesPosition( ...
+        function tEnablingDataCursorModeIsWarningFree( ...
                 testCase, ConstructorName )
 
             % Exclude the unrooted case.
@@ -379,27 +379,38 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Plot into the axes.
             p = plot( ax, 1:10 );
 
-            % Enable data cursor mode.
-            dcm = datacursormode( component.Parent );
-            dcm.Enable = 'on';
-            pause( 2 )
+            % Initialize a datacursor mode object.
+            dcm = [];
 
-            % Capture the current axes position, add a datatip, then
-            % capture the axes position again.
-            oldPosition = ax.Position;
-            dcm.createDatatip( p );
-            pause( 2 )
-            newPosition = ax.Position;
+            function enableDataCursorMode()
 
-            % Verify that the axes 'Position' property has not changed, up
-            % to a tolerance.
-            testCase.verifyEqual( newPosition, oldPosition, ...
-                'AbsTol', 3, ...
-                ['Enabling data cursor mode on an axes in a ', ...
-                ConstructorName, ' component caused the axes ', ...
-                '''Position'' property to change.'] )
+                dcm = datacursormode( component.Parent );
+                dcm.Enable = 'on';
+                drawnow()
 
-        end % tEnablingDataCursorModePreservesAxesPosition
+            end % enableDataCursorMode
+
+            % Verify that there are no warnings when enabling datacursor
+            % mode.
+            enabler = @() enableDataCursorMode();
+            testCase.verifyWarningFree( enabler, ['Enabling data ', ...
+                'cursor mode in a figure containing a ', ...
+                ConstructorName, ' component was not warning-free.'] )
+            
+            function addDataTip()
+
+                dcm.createDatatip( p );
+                drawnow()
+
+            end % addDataTip
+
+            % Add a datatip and verify that no warnings occur.
+            dataTipAdder = @() addDataTip();
+            testCase.verifyWarningFree( dataTipAdder, ...
+                ['Adding a data tip to a plot inside a ', ...
+                ConstructorName, ' component was not warning-free.'] )
+
+        end % tEnablingDataCursorModeIsWarningFree
 
         function tContentsRespectAddingAxesAndControl( ...
                 testCase, ConstructorName )
