@@ -20,7 +20,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         FontName % font name
         FontSize % font size
         FontWeight % font weight
-        FontUnits % font weight
+        FontUnits % font units
         ForegroundColor % tab text color [RGB]
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
@@ -120,6 +120,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.FontAngle
         
         function set.FontAngle( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = convertStringsToChars( value );
+            end % if
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'normal','italic','oblique'} ) ), ...
@@ -150,6 +154,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.FontName
         
         function set.FontName( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = convertStringsToChars( value );
+            end % if
             
             % Check
             assert( ischar( value ) && any( strcmp( value, obj.FontNames ) ), ...
@@ -212,6 +220,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.FontWeight
         
         function set.FontWeight( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = convertStringsToChars( value );
+            end % if
             
             % Check
             assert( ischar( value ) && any( strcmp( value, {'normal','bold'} ) ), ...
@@ -242,6 +254,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.FontUnits
         
         function set.FontUnits( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = convertStringsToChars( value );
+            end % if
             
             % Check
             assert( ischar( value ) && ...
@@ -400,6 +416,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.TabEnables
         
         function set.TabEnables( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = cellstr( convertStringsToChars( value ) );
+            end % if
             
             % For those who can't tell a column from a row...
             if isrow( value )
@@ -415,7 +435,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 isequal( size( value ), size( tabs ) ) && ...
                 all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
+                'Property ''TabEnables'' should be a cell array of character vectors ''on'' or ''off'', or an array of strings, one per tab.' ) %#ok<ISCLSTR>
             
             % Set
             tf = strcmp( value, 'on' );
@@ -440,6 +460,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.TabLocation
         
         function set.TabLocation( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = convertStringsToChars( value );
+            end % if
             
             % Check
             assert( ischar( value ) && ...
@@ -462,6 +486,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % get.TabTitles
         
         function set.TabTitles( obj, value )
+
+            if ~verLessThan( 'matlab', '9.3' )
+                value = cellstr( convertStringsToChars( value ) );
+            end % if
             
             % For those who can't tell a column from a row...
             if isrow( value )
@@ -475,7 +503,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             assert( iscellstr( value ) && ...
                 isequal( size( value ), size( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
+                'Property ''TabTitles'' should be a cell array of character vectors or an array of strings, one per tab.' ) %#ok<ISCLSTR>
             
             % Set
             n = numel( tabs );
@@ -863,9 +891,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             
             if ~isempty( prop )
-                obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
-                    findprop( obj.Parent, prop ), 'PostSet', ...
-                    @( src, evt ) obj.updateParentBackgroundColor( prop ) );
+                foundProp = findprop( obj.Parent, prop );
+                if foundProp.SetObservable
+                    obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
+                        foundProp, 'PostSet', ...
+                        @( src, evt ) obj.updateParentBackgroundColor( prop ) );
+                else
+                    obj.ParentBackgroundColorListener = [];
+                end % if
             else
                 obj.ParentBackgroundColorListener = [];
             end

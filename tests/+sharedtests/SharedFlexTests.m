@@ -3,18 +3,25 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
     %(*.HBoxFlex, *.VBoxFlex, and *.GridFlex).
 
     properties ( TestParameter )
-        % Sample flexible layout children sizes. We need all pairwise 
+        % Sample flexible layout children sizes. We need all pairwise
         % combinations of relative and fixed sizes.
         ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed )
+    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
 
         function tDraggingDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
 
-            % Assume that the graphics are rooted.
-            testCase.assumeGraphicsAreRooted()            
+            % Assume that the graphics are rooted and in the JavaScript
+            % desktop.
+            testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
@@ -31,7 +38,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Wait until the figure renders.
             testFig = ancestor( component, 'figure' );
             % Ensure the figure is not docked.
-            testFig.WindowStyle = 'normal'; 
+            testFig.WindowStyle = 'normal';
             isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )
@@ -101,8 +108,15 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tClickingFlexibleLayoutIsWarningFree( ...
                 testCase, ConstructorName )
 
-            % Assume that the graphics are rooted.
+            % Assume that the graphics are rooted and in the JavaScript
+            % desktop.
             testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -138,9 +152,18 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMouseOverDividerInDockedFigureUpdatesPointer( ...
                 testCase, ConstructorName )
 
-            % This test only applies to figures that can be docked.
-            testCase.assumeGraphicsAreRooted()
+            % Exclude unrooted and web graphics.
+            testCase.assumeGraphicsAreRooted()            
             testCase.assumeGraphicsAreNotWebBased()
+
+            % Exclude Mac OS.
+            testCase.assumeNotMac()
+
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
             % Create the flexible container.
             component = testCase.constructComponent( ConstructorName, ...
@@ -152,7 +175,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 uicontrol( 'Parent', component );
             end % for
 
-            % Dock the test figure, focus it, and
+            % Dock the test figure and focus it.
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'docked';
             windowStyleCleanup = onCleanup( ...
@@ -196,11 +219,57 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tMouseOverDividerInDockedFigureUpdatesPointer
 
+        function tClickingDividerIsWarningFree( testCase, ConstructorName )
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()            
+            
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
+
+            % Create the layout and add children.
+            [component, dividers] = createFlexibleLayoutWithChildren( ...
+                testCase, ConstructorName );
+
+            % Move the mouse to the center of a divider.
+            testFig = ancestor( component, 'figure' );
+            figureOrigin = getFigureOrigin( testFig );
+            dividerCenter = figureOrigin + ...
+                getpixelcenter( dividers(1), true );
+            moveMouseTo( dividerCenter )
+
+            % Verify that clicking the divider is warning-free.
+            testCase.verifyWarningFree( @clicker, ...
+                ['Clicking the divider in a ', ConstructorName, ...
+                ' component was not warning-free.'] )
+
+            function clicker()
+
+                % Create the robot.
+                bot = java.awt.Robot();
+
+                % Click.
+                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+                % Let go.
+                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
+                pause( 0.5 )
+
+            end % clicker
+
+        end % tClickingDividerIsWarningFree
+
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
+            % This test is only for rooted components in the JavaScript
+            % desktop environment.
             testCase.assumeGraphicsAreRooted()
+            testCase.assumeJavaScriptDesktop()
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
@@ -264,6 +333,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             buttonCenter = figureOrigin + ...
                 getpixelcenter( buttons1(1), true );
             moveMouseTo( buttonCenter )
+            pause( 1 )
             testCase.verifyEqual( testFig.Pointer, 'arrow', ...
                 ['The mouse pointer did not change to ''arrow''', ...
                 ' when moved over a button in a ', ConstructorName, ...
@@ -273,6 +343,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             dividerCenter = figureOrigin + ...
                 getpixelcenter( div1(end), true );
             moveMouseTo( dividerCenter )
+            pause( 1 )
             testCase.verifyMatches( testFig.Pointer, ...
                 '(left|right|top|bottom)', ...
                 ['The mouse pointer did not change to ''left'', ', ...
@@ -284,6 +355,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             dividerCenter = figureOrigin + ...
                 getpixelcenter( div2(end), true );
             moveMouseTo( dividerCenter )
+            pause( 1 )
             testCase.verifyMatches( testFig.Pointer, ...
                 '(left|right|top|bottom)', ...
                 ['The mouse pointer did not change to ''left'', ', ...
@@ -294,6 +366,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             buttonCenter = figureOrigin + ...
                 getpixelcenter( buttons2(2), true );
             moveMouseTo( buttonCenter )
+            pause( 1 )
             testCase.verifyMatches( testFig.Pointer, 'arrow', ...
                 ['The mouse pointer did not change to ''arrow''', ...
                 ' when moved over a button in a ', ConstructorName, ...
@@ -303,6 +376,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             dividerCenter = figureOrigin + ...
                 getpixelcenter( div2(end), true );
             moveMouseTo( dividerCenter )
+            pause( 1 )
             testCase.verifyMatches( testFig.Pointer, ...
                 '(left|right|top|bottom)', ...
                 ['The mouse pointer did not change to ''left'', ', ...
@@ -311,6 +385,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             dividerCenter = figureOrigin + ...
                 getpixelcenter( div1(end), true );
             moveMouseTo( dividerCenter )
+            pause( 1 )
             testCase.verifyMatches( testFig.Pointer, ...
                 '(left|right|top|bottom)', ...
                 ['The mouse pointer did not change to ''left'', ', ...
@@ -319,6 +394,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             buttonCenter = figureOrigin + ...
                 getpixelcenter( buttons1(1), true );
             moveMouseTo( buttonCenter )
+            pause( 1 )
             testCase.verifyEqual( testFig.Pointer, 'arrow', ...
                 ['The mouse pointer did not change to ''arrow''', ...
                 ' when moved over a button in a ', ConstructorName, ...
@@ -329,8 +405,17 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOverDivider( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
+            % This test is only for rooted components in the JavaScript
+            % Desktop.
             testCase.assumeGraphicsAreRooted()
+
+            % If running in CI, assume we have at least R2023b and we're
+            % running in the JavaScript desktop.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+                testCase.assumeJavaScriptDesktop()
+            end % if
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
@@ -341,7 +426,10 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             figureOrigin = getFigureOrigin( testFig );
             dividerCenter = figureOrigin + ...
                 getpixelcenter( dividers(1), true );
+            moveMouseTo( dividerCenter - [10, 10] )
+            pause( 0.5 )
             moveMouseTo( dividerCenter )
+            pause( 0.5 )
             testCase.verifyMatches( testFig.Pointer, ...
                 '(left|right|top|bottom)', ...
                 ['The mouse pointer did not change to ''left'', ', ...
@@ -350,50 +438,91 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tMousePointerUpdatesOverDivider
 
-        function tClickingDividerIsWarningFree( testCase, ConstructorName )
+        function tDeletingChildRestoresPointer( testCase, ConstructorName )
 
-            % This test is only for rooted components.
+            % This test is for rooted components.
             testCase.assumeGraphicsAreRooted()
 
-            % Create the layout and add children.
-            [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );
+            % If running in CI, assume we have at least R2023b.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
 
-            % Move the mouse to the center of a divider.
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
             testFig = ancestor( component, 'figure' );
-            figureOrigin = getFigureOrigin( testFig );
-            dividerCenter = figureOrigin + ...
-                getpixelcenter( dividers(1), true );
-            moveMouseTo( dividerCenter )
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
 
-            % Verify that clicking the divider is warning-free.
-            testCase.verifyWarningFree( @clicker, ...
-                ['Clicking the divider in a ', ConstructorName, ...
-                ' component was not warning-free.'] )
+            % Delete all the children.
+            delete( component.Children )
+            pause( 0.5 )
 
-            function clicker()
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Deleting the children of a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
 
-                % Create the robot.
-                bot = java.awt.Robot();
+        end % tDeletingChildRestoresPointer
 
-                % Click.
-                bot.mousePress( java.awt.event.InputEvent.BUTTON1_MASK );
-                pause( 0.5 )
+        function tReparentingLayoutRestoresPointer( ...
+                testCase, ConstructorName )
 
-                % Let go.
-                bot.mouseRelease( java.awt.event.InputEvent.BUTTON1_MASK );
-                pause( 0.5 )
+            % This test is for rooted components.
+            testCase.assumeGraphicsAreRooted()
+            % If running in CI, assume we have the JavaScript desktop.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeJavaScriptDesktop()
+            end % if
 
-            end % clicker
+            % Create a component with children.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
 
-        end % tClickingDividerIsWarningFree
+            % Increase the spacing.
+            component.Spacing = 10;
+
+            % Move the mouse over a divider.
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2);
+            pause( 0.5 )
+
+            % Reparent the layout.
+            component.Parent = [];
+
+            % Verify that the figure's 'Pointer' property has been
+            % restored.
+            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
+                ['Reparenting a ', ConstructorName, ...
+                ' component did not restore the figure''s ', ...
+                '''Pointer'' property.'] )
+
+        end % tReparentingLayoutRestoresPointer
+
+    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
+
+    methods ( Test, Sealed )
 
         function tSettingBackgroundColorUpdatesDividers( ...
                 testCase, ConstructorName )
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );            
+                testCase, ConstructorName );
 
             % Set the background color.
             newColor = [1, 0, 0];
@@ -417,7 +546,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
-                testCase, ConstructorName );           
+                testCase, ConstructorName );
 
             % Switch off the divider markings.
             component.DividerMarkings = 'off';
@@ -453,70 +582,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tReparentingToEmptyFigureIsWarningFree
 
-        function tDeletingChildRestoresPointer( testCase, ConstructorName )
-
-            % This test is for rooted components.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create a component with children.
-            [component, dividers] = testCase...
-                .createFlexibleLayoutWithChildren( ConstructorName );
-
-            % Increase the spacing.
-            component.Spacing = 10;
-
-            % Move the mouse over a divider.
-            r = groot();
-            testFig = ancestor( component, 'figure' );
-            r.PointerLocation = testFig.Position(1:2) + ...
-                dividers(1).Position(1:2);
-            pause( 0.5 )
-
-            % Delete all the children.
-            delete( component.Children )
-            pause( 0.5 )
-
-            % Verify that the figure's 'Pointer' property has been
-            % restored.
-            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
-                ['Deleting the children of a ', ConstructorName, ...
-                ' component did not restore the figure''s ', ...
-                '''Pointer'' property.'] )
-
-        end % tDeletingChildRestoresPointer
-
-        function tReparentingLayoutRestoresPointer( ...
-                testCase, ConstructorName )
-
-            % This test is for rooted components.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create a component with children.
-            [component, dividers] = testCase...
-                .createFlexibleLayoutWithChildren( ConstructorName );
-
-            % Increase the spacing.
-            component.Spacing = 10;
-
-            % Move the mouse over a divider.
-            r = groot();
-            testFig = ancestor( component, 'figure' );
-            r.PointerLocation = testFig.Position(1:2) + ...
-                dividers(1).Position(1:2);
-            pause( 0.5 )
-
-            % Reparent the layout.
-            component.Parent = [];
-
-            % Verify that the figure's 'Pointer' property has been
-            % restored.
-            testCase.verifyEqual( testFig.Pointer, 'arrow', ...
-                ['Reparenting a ', ConstructorName, ...
-                ' component did not restore the figure''s ', ...
-                '''Pointer'' property.'] )
-
-        end % tReparentingLayoutRestoresPointer
-
         function tStringSupportForDividerMarkings( ...
                 testCase, ConstructorName )
 
@@ -537,7 +602,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tStringSupportForDividerMarkings
 
-    end % methods ( Test )
+    end % methods ( Test, Sealed )
 
     methods ( Access = private )
 

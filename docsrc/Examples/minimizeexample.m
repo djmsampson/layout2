@@ -1,4 +1,4 @@
-function minimizeexample()
+function varargout = minimizeexample()
 %MINIMIZEEXAMPLE: An example of using the panelbox minimize/maximize
 
 %  Copyright 2009-2020 The MathWorks, Inc.
@@ -33,6 +33,12 @@ set( panel{1}, 'MinimizeFcn', {@nMinimize, 1} );
 set( panel{2}, 'MinimizeFcn', {@nMinimize, 2} );
 set( panel{3}, 'MinimizeFcn', {@nMinimize, 3} );
 
+% Return output.
+if nargout > 0
+    nargoutchk( 1, 1 )
+    varargout{1} = fig;
+end % if
+
 %-------------------------------------------------------------------------%
     function nMinimize( eventSource, eventData, whichpanel ) %#ok<INUSL>
         % A panel has been maximized/minimized
@@ -45,7 +51,7 @@ set( panel{3}, 'MinimizeFcn', {@nMinimize, 3} );
             s(whichpanel) = pheightmax;
         end
         set( box, 'Heights', s );
-        
+
         % Resize the figure, keeping the top stationary
         delta_height = pos(1,4) - sum( box.Heights );
         set( fig, 'Position', pos(1,:) + [0 delta_height 0 -delta_height] );

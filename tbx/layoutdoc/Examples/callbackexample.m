@@ -1,4 +1,4 @@
-function callbackexample()
+function varargout = callbackexample()
 
 %  Copyright 2009-2020 The MathWorks, Inc.
 
@@ -37,11 +37,15 @@ set( b, 'Widths', [-1 -3] );
 % Add user interactions
 set( hList, 'Callback', @onChangeColor );
 
+% Return output.
+if nargout > 0
+    nargoutchk( 1, 1 )
+    varargout{1} = f;
+end % if
 
     function onChangeColor( source, ~ )
         idx = get( source, 'Value' );
         set( hButton, 'Background', colorValues(idx,:), 'String', colorNames{idx} )
     end % onChangeColor
-
 
 end % main
