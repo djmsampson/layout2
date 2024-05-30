@@ -26,7 +26,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         TitleHeight % title panel height [pixels]
     end
 
-    properties% ( Access = private )
+    properties( Access = private )
         TitleBox % title bar box
         TitleText % title text label
         Title_ = '' % cache of title
