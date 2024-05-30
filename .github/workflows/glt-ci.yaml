@@ -28,7 +28,7 @@ jobs:
         platform: [ ubuntu-latest, windows-latest, macos-latest ]
                 
         # List of MATLAB releases over which to run the tests.        
-        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b ]
+        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a ]
         
         # We don't define any startup options until we reach R2023b (handled separately below).
         matlab-startup-options: [ '' ]        
@@ -45,6 +45,22 @@ jobs:
             matlab-version: R2020b
             matlab-startup-options: [ '' ]
 
+          - platform: macos-latest
+            matlab-version: R2022a
+            matlab-startup-options: [ '' ]
+
+          - platform: macos-latest
+            matlab-version: R2022b
+            matlab-startup-options: [ '' ]
+
+          - platform: macos-latest
+            matlab-version: R2023a
+            matlab-startup-options: [ '' ]
+
+          - platform: macos-latest
+            matlab-version: R2023b
+            matlab-startup-options: [ '' ]          
+
         # The tests should also be run in the JavaScript Desktop from R2023b onwards (this is the -webui startup option).
         include:         
 
@@ -58,6 +74,18 @@ jobs:
 
           - platform: macos-latest
             matlab-version: R2023b
+            matlab-startup-options: -webui
+
+          - platform: ubuntu-latest
+            matlab-version: R2024a
+            matlab-startup-options: -webui
+
+          - platform: windows-latest
+            matlab-version: R2024a
+            matlab-startup-options: -webui
+
+          - platform: macos-latest
+            matlab-version: R2024a
             matlab-startup-options: -webui
     
     # Specify the platform that the job will run on.
