@@ -17,7 +17,7 @@ This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting
 
 This version is for MATLAB R2014b and later.  For R2014a and earlier, see [version 1](http://www.mathworks.com/matlabcentral/fileexchange/27758-gui-layout-toolbox).</param.description>
     <param.screenshot>${PROJECT_ROOT}\glt.png</param.screenshot>
-    <param.version>2.3.6</param.version>
+    <param.version>2.3.7</param.version>
     <param.output>${PROJECT_ROOT}\GUI Layout Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -26,7 +26,7 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.14</item>
+      <item>24.1</item>
     </param.products.version>
     <param.platforms />
     <param.guid>e5af5a78-4a80-11e4-9553-005056977bd0</param.guid>
@@ -122,7 +122,7 @@ This version is for MATLAB R2014b and later.  For R2014a and earlier, see [versi
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2023a</root>
+      <root>C:\Program Files\MATLAB\R2024a</root>
       <toolboxes />
     </matlab>
     <platform>
