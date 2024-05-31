@@ -22,6 +22,5 @@
 %
 % Other
 %   uix.Empty          - create an empty space
-%   uix.tracking       - track anonymized usage data
 
 %  Copyright 2009-2024 The MathWorks, Inc.
