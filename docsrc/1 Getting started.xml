@@ -134,14 +134,14 @@ package "uiextras" provides support for legacy property values.</p>
         actually depends mostly on feature completeness of web graphics itself, rather than 
         changes to GUI Layout Toolbox.</p>
     <p>From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022b, 
-        all but one layout type is supported, and this will be addressed in a future release.</p>
+        all types are supported, with improvements to come.</p>
 
     <h4>Support</h4>
     <ul>
         <li>Simple box, grid and card layouts are supported from R2020b.</li>
         <li>Flexible box and grid layouts are supported from R2022a, as are scrolling and 
             tab layouts.</li>
-        <li>Box panel is not yet supported.</li>
+        <li>Box panels are supported from R2022b.</li>
     </ul>
 
     <p>In detail:</p>
