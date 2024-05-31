@@ -189,7 +189,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             value = obj.Checkbox.Extent;
 
             % Correct for large fonts, g3328399
-            if obj.FontSize > 28 && ~isempty( ancestor( obj.Container ), 'figure' )
+            if obj.FontSize > 28 && ~isempty( ancestor( obj.Container, 'figure' ) )
                 value = extent( obj.FontSize, obj.Checkbox.String );
             end
 
@@ -426,13 +426,12 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
         function set.VerticalAlignment( obj, value )
 
             % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'top','middle','bottom'} ) ), ...
+            assert( any( strcmp( value, {'top','middle','bottom'} ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''VerticalAlignment'' must be ''top'', ''middle'' or ''bottom''.' )
 
             % Set
-            obj.VerticalAlignment_ = value;
+            obj.VerticalAlignment_ = char( value );
 
             % Mark as dirty
             obj.setDirty()
