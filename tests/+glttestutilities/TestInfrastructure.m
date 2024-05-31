@@ -19,9 +19,6 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         % See also the ParentType class setup parameter and
         % matlab.unittest.fixtures.ParentFixture.
         ParentFixture
-        % Current GUI Layout Toolbox tracking status, to be restored after
-        % the tests run. Tracking will be disabled whilst the tests run.
-        CurrentTrackingStatus = 'unset'
     end % properties ( Access = protected )
 
     methods ( Sealed, TestClassSetup )
@@ -36,7 +33,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         function clearPersistentData( ~ )
 
             % Clear classes and functions containing persistent data.
-            clear( 'Container', 'TabPanel', 'tracking' )
+            clear( 'Container', 'TabPanel' )
 
         end % clearPersistentData
 
