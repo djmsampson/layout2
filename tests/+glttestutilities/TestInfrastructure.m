@@ -82,28 +82,6 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % applyParentFixture
 
-        function disableTracking( testCase )
-
-            % Disable GUI Layout Toolbox tracking during the test
-            % procedures. Restore the previous tracking state when the
-            % tests are complete.
-
-            % Store the current tracking status.
-            testCase.CurrentTrackingStatus = uix.tracking( 'query' );
-
-            % Disable tracking for the duration of the tests.
-            testCase.addTeardown( @restoreTrackingStatus )
-            uix.tracking( 'off' )
-
-            function restoreTrackingStatus()
-
-                uix.tracking( testCase.CurrentTrackingStatus )
-                testCase.CurrentTrackingStatus = 'unset';
-
-            end % restoreTrackingStatus
-
-        end % disableTracking
-
     end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )
