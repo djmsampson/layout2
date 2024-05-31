@@ -189,7 +189,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             value = obj.Checkbox.Extent;
 
             % Correct for large fonts, g3328399
-            if obj.FontSize > 28
+            if obj.FontSize > 28 && ~isempty( ancestor( obj.Container ), 'figure' )
                 value = extent( obj.FontSize, obj.Checkbox.String );
             end
 
