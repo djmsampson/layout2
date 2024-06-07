@@ -92,4 +92,4 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

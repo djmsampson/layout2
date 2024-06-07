@@ -27,4 +27,4 @@ classdef tVButtonBox < sharedtests.SharedButtonBoxTests
             }
     end % properties ( Constant )
 
-end % class
+end % classdef

@@ -106,4 +106,4 @@ classdef tFigureObserver < glttestutilities.TestInfrastructure
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

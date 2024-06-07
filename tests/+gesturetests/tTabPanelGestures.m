@@ -11,17 +11,27 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
         function tClickingTabPassesEventData( testCase, ConstructorName )
 
-            % Assume that we are in the web graphics case.
+            % Assume that we are working in web graphics in at least
+            % R2018a.
             testCase.assumeGraphicsAreWebBased()
+            testCase.assumeMATLABVersionIsAtLeast( 'R2018a' )
 
-            % Create a tab panel.
+            % Using the App Testing Framework with GitHub Actions is
+            % supported from R2023b onwards.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            if ~isempty( ci ) && strcmp( ci, 'true' )
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
+
+            % Create a tab panel in a grid layout.
             testFig = testCase.ParentFixture.Parent;
-            tabPanel = feval( ConstructorName, 'Parent', testFig );
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
+            tabPanel = feval( ConstructorName, 'Parent', testGrid );
 
             % Add two controls.
             uicontrol( 'Parent', tabPanel )
             uicontrol( 'Parent', tabPanel )
-            
+
             % Create a listener.
             eventRaised = false;
             eventData = struct();
@@ -40,7 +50,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Use the app testing framework to click the second tab to
             % change the selection.
             testCase.press( testFig, [2*tabWidth-5, figureHeight-10] )
-            
+
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
                 ['Clicking on another tab to change the selection ', ...
@@ -68,4 +78,4 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

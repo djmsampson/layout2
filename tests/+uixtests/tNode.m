@@ -155,4 +155,4 @@ classdef tNode < glttestutilities.TestInfrastructure
 
     end % methods ( Access = private )
 
-end % class
+end % classdef

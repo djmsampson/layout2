@@ -47,4 +47,4 @@ classdef tHBoxFlex < sharedtests.SharedBoxTests & ...
             }}
     end % properties ( TestParameter )
 
-end % class
+end % classdef

@@ -370,4 +370,4 @@ classdef ( Abstract ) SharedGridTests < sharedtests.SharedContainerTests
 
     end % methods ( Sealed, Access = protected )
 
-end % class
+end % classdef

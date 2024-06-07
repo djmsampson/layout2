@@ -141,4 +141,4 @@ classdef tCardPanel < sharedtests.SharedPanelTests
 
     end % methods ( Access = private )
 
-end % class
+end % classdef

@@ -75,4 +75,4 @@ classdef tSet < glttestutilities.TestInfrastructure
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

@@ -178,4 +178,4 @@ classdef tLoadIcon < glttestutilities.TestInfrastructure
 
     end % methods ( Access = private )
 
-end % class
+end % classdef

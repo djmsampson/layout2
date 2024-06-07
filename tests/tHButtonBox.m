@@ -27,4 +27,4 @@ classdef tHButtonBox < sharedtests.SharedButtonBoxTests
             }
     end % properties ( Constant )
 
-end % class
+end % classdef

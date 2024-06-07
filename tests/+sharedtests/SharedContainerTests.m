@@ -359,13 +359,29 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         end % tAxesInComponentRemainsVisibleAfter3DRotation
 
-        function tEnablingDataCursorModePreservesAxesPosition( ...
+        function tEnablingDataCursorModeIsWarningFree( ...
                 testCase, ConstructorName )
 
-            % Data cursor mode only works in Java figures, so we need to
-            % exclude the unrooted and Web figure cases.
-            testCase.assumeGraphicsAreRooted()
-            testCase.assumeGraphicsAreNotWebBased()
+            % Skip this test if we're running in CI.
+            ci = getenv( 'GITHUB_ACTIONS' );
+            isci = ~isempty( ci ) && strcmp( ci, 'true' );
+            testCase.assumeFalse( isci, ...
+                ['This test is not applicable when running in ', ...
+                'GitHub Actions.'] )
+
+            % Exclude the unrooted case.
+            testCase.assumeGraphicsAreRooted()            
+
+            % Work around a bug in R2022a-R2023a by disabling a warning for
+            % the duration of the test.
+            v = ver( 'matlab' ); %#ok<VERMATLAB>
+            v = v.Version;
+            if ismember( v, {'9.12', '9.13', '9.14'} )
+                warningID = 'MATLAB:callback:DynamicPropertyEventError';
+                warningState = warning( 'query', warningID );
+                warning( 'off', warningID )
+                warningCleanup = onCleanup( @() warning( warningState ) );
+            end % if
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -381,25 +397,38 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Plot into the axes.
             p = plot( ax, 1:10 );
 
-            % Enable data cursor mode.
-            dcm = datacursormode( component.Parent );
-            dcm.Enable = 'on';
-            drawnow()
+            % Initialize a datacursor mode object.
+            dcm = [];
 
-            % Capture the current axes position, add a datatip, then
-            % capture the axes position again.
-            oldPosition = ax.Position;
-            dcm.createDatatip( p );
-            drawnow()
-            newPosition = ax.Position;
+            function enableDataCursorMode()
 
-            % Verify that the axes 'Position' property has not changed.
-            testCase.verifyEqual( newPosition, oldPosition, ...
-                ['Enabling data cursor mode on an axes in a ', ...
-                ConstructorName, ' component caused the axes ', ...
-                '''Position'' property to change.'] )
+                dcm = datacursormode( component.Parent );
+                dcm.Enable = 'on';
+                drawnow()
 
-        end % tEnablingDataCursorModePreservesAxesPosition
+            end % enableDataCursorMode
+
+            % Verify that there are no warnings when enabling datacursor
+            % mode.
+            enabler = @() enableDataCursorMode();
+            testCase.verifyWarningFree( enabler, ['Enabling data ', ...
+                'cursor mode in a figure containing a ', ...
+                ConstructorName, ' component was not warning-free.'] )
+            
+            function addDataTip()
+
+                dcm.createDatatip( p );
+                drawnow()
+
+            end % addDataTip
+
+            % Add a datatip and verify that no warnings occur.
+            dataTipAdder = @() addDataTip();
+            testCase.verifyWarningFree( dataTipAdder, ...
+                ['Adding a data tip to a plot inside a ', ...
+                ConstructorName, ' component was not warning-free.'] )
+
+        end % tEnablingDataCursorModeIsWarningFree
 
         function tContentsRespectAddingAxesAndControl( ...
                 testCase, ConstructorName )
@@ -540,8 +569,10 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             end % for
 
             % Check that setting an invalid value causes an error.
-            if verLessThan( 'matlab', '9.9' )
+            if verLessThan( 'matlab', '9.9' ) %#ok<*VERLESSMATLAB>
                 errorID = 'uiextras:InvalidPropertyValue';
+            elseif verLessThan( 'matlab', '9.13' )
+                errorID = 'MATLAB:datatypes:InvalidEnumValueFor';
             else
                 errorID = ...
                     'MATLAB:datatypes:onoffboolean:IncorrectValue';
@@ -751,19 +782,28 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 % Extract the current name-value pair.
                 propertyName = NameValuePairs{k};
                 propertyValue = NameValuePairs{k+1};
-                % Set the property in the component.
-                component.(propertyName) = propertyValue;
-                % Verify that the property has been assigned correctly, up
-                % to a possible data type conversion.
-                actual = component.(propertyName);
-                if ~isa( propertyValue, 'function_handle' )
-                    propertyClass = class( propertyValue );
-                    actual = feval( propertyClass, actual );
-                end % if
-                testCase.verifyEqual( actual, propertyValue, ...
-                    ['Setting the ''', propertyName, ''' property of ', ...
-                    'the ', ConstructorName, ' object did not store ', ...
-                    'the value correctly.'] )
+                try
+                    % Set the property in the component.
+                    component.(propertyName) = propertyValue;
+                    % Verify that the property has been assigned correctly,
+                    % up to a possible data type conversion.
+                    actual = component.(propertyName);
+                    if ~isa( propertyValue, 'function_handle' )
+                        propertyClass = class( propertyValue );
+                        actual = feval( propertyClass, actual );
+                    end % if
+                    testCase.verifyEqual( actual, propertyValue, ...
+                        ['Setting the ''', propertyName, ...
+                        ''' property of the ', ConstructorName, ...
+                        ' object did not store the value correctly.'] )
+                catch e
+                    newExc = MException( ['SharedContainerTests:', ...
+                        'SettingPropertyCausedError'], ...
+                        ['Setting the property ', propertyName, ...
+                        ' caused an error.'] );
+                    newExc = newExc.addCause( e );
+                    newExc.throw()
+                end % try/catch
             end % for
 
         end % tGetAndSetMethodsFunctionCorrectly
@@ -867,9 +907,20 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         end % assumeComponentIsAContainer
 
+        function assumeNotButtonBox( testCase, ConstructorName )
+
+            % Assume that the component, specified by ConstructorName, is
+            % not a button box.
+            isabuttonbox = ismember( 'uix.ButtonBox', ...
+                superclasses( ConstructorName ) );
+            testCase.assumeFalse( isabuttonbox, ...
+                'This test is not applicable to button boxes.' )
+            
+        end % assumeNotButtonBox
+
     end % methods ( Sealed, Access = protected )
 
-end % class
+end % classdef
 
 function varargout = ...
     constructComponentWithoutFixture( ConstructorName, varargin )

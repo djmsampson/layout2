@@ -248,4 +248,4 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef
