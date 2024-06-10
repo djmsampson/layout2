@@ -10,9 +10,9 @@ function results = runToolboxTests( namedArgs )
 % results = runToolboxTests( 'ExcludeMouseTests', false ) runs all GLT 
 % tests and returns the results.
 
-arguments    
+arguments ( Input )
     namedArgs.ExcludeMouseTests(1, 1) logical = false    
-end % arguments
+end % arguments ( Input )
 
 % Record the current folder (the tests directory).
 rootFolder = fileparts( mfilename( 'fullpath' ) );
