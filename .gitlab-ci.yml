@@ -1,0 +1,48 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d.*/
+      when: always
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
+
+stages:
+  - RunTests
+
+variables:
+  ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
+
+run-tests: 
+  stage: RunTests
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2020a", "R2020b", "R2021a", "R2021b", "R2022a", "R2022b", "R2023a", "R2023b", "R2024a"]
+  tags:
+   - long-jobs
+  script:
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+  artifacts:
+    when: always
+    paths:
+      - testresults.xml
+    reports:
+      junit: testresults.xml
+
+run-tests-jsd: 
+  stage: RunTests
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2023b", "R2024a"]
+  tags:
+    - long-jobs
+  script:
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+  artifacts:
+    when: always
+    paths:
+      - testresults.xml
+    reports:
+      junit: testresults.xml
