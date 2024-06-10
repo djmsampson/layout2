@@ -370,7 +370,14 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'GitHub Actions.'] )
 
             % Exclude the unrooted case.
-            testCase.assumeGraphicsAreRooted()            
+            testCase.assumeGraphicsAreRooted()
+
+            % Disable a warning for the duration of the test.
+            warningID = 'MATLAB:modes:mode:InvalidPropertySet';
+            warningState = warning( 'query', warningID );
+            warning( 'off', warningID )
+            propertySetWarningCleanup = ...
+                onCleanup( @() warning( warningState ) );
 
             % Work around a bug in R2022a-R2023a by disabling a warning for
             % the duration of the test.
@@ -380,7 +387,8 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 warningID = 'MATLAB:callback:DynamicPropertyEventError';
                 warningState = warning( 'query', warningID );
                 warning( 'off', warningID )
-                warningCleanup = onCleanup( @() warning( warningState ) );
+                propertyEventWarningCleanup = ...
+                    onCleanup( @() warning( warningState ) );
             end % if
 
             % Create the component.
@@ -404,7 +412,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
                 dcm = datacursormode( component.Parent );
                 dcm.Enable = 'on';
-                drawnow()
+                pause( 0.5 )
 
             end % enableDataCursorMode
 
@@ -418,7 +426,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             function addDataTip()
 
                 dcm.createDatatip( p );
-                drawnow()
+                pause( 0.5 )
 
             end % addDataTip
 
