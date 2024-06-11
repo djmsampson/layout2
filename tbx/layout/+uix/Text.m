@@ -190,7 +190,8 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
             % Correct for large fonts, g3328399
             if obj.FontSize > 28 && ~isempty( ancestor( obj.Container, 'figure' ) )
-                value = extent( obj.FontSize, obj.Checkbox.String );
+                je = javaextent( obj.FontSize, obj.Checkbox.String );
+                value(4) = je(4); % height
             end
 
         end % get.Extent
@@ -543,14 +544,14 @@ else
     if verLessThan( 'MATLAB', '8.6' ) % R2015b
         o = 18;
     else
-        o = 16;
+        o = 14;
     end
 end
 
 end % checkBoxLabelOffset
 
-function e = extent( fs, s )
-%extent  Extent fallback for web graphics with large fonts
+function e = javaextent( fs, s )
+%javaextent  Extent fallback for web graphics with large fonts
 
 f = figure( 'Visible', 'off' ); % create invisible *Java* figure
 c = uicontrol( 'Parent', f, 'Style', 'checkbox', 'Units', 'pixels', ...
@@ -558,4 +559,4 @@ c = uicontrol( 'Parent', f, 'Style', 'checkbox', 'Units', 'pixels', ...
 e = c.Extent; % Java extents are correct and similar to JavaScript
 delete( f ) % clean up
 
-end % extent
+end % javaextent
