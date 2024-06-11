@@ -140,32 +140,28 @@ package "uiextras" provides support for legacy property values.</p>
         components and deployment technologies, has been maturing ever since. Web graphics is 
         accessed by creating a figure using <a href="matlab:doc uifigure"><code class="FUNCTION">uifigure</code></a> rather than 
         <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>.</p>
-    <p>Many developers using GUI Layout Toolbox have requested web graphics support. This 
-        actually depends mostly on feature completeness of web graphics itself, rather than 
-        changes to GUI Layout Toolbox.</p>
-
-    <h4>Support</h4>
-    <table frame="box" rules="all" class="PROPERTYTABLE">
-        <tr>
-            <th class="PROPERTYTABLE">Layout</th>
-            <th class="PROPERTYTABLE">From</th>
-            <th class="PROPERTYTABLE">Comments</th>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.CardPanel<br/>uix.HBox<br/>uix.VBox<br/>
-                uix.HButtonBox<br/>uix.VButtonBox<br/>uix.Grid<br/>uix.Panel<br/>uix.Empty</td>
-            <td class="PROPERTYTABLE">R2020b</td>
-            <td class="PROPERTYTABLE"/>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.HBoxFlex<br/>uix.VBoxFlex<br/>uix.GridFlex
-                <br/>uix.BoxPanel<br/>uix.ScrollingPanel<br/>uix.TabPanel</td>
-            <td class="PROPERTYTABLE">R2022a</td>
-            <td class="PROPERTYTABLE">The implementations use 
-                <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>, so rely on <a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a> 
-                support in web graphics.</td>
-        </tr>
-    </table>
+    
+    <h4>MATLAB version compatibility</h4>        
+    <p>Invisible layouts are supported with web graphics from R2020a:</p>
+        <ul>
+            <li><code>uix.CardPanel</code></li>
+            <li><code>uix.HBox</code></li>
+            <li><code>uix.VBox</code></li>
+            <li><code>uix.HButtonBox</code></li>
+            <li><code>uix.VButtonBox</code></li>
+            <li><code>uix.Grid</code></li>
+            <li><code>uix.Panel</code></li>
+            <li><code>uix.Empty</code></li>
+        </ul>
+    <p>Other layouts are supported from R2022a:</p>
+        <ul>
+            <li><code>uix.HBoxFlex</code></li>
+            <li><code>uix.VBoxFlex</code></li>
+            <li><code>uix.GridFlex</code></li>
+            <li><code>uix.BoxPanel</code></li>
+            <li><code>uix.ScrollingPanel</code></li>
+            <li><code>uix.TabPanel</code></li>
+        </ul>
 
     <h4>Usage</h4>
     <p>To use GUI Layout Toolbox layouts in web graphics, the <code>AutoResizeChildren</code> 
