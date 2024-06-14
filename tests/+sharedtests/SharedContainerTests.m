@@ -363,11 +363,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 testCase, ConstructorName )
 
             % Skip this test if we're running in CI.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            isci = ~isempty( ci ) && strcmp( ci, 'true' );
-            testCase.assumeFalse( isci, ...
-                ['This test is not applicable when running in ', ...
-                'GitHub Actions.'] )
+            testCase.assumeNotRunningOnCI()
 
             % Exclude the unrooted case.
             testCase.assumeGraphicsAreRooted()
@@ -422,7 +418,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             testCase.verifyWarningFree( enabler, ['Enabling data ', ...
                 'cursor mode in a figure containing a ', ...
                 ConstructorName, ' component was not warning-free.'] )
-            
+
             function addDataTip()
 
                 dcm.createDatatip( p );
@@ -923,7 +919,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 superclasses( ConstructorName ) );
             testCase.assumeFalse( isabuttonbox, ...
                 'This test is not applicable to button boxes.' )
-            
+
         end % assumeNotButtonBox
 
     end % methods ( Sealed, Access = protected )

@@ -121,7 +121,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 case 'R2021a'
                     versionNumber = '9.10';
                 case 'R2021b'
-                    versionNumber = '9.11';                
+                    versionNumber = '9.11';
                 case 'R2022a'
                     versionNumber = '9.12';
                 case 'R2022b'
@@ -130,6 +130,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '9.14';
                 case 'R2023b'
                     versionNumber = '23.2';
+                case 'R2024a'
+                    versionNumber = '24.1';
                 otherwise
                     error( ['AssumeMATLABVersionIsAtLeast:', ...
                         'InvalidVersionString'], ...
@@ -194,7 +196,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         function assumeJavaScriptDesktop( testCase )
 
-            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             isJSD = feature( 'webui' );
             testCase.assumeTrue( isJSD, ...
                 ['This test is only applicable in the new desktop ', ...
@@ -216,7 +218,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.assumeFalse( isunix(), ...
                 'This test is not applicable on the Unix platform.' )
 
-        end % assumeNotUnix        
+        end % assumeNotUnix
 
         function assumeNotDeployed( testCase )
 
@@ -225,6 +227,30 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 'This test is not applicable in deployed mode.' )
 
         end % assumeNotDeployed
+
+        function assumeNotRunningOnGitHubCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI, ...
+                ['This test is not applicable to code running ', ...
+                'on GitHub CI.'] )
+
+        end % assumeNotRunningOnGitHubCI
+
+        function assumeNotRunningOnGitLabCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI, ...
+                ['This test is not applicable to code running ', ...
+                'on GitLab CI.'] )
+
+        end % assumeNotRunningOnGitLabCI
+
+        function assumeNotRunningOnCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnCI(), ...
+                ['This test is not applicable to code running on ', ...
+                'GitHub or GitLab CI.'] )
+
+        end % assumeNotRunningOnCI
 
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
@@ -239,5 +265,30 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         end % constructComponent
 
     end % methods ( Sealed, Access = protected )
+
+    methods ( Sealed, Static )
+
+        function tf = isCodeRunningOnGitHubCI()
+
+            tf = strcmp( getenv( 'GITHUB_ACTIONS' ), 'true' );
+
+        end % isCodeRunningOnGitHubCI
+
+        function tf = isCodeRunningOnGitLabCI()
+
+            tf = strcmp( getenv( 'GITLAB_CI' ), 'true' );
+
+        end % isCodeRunningOnGitLabCI
+
+        function tf = isCodeRunningOnCI()
+
+            tf = glttestutilities.TestInfrastructure...
+                .isCodeRunningOnGitHubCI || ...
+                glttestutilities.TestInfrastructure...
+                .isCodeRunningOnGitLabCI;
+
+        end % isCodeRunningOnCI
+
+    end % methods ( Sealed, Static )
 
 end % classdef

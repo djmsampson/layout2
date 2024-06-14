@@ -8,18 +8,16 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         ChildrenSizes = {[-1, -1], [200, -1], [-1, 200], [200, 200]}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
+    methods ( Test, Sealed )
 
         function tDraggingDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
 
-            % Assume that the graphics are rooted and in the JavaScript
-            % desktop.
+            % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
 
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -113,8 +111,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             testCase.assumeGraphicsAreRooted()
 
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -153,15 +150,14 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName )
 
             % Exclude unrooted and web graphics.
-            testCase.assumeGraphicsAreRooted()            
+            testCase.assumeGraphicsAreRooted()
             testCase.assumeGraphicsAreNotWebBased()
 
             % Exclude Mac OS.
             testCase.assumeNotMac()
 
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -222,11 +218,10 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tClickingDividerIsWarningFree( testCase, ConstructorName )
 
             % This test is only for rooted components.
-            testCase.assumeGraphicsAreRooted()            
-            
+            testCase.assumeGraphicsAreRooted()
+
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -411,9 +406,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % If running in CI, assume we have at least R2023b and we're
             % running in the JavaScript desktop.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
-                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeJavaScriptDesktop()
             end % if
 
@@ -444,8 +437,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             testCase.assumeGraphicsAreRooted()
 
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -481,9 +473,9 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % This test is for rooted components.
             testCase.assumeGraphicsAreRooted()
+
             % If running in CI, assume we have the JavaScript desktop.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeJavaScriptDesktop()
             end % if
 
@@ -513,7 +505,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tReparentingLayoutRestoresPointer
 
-    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
+    end % methods ( Test, Sealed )
 
     methods ( Test, Sealed )
 

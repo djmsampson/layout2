@@ -60,7 +60,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             }}
     end % properties ( TestParameter )
 
-    methods ( Test, Sealed, TestTags = {'MovesMouse'} )
+    methods ( Test, Sealed )
 
         function tDraggingRowDividerIsWarningFree( ...
                 testCase, ConstructorName, ChildrenSizes )
@@ -69,8 +69,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             testCase.assumeGraphicsAreRooted()
 
             % If running in CI, assume we have at least R2023b.
-            ci = getenv( 'GITHUB_ACTIONS' );
-            if ~isempty( ci ) && strcmp( ci, 'true' )
+            if testCase.isCodeRunningOnCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -146,6 +145,6 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
         end % tDraggingRowDividerIsWarningFree
 
-    end % methods ( Test, Sealed, TestTags = {'MovesMouse'} )
+    end % methods ( Test, Sealed )
 
 end % classdef
