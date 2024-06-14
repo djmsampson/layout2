@@ -19,7 +19,7 @@ run-tests:
   stage: RunTests
   parallel:
     matrix:
-      - MATLAB_RELEASE: ["R2020a", "R2020b", "R2021a", "R2021b", "R2022a", "R2022b", "R2023a", "R2023b", "R2024a"]
+      - MATLAB_RELEASE: ["R2014b", "R2015a", "R2015b", "R2016a", "R2016b", "R2017a", "R2017b", "R2018a", "R2018b", "R2019a", "R2019b", "R2020a", "R2020b", "R2021a", "R2021b", "R2022a", "R2022b", "R2023a", "R2023b", "R2024a"]
   tags:
    - long-jobs
   script:
@@ -27,9 +27,9 @@ run-tests:
   artifacts:
     when: always
     paths:
-      - testresults.xml
+      - TestResults.xml
     reports:
-      junit: testresults.xml
+      junit: TestResults.xml
 
 run-tests-jsd: 
   stage: RunTests
@@ -43,6 +43,6 @@ run-tests-jsd:
   artifacts:
     when: always
     paths:
-      - testresults.xml
+      - TestResults.xml
     reports:
-      junit: testresults.xml
+      junit: TestResults.xml
