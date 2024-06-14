@@ -130,60 +130,28 @@ package "uiextras" provides support for legacy property values.</p>
         components and deployment technologies, has been maturing ever since. Web graphics is 
         accessed by creating a figure using <matlabfcn>uifigure</matlabfcn> rather than 
         <matlabfcn>figure</matlabfcn>.</p>
-    <p>Many developers using GUI Layout Toolbox have requested web graphics support. This 
-        actually depends mostly on feature completeness of web graphics itself, rather than 
-        changes to GUI Layout Toolbox.</p>
-    <p>From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022b, 
-        all types are supported, with improvements to come.</p>
-
-    <h4>Support</h4>
-    <ul>
-        <li>Simple box, grid and card layouts are supported from R2020b.</li>
-        <li>Flexible box and grid layouts are supported from R2022a, as are scrolling and 
-            tab layouts.</li>
-        <li>Box panels are supported from R2022b.</li>
-    </ul>
-
-    <p>In detail:</p>
-    <table frame="box" rules="all" class="PROPERTYTABLE">
-        <tr>
-            <th class="PROPERTYTABLE">Layout</th>
-            <th class="PROPERTYTABLE">From</th>
-            <th class="PROPERTYTABLE">Comments</th>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.CardPanel<br/>uix.HBox<br/>uix.VBox<br/>
-                uix.HButtonBox<br/>uix.VButtonBox<br/>uix.Grid<br/>uix.Empty</td>
-            <td class="PROPERTYTABLE">R2020b</td>
-            <td class="PROPERTYTABLE"></td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.HBoxFlex<br/>uix.VBoxFlex<br/>uix.VBoxFlex
-                <br/>uix.ScrollingPanel</td>
-            <td class="PROPERTYTABLE">R2022a</td>
-            <td class="PROPERTYTABLE">The implementations use 
-                <matlabfcn>uicontrol</matlabfcn>, so rely on <matlabfcn>uicontrol</matlabfcn> 
-                support in web graphics that was introduced in R2022a.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.TabPanel</td>
-            <td class="PROPERTYTABLE">R2022a</td>
-            <td class="PROPERTYTABLE">The implementation uses 
-                <matlabfcn>uicontrol</matlabfcn>, so relies on <matlabfcn>uicontrol</matlabfcn> 
-                support in web graphics that was introduced in R2022a. Use 
-                <matlabfcn>uitabgroup</matlabfcn> and <matlabfcn>uitab</matlabfcn> unless you 
-                require the ability to disable tabs.</td>
-        </tr>
-        <tr>
-            <td class="PROPERTYTABLE">uix.Panel<br/>uix.BoxPanel</td>
-            <td class="PROPERTYTABLE">R2022b</td>
-            <td class="PROPERTYTABLE">In R2022b, due to a bug, <code>Units</code> and 
-                <code>Position</code> specified during construction are ignored, and the 
-                panel is placed in the default position. As a workaround, set the panel 
-                <code>Units</code> and <code>Position</code> after construction. This bug 
-                is fixed in R2023a.</td>
-        </tr>
-    </table>
+    
+    <h4>MATLAB version compatibility</h4>        
+    <p>Invisible layouts are supported with web graphics from R2020a:</p>
+        <ul>
+            <li><code>uix.CardPanel</code></li>
+            <li><code>uix.HBox</code></li>
+            <li><code>uix.VBox</code></li>
+            <li><code>uix.HButtonBox</code></li>
+            <li><code>uix.VButtonBox</code></li>
+            <li><code>uix.Grid</code></li>
+            <li><code>uix.Panel</code></li>
+            <li><code>uix.Empty</code></li>
+        </ul>
+    <p>Other layouts are supported from R2022a:</p>
+        <ul>
+            <li><code>uix.HBoxFlex</code></li>
+            <li><code>uix.VBoxFlex</code></li>
+            <li><code>uix.GridFlex</code></li>
+            <li><code>uix.BoxPanel</code></li>
+            <li><code>uix.ScrollingPanel</code></li>
+            <li><code>uix.TabPanel</code></li>
+        </ul>
 
     <h4>Usage</h4>
     <p>To use GUI Layout Toolbox layouts in web graphics, the <code>AutoResizeChildren</code> 
@@ -219,6 +187,13 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
         current version you have installed can be checked by typing <matlabfcn>ver</matlabfcn>
         at the MATLAB command prompt.
     </para>
+    
+    <inlinesubsection name="Version 2.3.8">
+        <ul>
+            <li>Released 7 June 2024</li>
+            <li>Improved appearance of dividers and tabs in web graphics</li>
+        </ul>
+    </inlinesubsection> 
     
     <inlinesubsection name="Version 2.3.7">
         <ul>

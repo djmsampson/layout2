@@ -5,9 +5,9 @@ function release( varargin )
 %
 %  release -verbose displays detailed information.
 %
-%  release -nodoc suppresses regeneration of the documentation.
+%  release -nodoc suppresses regeneration of the base documentation.
 %
-%  release -nodemo suppresses regeneration of the documentation.
+%  release -nodemo suppresses regeneration of the documentation demos.
 %
 %  release -notest suppresses rerunning of the test suite.
 %
@@ -15,7 +15,7 @@ function release( varargin )
 %
 %  These options can be used in combination, e.g., release -nodoc -notest
 
-%  Copyright 2009-2016 The MathWorks, Inc.
+%  Copyright 2009-2024 The MathWorks, Inc.
 %  $Revision: 921 $ $Date: 2014-06-03 11:11:36 +0100 (Tue, 03 Jun 2014) $
 
 %% Check inputs
