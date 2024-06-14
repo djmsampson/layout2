@@ -12,9 +12,17 @@ w = warning( 'query', ID );
 warningCleanup = onCleanup( @() warning( w ) );
 warning( 'off', ID )
 
-% Create the test suite, including tests in subfolders and subpackages.
-suite = matlab.unittest.TestSuite.fromFolder( rootFolder, ...
-    'IncludingSubfolders', true );
+% Create the test suite, including tests in inner namespaces. There was a
+% behavior change in fromFolder in R2022a (9.12).
+if verLessThan( 'matlab', '9.12' ) %#ok<VERLESSMATLAB>
+    suite = [matlab.unittest.TestSuite.fromFolder( rootFolder ), ...
+        matlab.unittest.TestSuite.fromPackage( 'gesturetests' ), ...
+        matlab.unittest.TestSuite.fromPackage( 'uiextrastests' ), ...
+        matlab.unittest.TestSuite.fromPackage( 'uixtests' )];
+else
+    suite = matlab.unittest.TestSuite.fromFolder( rootFolder, ...
+        'IncludingSubfolders', true );
+end % if
 
 % Run the tests, recording text output.
 runner = matlab.unittest.TestRunner.withTextOutput();
