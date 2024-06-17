@@ -24,11 +24,15 @@ else
         'IncludingSubfolders', true );
 end % if
 
-% Run the tests, recording text output.
+% Record text output.
 runner = matlab.unittest.TestRunner.withTextOutput();
-xmlPlugin = matlab.unittest.plugins.XMLPlugin.producingJUnitFormat( ...
-    'TestResults.xml' );
-runner.addPlugin( xmlPlugin )
+if verLessThan( 'matlab', '8.6' ) % R2015b
+    xmlPlugin = matlab.unittest.plugins.XMLPlugin...
+        .producingJUnitFormat( 'TestResults.xml' );
+    runner.addPlugin( xmlPlugin )
+end % if
+
+% Run the tests.
 results = runner.run( suite );
 
 end % runToolboxTests
