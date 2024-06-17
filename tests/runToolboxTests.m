@@ -26,7 +26,7 @@ end % if
 
 % Record text output.
 runner = matlab.unittest.TestRunner.withTextOutput();
-if verLessThan( 'matlab', '8.6' ) % R2015b
+if ~verLessThan( 'matlab', '8.6' ) % R2015b
     xmlPlugin = matlab.unittest.plugins.XMLPlugin...
         .producingJUnitFormat( 'TestResults.xml' );
     runner.addPlugin( xmlPlugin )
