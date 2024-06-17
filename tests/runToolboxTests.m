@@ -27,7 +27,7 @@ end % if
 % Run the tests, recording text output.
 runner = matlab.unittest.TestRunner.withTextOutput();
 xmlPlugin = matlab.unittest.plugins.XMLPlugin.producingJUnitFormat( ...
-    "TestResults.xml" );
+    'TestResults.xml' );
 runner.addPlugin( xmlPlugin )
 results = runner.run( suite );
 
