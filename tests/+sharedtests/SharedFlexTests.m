@@ -67,6 +67,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 else
                     initialOffset = [0, d.Position(4)/2];
                 end % if
+                % Focus the figure.
+                figure( testFig )
                 % Move the mouse pointer.
                 r.PointerLocation = testFig.Position(1:2) + ...
                     d.Position(1:2) + initialOffset;
@@ -124,6 +126,9 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             testFig.WindowStyle = 'normal';
             r.PointerLocation = testFig.Position(1:2) + ...
                 getpixelcenter( component, true );
+            
+            % Focus the figure.
+            figure( testFig )
 
             % Verify that clicking on it is warning-free.
             testCase.verifyWarningFree( @clicker, ...
@@ -231,6 +236,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Move the mouse to the center of a divider.
             testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
             figureOrigin = getFigureOrigin( testFig );
             dividerCenter = figureOrigin + ...
                 getpixelcenter( dividers(1), true );
@@ -327,6 +333,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             figureOrigin = getFigureOrigin( testFig );
             buttonCenter = figureOrigin + ...
                 getpixelcenter( buttons1(1), true );
+            figure( testFig ) % Focus the figure
             moveMouseTo( buttonCenter )
             pause( 1 )
             testCase.verifyEqual( testFig.Pointer, 'arrow', ...
@@ -416,6 +423,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % Move the mouse to the center of a divider.
             testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
             figureOrigin = getFigureOrigin( testFig );
             dividerCenter = figureOrigin + ...
                 getpixelcenter( dividers(1), true );
@@ -451,6 +459,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Move the mouse over a divider.
             r = groot();
             testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
             r.PointerLocation = testFig.Position(1:2) + ...
                 dividers(1).Position(1:2);
             pause( 0.5 )
@@ -489,6 +498,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Move the mouse over a divider.
             r = groot();
             testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
             r.PointerLocation = testFig.Position(1:2) + ...
                 dividers(1).Position(1:2);
             pause( 0.5 )
@@ -524,7 +534,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             diagnostic = ['Setting the ''BackgroundColor'' of ', ...
                 'a ', ConstructorName, ' component did not ', ...
                 'update the color of the dividers correctly.'];
-            for k = 1 : length( dividers )
+            for k = 1 : numel( dividers )
                 testCase.verifyEqual( dividers(k).BackgroundColor, ...
                     newColor, diagnostic )
                 testCase.verifyEqual( dividers(k).ForegroundColor, ...
@@ -546,7 +556,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Verify that the 'Markings' property of the dividers has been
             % reset.
             backgroundColorGrayLevel = 0.94;
-            for k = 1 : length( dividers )
+            for k = 1 : numel( dividers )
                 dividerCData = dividers(k).CData;
                 expectedValue = backgroundColorGrayLevel * ...
                     ones( size( dividerCData ) );
@@ -659,7 +669,7 @@ else
     % Determine the monitor positions, sorting by primary monitor.
     r = groot();
     m = r.MonitorPositions;
-    m = sortrows( m, [1, 2], {'descend', 'descend'} );
+    m = sortrows( m, [-1, -2] );
 
     % Initialize the position.
     p = [NaN, NaN];

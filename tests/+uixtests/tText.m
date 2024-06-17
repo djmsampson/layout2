@@ -76,7 +76,7 @@ classdef tText < glttestutilities.TestInfrastructure
             t = uix.Text( 'Parent', parent, pairs{:} );
 
             % Verify that each name-value pair has been set correctly.
-            for k = 1 : 2 : length( pairs )-1
+            for k = 1 : 2 : numel( pairs )-1
                 name = pairs{k};
                 value = pairs{k+1};
                 expectedType = class( value );
@@ -168,7 +168,7 @@ classdef tText < glttestutilities.TestInfrastructure
 
             % Set the 'HorizontalAlignment' property.
             hAlignments = {'left', 'center', 'right'};
-            for k = 1 : length( hAlignments )
+            for k = 1 : numel( hAlignments )
                 t.HorizontalAlignment = hAlignments{k};
                 testCase.verifyEqual( t.HorizontalAlignment, ...
                     hAlignments{k}, ...
@@ -189,7 +189,7 @@ classdef tText < glttestutilities.TestInfrastructure
 
             % Set the 'VerticalAlignment' property.
             vAlignments = {'bottom', 'middle', 'top'};
-            for k = 1 : length( vAlignments )
+            for k = 1 : numel( vAlignments )
                 t.VerticalAlignment = vAlignments{k};
                 testCase.verifyEqual( t.VerticalAlignment, ...
                     vAlignments{k}, ...

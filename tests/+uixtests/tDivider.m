@@ -68,7 +68,7 @@ classdef tDivider < glttestutilities.TestInfrastructure
             d = uix.Divider( 'Parent', parent, pairs{:} );
 
             % Verify that the name-value pairs have been assigned.
-            for k = 1 : 2 : length( pairs )-1
+            for k = 1 : 2 : numel( pairs )-1
                 name = pairs{k};
                 value = pairs{k+1};
                 converter = class( value );

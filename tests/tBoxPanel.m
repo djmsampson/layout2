@@ -217,7 +217,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             component.Minimized = true;
 
             % Select the axes.
-            component.Selection = length( kids ) + 1;
+            component.Selection = numel( kids ) + 1;
 
             % Verify that the selected child is not visible.
             actualVisibility = char( ax.Visible );
@@ -251,7 +251,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             % setting a string value (storing it as a character array).
             expectedValue = char( testString );
             tooltipStringProperties = testCase.TooltipStringProperties;
-            for k = 1 : length( tooltipStringProperties )
+            for k = 1 : numel( tooltipStringProperties )
                 propertyName = tooltipStringProperties{k};
                 component.(propertyName) = testString;
                 testCase.verifyEqual( component.(propertyName), ...
@@ -279,7 +279,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             % missing value stores the 0-by-0 character array.
             expectedValue = char.empty( 0, 0 );
             tooltipStringProperties = testCase.TooltipStringProperties;
-            for k = 1 : length( tooltipStringProperties )
+            for k = 1 : numel( tooltipStringProperties )
                 propertyName = tooltipStringProperties{k};
                 component.(propertyName) = testString;
                 testCase.verifyEqual( component.(propertyName), ...
@@ -306,7 +306,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             % For each tooltip string property, verify that setting a
             % non-scalar value causes an error.
             tooltipStringProperties = testCase.TooltipStringProperties;
-            for k = 1 : length( tooltipStringProperties )
+            for k = 1 : numel( tooltipStringProperties )
                 propertyName = tooltipStringProperties{k};
                 f = @() set( component, propertyName, testString );
                 testCase.verifyError( f, 'uix:InvalidPropertyValue', ...

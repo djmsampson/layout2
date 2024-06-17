@@ -14,8 +14,8 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
             buttonAdder = @addLotsOfButtons;
             hAlignments = {'left', 'center', 'right'};
             vAlignments = {'top', 'middle', 'bottom'};
-            for k1 = 1 : length( hAlignments )
-                for k2 = 1 : length( vAlignments )
+            for k1 = 1 : numel( hAlignments )
+                for k2 = 1 : numel( vAlignments )
                     delete( component.Children )
                     component.HorizontalAlignment = hAlignments{k1};
                     component.VerticalAlignment = vAlignments{k2};

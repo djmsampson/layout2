@@ -477,7 +477,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
                 'ForegroundColor', [1, 1, 0], ...
                 'TabTitles', {'A'; 'B'; 'C'}, ...
                 'TabLocation', 'bottom'};
-            for k = 1 : 2 : length( pairs )-1
+            for k = 1 : 2 : numel( pairs )-1
                 name = pairs{k};
                 value = pairs{k+1};
                 tabPanel.(name) = value;

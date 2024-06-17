@@ -47,7 +47,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
                 .constructComponentWithChildren( ConstructorName );
 
             % Set the property as a row vector.
-            value = 5 * ones( 1, length( kids ) );
+            value = 5 * ones( 1, numel( kids ) );
             component.(VectorAcceptingProperties) = value;
 
             % Verify that a column vector has been stored.

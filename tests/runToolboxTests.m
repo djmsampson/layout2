@@ -12,14 +12,24 @@ w = warning( 'query', ID );
 warningCleanup = onCleanup( @() warning( w ) );
 warning( 'off', ID )
 
-% Create the test suite, including tests in inner namespaces. There was a
-% behavior change in fromFolder in R2022a (9.12).
-if verLessThan( 'matlab', '9.12' ) %#ok<VERLESSMATLAB>
+% Create the test suite from the tests root folder, including the tests
+% located in the inner namespaces.
+before18a = verLessThan( 'matlab', '9.4' );
+before22a = verLessThan( 'matlab', '9.12' ); %#ok<VERLESSMATLAB>
+if before22a
+    % Before R2022a, fromFolder did not include inner namespaces.
     suite = [matlab.unittest.TestSuite.fromFolder( rootFolder ), ...
-        matlab.unittest.TestSuite.fromPackage( 'gesturetests' ), ...
         matlab.unittest.TestSuite.fromPackage( 'uiextrastests' ), ...
         matlab.unittest.TestSuite.fromPackage( 'uixtests' )];
+    if ~before18a
+        % If we're between R2018a - R2021b, append the tests using the App 
+        % Testing Framework.
+        suite = [suite, ...
+            matlab.unittest.TestSuite.fromPackage( 'gesturetests' )];
+    end % if
 else
+    % We're in R2022a onwards, and fromFolder will include the tests in
+    % inner namespaces.
     suite = matlab.unittest.TestSuite.fromFolder( rootFolder, ...
         'IncludingSubfolders', true );
 end % if

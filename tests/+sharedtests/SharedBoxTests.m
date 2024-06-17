@@ -135,7 +135,7 @@ classdef ( Abstract ) SharedBoxTests < sharedtests.SharedContainerTests
             % Squeeze the component, then verify that all elements in the
             % container respect the 'Minimum*' values.
             component.Position(testCase.DimensionIndex) = 400;
-            for k = 1 : length( buttons )
+            for k = 1 : numel( buttons )
                 testCase.verifyEqual( ...
                     buttons(k).Position(testCase.DimensionIndex), ...
                     minSize, ...
@@ -204,7 +204,7 @@ classdef ( Abstract ) SharedBoxTests < sharedtests.SharedContainerTests
             % Set each box dimension and verify that it has been assigned
             % correctly.
             boxPairs = BoxDimensionNameValuePairs;
-            for k = 1 : 2 : length( boxPairs )-1
+            for k = 1 : 2 : numel( boxPairs )-1
                 % Extract the current name-value pair.
                 propertyName = boxPairs{k};
                 propertyValue = boxPairs{k+1};
@@ -247,7 +247,7 @@ classdef ( Abstract ) SharedBoxTests < sharedtests.SharedContainerTests
             % If the figure is docked, it cannot be resized.
             parentFigure = component.Parent;
             if strcmp( parentFigure.WindowStyle, 'docked' )
-                numKids = length( component.Contents );
+                numKids = numel( component.Contents );
                 expectedSizes = NaN( 1, numKids );
                 for k = 1 : numKids
                     expectedSizes(k) = component.Contents(k)...
@@ -261,7 +261,7 @@ classdef ( Abstract ) SharedBoxTests < sharedtests.SharedContainerTests
                 % component.
                 relativePartSizePixels = ...
                     (newSize - componentSizes(4) - 2 * padding - ...
-                    (length( componentSizes ) - 1) * spacing) / ...
+                    (numel( componentSizes ) - 1) * spacing) / ...
                     sum( (-1) * componentSizes(1:3) );
                 expectedSizes = (-1) * relativePartSizePixels * ...
                     [componentSizes(1:3), 0] + [zeros( 1, 3 ), 50];

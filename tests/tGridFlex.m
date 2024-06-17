@@ -92,6 +92,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             % Wait until the figure renders.
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'normal';
+            figure( testFig ) % Focus the figure
             isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )

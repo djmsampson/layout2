@@ -339,6 +339,9 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         function tAxesInComponentRemainsVisibleAfter3DRotation( ...
                 testCase, ConstructorName )
+            
+            % Assume that we're in R2015b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
 
             % Assume the component is rooted.
             testCase.assumeGraphicsAreRooted()
@@ -469,7 +472,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
             % Permute the 'Contents' property and set it as a row vector
             % (rather than a column vector).
-            flipPerm = length( kids ) : -1 : 1;
+            flipPerm = numel( kids ) : -1 : 1;
             component.Contents = transpose( component.Contents(flipPerm) );
 
             % Verify that the 'Contents' property has been updated
@@ -757,7 +760,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
             % Verify that the component constructor has correctly assigned
             % the name-value pairs.
-            for k = 1 : 2 : length( NameValuePairs )-1
+            for k = 1 : 2 : numel( NameValuePairs )-1
                 propertyName = NameValuePairs{k};
                 propertyValue = NameValuePairs{k+1};
                 actualValue = component.(propertyName);
@@ -782,7 +785,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
             % For each property, set its value and verify that the
             % component has correctly assigned the value.
-            for k = 1 : 2 : length( NameValuePairs )
+            for k = 1 : 2 : numel( NameValuePairs )
                 % Extract the current name-value pair.
                 propertyName = NameValuePairs{k};
                 propertyValue = NameValuePairs{k+1};
@@ -839,7 +842,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             % Check whether the given container, specified by
             % ConstructorName, belongs to the given namespace.
             condition = strncmp( ConstructorName, namespace, ...
-                length( namespace ) );
+                numel( namespace ) );
             testCase.assumeTrue( condition, ...
                 ['The component ', ConstructorName, ...
                 ' is not from the ', namespace, ' namespace.'] )
