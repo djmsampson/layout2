@@ -641,8 +641,8 @@ function tf = isjsdrawing()
 s = dbstack();
 tf = false;
 for ii = 1:numel( s )
-    n = strsplit( s(ii).name, "." );
-    if n(1) == "WebComponentController", tf = true; break; end
+    n = strsplit( s(ii).name, '.' );
+    if strcmp( n{1}, 'WebComponentController' ), tf = true; break; end
 end
 
 end % isjsdrawing

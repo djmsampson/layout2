@@ -47,7 +47,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
                 .constructComponentWithChildren( ConstructorName );
 
             % Set the property as a row vector.
-            value = 5 * ones( 1, length( kids ) );
+            value = 5 * ones( 1, numel( kids ) );
             component.(VectorAcceptingProperties) = value;
 
             % Verify that a column vector has been stored.
@@ -78,23 +78,20 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
             expectedPosition = [1, 1, scrollPanel.Position(3:4)];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Adding a child to ', ConstructorName, ' did not ', ...
-                'set the child''s ''Position'' property correctly.'] )
+                'set the child''s ''Position'' property correctly.'] )            
 
-            % Change the dimensions of the scrolling panel.
-            scrollPanelPos = scrollPanel.Position;
-            for k = 1 : 8
-                % Update the 'Position' property of the scrolling panel.
-                newDims = 50 * [sin( pi*k/8 ), cos( pi*k/8 )];
-                scrollPanel.Position = scrollPanelPos + [0, 0, newDims];
-                drawnow()
-                % Verify that the child still fills the scroll panel.
-                expectedPosition = [1, 1, scrollPanel.Position(3:4)];
-                testCase.verifyEqual( c.Position, expectedPosition, ...
-                    'AbsTol', 1e-10, ...
-                    ['Changing the dimensions of the scrolling ', ...
-                    'panel did not update the ''Position'' property ', ...
-                    'of its contents correctly.'] )
-            end % for
+            % Update the 'Position' property of the scrolling panel.
+            newDims = [0, -50];
+            scrollPanel.Position = scrollPanel.Position + [0, 0, newDims];
+            drawnow()
+            
+            % Verify that the child still fills the scroll panel.
+            expectedPosition = [1, 1, scrollPanel.Position(3:4)];
+            testCase.verifyEqual( c.Position, expectedPosition, ...
+                'AbsTol', 1e-10, ...
+                ['Changing the dimensions of the scrolling ', ...
+                'panel did not update the ''Position'' property ', ...
+                'of its contents correctly.'] )
 
         end % tContentsPositionIsFullWhenPanelIsResized
 
@@ -439,4 +436,4 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

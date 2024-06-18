@@ -44,4 +44,4 @@ classdef tVBox < sharedtests.SharedBoxTests
             }}
     end % properties ( TestParameter )
 
-end % class
+end % classdef

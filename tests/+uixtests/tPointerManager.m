@@ -70,4 +70,4 @@ classdef tPointerManager < glttestutilities.TestInfrastructure
         
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef
