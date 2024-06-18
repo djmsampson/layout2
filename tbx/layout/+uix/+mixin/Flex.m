@@ -4,7 +4,11 @@ classdef( Abstract ) Flex < handle
     %  uix.mixin.Flex is a mixin class used by flex containers to provide
     %  various properties and helper methods.
     
-    %  Copyright 2009-2020 The MathWorks, Inc.
+    %  Copyright 2009-2024 The MathWorks, Inc.
+    
+    properties( Access = public, Dependent, AbortSet, Hidden )
+        DividerMarkings % divider markings [on|off]
+    end
     
     properties( GetAccess = protected, SetAccess = private )
         Pointer = 'unset' % mouse pointer
@@ -28,6 +32,27 @@ classdef( Abstract ) Flex < handle
         end % destructor
         
     end % structors
+
+    methods
+        
+        function value = get.DividerMarkings( obj )
+            
+            value = 'off';
+            
+        end % get.DividerMarkings
+        
+        function set.DividerMarkings( ~, value )
+            
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'DividerMarkings' );
+            assert( any( strcmp( value, {'on','off'} ) ), ...
+                'uix:InvalidArgument', ...
+                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
+            
+        end % set.DividerMarkings
+        
+    end % accessors
     
     methods( Access = protected )
         
