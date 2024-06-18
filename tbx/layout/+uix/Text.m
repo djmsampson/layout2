@@ -544,7 +544,7 @@ else
     if verLessThan( 'MATLAB', '8.6' ) % R2015b
         o = 18;
     else
-        o = 14;
+        o = 16;
     end
 end
 
