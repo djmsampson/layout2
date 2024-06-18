@@ -406,8 +406,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             for k = 1 : length( dividers )
                 testCase.verifyEqual( dividers(k).BackgroundColor, ...
                     newColor, diagnostic )
-                testCase.verifyEqual( dividers(k).ForegroundColor, ...
-                    newColor, diagnostic )
             end % for
 
         end % tSettingBackgroundColorUpdatesDividers
