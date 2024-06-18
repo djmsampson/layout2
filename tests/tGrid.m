@@ -56,4 +56,4 @@ classdef tGrid < sharedtests.SharedGridTests
             }}
     end % properties ( TestParameter )
 
-end % class
+end % classdef

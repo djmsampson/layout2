@@ -17,7 +17,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
         % Parent fixture, providing the top-level parent
         % graphics object for the components during the test procedures.
         % See also the ParentType class setup parameter and
-        % matlab.unittest.fixtures.ParentFixture.
+        % glttestutilities.ParentFixture.
         ParentFixture
     end % properties ( Access = protected )
 
@@ -104,8 +104,34 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '9.1';
                 case 'R2017a'
                     versionNumber = '9.2';
+                case 'R2017b'
+                    versionNumber = '9.3';
+                case 'R2018a'
+                    versionNumber = '9.4';
+                case 'R2018b'
+                    versionNumber = '9.5';
+                case 'R2019a'
+                    versionNumber = '9.6';
+                case 'R2019b'
+                    versionNumber = '9.7';
+                case 'R2020a'
+                    versionNumber = '9.8';
+                case 'R2020b'
+                    versionNumber = '9.9';
+                case 'R2021a'
+                    versionNumber = '9.10';
+                case 'R2021b'
+                    versionNumber = '9.11';
                 case 'R2022a'
                     versionNumber = '9.12';
+                case 'R2022b'
+                    versionNumber = '9.13';
+                case 'R2023a'
+                    versionNumber = '9.14';
+                case 'R2023b'
+                    versionNumber = '23.2';
+                case 'R2024a'
+                    versionNumber = '24.1';
                 otherwise
                     error( ['AssumeMATLABVersionIsAtLeast:', ...
                         'InvalidVersionString'], ...
@@ -168,27 +194,15 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeGraphicsAreNotWebBased
 
-        function assumeTestEnvironmentHasDisplay( testCase )
+        function assumeJavaScriptDesktop( testCase )
 
-            % Check that the test environment has a display. This is
-            % required for the mouse tests used for the flexible
-            % containers.
-            currentFolder = fileparts( mfilename( 'fullpath' ) );
-            BaTFolder = fullfile( matlabroot(), 'test', ...
-                'fileexchangeapps', 'GUI_layout_toolbox', 'tests' );
-            inBaTFolder = strcmp( currentFolder, BaTFolder );
-            testCase.assumeFalse( inBaTFolder, ...
-                ['This test is not applicable in the BaT ', ...
-                'environment. A display is required to run ', ...
-                'the mouse tests.'] )
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            isJSD = feature( 'webui' );
+            testCase.assumeTrue( isJSD, ...
+                ['This test is only applicable in the new desktop ', ...
+                'environment for MATLAB (the JavaScript Desktop).'] )
 
-            % Check that the test environment is not Jenkins.
-            isJenkins = ~isempty( getenv( 'JENKINS_HOME' ) );
-            testCase.assumeFalse( isJenkins, ...
-                ['This test is not applicable when running in ', ...
-                'the Jenkins environment.'] )
-
-        end % assumeTestEnvironmentHasDisplay
+        end % assumeJavaScriptDesktop
 
         function assumeNotMac( testCase )
 
@@ -214,6 +228,30 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeNotDeployed
 
+        function assumeNotRunningOnGitHubCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI, ...
+                ['This test is not applicable to code running ', ...
+                'on GitHub CI.'] )
+
+        end % assumeNotRunningOnGitHubCI
+
+        function assumeNotRunningOnGitLabCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI, ...
+                ['This test is not applicable to code running ', ...
+                'on GitLab CI.'] )
+
+        end % assumeNotRunningOnGitLabCI
+
+        function assumeNotRunningOnCI( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningOnCI(), ...
+                ['This test is not applicable to code running on ', ...
+                'GitHub or GitLab CI.'] )
+
+        end % assumeNotRunningOnCI
+
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
 
@@ -228,4 +266,29 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
     end % methods ( Sealed, Access = protected )
 
-end % class
+    methods ( Sealed, Static )
+
+        function tf = isCodeRunningOnGitHubCI()
+
+            tf = strcmp( getenv( 'GITHUB_ACTIONS' ), 'true' );
+
+        end % isCodeRunningOnGitHubCI
+
+        function tf = isCodeRunningOnGitLabCI()
+
+            tf = strcmp( getenv( 'GITLAB_CI' ), 'true' );
+
+        end % isCodeRunningOnGitLabCI
+
+        function tf = isCodeRunningOnCI()
+
+            tf = glttestutilities.TestInfrastructure...
+                .isCodeRunningOnGitHubCI || ...
+                glttestutilities.TestInfrastructure...
+                .isCodeRunningOnGitLabCI;
+
+        end % isCodeRunningOnCI
+
+    end % methods ( Sealed, Static )
+
+end % classdef

@@ -63,7 +63,7 @@ classdef tSet < glttestutilities.TestInfrastructure
             uix.set( fig, pairs{:} )
 
             % Verify that the figure properties were assigned correctly.
-            for k = 1 : 2 : length( pairs )-1
+            for k = 1 : 2 : numel( pairs )-1
                 name = pairs{k};
                 value = pairs{k+1};
                 testCase.verifyEqual( fig.(name), value, ...
@@ -75,4 +75,4 @@ classdef tSet < glttestutilities.TestInfrastructure
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef

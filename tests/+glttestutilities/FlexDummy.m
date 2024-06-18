@@ -19,4 +19,4 @@ classdef FlexDummy < uix.mixin.Flex
 
     end % methods
 
-end % class
+end % classdef

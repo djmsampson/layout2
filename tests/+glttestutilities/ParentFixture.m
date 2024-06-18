@@ -92,4 +92,4 @@ classdef ParentFixture < matlab.unittest.fixtures.Fixture
 
     end % methods ( Access = protected )
 
-end % class
+end % classdef
