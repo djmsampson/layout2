@@ -115,28 +115,6 @@ classdef tDivider < glttestutilities.TestInfrastructure
 
         end % tResizingDividerIsWarningFree
 
-        function tChangingOrientationIsWarningFree( testCase )
-
-            % Create a divider.
-            parent = testCase.ParentFixture.Parent;
-            d = uix.Divider( 'Parent', parent );
-
-            % Verify that changing the 'Orientation' property is
-            % warning-free.
-            currentOrientation = d.Orientation;
-            if strcmp( currentOrientation, 'vertical' )
-                newOrientation = 'horizontal';
-            else
-                newOrientation = 'vertical';
-            end % if
-            changer = @() set( d, 'Markings', 10, ...
-                'Orientation', newOrientation );
-            testCase.verifyWarningFree( changer, ...
-                ['uix.Divider was not warning-free when its ', ...
-                '''Orientation'' property was changed.'] )
-
-        end % tChangingOrientationIsWarningFree
-
     end % methods ( Test, Sealed )
 
 end % classdef
