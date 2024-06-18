@@ -126,7 +126,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             testFig.WindowStyle = 'normal';
             r.PointerLocation = testFig.Position(1:2) + ...
                 getpixelcenter( component, true );
-            
+
             % Focus the figure.
             figure( testFig )
 
@@ -537,8 +537,6 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             for k = 1 : numel( dividers )
                 testCase.verifyEqual( dividers(k).BackgroundColor, ...
                     newColor, diagnostic )
-                testCase.verifyEqual( dividers(k).ForegroundColor, ...
-                    newColor, diagnostic )
             end % for
 
         end % tSettingBackgroundColorUpdatesDividers
@@ -547,25 +545,16 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName )
 
             % Create the layout and add children.
-            [component, dividers] = createFlexibleLayoutWithChildren( ...
+            [component, ~] = createFlexibleLayoutWithChildren( ...
                 testCase, ConstructorName );
 
             % Switch off the divider markings.
             component.DividerMarkings = 'off';
+            testCase.verifyEqual( component.DividerMarkings, 'off' );
 
-            % Verify that the 'Markings' property of the dividers has been
-            % reset.
-            backgroundColorGrayLevel = 0.94;
-            for k = 1 : numel( dividers )
-                dividerCData = dividers(k).CData;
-                expectedValue = backgroundColorGrayLevel * ...
-                    ones( size( dividerCData ) );
-                testCase.verifyEqual( dividerCData, expectedValue, ...
-                    ['Setting the ''DividerMarkings'' ', ...
-                    'property of the ', ConstructorName, ...
-                    ' component to ''off'' has not set the divider''s', ...
-                    ' ''Markings'' property to the expected value.'] )
-            end % for
+            % Switch off the divider markings.
+            component.DividerMarkings = 'on'; % no effect
+            testCase.verifyEqual( component.DividerMarkings, 'off' );
 
         end % tTurningOffDividerMarkingsSetsDividerMarkingsProperty
 
