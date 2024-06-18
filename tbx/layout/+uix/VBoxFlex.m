@@ -284,12 +284,8 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             %updateBackgroundColor  Update background color
 
             backgroundColor = obj.BackgroundColor;
-            rowDividers = obj.RowDividers;
-            for ii = 1:numel( rowDividers )
-                rowDividers(ii).Color = backgroundColor;
-            end
-            frontDivider = obj.FrontDivider;
-            frontDivider.Color = backgroundColor * 0.75;
+            set( obj.RowDividers, 'Color', backgroundColor )
+            obj.FrontDivider.Color = backgroundColor * 0.75;
 
         end % updateBackgroundColor
         

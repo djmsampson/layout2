@@ -284,12 +284,8 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             %updateBackgroundColor  Update background color
 
             backgroundColor = obj.BackgroundColor;
-            columnDividers = obj.ColumnDividers;
-            for jj = 1:numel( columnDividers )
-                columnDividers(jj).Color = backgroundColor;
-            end
-            frontDivider = obj.FrontDivider;
-            frontDivider.Color = backgroundColor * 0.75;
+            set( obj.ColumnDividers, 'Color', backgroundColor )
+            obj.FrontDivider.Color = backgroundColor * 0.75;
 
         end % updateBackgroundColor
 

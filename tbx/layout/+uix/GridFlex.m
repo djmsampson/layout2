@@ -386,16 +386,9 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             %updateBackgroundColor  Update background color
 
             backgroundColor = obj.BackgroundColor;
-            rowDividers = obj.RowDividers;
-            for ii = 1:numel( rowDividers )
-                rowDividers(ii).Color = backgroundColor;
-            end
-            columnDividers = obj.ColumnDividers;
-            for jj = 1:numel( columnDividers )
-                columnDividers(ii).Color = backgroundColor;
-            end
-            frontDivider = obj.FrontDivider;
-            frontDivider.Color = backgroundColor * 0.75;
+            set( obj.RowDividers, 'Color', backgroundColor )
+            set( obj.ColumnDividers, 'Color', backgroundColor )
+            obj.FrontDivider.Color = backgroundColor * 0.75;
 
         end % updateBackgroundColor
         
