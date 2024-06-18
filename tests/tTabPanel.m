@@ -193,13 +193,13 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
             % Create a context menu.
             contextMenu = uicontextmenu( 'Parent', testFig );
-            uimenu( 'Parent', contextMenu, 'Text', 'Test Menu' )
+            uimenu( 'Parent', contextMenu )
 
             % Attach the context menu to the second tab.
             tabPanel.TabContextMenus{2} = contextMenu;
 
             % Create a new figure parent.
-            if isempty( testFig.Number )
+            if isempty( testFig.JavaFrame_I )
                 newFig = uifigure();
             else
                 newFig = figure();
@@ -236,6 +236,9 @@ classdef tTabPanel < sharedtests.SharedPanelTests
         end % tContextMenuIsReparentedWhenTabPanelIsReparented
 
         function tRotate3dDoesNotAddMoreTabs( testCase, ConstructorName )
+
+            % This test applies from R2015b onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )           
 
             % Filter the unrooted case.
             testCase.assumeGraphicsAreRooted()

@@ -6,11 +6,16 @@ function results = runToolboxTests()
 % Record the current folder (the tests directory).
 rootFolder = fileparts( mfilename( 'fullpath' ) );
 
-% Disable the warning about name conflicts.
-ID = 'MATLAB:dispatcher:nameConflict';
-w = warning( 'query', ID );
-warningCleanup = onCleanup( @() warning( w ) );
-warning( 'off', ID )
+% Disable warnings that may be generated during the test procedure.
+warningIDs = {'MATLAB:dispatcher:nameConflict', ...
+    'MATLAB:hg:AutoSoftwareOpenGL'};
+warningCleanups = onCleanup.empty( 0, 1 );
+for k = 1 : numel( warningIDs )
+    warningID = warningIDs{k};
+    cleanupTask = @() warning( warning( 'query', warningID ) );
+    warningCleanups(k, 1) = onCleanup( cleanupTask );
+    warning( 'off', warningID )
+end % for
 
 % Create the test suite from the tests root folder, including the tests
 % located in the inner namespaces.

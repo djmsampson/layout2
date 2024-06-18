@@ -23,7 +23,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
             warningID = 'uix:G1218142';
             testCase.WarningState = warning( 'query', warningID );
             testCase.addTeardown( @() warning( testCase.WarningState ) )
-            warning( 'off', warningID )            
+            warning( 'off', warningID )
 
         end % suppressWarnings
 
@@ -173,7 +173,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
             reparenter = @() set( button, 'Parent', component );
             testCase.verifyWarningFree( reparenter, ...
                 ['Reparenting an invisible control to the ', ...
-                ConstructorName, ' component was not warning-free.'] )            
+                ConstructorName, ' component was not warning-free.'] )
 
         end % tAddingInvisibleControlIsWarningFree
 
@@ -209,7 +209,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
             % This test is only for components with a dynamic 'Enable'
             % property.
             testCase.assumeComponentHasDynamicEnableProperty( ...
-                ConstructorName )            
+                ConstructorName )
 
             % Create the component.
             component = testCase.constructComponent( ConstructorName );
@@ -235,7 +235,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
                 'with ID ''uiextras:InvalidPropertyValue'' when ', ...
                 'the ''Enable'' property was set to a non-char value.'] )
 
-            % Verify that setting a value not 'on' or 'off' causes an 
+            % Verify that setting a value not 'on' or 'off' causes an
             % error.
             f = @() setEnable( component, 'test' );
             testCase.verifyError( f, 'uiextras:InvalidPropertyValue', ...
@@ -245,6 +245,116 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
                 'the ''Enable'' property was not ''on'' or ''off''.'] )
 
         end % tDynamicAdditionOfEnableProperty
+
+        function tContextMenuPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            if verLessThan( 'matlab', '9.8' )
+                % Before R2020a.
+                propertyName = 'UIContextMenu';
+            else
+                % R2020a onwards.
+                propertyName = 'ContextMenu';
+            end % if
+
+            % Specify the property on construction.
+            expected = gobjects( 0 );
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                propertyName, expected );
+            componentCleanup = onCleanup( @() delete( component ) );
+
+            % Verify that the property has been assigned correctly.
+            actual = component.(propertyName);
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ', propertyName, ' property ', ...
+                'of the ', ConstructorName, ' component on ', ...
+                'construction did not store the value correctly.'] )
+
+        end % tContextMenuPropertyIsAssignedCorrectly
+
+        function tSettingContextMenuPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            if verLessThan( 'matlab', '9.8' )
+                % Before R2020a.
+                propertyName = 'UIContextMenu';
+            else
+                % R2020a onwards.
+                propertyName = 'ContextMenu';
+            end % if
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = gobjects( 0 );
+            component.(propertyName) = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.(propertyName);
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ', propertyName, ' property ', ...
+                'of the ', ConstructorName, ' component after ', ...
+                'construction did not store the value correctly.'] )
+
+        end % tSettingContextMenuPropertyStoresValue
+
+        function tEnablePropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % The 'Enable' property was added to uipanel in R2020b.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Specify the property on construction.
+            expected = 'on';
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'Enable', 'on' );
+            componentCleanup = onCleanup( @() delete( component ) );
+
+            % Verify that the property has been assigned correctly.
+            actual = char( component.Enable );
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''Enable'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tEnablePropertyIsAssignedOnConstruction
+
+        function tSettingEnablePropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % The 'Enable' property was added to uipanel in R2020b.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = 'on';
+            component.Enable = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = char( component.Enable );
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''Enable'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingEnablePropertyStoresValue
 
     end % methods ( Test, Sealed )
 
