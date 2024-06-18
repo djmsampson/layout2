@@ -11,15 +11,10 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
     
     %  Copyright 2009-2020 The MathWorks, Inc.
     
-    properties( Access = public, Dependent, AbortSet )
-        DividerMarkings % divider markings [on|off]
-    end
-    
     properties( Access = private )
         RowDividers = uix.Divider.empty( [0 1] )
         ColumnDividers = uix.Divider.empty( [0 1] )
         FrontDivider % front divider
-        DividerMarkings_ = 'on' % backing for DividerMarkings
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
@@ -40,23 +35,25 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             %  v1, etc.
             
             % Create front divider
-            frontDivider = uix.Divider( 'Parent', obj, ...
-                'Orientation', 'vertical', ...
-                'BackgroundColor', obj.BackgroundColor * 0.75, ...
-                'Visible', 'off' );
+            frontDivider = uix.Divider( 'Parent', obj, 'Visible', 'off' );
+            
+            % Store divider
+            obj.FrontDivider = frontDivider;
+
+            % Initialize divider
+            obj.updateBackgroundColor()
             
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChanged );
             
-            % Store properties
-            obj.FrontDivider = frontDivider;
+            % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set Spacing property (may be overwritten by uix.set)
             obj.Spacing = 5;
-            
+
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -68,33 +65,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         end % constructor
         
     end % structors
-    
-    methods
-        
-        function value = get.DividerMarkings( obj )
-            
-            value = obj.DividerMarkings_;
-            
-        end % get.DividerMarkings
-        
-        function set.DividerMarkings( obj, value )
-            
-            % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'DividerMarkings' );
-            assert( any( strcmp( value, {'on','off'} ) ), ...
-                'uix:InvalidArgument', ...
-                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
-            
-            % Set
-            obj.DividerMarkings_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.DividerMarkings
-        
-    end % accessors
     
     methods( Access = protected )
         
@@ -126,7 +96,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             % Activate divider
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
-            frontDivider.Orientation = divider.Orientation;
             divider.Visible = 'off';
             frontDivider.Parent = [];
             frontDivider.Parent = obj;
@@ -273,26 +242,8 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
-            
-            backgroundColor = obj.BackgroundColor;
-            highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
-            shadowColor = max( [backgroundColor * 0.75; 0 0 0] );
-            rowDividers = obj.RowDividers;
-            for ii = 1:numel( rowDividers )
-                rowDivider = rowDividers(ii);
-                rowDivider.BackgroundColor = backgroundColor;
-                rowDivider.HighlightColor = highlightColor;
-                rowDivider.ShadowColor = shadowColor;
-            end
-            columnDividers = obj.ColumnDividers;
-            for jj = 1:numel( columnDividers )
-                columnDivider = columnDividers(jj);
-                columnDivider.BackgroundColor = backgroundColor;
-                columnDivider.HighlightColor = highlightColor;
-                columnDivider.ShadowColor = shadowColor;
-            end
-            frontDivider = obj.FrontDivider;
-            frontDivider.BackgroundColor = shadowColor;
+
+            obj.updateBackgroundColor()
             
         end % onBackgroundColorChanged
         
@@ -314,8 +265,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             if b < c % create
                 for ii = b+1:c
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'vertical', ...
-                        'BackgroundColor', obj.BackgroundColor );
+                        'Color', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = columnDivider;
                 end
             elseif b > c % destroy
@@ -334,8 +284,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             if q < r % create
                 for ii = q+1:r
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'horizontal', ...
-                        'BackgroundColor', obj.BackgroundColor );
+                        'Color', obj.BackgroundColor );
                     obj.RowDividers(ii,:) = columnDivider;
                 end
                 % Bring front divider to the front
@@ -386,28 +335,12 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             
             % Position row dividers
             for ii = 1:r
-                rowDivider = obj.RowDividers(ii);
-                rowDivider.Position = rowPositions(ii,:);
-                switch obj.DividerMarkings_
-                    case 'on'
-                        rowDivider.Markings = cumsum( xColumnSizes ) + ...
-                            spacing * transpose( 0:c ) - xColumnSizes / 2;
-                    case 'off'
-                        rowDivider.Markings = zeros( [0 1] );
-                end
+                obj.RowDividers(ii).Position = rowPositions(ii,:);
             end
             
             % Position column dividers
-            for ii = 1:c
-                columnDivider = obj.ColumnDividers(ii);
-                columnDivider.Position = columnPositions(ii,:);
-                switch obj.DividerMarkings_
-                    case 'on'
-                        columnDivider.Markings = cumsum( yRowSizes ) + ...
-                            spacing * transpose( 0:r ) - yRowSizes / 2;
-                    case 'off'
-                        columnDivider.Markings = zeros( [0 1] );
-                end
+            for jj = 1:c
+                obj.ColumnDividers(jj).Position = columnPositions(jj,:);
             end
             
         end % redraw
@@ -448,8 +381,26 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
     end % template methods
     
     methods( Access = protected )
+
+        function updateBackgroundColor( obj )
+            %updateBackgroundColor  Update background color
+
+            backgroundColor = obj.BackgroundColor;
+            rowDividers = obj.RowDividers;
+            for ii = 1:numel( rowDividers )
+                rowDividers(ii).Color = backgroundColor;
+            end
+            columnDividers = obj.ColumnDividers;
+            for jj = 1:numel( columnDividers )
+                columnDividers(ii).Color = backgroundColor;
+            end
+            frontDivider = obj.FrontDivider;
+            frontDivider.Color = backgroundColor * 0.75;
+
+        end % updateBackgroundColor
         
         function updateMousePointer ( obj, source, eventData  )
+            %updateMousePointer  Update mouse pointer
             
             oldPointer = obj.Pointer;
             if any( obj.RowDividers.isMouseOver( eventData ) )
