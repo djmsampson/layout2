@@ -23,7 +23,7 @@ run-tests:
   tags:
    - long-jobs
   script:
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "openProject('project.prj'); assertSuccess(runtests('tBoxPanel'));"
   artifacts:
     when: always
     paths:
@@ -39,7 +39,7 @@ run-tests-jsd:
   tags:
     - long-jobs
   script:
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runtests('tBoxPanel'));"
   artifacts:
     when: always
     paths:
