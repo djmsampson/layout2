@@ -49,6 +49,10 @@ classdef( Abstract ) Flex < handle
             assert( any( strcmp( value, {'on','off'} ) ), ...
                 'uix:InvalidArgument', ...
                 'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
+
+            % Warn
+            % warning( 'uix:Deprecated', ...
+            %     'Property ''DividerMarkings'' will be removed in a future release.' )
             
         end % set.DividerMarkings
         
