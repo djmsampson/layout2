@@ -24,4 +24,4 @@ classdef ActivePositionPropertyDummy < handle
 
     end % methods
 
-end % class
+end % classdef

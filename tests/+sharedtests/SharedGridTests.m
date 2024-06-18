@@ -330,7 +330,7 @@ classdef ( Abstract ) SharedGridTests < sharedtests.SharedContainerTests
             % Set each grid dimension and verify that it has been assigned
             % correctly.
             gridPairs = GridDimensionNameValuePairs;
-            for k = 1 : 2 : length( gridPairs )-1
+            for k = 1 : 2 : numel( gridPairs )-1
                 % Extract the current name-value pair.
                 propertyName = gridPairs{k};
                 propertyValue = gridPairs{k+1};
@@ -358,7 +358,7 @@ classdef ( Abstract ) SharedGridTests < sharedtests.SharedContainerTests
 
             % Add six controls.
             kids = gobjects( 6, 1 );
-            for k = 1 : length( kids )
+            for k = 1 : numel( kids )
                 kids(k) = uicontrol( 'Parent', component );
             end % for
 
@@ -370,4 +370,4 @@ classdef ( Abstract ) SharedGridTests < sharedtests.SharedContainerTests
 
     end % methods ( Sealed, Access = protected )
 
-end % class
+end % classdef

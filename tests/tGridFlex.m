@@ -68,6 +68,11 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
 
+            % If running in CI, assume we have at least R2023b.
+            if testCase.isCodeRunningOnCI()
+                testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
+            end % if
+
             % Create a component.
             component = testCase.constructComponent( ConstructorName, ...
                 'Spacing', 10 );
@@ -87,6 +92,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
             % Wait until the figure renders.
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'normal';
+            figure( testFig ) % Focus the figure
             isuifigure = isempty( get( testFig, 'JavaFrame_I' ) );
             if isuifigure
                 pause( 5 )
@@ -104,7 +110,7 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
             % Drag the divider in both directions.
             for offset = dragOffsets
-                % Move the mouse pointer.                
+                % Move the mouse pointer.
                 r.PointerLocation = testFig.Position(1:2) + ...
                     d(1).Position(1:2) + d(1).Position(3:4)/2;
                 drawnow()
@@ -142,4 +148,4 @@ classdef tGridFlex < sharedtests.SharedGridTests & ...
 
     end % methods ( Test, Sealed )
 
-end % class
+end % classdef
