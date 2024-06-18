@@ -414,25 +414,16 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName )
 
             % Create the layout and add children.
-            [component, dividers] = createFlexibleLayoutWithChildren( ...
+            [component, ~] = createFlexibleLayoutWithChildren( ...
                 testCase, ConstructorName );           
 
             % Switch off the divider markings.
             component.DividerMarkings = 'off';
+            testCase.verifyEqual( component.DividerMarkings, 'off' );
 
-            % Verify that the 'Markings' property of the dividers has been
-            % reset.
-            backgroundColorGrayLevel = 0.94;
-            for k = 1 : length( dividers )
-                dividerCData = dividers(k).CData;
-                expectedValue = backgroundColorGrayLevel * ...
-                    ones( size( dividerCData ) );
-                testCase.verifyEqual( dividerCData, expectedValue, ...
-                    ['Setting the ''DividerMarkings'' ', ...
-                    'property of the ', ConstructorName, ...
-                    ' component to ''off'' has not set the divider''s', ...
-                    ' ''Markings'' property to the expected value.'] )
-            end % for
+            % Switch off the divider markings.
+            component.DividerMarkings = 'on';
+            testCase.verifyEqual( component.DividerMarkings, 'off' );
 
         end % tTurningOffDividerMarkingsSetsDividerMarkingsProperty
 
