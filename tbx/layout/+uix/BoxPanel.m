@@ -483,7 +483,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 if isempty( title )
                     obj.TitleText.String = obj.BlankTitle;
                 else
-                    obj.TitleText.String = title; % set String to title
+                    obj.TitleText.String = [' ' title]; % set String to title
                 end
                 obj.Title = obj.NullTitle; % unset Title
                 obj.TitleAccess = 'public'; % finish
@@ -592,27 +592,28 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
             % Attach active buttons
             titleText.Parent = box;
+            bW = obj.TitleHeight_ * 2/3; % button width
             minimize = ~isempty( obj.MinimizeFcn );
             if minimize
                 minimizeButton.Parent = box;
-                box.Widths(end) = extent( minimizeButton, 3 );
+                box.Widths(end) = bW;
             end
             dock = ~isempty( obj.DockFcn );
             if dock
                 dockButton.Parent = box;
-                box.Widths(end) = extent( dockButton, 3 );
+                box.Widths(end) = bW;
             end
             help = ~isempty( obj.HelpFcn );
             if help
                 helpButton.Parent = box;
                 helpButton.TooltipString = obj.HelpTooltipString;
-                box.Widths(end) = extent( helpButton, 3 );
+                box.Widths(end) = bW;
             end
             close = ~isempty( obj.CloseRequestFcn );
             if close
                 closeButton.Parent = box;
                 closeButton.TooltipString = obj.CloseTooltipString;
-                box.Widths(end) = extent( closeButton, 3 );
+                box.Widths(end) = bW;
             end
 
             % Update icons
