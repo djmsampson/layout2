@@ -28,14 +28,11 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     properties( Access = private )
         TabGroup % tab group
-        ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabHeight = 24 % tab height
         BackgroundColorListener % listener
         SelectionChangedListener % listener
-        ParentListener % listener
-        ParentBackgroundColorListener % listener
     end
 
     properties( Access = private, Constant )
@@ -79,7 +76,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Create tab group
             tabGroup = matlab.ui.container.TabGroup( ...
                 'Internal', true, 'Parent', obj, ...
-                'SelectionChangedFcn', @obj.onTabClicked );
+                'SelectionChangedFcn', @obj.onTabSelected );
 
             % Store properties
             obj.TabGroup = tabGroup;
@@ -90,14 +87,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 @obj.onBackgroundColorChanged );
             selectionChangedListener = event.listener( obj, ...
                 'SelectionChanged', @obj.onSelectionChanged );
-            parentListener = event.proplistener( obj, ...
-                findprop( obj, 'Parent' ), 'PostSet', ...
-                @obj.onParentChanged );
 
             % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
-            obj.ParentListener = parentListener;
 
             % Set properties
             try
@@ -110,6 +103,132 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % constructor
 
     end % structors
+
+    methods
+
+        function set.SelectionChangedFcn( obj, value )
+
+            % Check
+            if ischar( value ) % string
+                % OK
+            elseif isa( value, 'function_handle' ) && ...
+                    isequal( size( value ), [1 1] ) % function handle
+                % OK
+            elseif iscell( value ) && ndims( value ) == 2 && ...
+                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
+                    isa( value{1}, 'function_handle' ) && ...
+                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                % OK
+            else
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
+            end
+
+            % Set
+            obj.SelectionChangedFcn = value;
+
+        end % set.SelectionChangedFcn
+
+        function value = get.TabEnables( obj )
+
+            value = get( obj.Children, {'Enable'} );
+            value(strcmp( value, 'inactive' )) = {'on'};
+
+        end % get.TabEnables
+
+        function set.TabEnables( obj, value )
+
+            % For those who can't tell a column from a row...
+            if isrow( value )
+                value = transpose( value );
+            end
+
+            % Retrieve tabs
+            tabs = obj.Tabs;
+            tabListeners = obj.TabListeners;
+
+            % Check
+            assert( iscellstr( value ) && ...
+                isequal( size( value ), size( tabs ) ) && ...
+                all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
+
+            % Set
+            tf = strcmp( value, 'on' );
+            value(tf) = {'inactive'};
+            for ii = 1:numel( tabs )
+                tabs(ii).Enable = value{ii};
+                tabListeners(ii).Enabled = tf(ii);
+            end
+
+            % Show selected child
+            obj.showSelection()
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % set.TabEnables
+
+        function value = get.TabLocation( obj )
+
+            value = obj.TabGroup.TabLocation;
+
+        end % get.TabLocation
+
+        function set.TabLocation( obj, value )
+
+            % Check
+            assert( ischar( value ) && ...
+                any( strcmp( value, {'top','bottom'} ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
+
+            % Set
+            obj.TabGroup.TabLocation = value;
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % set.TabLocation
+
+        function value = get.TabTitles( obj )
+
+            value = get( obj.TabGroup.Children, {'Title'} );
+
+        end % get.TabTitles
+
+        function set.TabTitles( obj, value )
+
+            set( obj.TabGroup.Children, 'Title', value )
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % set.TabTitles
+
+        function value = get.TabContextMenus( obj )
+
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            value = cell( [n 1] );
+            for ii = 1:n
+                value{ii} = tabs(ii).UIContextMenu;
+            end
+
+        end % get.TabContextMenus
+
+        function set.TabContextMenus( obj, value )
+
+            tabs = obj.Tabs;
+            n = numel( tabs );
+            for ii = 1:n
+                tabs(ii).UIContextMenu = value{ii};
+            end
+
+        end % set.TabContextMenus
+
+    end % accessors
 
     methods
 
@@ -239,129 +358,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         end % set.TabWidth
 
-        function set.SelectionChangedFcn( obj, value )
+    end % deprecated accessors
 
-            % Check
-            if ischar( value ) % string
-                % OK
-            elseif isa( value, 'function_handle' ) && ...
-                    isequal( size( value ), [1 1] ) % function handle
-                % OK
-            elseif iscell( value ) && ndims( value ) == 2 && ...
-                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
-                    isa( value{1}, 'function_handle' ) && ...
-                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
-                % OK
-            else
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
-            end
-
-            % Set
-            obj.SelectionChangedFcn = value;
-
-        end % set.SelectionChangedFcn
-
-        function value = get.TabEnables( obj )
-
-            value = get( obj.Children, {'Enable'} );
-            value(strcmp( value, 'inactive' )) = {'on'};
-
-        end % get.TabEnables
-
-        function set.TabEnables( obj, value )
-
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
-
-            % Retrieve tabs
-            tabs = obj.Tabs;
-            tabListeners = obj.TabListeners;
-
-            % Check
-            assert( iscellstr( value ) && ...
-                isequal( size( value ), size( tabs ) ) && ...
-                all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
-
-            % Set
-            tf = strcmp( value, 'on' );
-            value(tf) = {'inactive'};
-            for ii = 1:numel( tabs )
-                tabs(ii).Enable = value{ii};
-                tabListeners(ii).Enabled = tf(ii);
-            end
-
-            % Show selected child
-            obj.showSelection()
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % set.TabEnables
-
-        function value = get.TabLocation( obj )
-
-            value = obj.TabGroup.TabLocation;
-
-        end % get.TabLocation
-
-        function set.TabLocation( obj, value )
-
-            % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'top','bottom'} ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
-
-            % Set
-            obj.TabGroup.TabLocation = value;
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % set.TabLocation
-
-        function value = get.TabTitles( obj )
-
-            value = get( obj.TabGroup.Children, {'Title'} );
-
-        end % get.TabTitles
-
-        function set.TabTitles( obj, value )
-
-            set( obj.TabGroup.Children, 'Title', value )
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % set.TabTitles
-
-        function value = get.TabContextMenus( obj )
-
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            value = cell( [n 1] );
-            for ii = 1:n
-                value{ii} = tabs(ii).UIContextMenu;
-            end
-
-        end % get.TabContextMenus
-
-        function set.TabContextMenus( obj, value )
-
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
-                tabs(ii).UIContextMenu = value{ii};
-            end
-
-        end % set.TabContextMenus
-
-    end % accessors
 
     methods( Access = protected )
 
@@ -376,16 +374,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tabs = obj.Tabs;
             n = numel( tabs ); % number of tabs
             tH = obj.TabHeight; % tab height
-            if tH == -1 % cache stale, refresh
-                if n > 0
-                    cTabExtents = get( tabs, {'Extent'} );
-                    tabExtents = vertcat( cTabExtents{:} );
-                    tH = max( tabExtents(:,4) );
-                end
-                tH = max( tH, obj.TabMinimumHeight ); % apply minimum
-                tH = ceil( tH ); % round up
-                obj.TabHeight = tH; % store
-            end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabGroup.TabLocation
                 case 'top'
@@ -397,15 +385,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             cX = 1 + p; % contents x
             cW = max( [w - 2 * p, 1] ); % contents width
-            tW = obj.TabWidth_; % tab width
-            dW = obj.DividerWidth; % tab divider width
-            if tW < 0 && n > 0 % relative
-                tW = max( ( w - (n+1) * dW ) / n, 1 );
-            end
-            tW = ceil( tW ); % round up
-            for ii = 1:n
-                tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
-            end
             contentsPosition = [cX cY cW cH];
 
             % Redraw contents
@@ -541,7 +520,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     methods( Access = private )
 
-        function onTabClicked( obj, source, ~ )
+        function onTabSelected( obj, source, ~ )
 
             % Update selection
             oldSelection = obj.Selection_;
@@ -559,7 +538,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.notify( 'SelectionChanged', ...
                 uix.SelectionData( oldSelection, newSelection ) )
 
-        end % onTabClicked
+        end % onTabSelected
 
         function onBackgroundColorChanged( obj, ~, ~ )
 
@@ -583,42 +562,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
 
         end % onSelectionChanged
-
-        function onParentChanged( obj, ~, ~ )
-
-            % Update ParentBackgroundColor and ParentBackgroundColor
-            if isprop( obj.Parent, 'BackgroundColor' )
-                prop = 'BackgroundColor';
-            elseif isprop( obj.Parent, 'Color' )
-                prop = 'Color';
-            else
-                prop = [];
-            end
-
-            if ~isempty( prop )
-                obj.ParentBackgroundColorListener = event.proplistener( obj.Parent, ...
-                    findprop( obj.Parent, prop ), 'PostSet', ...
-                    @( src, evt ) obj.updateParentBackgroundColor( prop ) );
-            else
-                obj.ParentBackgroundColorListener = [];
-            end
-
-            obj.updateParentBackgroundColor( prop );
-
-        end % onParentChanged
-
-        function updateParentBackgroundColor( obj, prop )
-
-            if isempty( prop )
-                obj.ParentBackgroundColor = obj.BackgroundColor;
-            else
-                obj.ParentBackgroundColor = obj.Parent.(prop);
-            end
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end
 
     end % event handlers
 
