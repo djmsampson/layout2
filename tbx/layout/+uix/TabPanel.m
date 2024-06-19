@@ -44,11 +44,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
-
-        TabWidth_ = 50 % tab width
-        DividerWidth = 8 % divider width
-        TabMinimumHeight = 9 % tab minimum height
-        Tint = 0.85 % tint factor for unselected tabs
     end
 
     properties( Access = public, Dependent, AbortSet, Hidden )
