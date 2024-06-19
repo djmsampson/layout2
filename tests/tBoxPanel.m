@@ -80,6 +80,19 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             'CloseTooltipString'}
     end % properties ( Constant )
 
+    methods ( TestClassSetup )
+
+        function disableOpenGLWarning( testCase )
+
+            warningID = 'MATLAB:hg:AutoSoftwareOpenGL';
+            warningState = warning( 'query', warningID );
+            testCase.addTeardown( @() warning( warningState ) )
+            warning( 'off', warningID )
+
+        end % disableOpenGLWarning
+
+    end % methods ( TestClassSetup )
+
     methods ( Test, Sealed )
 
         function tPassingShadowColorToConstructorIsCorrect( ...

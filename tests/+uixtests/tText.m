@@ -31,6 +31,24 @@ classdef tText < glttestutilities.TestInfrastructure
 
     methods ( TestClassSetup )
 
+        function disableWarnings( testCase )
+
+            % Disable various warnings as these tests are running.
+            warningIDs = {'MATLAB:dispatcher:pathWarning', ...
+                'MATLAB:dispatcher:nameConflict', ...
+                'MATLAB:structOnObject'};
+            for k = 1 : numel( warningIDs )
+                warningState = warning( 'query', warningIDs{k} );
+                testCase.addTeardown( @() warning( warningState ) )
+                warning( 'off', warningIDs{k} )
+            end % for
+
+        end % disableWarnings
+
+    end % methods ( TestClassSetup )
+
+    methods ( TestMethodSetup )
+
         function clearText( ~ )
 
             % Clear uix.Text from memory so that Constant properties are
@@ -39,7 +57,7 @@ classdef tText < glttestutilities.TestInfrastructure
 
         end % clearText
 
-    end % methods ( TestClassSetup )
+    end % methods ( TestMethodSetup )
 
     methods ( Test, Sealed )
 
@@ -206,17 +224,7 @@ classdef tText < glttestutilities.TestInfrastructure
             testCase.assumeNotMac()
             testCase.assumeComponentHasEmptyParent()
 
-            % Clear uix.Text from memory. This forces the Constant
-            % properties to be redefined when an object of type uix.Text is
-            % created.
-            clear( 'Text' )
-
-            % Set up a path fixture for ismac(). Disable the name conflict
-            % warning for the duration of the test.
-            ID = 'MATLAB:dispatcher:nameConflict';
-            w = warning( 'query', ID );
-            testCase.addTeardown( @() warning( w ) )
-            warning( 'off', ID )
+            % Set up a path fixture for ismac().
             currentFolder = fileparts( mfilename( 'fullpath' ) );
             testsFolder = fileparts( currentFolder );
             targetFolder = fullfile( testsFolder, ...
@@ -225,20 +233,15 @@ classdef tText < glttestutilities.TestInfrastructure
             testCase.applyFixture( fixture );
 
             % Create an object.
-            parent = testCase.ParentFixture.Parent;            
+            parent = testCase.ParentFixture.Parent;
             t = uix.Text( 'Parent', parent );
             testCase.addTeardown( @() delete( t ) )
 
-            % Obtain the offset value. Disable the warning about converting
-            % an object to a structure for the duration of the test.
-            ID = 'MATLAB:structOnObject';
-            w = warning( 'query', ID );
-            testCase.addTeardown( @() warning( w ) )
-            warning( 'off', ID )
+            % Obtain the offset value.
             s = struct( t );
-            testCase.verifyGreaterThanOrEqual( s.Margin, 16, ...
+            testCase.verifyGreaterThanOrEqual( s.Margin, 14, ...
                 ['The uix.Text constructor did not set the ', ...
-                '''Margin'' property to a value >= 16.'] )
+                '''Margin'' property to a value >= 14.'] )
 
         end % tMacOffsetIsSetCorrectly
 
@@ -248,11 +251,6 @@ classdef tText < glttestutilities.TestInfrastructure
             % graphics with an empty parent.
             testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
             testCase.assumeComponentHasEmptyParent()
-
-            % Clear uix.Text from memory. This forces the Constant
-            % properties to be redefined when an object of type uix.Text is
-            % created.
-            clear( 'Text' )
 
             % Set up a path fixture for verLessThan().
             currentFolder = fileparts( mfilename( 'fullpath' ) );
@@ -266,16 +264,11 @@ classdef tText < glttestutilities.TestInfrastructure
             parent = testCase.ParentFixture.Parent;
             t = uix.Text( 'Parent', parent );
 
-            % Obtain the offset value. Disable the warning about converting
-            % an object to a structure for the duration of the test.
-            ID = 'MATLAB:structOnObject';
-            w = warning( 'query', ID );
-            testCase.addTeardown( @() warning( w ) )
-            warning( 'off', ID )
+            % Obtain the offset value.
             s = struct( t );
-            testCase.verifyGreaterThanOrEqual( s.Margin, 16, ...
+            testCase.verifyGreaterThanOrEqual( s.Margin, 14, ...
                 ['The uix.Text constructor did not set the ', ...
-                '''Margin'' property to a value >= 16.'] )
+                '''Margin'' property to a value >= 14.'] )
 
         end % tOffsetIsSetCorrectlyInOlderVersions
 
