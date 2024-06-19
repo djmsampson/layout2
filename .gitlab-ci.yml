@@ -15,6 +15,7 @@ stages:
 variables:
   ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
   LOCATION: "UK"
+  DISPLAY: :1
 
 run-tests:
   stage: run-tests
@@ -24,6 +25,7 @@ run-tests:
   tags:
    - long-jobs
   script:
+    - export DISPLAY=:1
     - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = [runtests('tHBoxFlex'), runtests('tCardPanel')]; assert(~any([results.Failed]))"
   # artifacts:
   #   when: always
@@ -40,6 +42,7 @@ run-tests-jsd:
   tags:
     - long-jobs
   script:
+    - export DISPLAY=:1
     - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
   artifacts:
     when: always
