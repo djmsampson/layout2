@@ -276,7 +276,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             obj.showSelection()
 
             % Mark as dirty
-            obj.Dirty = true;
+            obj.redrawButtons()
 
         end % set.Minimized
 
