@@ -16,7 +16,7 @@ variables:
   ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
   LOCATION: "UK"
 
-run-tests: 
+run-tests:
   stage: run-tests
   parallel:
     matrix:

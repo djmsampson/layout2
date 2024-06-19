@@ -95,6 +95,16 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % disableMATLABConnectorWarning
 
+        function disableOpenGLWarning( testCase )
+
+            % Disable the OpenGL software warning.
+            warningID = 'MATLAB:hg:AutoSoftwareOpenGL';
+            warningState = warning( 'query', warningID );
+            testCase.addTeardown( @() warning( warningState ) )
+            warning( 'off', warningID )
+
+        end % disableOpenGLWarning
+
     end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )

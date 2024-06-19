@@ -78,20 +78,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             'DockTooltipString';
             'HelpTooltipString';
             'CloseTooltipString'}
-    end % properties ( Constant )
-
-    methods ( TestClassSetup )
-
-        function disableOpenGLWarning( testCase )
-
-            warningID = 'MATLAB:hg:AutoSoftwareOpenGL';
-            warningState = warning( 'query', warningID );
-            testCase.addTeardown( @() warning( warningState ) )
-            warning( 'off', warningID )
-
-        end % disableOpenGLWarning
-
-    end % methods ( TestClassSetup )
+    end % properties ( Constant )    
 
     methods ( Test, Sealed )
 
