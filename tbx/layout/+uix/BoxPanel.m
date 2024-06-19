@@ -526,7 +526,6 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
             end
             obj.TitleBox.Position = [tX tY tW tH];
-            obj.redrawButtons()
 
         end % redraw
 
