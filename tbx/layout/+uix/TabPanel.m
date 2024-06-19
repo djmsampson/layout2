@@ -62,7 +62,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
-        DividerMask = uix.TabPanel.getDividerMask() % divider image data
         DividerWidth = 8 % divider width
         TabMinimumHeight = 9 % tab minimum height
         Tint = 0.85 % tint factor for unselected tabs
@@ -602,62 +601,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 return
             end
 
-            % Repaint tabs
-            backgroundColor = obj.BackgroundColor;
-            for ii = 1:t
-                tab = tabs(ii);
-                if ii == selection
-                    tab.BackgroundColor = backgroundColor;
-                else
-                    tab.BackgroundColor = obj.Tint * backgroundColor;
-                end
-            end
-
-            % Repaint dividers
-            d = t + 1;
-            dividerNames = repmat( 'F', [d 2] ); % initialize
-            dividerNames(1,1) = 'E'; % end
-            dividerNames(end,2) = 'E'; % end
-            if selection ~= 0
-                dividerNames(selection,2) = 'T'; % selected
-                dividerNames(selection+1,1) = 'T'; % selected
-            end
-            tH = obj.TabHeight;
-            assert( tH >= obj.TabMinimumHeight, 'uix:InvalidState', ...
-                'Cannot redraw tabs with invalid TabHeight.' )
-            tW = obj.Tabs(1).Position(3);
-            dW = obj.DividerWidth;
-            allCData = zeros( [tH 0 3] ); % initialize
-            map = [obj.ShadowColor; obj.BackgroundColor; ...
-                obj.Tint * obj.BackgroundColor; obj.HighlightColor;...
-                obj.ParentBackgroundColor];
-            for ii = 1:d
-                % Select mask
-                iMask = obj.DividerMask.( dividerNames(ii,:) );
-                % Resize
-                iData = repmat( iMask(5,:), [tH 1] );
-                iData(1:4,:) = iMask(1:4,:);
-                iData(end-3:end,:) = iMask(end-3:end,:);
-                % Convert to RGB
-                cData = ind2rgb( iData+1, map );
-                % Orient
-                switch obj.TabLocation_
-                    case 'bottom'
-                        cData = flipud( cData );
-                end
-                % Insert
-                allCData(1:tH,(ii-1)*(dW+tW)+(1:dW),:) = cData; % center
-                if ii > 1 % extend left under transparent uicontrol edge
-                    allCData(1:tH,(ii-1)*(dW+tW),:) = cData(:,1,:);
-                end
-                if ii < d % extend right under transparent uicontrol edge
-                    allCData(1:tH,(ii-1)*(dW+tW)+dW+1,:) = cData(:,end,:);
-                end
-            end
-            dividers.CData = allCData; % paint
-            dividers.BackgroundColor = obj.ParentBackgroundColor;
-            dividers.Visible = 'on'; % show
-
         end % redrawTabs
 
     end % helper methods
@@ -744,59 +687,5 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end
 
     end % event handlers
-
-    methods( Access = private, Static )
-
-        function mask = getDividerMask()
-            %getDividerMask  Get divider image data
-            %
-            %  m = uix.TabPanel.getDividerMask() returns the image masks
-            %  for tab panel dividers.  Mask entries are 0 (shadow), 1
-            %  (background), 2 (tint) and 3 (highlight).
-
-            mask.EF = indexColor( uix.loadIcon( 'tab_NoEdge_NotSelected.png' ) );
-            mask.ET = indexColor( uix.loadIcon( 'tab_NoEdge_Selected.png' ) );
-            mask.FE = indexColor( uix.loadIcon( 'tab_NotSelected_NoEdge.png' ) );
-            mask.FF = indexColor( uix.loadIcon( 'tab_NotSelected_NotSelected.png' ) );
-            mask.FT = indexColor( uix.loadIcon( 'tab_NotSelected_Selected.png' ) );
-            mask.TE = indexColor( uix.loadIcon( 'tab_Selected_NoEdge.png' ) );
-            mask.TF = indexColor( uix.loadIcon( 'tab_Selected_NotSelected.png' ) );
-
-            function mask = indexColor( rgbMap )
-                %indexColor  Returns a map of index given an RGB map
-                %
-                %  mask = indexColor( rgbMap ) returns a mask of color
-                %  index based on the supplied rgbMap.
-                %  black  : 0
-                %  red    : 1
-                %  yellow : 2
-                %  white  : 3
-                %  blue   : 4
-                mask = nan( size( rgbMap, 1 ),size( rgbMap, 2 ) );
-                % Black
-                colorIndex = isColor( rgbMap, [0 0 0] );
-                mask(colorIndex) = 0;
-                % Red
-                colorIndex = isColor( rgbMap, [1 0 0] );
-                mask(colorIndex) = 1;
-                % Yellow
-                colorIndex = isColor( rgbMap, [1 1 0] );
-                mask(colorIndex) = 2;
-                % White
-                colorIndex = isColor( rgbMap, [1 1 1] );
-                mask(colorIndex) = 3;
-                % Blue
-                colorIndex = isColor( rgbMap, [0 0 1] );
-                mask(colorIndex) = 4;
-                % Nested
-                function boolMap = isColor( map, color )
-                    %isColor  Return a map of boolean where map is equal to color
-                    boolMap = all( bsxfun( @eq, map, permute( color, [1 3 2] ) ), 3 );
-                end
-            end
-
-        end % getDividerMask
-
-    end % static helper methods
 
 end % classdef
