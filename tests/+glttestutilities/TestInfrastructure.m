@@ -79,6 +79,22 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % applyParentFixture
 
+        function disableMATLABConnectorWarning( testCase )
+
+            % When running in the new desktop environment (tested from
+            % R2023b onwards), disable a warning related to MATLAB
+            % Connector.
+            if ~verLessThan( 'matlab', '23.2' ) && ...
+                    feature( 'webui' ) %#ok<VERLESSMATLAB>
+                warningID = ...
+                    'MATLAB:connector:connector:ConnectorNotRunning';
+                warningState = warning( 'query', warningID );
+                testCase.addTeardown( @() warning( warningState ) )
+                warning( 'off', warningID )
+            end % if
+
+        end % disableMATLABConnectorWarning
+
     end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )
@@ -210,7 +226,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             testCase.assumeFalse( ismac(), ...
                 'This test is not applicable on the Mac platform.' )
 
-        end % assumeNotMac             
+        end % assumeNotMac
 
         function assumeNotRunningOnGitHubCI( testCase )
 
