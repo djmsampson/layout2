@@ -24,7 +24,7 @@ run-tests:
   tags:
    - long-jobs
   script:
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = [runtests('tBoxPanel'), runtests('tCardPanel')]; assert(~any([results.Failed]))"
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = [runtests('tHBoxFlex'), runtests('tCardPanel')]; assert(~any([results.Failed]))"
   # artifacts:
   #   when: always
   #   paths:
@@ -40,10 +40,10 @@ run-tests-jsd:
   tags:
     - long-jobs
   script:
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runtests('tBoxPanel'));"
-  # artifacts:
-  #   when: always
-  #   paths:
-  #     - TestResults.xml
-  #   reports:
-  #     junit: TestResults.xml
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+  artifacts:
+    when: always
+    paths:
+      - TestResults.xml
+    reports:
+      junit: TestResults.xml
