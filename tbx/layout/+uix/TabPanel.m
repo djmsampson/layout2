@@ -15,6 +15,45 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
+    properties( Access = public, Dependent, AbortSet )
+        TabEnables % tab enable states
+        TabLocation % tab location [top|bottom]
+        TabTitles % tab titles
+        TabContextMenus % tab context menus
+    end
+
+    properties
+        SelectionChangedFcn = '' % selection change callback
+    end
+
+    properties( Access = private )
+        TabGroup % tab group
+        ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
+        Tabs = gobjects( [0 1] ) % tabs
+        TabListeners = event.listener.empty( [0 1] ) % tab listeners
+        TabHeight = 24 % tab height
+        BackgroundColorListener % listener
+        SelectionChangedListener % listener
+        ParentListener % listener
+        ParentBackgroundColorListener % listener
+    end
+
+    properties( Access = private, Constant )
+        FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
+        FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
+        FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
+        FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
+        FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
+        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
+        HighlightColor_ = [1 1 1] % backing for HighlightColor
+        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+
+        TabWidth_ = 50 % tab width
+        DividerWidth = 8 % divider width
+        TabMinimumHeight = 9 % tab minimum height
+        Tint = 0.85 % tint factor for unselected tabs
+    end
+
     properties( Access = public, Dependent, AbortSet, Hidden )
         FontAngle % font angle
         FontName % font name
@@ -25,47 +64,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         TabWidth % tab width
-    end
-
-    properties
-        SelectionChangedFcn = '' % selection change callback
-    end
-
-    properties( Access = public, Dependent, AbortSet )
-        TabEnables % tab enable states
-        TabLocation % tab location [top|bottom]
-        TabTitles % tab titles
-        TabContextMenus % tab context menus
-    end
-
-    properties( Access = private )
-        TabGroup % tab group
-        ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
-        Tabs = gobjects( [0 1] ) % tabs
-        TabListeners = event.listener.empty( [0 1] ) % tab listeners
-        TabHeight = -1 % cache of tab height (-1 denotes stale cache)
-        BackgroundColorListener % listener
-        SelectionChangedListener % listener
-        ParentListener % listener
-        ParentBackgroundColorListener % listener
-    end
-
-    properties( Access = private, Constant )
-        FontNames = listfonts() % all available font names
-        FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
-        FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
-        FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
-        FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
-        FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
-        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
-        HighlightColor_ = [1 1 1] % backing for HighlightColor
-        ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
-        
-        TabWidth_ = 50 % tab width
-        DividerWidth = 8 % divider width
-        TabMinimumHeight = 9 % tab minimum height
-        Tint = 0.85 % tint factor for unselected tabs
-    end
+    end % deprecated
 
     methods
 
@@ -79,7 +78,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Create tab group
             tabGroup = matlab.ui.container.TabGroup( ...
-                'Internal', true, 'Parent', obj );
+                'Internal', true, 'Parent', obj, ...
+                'SelectionChangedFcn', @obj.onTabClicked );
 
             % Store properties
             obj.TabGroup = tabGroup;
@@ -225,6 +225,20 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         end % set.ShadowColor
 
+        function value = get.TabWidth( ~ )
+
+            value = -1;
+
+        end % get.TabWidth
+
+        function set.TabWidth( obj, ~ )
+
+            warning( 'uix:Deprecated', ...
+                'Property ''TabWidth'' of %s is deprecated.', ...
+                class( obj ) )
+
+        end % set.TabWidth
+
         function set.SelectionChangedFcn( obj, value )
 
             % Check
@@ -250,7 +264,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function value = get.TabEnables( obj )
 
-            value = get( obj.Tabs, {'Enable'} );
+            value = get( obj.Children, {'Enable'} );
             value(strcmp( value, 'inactive' )) = {'on'};
 
         end % get.TabEnables
@@ -313,34 +327,15 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function value = get.TabTitles( obj )
 
-            value = get( obj.Tabs, {'String'} );
+            value = get( obj.TabGroup.Children, {'Title'} );
 
         end % get.TabTitles
 
         function set.TabTitles( obj, value )
 
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
-
-            % Retrieve tabs
-            tabs = obj.Tabs;
-
-            % Check
-            assert( iscellstr( value ) && ...
-                isequal( size( value ), size( tabs ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
-
-            % Set
-            n = numel( tabs );
-            for ii = 1:n
-                tabs(ii).String = value{ii};
-            end
+            set( obj.TabGroup.Children, 'Title', value )
 
             % Mark as dirty
-            obj.TabHeight = -1;
             obj.Dirty = true;
 
         end % set.TabTitles
@@ -365,29 +360,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
 
         end % set.TabContextMenus
-
-        function value = get.TabWidth( obj )
-
-            value = obj.TabWidth_;
-
-        end % get.TabWidth
-
-        function set.TabWidth( obj, value )
-
-            % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value ~= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabWidth'' must be a non-zero scalar.' )
-
-            % Set
-            obj.TabWidth_ = value;
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % set.TabWidth
 
     end % accessors
 
@@ -436,9 +408,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
             contentsPosition = [cX cY cW cH];
 
-            % Redraw tabs
-            obj.redrawTabs()
-
             % Redraw contents
             selection = obj.Selection_;
             if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
@@ -453,20 +422,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  c.addChild(d) adds the child d to the container c.
 
             % Create new tab
-            n = numel( obj.Tabs );
-            tab = matlab.ui.control.UIControl( 'Internal', true, ...
-                'Parent', obj, 'Style', 'text', 'Enable', 'inactive', ...
-                'Units', 'pixels', 'FontUnits', obj.FontUnits_, ...
-                'FontSize', obj.FontSize_, 'FontName', obj.FontName_, ...
-                'FontAngle', obj.FontAngle_, 'FontWeight', obj.FontWeight_, ...
-                'ForegroundColor', obj.ForegroundColor_, ...
-                'String', sprintf( 'Page %d', n + 1 ) );
-            tabListener = event.listener( tab, 'ButtonDown', @obj.onTabClicked );
-            obj.Tabs(n+1,:) = tab;
-            obj.TabListeners(n+1,:) = tabListener;
-
-            % Mark as dirty
-            obj.TabHeight = -1;
+            g = obj.TabGroup;
+            n = numel( g.Children );
+            uitab( 'Parent', g, 'Title', sprintf( 'Page %d', n + 1 ) );
 
             % Check for bug
             if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
@@ -506,9 +464,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             index = find( contents == child );
 
             % Remove tab
-            delete( obj.Tabs(index) )
-            obj.Tabs(index,:) = [];
-            obj.TabListeners(index,:) = [];
+            delete( obj.TabGroup.Tabs(index) )
 
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -522,8 +478,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  i, c.Contents = c.Contents(i).
 
             % Reorder
-            obj.Tabs = obj.Tabs(indices,:);
-            obj.TabListeners = obj.TabListeners(indices,:);
+            tabs = obj.TabGroup.Tabs;
+            titles = get( tabs, {'Title'} );
+            set( tabs, 'Title', titles(indices,:) )
 
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
@@ -581,22 +538,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % showSelection
 
     end % template methods
-
-    methods( Access = private )
-
-        function redrawTabs( obj )
-            %redrawTabs  Redraw tabs
-            %
-            %  p.redrawTabs() redraws the tabs.
-
-            % Get relevant properties
-            selection = obj.Selection_;
-            tabs = obj.Tabs;
-            t = numel( tabs );
-
-        end % redrawTabs
-
-    end % helper methods
 
     methods( Access = private )
 
