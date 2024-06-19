@@ -74,10 +74,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Create panels and decorations
             titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', backgroundColor );
-            titleText = uix.Text( 'Parent', titleBox, ...
+            titleText = uicontrol( 'Parent', titleBox, ...
+                'Style', 'text', 'String', obj.BlankTitle, ...
+                'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
-                'BackgroundColor', backgroundColor, ...
-                'String', obj.BlankTitle, 'HorizontalAlignment', 'left' );
+                'BackgroundColor', backgroundColor );
 
             % Create buttons
             minimizeButton = uix.Text( ...
@@ -511,7 +512,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                tH = ceil( obj.TitleText.Extent(4) );
+                tE = extent( obj.TitleText );
+                tH = ceil( tE(4) ) + 2 * obj.TitleBox.Padding;
                 obj.TitleHeight_ = tH; % store
             end
             tY = 1 + bounds(4) - tH;
@@ -646,3 +648,21 @@ for ii = 1:numel( s )
 end
 
 end % isjsdrawing
+
+function e = extent( c )
+%extent  Extent fallback
+
+% Get nominal extent
+e = c.Extent;
+
+% Correct height for web graphics
+f = ancestor( c, 'figure' );
+if ~isempty( f ) && isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I )
+    df = figure( 'Visible', 'off' ); % dummy *Java* figure
+    dc = uicontrol( 'Parent', df, 'Style', 'text', ...
+        'FontSize', c.FontSize, 'String', c.String ); % dummy text
+    e(4) = dc.Extent(4); % use Java height
+    delete( df ) % clean up
+end
+
+end % extent
