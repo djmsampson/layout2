@@ -39,13 +39,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     end
 
     properties( Access = private )
+        TabGroup % tab group
         ParentBackgroundColor = get( 0, 'DefaultUicontrolForegroundColor' ) % default parent background color
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
-        TabLocation_ = 'top' % backing for TabPosition
         TabHeight = -1 % cache of tab height (-1 denotes stale cache)
         TabWidth_ = 50 % backing for TabWidth
-        Dividers % tab dividers
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         ParentListener % listener
@@ -77,6 +76,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
 
+            % Create tab group
+            tabGroup = uitabgroup( 'Internal', true, 'Parent', obj );
+
+            % Store properties
+            obj.TabGroup = tabGroup;
+
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
@@ -87,7 +92,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 findprop( obj, 'Parent' ), 'PostSet', ...
                 @obj.onParentChanged );
 
-            % Store properties
+            % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             obj.ParentListener = parentListener;
@@ -284,7 +289,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function value = get.TabLocation( obj )
 
-            value = obj.TabLocation_;
+            value = obj.TabGroup.TabLocation;
 
         end % get.TabLocation
 
@@ -297,7 +302,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
 
             % Set
-            obj.TabLocation_ = value;
+            obj.TabGroup.TabLocation = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -408,7 +413,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 obj.TabHeight = tH; % store
             end
             cH = max( [h - 2 * p - tH, 1] ); % contents height
-            switch obj.TabLocation_
+            switch obj.TabGroup.TabLocation
                 case 'top'
                     cY = 1 + p; % contents y
                     tY = cY + cH + p; % tab y
@@ -427,7 +432,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             for ii = 1:n
                 tabs(ii).Position = [1 + (ii-1) * tW + ii * dW, tY, tW, tH];
             end
-            obj.Dividers.Position = [0 tY w+1 tH];
             contentsPosition = [cX cY cW cH];
 
             % Redraw tabs
@@ -587,13 +591,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             selection = obj.Selection_;
             tabs = obj.Tabs;
             t = numel( tabs );
-            dividers = obj.Dividers;
-
-            % Handle no tabs as a special case
-            if t == 0
-                dividers.Visible = 'off'; % hide
-                return
-            end
 
         end % redrawTabs
 
