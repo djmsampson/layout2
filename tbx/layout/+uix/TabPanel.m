@@ -24,6 +24,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ForegroundColor % tab text color [RGB]
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
+        TabWidth % tab width
     end
 
     properties
@@ -35,7 +36,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabLocation % tab location [top|bottom]
         TabTitles % tab titles
         TabContextMenus % tab context menus
-        TabWidth % tab width
     end
 
     properties( Access = private )
@@ -44,7 +44,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         Tabs = gobjects( [0 1] ) % tabs
         TabListeners = event.listener.empty( [0 1] ) % tab listeners
         TabHeight = -1 % cache of tab height (-1 denotes stale cache)
-        TabWidth_ = 50 % backing for TabWidth
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         ParentListener % listener
@@ -61,6 +60,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
+        
+        TabWidth_ = 50 % tab width
         DividerWidth = 8 % divider width
         TabMinimumHeight = 9 % tab minimum height
         Tint = 0.85 % tint factor for unselected tabs
@@ -77,7 +78,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  v1, etc.
 
             % Create tab group
-            tabGroup = uitabgroup( 'Internal', true, 'Parent', obj );
+            tabGroup = matlab.ui.container.TabGroup( ...
+                'Internal', true, 'Parent', obj );
 
             % Store properties
             obj.TabGroup = tabGroup;
