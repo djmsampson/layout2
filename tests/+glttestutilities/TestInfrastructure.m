@@ -238,9 +238,17 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeNotMac
 
+        function assumeRunningOnGitHubCI( testCase )
+
+            testCase.assumeTrue( testCase.isCodeRunningOnGitHubCI(), ...
+                ['This test is only applicable to code running ', ...
+                'on GitHub CI.'] )
+
+        end % assumeRunningOnGitHubCI
+
         function assumeNotRunningOnGitHubCI( testCase )
 
-            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI, ...
+            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI(), ...
                 ['This test is not applicable to code running ', ...
                 'on GitHub CI.'] )
 
@@ -248,7 +256,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         function assumeNotRunningOnGitLabCI( testCase )
 
-            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI, ...
+            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI(), ...
                 ['This test is not applicable to code running ', ...
                 'on GitLab CI.'] )
 
