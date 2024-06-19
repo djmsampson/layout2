@@ -24,7 +24,7 @@ run-tests:
   tags:
    - long-jobs
   script:
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "openProject('project.prj'); assertSuccess(runtests('tBoxPanel'));"
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = runtests('tBoxPanel'); assert(~any([results.Failed]))"
   # artifacts:
   #   when: always
   #   paths:
