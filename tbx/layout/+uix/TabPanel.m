@@ -77,11 +77,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
 
-            % Create dividers
-            dividers = matlab.ui.control.UIControl( 'Internal', true, ...
-                'Parent', obj, 'Units', 'pixels', 'Style', 'pushbutton',...
-                'Tag', 'TabPanelDividers' );
-
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
@@ -93,7 +88,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 @obj.onParentChanged );
 
             % Store properties
-            obj.Dividers = dividers;
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
             obj.ParentListener = parentListener;
