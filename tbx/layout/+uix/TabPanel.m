@@ -204,9 +204,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                     'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
             end
 
+            % Reshape
+            value = reshape( value, [], 1 );
+
             % Check
             tabs = obj.TabGroup.Children;
-            assert( numel( value ) == numel( tabs ), ...
+            assert( isequal( size( value ), size( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
 
