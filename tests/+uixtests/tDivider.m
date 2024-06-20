@@ -7,7 +7,7 @@ classdef tDivider < glttestutilities.TestInfrastructure
             'Units', 'pixels', ...
             'Position', [10, 10, 20, 20], ...
             'Visible', 'off', ...
-            'Color', [1, 0, 0]
+            'BackgroundColor', [1, 0, 0]
             }
     end % properties ( Constant )
 
@@ -17,6 +17,7 @@ classdef tDivider < glttestutilities.TestInfrastructure
 
             % Create a divider.
             d = uix.Divider();
+            testCase.addTeardown( @() delete( d ) )
 
             % Verify its data type and size.
             testCase.verifyClass( d, 'uix.Divider', ...
@@ -44,6 +45,7 @@ classdef tDivider < glttestutilities.TestInfrastructure
             % Construct the divider.
             parent = testCase.ParentFixture.Parent;
             d = uix.Divider( 'Parent', parent );
+            testCase.addTeardown( @() delete( d ) )
 
             % Verify that the 'Parent' argument has been assigned.
             diagnostic = ['The uix.Divider constructor did not ', ...
