@@ -418,38 +418,16 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  c.addChild(d) adds the child d to the container c.
 
             % Create new tab
-            g = obj.TabGroup;
-            n = numel( g.Children );
-            uitab( 'Parent', g, 'Title', sprintf( 'Page %d', n + 1 ), ...
+            tabGroup = obj.TabGroup;
+            tabs = tabGroup.Children;
+            n = numel( tabs );
+            uitab( 'Parent', tabGroup, 'Title', sprintf( 'Page %d', n+1 ), ...
                 'ForegroundColor', obj.ForegroundColor, ...
                 'BackgroundColor', obj.BackgroundColor );
-            obj.TabEnables_(end+1,:) = {'on'};
-
-            % Check for bug
-            if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
-                obj.G1218142 = true;
-            end
-
-            % Select new content
-            oldSelection = obj.Selection_;
-            if numel( obj.Contents_ ) == 0
-                newSelection = 1;
-                obj.Selection_ = newSelection;
-            else
-                newSelection = oldSelection;
-            end
+            obj.TabEnables_(n+1,:) = {'on'};
 
             % Call superclass method
-            addChild@uix.mixin.Container( obj, child )
-
-            % Show selected child
-            obj.showSelection()
-
-            % Notify selection change
-            if oldSelection ~= newSelection
-                obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
-            end
+            addChild@uix.mixin.Panel( obj, child )
 
         end % addChild
 
@@ -478,9 +456,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  i, c.Contents = c.Contents(i).
 
             % Reorder
-            tabs = obj.TabGroup.Tabs;
-            titles = get( tabs, {'Title'} );
-            set( tabs, 'Title', titles(indices,:) )
+            obj.TabGroup.Tabs = obj.TabGroup.Tabs(indices,:);
 
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
