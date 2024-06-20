@@ -1343,12 +1343,12 @@ a.ActivePositionProperty = 'position';
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted.</description>
                      </property>
+                     <!--
                      <property>
                          <name>DividerMarkings</name>
                          <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
-                     <!--
                      <property>
                          <name>Enable</name>
                          <value>on | off</value>
@@ -1486,12 +1486,12 @@ a.ActivePositionProperty = 'position';
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted.</description>
                      </property>
+                     <!--
                      <property>
                          <name>DividerMarkings</name>
                          <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
-                     <!--
                      <property>
                          <name>Enable</name>
                          <value>on | off</value>
@@ -2072,12 +2072,12 @@ a.ActivePositionProperty = 'position';
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted.</description>
                      </property>
+                     <!--
                      <property>
                          <name>DividerMarkings</name>
                          <value>on | off</value>
                          <description>Show markings on the draggable dividers (default 'on').</description>
                      </property>
-                     <!--
                      <property>
                          <name>Enable</name>
                          <value>on | off</value>

@@ -9,16 +9,11 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
     %
     %  See also: uix.HBoxFlex, uix.GridFlex, uix.VBox, uix.VButtonBox
     
-    %  Copyright 2009-2020 The MathWorks, Inc.
-    
-    properties( Access = public, Dependent, AbortSet )
-        DividerMarkings % divider markings [on|off]
-    end
+    %  Copyright 2009-2024 The MathWorks, Inc.
     
     properties( Access = private )
         RowDividers = uix.Divider.empty( [0 1] ) % row dividers
         FrontDivider % front divider
-        DividerMarkings_ = 'on' % backing for DividerMarkings
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
@@ -39,18 +34,20 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             %  v1, etc.
             
             % Create front divider
-            frontDivider = uix.Divider( 'Parent', obj, ...
-                'Orientation', 'horizontal', ...
-                'BackgroundColor', obj.BackgroundColor * 0.75, ...
-                'Visible', 'off' );
-            
+            frontDivider = uix.Divider( 'Parent', obj, 'Visible', 'off' );
+
+            % Store divider
+            obj.FrontDivider = frontDivider;
+
+            % Initialize divider
+            obj.updateBackgroundColor()
+
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChanged );
-            
-            % Store properties
-            obj.FrontDivider = frontDivider;
+
+            % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set Spacing property to 5 (may be overwritten by uix.set)
@@ -67,33 +64,6 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
         end % constructor
         
     end % structors
-    
-    methods
-        
-        function value = get.DividerMarkings( obj )
-            
-            value = obj.DividerMarkings_;
-            
-        end % get.DividerMarkings
-        
-        function set.DividerMarkings( obj, value )
-            
-            % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'DividerMarkings' );
-            assert( any( strcmp( value, {'on','off'} ) ), ...
-                'uix:InvalidArgument', ...
-                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
-            
-            % Set
-            obj.DividerMarkings_ = value;
-            
-            % Mark as dirty
-            obj.Dirty = true;
-            
-        end % set.DividerMarkings
-        
-    end % accessors
     
     methods( Access = protected )
         
@@ -210,19 +180,8 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
         
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
-            
-            backgroundColor = obj.BackgroundColor;
-            highlightColor = min( [backgroundColor / 0.75; 1 1 1] );
-            shadowColor = max( [backgroundColor * 0.75; 0 0 0] );
-            rowDividers = obj.RowDividers;
-            for ii = 1:numel( rowDividers )
-                rowDivider = rowDividers(ii);
-                rowDivider.BackgroundColor = backgroundColor;
-                rowDivider.HighlightColor = highlightColor;
-                rowDivider.ShadowColor = shadowColor;
-            end
-            frontDivider = obj.FrontDivider;
-            frontDivider.BackgroundColor = shadowColor;
+
+            obj.updateBackgroundColor()
             
         end % onBackgroundColorChanged
         
@@ -244,8 +203,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             if q < r % create
                 for ii = q+1:r
                     divider = uix.Divider( 'Parent', obj, ...
-                        'Orientation', 'horizontal', ...
-                        'BackgroundColor', obj.BackgroundColor );
+                        'Color', obj.BackgroundColor );
                     obj.RowDividers(ii,:) = divider;
                 end
             elseif q > r % destroy
@@ -280,14 +238,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             
             % Position row dividers
             for ii = 1:r
-                rowDivider = obj.RowDividers(ii);
-                rowDivider.Position = rowPositions(ii,:);
-                switch obj.DividerMarkings_
-                    case 'on'
-                        rowDivider.Markings = rowPositions(ii,3)/2;
-                    case 'off'
-                        rowDivider.Markings = zeros( [0 1] );
-                end
+                obj.RowDividers(ii).Position = rowPositions(ii,:);
             end
             
         end % redraw
@@ -328,8 +279,18 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
     end % template methods
     
     methods( Access = protected )
+
+        function updateBackgroundColor( obj )
+            %updateBackgroundColor  Update background color
+
+            backgroundColor = obj.BackgroundColor;
+            set( obj.RowDividers, 'Color', backgroundColor )
+            obj.FrontDivider.Color = backgroundColor * 0.75;
+
+        end % updateBackgroundColor
         
         function updateMousePointer ( obj, source, eventData  )
+            %updateMousePointer  Update mouse pointer
             
             oldPointer = obj.Pointer;
             if any( obj.RowDividers.isMouseOver( eventData ) )

@@ -74,30 +74,39 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             % Create panels and decorations
             titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', backgroundColor );
-            titleText = uix.Text( 'Parent', titleBox, ...
+            titleText = uicontrol( 'Parent', titleBox, ...
+                'Style', 'text', 'String', obj.BlankTitle, ...
+                'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
-                'BackgroundColor', backgroundColor, ...
-                'String', obj.BlankTitle, 'HorizontalAlignment', 'left' );
+                'BackgroundColor', backgroundColor );
 
             % Create buttons
-            minimizeButton = uix.Text( ...
+            minimizeButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
-                'FontWeight', 'bold', 'Enable', 'on' );
-            dockButton = uix.Text( ...
+                'Enable', 'inactive', ...
+                'FontWeight', 'bold' );
+            dockButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
-                'FontWeight', 'bold', 'Enable', 'on' );
-            helpButton = uix.Text( ...
+                'Enable', 'inactive', ...
+                'FontWeight', 'bold' );
+            helpButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
+                'Enable', 'inactive', ...
                 'FontWeight', 'bold', 'String', '?', ...
-                'TooltipString', obj.HelpTooltipString, 'Enable', 'on' );
-            closeButton = uix.Text( ...
+                'TooltipString', obj.HelpTooltipString );
+            closeButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
+                'Enable', 'inactive', ...
                 'FontWeight', 'bold', 'String', char( 215 ), ...
-                'TooltipString', obj.CloseTooltipString, 'Enable', 'on' );
+                'TooltipString', obj.CloseTooltipString );
 
             % Store properties
             obj.Title = obj.NullTitle;
@@ -169,14 +178,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
         function value = get.CloseRequestFcn( obj )
 
-            value = obj.CloseButton.Callback;
+            value = obj.CloseButton.ButtonDownFcn;
 
         end % get.CloseRequestFcn
 
         function set.CloseRequestFcn( obj, value )
 
             % Set
-            obj.CloseButton.Callback = value;
+            obj.CloseButton.ButtonDownFcn = value;
 
             % Mark as dirty
             obj.redrawButtons()
@@ -185,14 +194,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
         function value = get.DockFcn( obj )
 
-            value = obj.DockButton.Callback;
+            value = obj.DockButton.ButtonDownFcn;
 
         end % get.DockFcn
 
         function set.DockFcn( obj, value )
 
             % Set
-            obj.DockButton.Callback = value;
+            obj.DockButton.ButtonDownFcn = value;
 
             % Mark as dirty
             obj.redrawButtons()
@@ -201,14 +210,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
         function value = get.HelpFcn( obj )
 
-            value = obj.HelpButton.Callback;
+            value = obj.HelpButton.ButtonDownFcn;
 
         end % get.HelpFcn
 
         function set.HelpFcn( obj, value )
 
             % Set
-            obj.HelpButton.Callback = value;
+            obj.HelpButton.ButtonDownFcn = value;
 
             % Mark as dirty
             obj.redrawButtons()
@@ -217,20 +226,14 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
         function value = get.MinimizeFcn( obj )
 
-            value = obj.MinimizeButton.Callback;
+            value = obj.MinimizeButton.ButtonDownFcn;
 
         end % get.MinimizeFcn
 
         function set.MinimizeFcn( obj, value )
 
             % Set
-            obj.MinimizeButton.Callback = value;
-            obj.TitleText.Callback = value;
-            if isempty( value )
-                obj.TitleText.Enable = 'inactive';
-            else
-                obj.TitleText.Enable = 'on';
-            end
+            obj.MinimizeButton.ButtonDownFcn = value;
 
             % Mark as dirty
             obj.redrawButtons()
@@ -278,7 +281,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             obj.showSelection()
 
             % Mark as dirty
-            obj.Dirty = true;
+            obj.redrawButtons()
 
         end % set.Minimized
 
@@ -480,7 +483,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 if isempty( title )
                     obj.TitleText.String = obj.BlankTitle;
                 else
-                    obj.TitleText.String = title; % set String to title
+                    obj.TitleText.String = [' ' title]; % set String to title
                 end
                 obj.Title = obj.NullTitle; % unset Title
                 obj.TitleAccess = 'public'; % finish
@@ -511,7 +514,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                tH = ceil( obj.TitleText.Extent(4) );
+                tH = extent( obj.TitleText, 4 ) + 2 * obj.TitleBox.Padding;
                 obj.TitleHeight_ = tH; % store
             end
             tY = 1 + bounds(4) - tH;
@@ -528,7 +531,6 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
             end
             obj.TitleBox.Position = [tX tY tW tH];
-            obj.redrawButtons()
 
         end % redraw
 
@@ -590,27 +592,28 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
 
             % Attach active buttons
             titleText.Parent = box;
+            bW = obj.TitleHeight_ * 2/3; % button width
             minimize = ~isempty( obj.MinimizeFcn );
             if minimize
                 minimizeButton.Parent = box;
-                box.Widths(end) = minimizeButton.Extent(3);
+                box.Widths(end) = bW;
             end
             dock = ~isempty( obj.DockFcn );
             if dock
                 dockButton.Parent = box;
-                box.Widths(end) = dockButton.Extent(3);
+                box.Widths(end) = bW;
             end
             help = ~isempty( obj.HelpFcn );
             if help
                 helpButton.Parent = box;
                 helpButton.TooltipString = obj.HelpTooltipString;
-                box.Widths(end) = helpButton.Extent(3);
+                box.Widths(end) = bW;
             end
             close = ~isempty( obj.CloseRequestFcn );
             if close
                 closeButton.Parent = box;
                 closeButton.TooltipString = obj.CloseTooltipString;
-                box.Widths(end) = closeButton.Extent(3);
+                box.Widths(end) = bW;
             end
 
             % Update icons
@@ -646,3 +649,34 @@ for ii = 1:numel( s )
 end
 
 end % isjsdrawing
+
+function e = extent( c, i )
+%extent  Extent of uicontrol
+%
+%   e = extent(c) returns the extent of the uicontrol c.
+%
+%   e = extent(c,i) returns the ith element(s) of the extent.
+%
+%   For Java graphics, this function simply returns the Extent property.
+%   For JavaScript graphics, the Extent property is unreliable for large
+%   font sizes, and this function is more accurate.
+
+% Get nominal extent
+e = c.Extent;
+
+% Correct height for web graphics
+f = ancestor( c, 'figure' );
+if ~isempty( f ) && isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I )
+    df = figure( 'Visible', 'off' ); % dummy *Java* figure
+    dc = uicontrol( 'Parent', df, 'Style', 'text', ...
+        'FontSize', c.FontSize, 'String', c.String ); % dummy text
+    e(4) = dc.Extent(4); % use Java height
+    delete( df ) % clean up
+end
+
+% Return
+if nargin > 1
+    e = e(i);
+end
+
+end % extent
