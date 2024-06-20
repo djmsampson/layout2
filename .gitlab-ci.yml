@@ -24,13 +24,13 @@ run-tests:
   tags:
    - long-jobs
   script:    
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = [runtests('tHBoxFlex'), runtests('tCardPanel')]; assert(~any([results.Failed]))"
-  # artifacts:
-  #   when: always
-  #   paths:
-  #     - TestResults.xml
-  #   reports:
-  #     junit: TestResults.xml
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
+  artifacts:
+    when: always
+    paths:
+      - TestResults.xml
+    reports:
+      junit: TestResults.xml
 
 run-tests-jsd: 
   stage: run-tests
