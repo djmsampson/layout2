@@ -538,18 +538,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Update selection
             oldSelection = obj.Selection_;
             newSelection = find( source == obj.TabGroup.Children );
-            if oldSelection == newSelection, return, end % abort set
-            obj.Selection_ = newSelection;
-
-            % Show selected child
-            obj.showSelection()
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-            % Notify selection change
-            obj.notify( 'SelectionChanged', ...
-                uix.SelectionData( oldSelection, newSelection ) )
+            tabGroup = obj.TabGroup;
+            if oldSelection == newSelection
+                % no op
+            elseif strcmp( obj.TabEnables_{newSelection}, 'off' )
+                tabGroup.SelectedTab = tabGroup.Children(oldSelection); % revert
+            else
+                obj.Selection = newSelection; % update selection
+            end
 
         end % onTabSelected
 
@@ -561,6 +557,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % onBackgroundColorChanged
 
         function onSelectionChanged( obj, source, eventData )
+
+            % Select tab
+            obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.Selection_);
 
             % Call callback
             callback = obj.SelectionChangedFcn;
