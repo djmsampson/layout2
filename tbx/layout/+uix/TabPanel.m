@@ -555,6 +555,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function onBackgroundColorChanged( obj, ~, ~ )
 
+            % Set all tab background colors
             set( obj.TabGroup.Children, 'BackgroundColor', obj.BackgroundColor )
 
         end % onBackgroundColorChanged
@@ -581,7 +582,16 @@ end % classdef
 
 function tf = iscontextmenu( o )
 %iscontextmenu  Test for context menu
+%
+%  tf = iscontextmenu(o) returns true if o is a valid UIContextMenu value,
+%  that is, a scalar context menu or an empty graphics placeholder
 
-tf = isa( o, 'matlab.ui.container.ContextMenu' ) || isequal( o, gobjects( 0 ) );
+if isa( o, 'matlab.ui.container.ContextMenu' ) && isscalar( o ) % context menu
+    tf = true;
+elseif isequal( o, gobjects( 0 ) ) % graphics placeholder
+    tf = true;
+else % something else
+    tf = false;
+end
 
 end % iscontextmenu
