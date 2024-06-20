@@ -19,7 +19,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom]
         TabTitles % tab titles
-        TabContextMenus % tab context menus
+        TabContextMenus % tab context menus TODO deprecate
     end
 
     properties
@@ -28,11 +28,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     properties( Access = private )
         TabGroup % tab group
-        Tabs = gobjects( [0 1] ) % tabs
-        TabListeners = event.listener.empty( [0 1] ) % tab listeners
-        TabHeight = 24 % tab height
         BackgroundColorListener % listener
         SelectionChangedListener % listener
+        TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
 
     properties( Access = private, Constant )
@@ -41,7 +39,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
         FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
         FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
-        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
+        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor % TODO restore to instance property
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
     end
@@ -52,10 +50,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         FontSize % font size
         FontWeight % font weight
         FontUnits % font weight
-        ForegroundColor % tab text color [RGB]
+        ForegroundColor % tab text color [RGB] % TODO restore to public property
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
-        TabWidth % tab width
+        TabWidth % tab width % TODO remove
     end % deprecated
 
     methods
@@ -126,42 +124,38 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function value = get.TabEnables( obj )
 
-            value = get( obj.Children, {'Enable'} );
-            value(strcmp( value, 'inactive' )) = {'on'};
+            value = obj.TabEnables_;
 
         end % get.TabEnables
 
         function set.TabEnables( obj, value )
 
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
+            % Convert
+            try
+                value = cellstr( value );
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
             end
 
-            % Retrieve tabs
-            tabs = obj.Tabs;
-            tabListeners = obj.TabListeners;
+            % Reshape
+            value = reshape( value, [], 1 );
 
             % Check
-            assert( iscellstr( value ) && ...
-                isequal( size( value ), size( tabs ) ) && ...
-                all( strcmp( value, 'on' ) | strcmp( value, 'off' ) ), ...
+            tabs = obj.TabGroup.Children;
+            assert( isequal( size( value ), size( tabs ) ) && ...
+                all( ismember( value, {'on','off'} ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
 
             % Set
-            tf = strcmp( value, 'on' );
-            value(tf) = {'inactive'};
-            for ii = 1:numel( tabs )
-                tabs(ii).Enable = value{ii};
-                tabListeners(ii).Enabled = tf(ii);
-            end
+            obj.TabEnables_ = value;
+
+            % Redraw tabs
+            obj.redrawTabs() % TODO are there other calls to redrawTabs?
 
             % Show selected child
             obj.showSelection()
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % set.TabEnables
 
@@ -173,9 +167,16 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function set.TabLocation( obj, value )
 
+            % Convert
+            try
+                value = char( value );
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
+            end
+
             % Check
-            assert( ischar( value ) && ...
-                any( strcmp( value, {'top','bottom'} ) ), ...
+            assert( ismember( value, {'top','bottom'} ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
 
@@ -195,29 +196,48 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function set.TabTitles( obj, value )
 
-            set( obj.TabGroup.Children, 'Title', value )
+            % Convert
+            try
+                value = cellstr( value );
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
+            end
 
-            % Mark as dirty
-            obj.Dirty = true;
+            % Check
+            tabs = obj.TabGroup.Children;
+            assert( numel( value ) == numel( tabs ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
+
+            % Set
+            for ii = 1:numel( tabs )
+                tabs(ii).Title = value{ii};
+            end
 
         end % set.TabTitles
 
         function value = get.TabContextMenus( obj )
 
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            value = cell( [n 1] );
-            for ii = 1:n
-                value{ii} = tabs(ii).UIContextMenu;
-            end
+            value = get( obj.TabGroup.Children, {'UIContextMenu'} );
 
         end % get.TabContextMenus
 
         function set.TabContextMenus( obj, value )
 
-            tabs = obj.Tabs;
-            n = numel( tabs );
-            for ii = 1:n
+            % Reshape
+            value = reshape( value, [], 1 );
+
+            % Check
+            tabs = obj.TabGroup.Children;
+            assert( iscell( value ) && ...
+                isequal( size( value ), size( tabs ) ) && ...
+                all( cellfun( @iscontextmenu, value(:) ) ), ...
+                'uix:InvalidPropertyValue', ...
+                'Property ''TabContextMenus'' should be a cell array of context menus, one per tab.' )
+
+            % Set
+            for ii = 1:numel( tabs )
                 tabs(ii).UIContextMenu = value{ii};
             end
 
@@ -355,7 +375,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     end % deprecated accessors
 
-
     methods( Access = protected )
 
         function redraw( obj )
@@ -366,9 +385,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
             h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
             p = obj.Padding_; % padding
-            tabs = obj.Tabs;
+            tabs = obj.TabGroup.Children;
             n = numel( tabs ); % number of tabs
-            tH = obj.TabHeight; % tab height
+            tH = 24; % tab height
             cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabGroup.TabLocation
                 case 'top'
@@ -398,7 +417,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Create new tab
             g = obj.TabGroup;
             n = numel( g.Children );
-            uitab( 'Parent', g, 'Title', sprintf( 'Page %d', n + 1 ) );
+            uitab( 'Parent', g, 'Title', sprintf( 'Page %d', n + 1 ), ...
+                'ForegroundColor', obj.ForegroundColor, ...
+                'BackgroundColor', obj.BackgroundColor );
+            obj.TabEnables_(end+1,:) = {'on'};
 
             % Check for bug
             if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
@@ -439,6 +461,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Remove tab
             delete( obj.TabGroup.Tabs(index) )
+            obj.TabEnables_(index,:) = [];
 
             % Call superclass method
             removeChild@uix.mixin.Panel( obj, child )
@@ -515,11 +538,27 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     methods( Access = private )
 
+        function redrawTabs( obj )
+            %redrawTabs  Redraw tabs
+
+            enableColor = obj.ForegroundColor_;
+            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
+            tf = strcmp( obj.TabEnables_, 'on' );
+            tabs = obj.TabGroup.Children;
+            set( tabs(tf), 'ForegroundColor', enableColor )
+            set( tabs(~tf), 'ForegroundColor', disableColor )
+
+        end % redrawTabs
+
+    end % helper methods
+
+    methods( Access = private )
+
         function onTabSelected( obj, source, ~ )
 
             % Update selection
             oldSelection = obj.Selection_;
-            newSelection = find( source == obj.Tabs );
+            newSelection = find( source == obj.TabGroup.Children );
             if oldSelection == newSelection, return, end % abort set
             obj.Selection_ = newSelection;
 
@@ -537,8 +576,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function onBackgroundColorChanged( obj, ~, ~ )
 
-            % Mark as dirty
-            obj.Dirty = true;
+            set( obj.TabGroup.Children, 'BackgroundColor', obj.BackgroundColor )
 
         end % onBackgroundColorChanged
 
@@ -561,3 +599,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     end % event handlers
 
 end % classdef
+
+function tf = iscontextmenu( o )
+%iscontextmenu  Test for context menu
+
+tf = isa( o, 'matlab.ui.container.ContextMenu' ) || isequal( o, gobjects( 0 ) );
+
+end % iscontextmenu
