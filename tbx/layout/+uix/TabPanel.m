@@ -30,17 +30,18 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabGroup % tab group
         BackgroundColorListener % listener
         SelectionChangedListener % listener
+        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
         TabSize = -1 % tab height or width, -1 for unknown
     end
 
     properties( Access = private, Constant )
+        DummyControl = matlab.ui.control.UIControl() % dummy uicontrol
         FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
         FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
         FontSize_ = get( 0, 'DefaultUicontrolFontSize' ) % backing for FontSize
         FontWeight_ = get( 0, 'DefaultUicontrolFontWeight' ) % backing for FontWeight
         FontUnits_ = get( 0, 'DefaultUicontrolFontUnits' ) % backing for FontUnits
-        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor % TODO restore to instance property
         HighlightColor_ = [1 1 1] % backing for HighlightColor
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
     end
@@ -106,11 +107,22 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         end % get.ForegroundColor
 
-        function set.ForegroundColor( obj, ~ )
+        function set.ForegroundColor( obj, value )
 
-            warning( 'uix:Deprecated', ...
-                'Property ''ForegroundColor'' of %s is deprecated.', ...
-                class( obj ) )
+            % Check
+            try
+                obj.DummyControl.ForegroundColor = value; % RGB or special
+                value = obj.DummyControl.ForegroundColor; % RGB
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''ForegroundColor'' should be a colorspec.' )
+            end
+            
+            % Set
+            obj.ForegroundColor_ = value;
+
+            % Redraw tabs
+            obj.redrawTabs()
 
         end % set.ForegroundColor
 
@@ -144,12 +156,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.TabEnables_ = value;
 
             % Redraw tabs
-            enableColor = obj.ForegroundColor_;
-            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
-            tf = strcmp( value, 'on' );
-            tabs = obj.TabGroup.Children;
-            set( tabs(tf), 'ForegroundColor', enableColor )
-            set( tabs(~tf), 'ForegroundColor', disableColor )
+            obj.redrawTabs()
 
             % Show selected child
             obj.showSelection()
@@ -566,6 +573,22 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % showSelection
 
     end % template methods
+
+    methods( Access = private )
+
+        function redrawTabs( obj )
+            %redrawTabs  Redraw tabs
+
+            enableColor = obj.ForegroundColor_;
+            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
+            tf = strcmp( obj.TabEnables_, 'on' );
+            tabs = obj.TabGroup.Children;
+            set( tabs(tf), 'ForegroundColor', enableColor )
+            set( tabs(~tf), 'ForegroundColor', disableColor )
+
+        end % redrawTabs
+
+    end % helper methods
 
     methods( Access = private )
 
