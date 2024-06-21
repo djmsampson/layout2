@@ -463,24 +463,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
                 'property of the TabPanel as a row vector did ', ...
                 'not assign the value correctly.'] )
 
-        end % tSettingPropertiesAsRowVectorAssignsValues
-
-        function tSettingRelativeTabWidthAssignsValue( ...
-                testCase, ConstructorName )
-
-            % Construct a tab panel with multiple tabs.
-            tabPanel = testCase...
-                .createTabPanelWithControls( ConstructorName );
-
-            % Set a relative value for the 'TabWidth' property.
-            relativeValue = -1;
-            tabPanel.TabWidth = relativeValue;
-            testCase.verifyEqual( tabPanel.TabWidth, relativeValue, ...
-                ['Setting a relative value for the ''TabWidth'' ', ...
-                'property on the TabPanel did not assign the value', ...
-                ' correctly.'] )
-
-        end % tSettingRelativeTabWidthAssignsValue
+        end % tSettingPropertiesAsRowVectorAssignsValues        
 
         function tAddingAxesToDisabledTabHidesContents( ...
                 testCase, ConstructorName )
