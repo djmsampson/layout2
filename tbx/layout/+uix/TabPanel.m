@@ -88,6 +88,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
 
+            % Force tab group to be maximized
+            addlistener( tabGroup, 'SizeChanged', @obj.onTabGroupSizeChanged );
+
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -118,7 +121,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''ForegroundColor'' should be a colorspec.' )
             end
-            
+
             % Set
             obj.ForegroundColor_ = value;
 
@@ -646,6 +649,17 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             end
 
         end % onSelectionChanged
+
+        function onTabGroupSizeChanged( ~, tabGroup, ~ )
+            %onTabGroupSizeChanged  Remedial event handler
+            %
+            %  onTabGroupSizeChanged keeps the uitabgroup maximized within
+            %  its container, despite the best efforts of
+            %  matlab.ui.internal.WebTabGroupController et al.
+
+            tabGroup.Position = [0 0 1 1]; % maximized
+
+        end % onTabGroupSizeChanged
 
     end % event handlers
 
