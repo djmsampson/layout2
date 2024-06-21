@@ -501,7 +501,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             index = find( contents == child );
 
             % Remove tab
-            delete( obj.TabGroup.Tabs(index) )
+            delete( obj.TabGroup.Children(index) )
             obj.TabEnables_(index,:) = [];
 
             % Call superclass method
@@ -516,7 +516,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  i, c.Contents = c.Contents(i).
 
             % Reorder
-            obj.TabGroup.Tabs = obj.TabGroup.Tabs(indices,:);
+            obj.TabGroup.Children = obj.TabGroup.Children(indices,:);
 
             % Call superclass method
             reorder@uix.mixin.Panel( obj, indices )
