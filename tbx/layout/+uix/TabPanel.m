@@ -31,7 +31,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
-        TabSize = 0
+        TabSize = -1 % tab height or width, -1 for unknown
     end
 
     properties( Access = private, Constant )
@@ -184,6 +184,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Set
             obj.TabGroup.TabLocation = value;
 
+            % Unset tab size
+            obj.TabSize = -1;
+
             % Mark as dirty
             obj.Dirty = true;
 
@@ -218,6 +221,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             for ii = 1:numel( tabs )
                 tabs(ii).Title = value{ii};
             end
+
+            % Unset tab size
+            obj.TabSize = -1;
+
+            % Mark as dirty
+            obj.Dirty = true;
 
         end % set.TabTitles
 
@@ -387,10 +396,31 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             selection = obj.Selection_;
             if selection == 0, return, end
 
+            % Update tab size
+            s = obj.TabSize;
+            if s == -1
+                fprintf( 1, 'Updating tab size...' );
+                g = obj.TabGroup;
+                t = g.SelectedTab;
+                f = ancestor( g, 'figure' );
+                drawnow() % force redraw
+                gb = hgconvertunits( f, [0 0 1 1], ...
+                    'normalized', 'pixels', g ); % tab group bounds
+                tb = hgconvertunits( f, [0 0 1 1], ...
+                    'normalized', 'pixels', t ); % tab bounds
+                switch g.TabLocation
+                    case {'top','bottom'}
+                        s = gb(4) - tb(4) - 2;
+                    case {'left','right'}
+                        s = gb(3) - tb(3) - 2;
+                end
+                fprintf( 1, '%d\n', s );
+                obj.TabSize = s; % store
+            end
+
             % Compute positions
             b = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj ); % tab
-            s = 30;
             p = obj.Padding_; % padding
             switch obj.TabGroup.TabLocation
                 case 'top'
