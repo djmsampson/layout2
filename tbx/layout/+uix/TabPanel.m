@@ -47,7 +47,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
     end
 
-    properties( Access = public, Dependent, AbortSet, Hidden )
+    properties( Access = public, Dependent, Hidden )
         FontAngle % font angle
         FontName % font name
         FontSize % font size
@@ -151,7 +151,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Check
             tabs = obj.TabGroup.Children;
-            assert( isequal( size( value ), size( tabs ) ) && ...
+            assert( isequal( numel( value ), numel( tabs ) ) && ...
                 all( ismember( value, {'on','off'} ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
@@ -220,7 +220,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Check
             tabs = obj.TabGroup.Children;
-            assert( isequal( size( value ), size( tabs ) ), ...
+            assert( isequal( numel( value ), numel( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
 
@@ -266,7 +266,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         function set.SelectionChangedFcn( obj, value )
 
             % Check
-            if ischar( value ) % string
+            if ischar( value ) || isa( value, 'string' ) % string
                 % OK
             elseif isa( value, 'function_handle' ) && ...
                     isequal( size( value ), [1 1] ) % function handle

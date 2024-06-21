@@ -12,19 +12,13 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             'Padding', 5, ...
             'Tag', 'Test', ...
             'Visible', 'on', ...
-            'FontAngle', 'italic', ...
-            'FontName', 'Helvetica', ...
-            'FontUnits', 'centimeters', ...
-            'FontSize', 0.5, ...
-            'FontWeight', 'bold', ...
             'BackgroundColor', [1, 1, 0], ...
-            'TabNames', cell.empty( 1, 0 ), ...
-            'TabEnable', cell.empty( 1, 0 ), ...
-            'TabPosition', 'top', ...
-            'TabSize', 50, ...
+            'TabTitles', cell.empty( 0, 1 ), ...
+            'TabEnables', cell.empty( 0, 1 ), ...
+            'TabLocation', 'top', ...
             'ForegroundColor', [1, 1, 1], ...
-            'HighlightColor', [1, 0, 1], ...
-            'ShadowColor', [0, 0, 0], ...
+            'HandleVisibility', 'on', ...
+            'UserData', 'test', ...
             }, ...
             {
             'Units', 'pixels', ...
@@ -32,19 +26,13 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             'Padding', 5, ...
             'Tag', 'Test', ...
             'Visible', 'on', ...
-            'FontAngle', 'italic', ...
-            'FontName', 'Helvetica', ...
-            'FontUnits', 'centimeters', ...
-            'FontSize', 0.5, ...
-            'FontWeight', 'bold', ...
             'BackgroundColor', [1, 1, 0], ...
             'TabTitles', cell.empty( 0, 1 ), ...
             'TabEnables', cell.empty( 0, 1 ), ...
             'TabLocation', 'bottom', ...
-            'TabWidth', 100, ...
             'ForegroundColor', [1, 1, 1], ...
-            'HighlightColor', [1, 0, 1], ...
-            'ShadowColor', [0, 0, 0], ...
+            'HandleVisibility', 'on', ...
+            'UserData', 'test', ...
             }}
         % Possible ways in which to specify a callback.
         Callback = struct( ...
@@ -53,8 +41,22 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             'FunctionHandleCallback', ...
             @() disp( 'Function handle callback' ), ...
             'CellArrayCallback', ...
-            {{@disp, 'Cell array callback'}} )
+            {{@disp, 'Cell array callback'}} )        
     end % properties ( TestParameter )
+
+    properties ( Constant, GetAccess = private )
+        % Deprecated properties.
+        DeprecatedProperties = { ...
+            'FontAngle', get( 0, 'defaultUicontrolFontAngle' ), ...
+            'FontName', get( 0, 'defaultUicontrolFontName' ), ...
+            'FontSize', get( 0, 'defaultUicontrolFontSize' ), ...
+            'FontWeight', get( 0, 'defaultUicontrolFontWeight' ), ...
+            'FontUnits', get( 0, 'defaultUicontrolFontUnits' ), ...
+            'HighlightColor', [1, 1, 1], ...
+            'ShadowColor', [0.7, 0.7, 0.7], ...
+            'TabWidth', -1, ...
+            }
+    end % properties ( Constant, GetAccess = private )
 
     methods ( Test, Sealed )
 
@@ -238,7 +240,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
         function tRotate3dDoesNotAddMoreTabs( testCase, ConstructorName )
 
             % This test applies from R2015b onwards.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )           
+            testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
 
             % Filter the unrooted case.
             testCase.assumeGraphicsAreRooted()
@@ -411,59 +413,6 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tDisablingNonSelectedChildPreservesSelection
 
-        function tTabPanelRespectsParentColor( testCase, ConstructorName )
-
-            % Assume that the component is rooted.
-            testCase.assumeGraphicsAreRooted()
-
-            % Create a tab panel with controls.
-            tabPanel = testCase...
-                .createTabPanelWithControls( ConstructorName );
-            testFig = tabPanel.Parent;
-
-            % Identify the tab panel dividers.
-            allChildren = hgGetTrueChildren( tabPanel );
-            dividers = findobj( allChildren, 'Tag', 'TabPanelDividers' );
-
-            % Verify their 'CData' and 'BackgroundColor' properties.
-            verifyDividersCDataAndBackgroundColor( testFig.Color )
-
-            % Next, change the figure's color, and re-check the dividers'
-            % 'CData' and 'BackgroundColor' properties.
-            testFig.Color = [1, 0, 0];
-            verifyDividersCDataAndBackgroundColor( testFig.Color )
-
-            % Next, reparent the tab panel, and re-check the color-related
-            % properties.
-            newColor = [0, 1, 0];
-            newContainer = uix.VBox( 'Parent', testFig, ...
-                'BackgroundColor', newColor );
-            tabPanel.Parent = newContainer;
-            verifyDividersCDataAndBackgroundColor( newColor )
-
-            % Change the new container's 'BackgroundColor' property.
-            newColor = [0, 0, 1];
-            newContainer.BackgroundColor = newColor;
-            verifyDividersCDataAndBackgroundColor( newColor )
-
-            function verifyDividersCDataAndBackgroundColor( targetColor )
-
-                % Check the 'BackgroundColor' property.
-                testCase.verifyEqual( dividers.BackgroundColor, ...
-                    targetColor, ...
-                    ['The TabPanel''s divider''s ''BackgroundColor'' ', ...
-                    'does not match its Parent''s ''BackgroundColor''.'] )
-                % Check the 'CData' property.
-                dividersCData = permute( ...
-                    dividers.CData(1, 1, :), [1, 3, 2] );
-                testCase.verifyEqual( dividersCData, targetColor, ...
-                    ['The TabPanel''s divider''s ''CData'' ', ...
-                    'does not match its Parent''s ''CData''.'] )
-
-            end % verifyDividersCDataAndBackgroundColor
-
-        end % tTabPanelRespectsParentColor
-
         function tPropertiesAreAssignedWhenMultipleTabsArePresent( ...
                 testCase, ConstructorName )
 
@@ -472,12 +421,8 @@ classdef tTabPanel < sharedtests.SharedPanelTests
                 .createTabPanelWithControls( ConstructorName );
 
             % Assign several properties.
-            pairs = {'FontAngle', 'italic', ...
-                'FontName', 'Courier', ...
-                'FontUnits', 'inches', ...
-                'FontSize', 0.25, ...
-                'FontWeight', 'bold', ...
-                'ForegroundColor', [1, 1, 0], ...
+            pairs = {'ForegroundColor', [1, 1, 0], ...
+                'BackgroundColor', [0, 0, 0], ...
                 'TabTitles', {'A'; 'B'; 'C'}, ...
                 'TabLocation', 'bottom'};
             for k = 1 : 2 : numel( pairs )-1
@@ -492,24 +437,6 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             end % for
 
         end % tPropertiesAreAssignedWhenMultipleTabsArePresent
-
-        function tPixelFontUnitsAreAssignedWhenMultipleTabsArePresent( ...
-                testCase, ConstructorName )
-
-            % Construct a tab panel with multiple tabs.
-            tabPanel = testCase...
-                .createTabPanelWithControls( ConstructorName );
-
-            % Set 'FontUnits' to 'pixels', ensuring that it is not already
-            % set to 'pixels.
-            tabPanel.FontUnits = 'points';
-            tabPanel.FontUnits = 'pixels';
-            testCase.verifyEqual( tabPanel.FontUnits, 'pixels', ...
-                ['Setting the ''FontUnits'' property of the TabPanel', ...
-                ' to ''pixels'' in the presence of multiple tabs ', ...
-                'did not assign the value correctly.'] )
-
-        end % tPixelFontUnitsAreAssignedWhenMultipleTabsArePresent
 
         function tSettingPropertiesAsRowVectorAssignsValues( ...
                 testCase, ConstructorName )
@@ -582,111 +509,159 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tAddingAxesToDisabledTabHidesContents
 
-        % function tStringSupportForTabPanelScalarStringProperties( ...
-        %         testCase, ConstructorName )
-        % 
-        %     % Assume that we are in R2017b or later.
-        %     testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
-        % 
-        %     % Construct a tab panel.
-        %     tabPanel = testCase.constructComponent( ConstructorName );
-        % 
-        %     % Define a list of property names and values to set.
-        %     propertyNames = {'FontAngle', 'FontName', 'FontWeight', ...
-        %         'FontUnits', 'TabLocation'};
-        %     propertyValues = string( {'italic', 'Helvetica', 'bold', ...
-        %         'pixels', 'bottom'} ); %#ok<STRCLQT>
-        % 
-        %     for k = 1 : numel( propertyNames )
-        %         currentProperty = propertyNames{k};
-        %         currentValue = propertyValues(k);
-        %         % Set the property, using a string value.
-        %         tabPanel.(currentProperty) = currentValue;
-        %         % Verify that the correct value has been stored.
-        %         testCase.verifyEqual( tabPanel.(currentProperty), ...
-        %         char( currentValue ), ...
-        %         ['The ''', currentProperty, ''' property of the ', ...
-        %         ConstructorName, ...
-        %         ' component did not accept a string value.'] )
-        %     end % for
-        % 
-        % end % tStringSupportForTabPanelScalarStringProperties
-        % 
-        % function tStringSupportForTabEnablesProperty( ...
-        %         testCase, ConstructorName )
-        % 
-        %     % Assume that we are in R2017b or later.
-        %     testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
-        % 
-        %     % Construct a tab panel.
-        %     tabPanel = testCase.constructComponent( ConstructorName );
-        % 
-        %     % Add one child.
-        %     uicontrol( tabPanel )
-        % 
-        %     % Set the TabEnables property.
-        %     tabEnables = string( 'off' ); %#ok<STRQUOT>
-        %     tabPanel.TabEnables = tabEnables;
-        %     testCase.verifyEqual( tabPanel.TabEnables, ...
-        %         cellstr( tabEnables ), ...
-        %         ['The ''TabEnables'' property on the ', ...
-        %         ConstructorName, ' component (when it has one child) ', ...
-        %         'did not accept a string value.'] )
-        % 
-        %     % Add further children.
-        %     for k = 1 : 3
-        %         uicontrol( tabPanel )
-        %     end % for
-        % 
-        %     % Set the TabEnables property.
-        %     tabEnables = string( {'on'; 'off'; 'on'; 'off'} ); %#ok<STRCLQT>
-        %     tabPanel.TabEnables = tabEnables;
-        % 
-        %     % Verify that the stored value is correct.
-        %     testCase.verifyEqual( tabPanel.TabEnables, ...
-        %         cellstr( tabEnables ), ['The ''TabEnables'' property ', ...
-        %         ' of the ', ConstructorName, ' component (when it has', ...
-        %         ' multiple children) did not accept a string value.'] )
-        % 
-        % end % tStringSupportForTabEnablesProperty
-        % 
-        % function tStringSupportForTabTitlesProperty( ...
-        %         testCase, ConstructorName )
-        % 
-        %     % Assume that we are in R2017b or later.
-        %     testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
-        % 
-        %     % Construct a tab panel.
-        %     tabPanel = testCase.constructComponent( ConstructorName );
-        % 
-        %     % Add one child.
-        %     uicontrol( tabPanel )
-        % 
-        %     % Set the TabTitles property.
-        %     tabTitles = string( 'My Title' ); %#ok<STRQUOT>
-        %     tabPanel.TabTitles = tabTitles;
-        %     testCase.verifyEqual( tabPanel.TabTitles, ...
-        %         cellstr( tabTitles ), ...
-        %         ['The ''TabTitles'' property on the ', ...
-        %         ConstructorName, ' component (when it has one child) ', ...
-        %         'did not accept a string value.'] )
-        % 
-        %     % Add further children.
-        %     for k = 1 : 3
-        %         uicontrol( tabPanel )
-        %     end % for
-        % 
-        %     % Set the TabTitles property.
-        %     tabTitles = string( {'A'; 'B'; 'C'; 'D'} ); %#ok<STRCLQT>
-        %     tabPanel.TabTitles = tabTitles;
-        % 
-        %     % Verify that the stored value is correct.
-        %     testCase.verifyEqual( tabPanel.TabTitles, ...
-        %         cellstr( tabTitles ), ['The ''TabTitles'' property ', ...
-        %         ' of the ', ConstructorName, ' component (when it has', ...
-        %         ' multiple children) did not accept a string value.'] )
-        % 
-        % end % tStringSupportForTabTitlesProperty
+        function tStringSupportForTabPanelScalarStringProperties( ...
+                testCase, ConstructorName )
+
+            % Assume that we are in R2017b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
+
+            % Construct a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Define a list of property names and values to set.
+            propertyNames = {'TabLocation'};
+            propertyValues = string( {'bottom'} ); %#ok<STRCLQT>
+
+            for k = 1 : numel( propertyNames )
+                currentProperty = propertyNames{k};
+                currentValue = propertyValues(k);
+                % Set the property, using a string value.
+                tabPanel.(currentProperty) = currentValue;
+                % Verify that the correct value has been stored.
+                testCase.verifyEqual( tabPanel.(currentProperty), ...
+                    char( currentValue ), ...
+                    ['The ''', currentProperty, ''' property of the ', ...
+                    ConstructorName, ...
+                    ' component did not accept a string value.'] )
+            end % for
+
+        end % tStringSupportForTabPanelScalarStringProperties
+
+        function tStringSupportForTabEnablesProperty( ...
+                testCase, ConstructorName )
+
+            % Assume that we are in R2017b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
+
+            % Construct a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Add one child.
+            uicontrol( tabPanel )
+
+            % Set the TabEnables property.
+            tabEnables = string( 'off' ); %#ok<STRQUOT>
+            tabPanel.TabEnables = tabEnables;
+            testCase.verifyEqual( tabPanel.TabEnables, ...
+                cellstr( tabEnables ), ...
+                ['The ''TabEnables'' property on the ', ...
+                ConstructorName, ' component (when it has one child) ', ...
+                'did not accept a string value.'] )
+
+            % Add further children.
+            for k = 1 : 3
+                uicontrol( tabPanel )
+            end % for
+
+            % Set the TabEnables property.
+            tabEnables = string( {'on'; 'off'; 'on'; 'off'} ); %#ok<STRCLQT>
+            tabPanel.TabEnables = tabEnables;
+
+            % Verify that the stored value is correct.
+            testCase.verifyEqual( tabPanel.TabEnables, ...
+                cellstr( tabEnables ), ['The ''TabEnables'' property ', ...
+                ' of the ', ConstructorName, ' component (when it has', ...
+                ' multiple children) did not accept a string value.'] )
+
+        end % tStringSupportForTabEnablesProperty
+
+        function tStringSupportForTabTitlesProperty( ...
+                testCase, ConstructorName )
+
+            % Assume that we are in R2017b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
+
+            % Construct a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Add one child.
+            uicontrol( tabPanel )
+
+            % Set the TabTitles property.
+            tabTitles = string( 'My Title' ); %#ok<STRQUOT>
+            tabPanel.TabTitles = tabTitles;
+            testCase.verifyEqual( tabPanel.TabTitles, ...
+                cellstr( tabTitles ), ...
+                ['The ''TabTitles'' property on the ', ...
+                ConstructorName, ' component (when it has one child) ', ...
+                'did not accept a string value.'] )
+
+            % Add further children.
+            for k = 1 : 3
+                uicontrol( tabPanel )
+            end % for
+
+            % Set the TabTitles property.
+            tabTitles = string( {'A'; 'B'; 'C'; 'D'} ); %#ok<STRCLQT>
+            tabPanel.TabTitles = tabTitles;
+
+            % Verify that the stored value is correct.
+            testCase.verifyEqual( tabPanel.TabTitles, ...
+                cellstr( tabTitles ), ['The ''TabTitles'' property ', ...
+                ' of the ', ConstructorName, ' component (when it has', ...
+                ' multiple children) did not accept a string value.'] )
+
+        end % tStringSupportForTabTitlesProperty    
+
+        function tAccessingDeprecatedPropertiesReturnsCorrectValues( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % For each deprecated property, check that accessing it returns
+            % the expected value.
+            deprecatedProperties = testCase.DeprecatedProperties;
+            for k = 1 : 2 : numel( deprecatedProperties )
+                propertyName = deprecatedProperties{k};
+                expected = deprecatedProperties{k+1};
+                actual = component.(propertyName);
+                testCase.verifyEqual( actual, expected, ...
+                    ['Accessing the deprecated property ''', ...
+                    propertyName, ''' on the ', ConstructorName, ...
+                    ' component did not return the correct value.'] )
+            end % for
+
+        end % tAccessingDeprecatedPropertiesReturnsCorrectValues
+
+        function tSettingDeprecatedPropertiesIssuesWarning( testCase, ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Configure the environment.
+            warningID = 'uix:Deprecated';
+            warningState = warning( 'query', warningID );
+            testCase.addTeardown( @() warning( warningState ) )
+            warning( 'on', warningID )
+
+            % For each deprecated property, check that setting it issues a
+            % warning with ID 'uix:Deprecated'.
+            deprecatedProperties = testCase.DeprecatedProperties;
+            
+            for k = 1 : 2 : numel( deprecatedProperties )
+                propertyName = deprecatedProperties{k};
+                propertyValue = deprecatedProperties{k+1};
+                setter = @() set( component, propertyName, propertyValue );
+                testCase.verifyWarning( setter, warningID, ...
+                    ['Setting the deprecated property ''', ...
+                    propertyName, ''' on the ', ConstructorName, ...
+                    ' component did not issue the warning with ID ''', ...
+                    warningID, '''.'] )
+            end % for
+
+        end % tSettingDeprecatedPropertiesIssuesWarnings
 
     end % methods ( Test, Sealed )
 
