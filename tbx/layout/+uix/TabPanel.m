@@ -55,7 +55,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         TabContextMenus % tab context menus
-        TabWidth % tab width % TODO remove
+        TabWidth % tab width
     end % deprecated
 
     methods
