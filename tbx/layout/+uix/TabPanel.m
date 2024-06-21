@@ -16,6 +16,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     %  Copyright 2009-2024 The MathWorks, Inc.
 
     properties( Access = public, Dependent, AbortSet )
+        ForegroundColor % tab text color [RGB]
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom|left|right]
         TabTitles % tab titles
@@ -50,7 +51,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         FontSize % font size
         FontWeight % font weight
         FontUnits % font weight
-        ForegroundColor % tab text color [RGB] % TODO restore to public property
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
         TabContextMenus % tab context menus
@@ -100,28 +100,19 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     methods
 
-        function set.SelectionChangedFcn( obj, value )
+        function value = get.ForegroundColor( obj )
 
-            % Check
-            if ischar( value ) % string
-                % OK
-            elseif isa( value, 'function_handle' ) && ...
-                    isequal( size( value ), [1 1] ) % function handle
-                % OK
-            elseif iscell( value ) && ndims( value ) == 2 && ...
-                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
-                    isa( value{1}, 'function_handle' ) && ...
-                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
-                % OK
-            else
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
-            end
+            value = obj.ForegroundColor_;
 
-            % Set
-            obj.SelectionChangedFcn = value;
+        end % get.ForegroundColor
 
-        end % set.SelectionChangedFcn
+        function set.ForegroundColor( obj, ~ )
+
+            warning( 'uix:Deprecated', ...
+                'Property ''ForegroundColor'' of %s is deprecated.', ...
+                class( obj ) )
+
+        end % set.ForegroundColor
 
         function value = get.TabEnables( obj )
 
@@ -261,6 +252,29 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         end % set.TabContextMenus
 
+        function set.SelectionChangedFcn( obj, value )
+
+            % Check
+            if ischar( value ) % string
+                % OK
+            elseif isa( value, 'function_handle' ) && ...
+                    isequal( size( value ), [1 1] ) % function handle
+                % OK
+            elseif iscell( value ) && ndims( value ) == 2 && ...
+                    size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
+                    isa( value{1}, 'function_handle' ) && ...
+                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                % OK
+            else
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''SelectionChangedFcn'' must be a valid callback.' )
+            end
+
+            % Set
+            obj.SelectionChangedFcn = value;
+
+        end % set.SelectionChangedFcn
+
     end % accessors
 
     methods
@@ -334,20 +348,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 class( obj ) )
 
         end % set.FontUnits
-
-        function value = get.ForegroundColor( obj )
-
-            value = obj.ForegroundColor_;
-
-        end % get.ForegroundColor
-
-        function set.ForegroundColor( obj, ~ )
-
-            warning( 'uix:Deprecated', ...
-                'Property ''ForegroundColor'' of %s is deprecated.', ...
-                class( obj ) )
-
-        end % set.ForegroundColor
 
         function value = get.HighlightColor( obj )
 
