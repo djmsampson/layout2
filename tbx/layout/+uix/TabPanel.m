@@ -153,7 +153,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.TabEnables_ = value;
 
             % Redraw tabs
-            obj.redrawTabs() % TODO are there other calls to redrawTabs?
+            enableColor = obj.ForegroundColor_;
+            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
+            tf = strcmp( value, 'on' );
+            tabs = obj.TabGroup.Children;
+            set( tabs(tf), 'ForegroundColor', enableColor )
+            set( tabs(~tf), 'ForegroundColor', disableColor )
 
             % Show selected child
             obj.showSelection()
@@ -560,22 +565,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % showSelection
 
     end % template methods
-
-    methods( Access = private )
-
-        function redrawTabs( obj )
-            %redrawTabs  Redraw tabs
-
-            enableColor = obj.ForegroundColor_;
-            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
-            tf = strcmp( obj.TabEnables_, 'on' );
-            tabs = obj.TabGroup.Children;
-            set( tabs(tf), 'ForegroundColor', enableColor )
-            set( tabs(~tf), 'ForegroundColor', disableColor )
-
-        end % redrawTabs
-
-    end % helper methods
 
     methods( Access = private )
 
