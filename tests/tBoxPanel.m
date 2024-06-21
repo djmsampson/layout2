@@ -78,7 +78,7 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
             'DockTooltipString';
             'HelpTooltipString';
             'CloseTooltipString'}
-    end % properties ( Constant )
+    end % properties ( Constant )    
 
     methods ( Test, Sealed )
 

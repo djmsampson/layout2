@@ -1,0 +1,49 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'
+      when: always
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d.*/
+      when: always
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
+
+stages:
+  - run-tests
+
+variables:
+  ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
+  LOCATION: "UK"  
+
+run-tests:
+  stage: run-tests
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2018b", "R2019a", "R2019b", "R2020a", "R2020b", "R2021a", "R2021b", "R2022a", "R2022b", "R2023a", "R2023b", "R2024a"]
+  tags:
+   - long-jobs
+  script:    
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
+  artifacts:
+    when: always
+    paths:
+      - TestResults.xml
+    reports:
+      junit: TestResults.xml
+
+run-tests-jsd: 
+  stage: run-tests
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2023b", "R2024a"]
+  tags:
+    - long-jobs
+  script:    
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+  artifacts:
+    when: always
+    paths:
+      - TestResults.xml
+    reports:
+      junit: TestResults.xml
