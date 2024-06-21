@@ -396,14 +396,15 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     methods( Access = protected )
 
         function redraw( obj )
+            %redraw  Redraw
 
             % Get selection
             selection = obj.Selection_;
             if selection == 0, return, end
 
             % Update tab size
-            s = obj.TabSize;
-            if s == -1
+            s = obj.TabSize; % retrieve
+            if s == -1 % unknown
                 g = obj.TabGroup;
                 t = g.SelectedTab;
                 f = ancestor( g, 'figure' );
