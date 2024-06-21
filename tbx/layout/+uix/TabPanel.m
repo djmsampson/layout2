@@ -19,7 +19,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom|left|right]
         TabTitles % tab titles
-        TabContextMenus % tab context menus TODO deprecate
     end
 
     properties
@@ -54,6 +53,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         ForegroundColor % tab text color [RGB] % TODO restore to public property
         HighlightColor % border highlight color [RGB]
         ShadowColor % border shadow color [RGB]
+        TabContextMenus % tab context menus
         TabWidth % tab width % TODO remove
     end % deprecated
 
