@@ -1,4 +1,4 @@
-classdef BoxPanel < uix.Panel & uix.mixin.Panel
+classdef BoxPanel < uix.Panel
     %uix.BoxPanel  Box panel
     %
     %  p = uix.BoxPanel(p1,v1,p2,v2,...) constructs a box panel and sets
