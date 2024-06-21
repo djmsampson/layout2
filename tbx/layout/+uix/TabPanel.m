@@ -17,7 +17,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     properties( Access = public, Dependent, AbortSet )
         TabEnables % tab enable states
-        TabLocation % tab location [top|bottom]
+        TabLocation % tab location [top|bottom|left|right]
         TabTitles % tab titles
         TabContextMenus % tab context menus TODO deprecate
     end
@@ -31,6 +31,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
+        TabSize = 0
     end
 
     properties( Access = private, Constant )
@@ -172,13 +173,13 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 value = char( value );
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
+                    'Property ''TabLocation'' should be ''top'', ''bottom'', ''left'' or ''right''.' )
             end
 
             % Check
-            assert( ismember( value, {'top','bottom'} ), ...
+            assert( ismember( value, {'top','bottom','left','right'} ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabLocation'' should be ''top'' or ''bottom''.' )
+                'Property ''TabLocation'' should be ''top'', ''bottom'', ''left'' or ''right''.' )
 
             % Set
             obj.TabGroup.TabLocation = value;
@@ -382,31 +383,29 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         function redraw( obj )
 
+            % Get selection
+            selection = obj.Selection_;
+            if selection == 0, return, end
+
             % Compute positions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
-                [0 0 1 1], 'normalized', 'pixels', obj );
-            w = ceil( bounds(1) + bounds(3) ) - floor( bounds(1) ); % width
-            h = ceil( bounds(2) + bounds(4) ) - floor( bounds(2) ); % height
+            b = hgconvertunits( ancestor( obj, 'figure' ), ...
+                [0 0 1 1], 'normalized', 'pixels', obj ); % tab
+            s = 30;
             p = obj.Padding_; % padding
-            tabs = obj.TabGroup.Children;
-            n = numel( tabs ); % number of tabs
-            tH = 24; % tab height
-            cH = max( [h - 2 * p - tH, 1] ); % contents height
             switch obj.TabGroup.TabLocation
                 case 'top'
-                    cY = 1 + p; % contents y
-                    tY = cY + cH + p; % tab y
+                    contentsPosition = [3+p 3+p b(3)-2*p-2 b(4)-s-2*p-2]; % TODO implement
                 case 'bottom'
-                    tY = 1; % tab y
-                    cY = tY + tH + p; % contents y
+                    contentsPosition = [3+p 1+s b(3)-2*p-2 b(4)-2*p-2]; % TODO implement
+                case 'left'
+                    contentsPosition = [1+s+p 3+p b(3)-s-2*p-2 b(4)-2*p-2]; % TODO implement
+                case 'right'
+                    contentsPosition = [3+p 3+p b(3)-s-2*p-2 b(4)-2*p-2]; % TODO implement
             end
-            cX = 1 + p; % contents x
-            cW = max( [w - 2 * p, 1] ); % contents width
-            contentsPosition = [cX cY cW cH];
 
             % Redraw contents
             selection = obj.Selection_;
-            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'on' )
+            if selection ~= 0 && strcmp( obj.TabEnables_{selection}, 'on' )
                 uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
             end
 
@@ -533,12 +532,12 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     methods( Access = private )
 
-        function onTabSelected( obj, source, ~ )
+        function onTabSelected( obj, ~, ~ )
 
             % Update selection
             oldSelection = obj.Selection_;
-            newSelection = find( source == obj.TabGroup.Children );
             tabGroup = obj.TabGroup;
+            newSelection = find( tabGroup.SelectedTab == obj.TabGroup.Children );
             if oldSelection == newSelection
                 % no op
             elseif strcmp( obj.TabEnables_{newSelection}, 'off' )
