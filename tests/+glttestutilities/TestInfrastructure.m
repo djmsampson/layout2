@@ -79,6 +79,32 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % applyParentFixture
 
+        function disableMATLABConnectorWarning( testCase )
+
+            % When running in the new desktop environment (tested from
+            % R2023b onwards), disable a warning related to MATLAB
+            % Connector.
+            if ~verLessThan( 'matlab', '23.2' ) && ...
+                    feature( 'webui' ) %#ok<VERLESSMATLAB>
+                warningID = ...
+                    'MATLAB:connector:connector:ConnectorNotRunning';
+                warningState = warning( 'query', warningID );
+                testCase.addTeardown( @() warning( warningState ) )
+                warning( 'off', warningID )
+            end % if
+
+        end % disableMATLABConnectorWarning
+
+        function disableOpenGLWarning( testCase )
+
+            % Disable the OpenGL software warning.
+            warningID = 'MATLAB:hg:AutoSoftwareOpenGL';
+            warningState = warning( 'query', warningID );
+            testCase.addTeardown( @() warning( warningState ) )
+            warning( 'off', warningID )
+
+        end % disableOpenGLWarning
+
     end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )
@@ -212,25 +238,17 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeNotMac
 
-        function assumeNotUnix( testCase )
+        function assumeRunningOnGitHubCI( testCase )
 
-            % Assume that the platform is not Unix.
-            testCase.assumeFalse( isunix(), ...
-                'This test is not applicable on the Unix platform.' )
+            testCase.assumeTrue( testCase.isCodeRunningOnGitHubCI(), ...
+                ['This test is only applicable to code running ', ...
+                'on GitHub CI.'] )
 
-        end % assumeNotUnix
-
-        function assumeNotDeployed( testCase )
-
-            % Assume that the test is not running in deployed mode.
-            testCase.assumeFalse( isdeployed(), ...
-                'This test is not applicable in deployed mode.' )
-
-        end % assumeNotDeployed
+        end % assumeRunningOnGitHubCI
 
         function assumeNotRunningOnGitHubCI( testCase )
 
-            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI, ...
+            testCase.assumeFalse( testCase.isCodeRunningOnGitHubCI(), ...
                 ['This test is not applicable to code running ', ...
                 'on GitHub CI.'] )
 
@@ -238,7 +256,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         function assumeNotRunningOnGitLabCI( testCase )
 
-            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI, ...
+            testCase.assumeFalse( testCase.isCodeRunningOnGitLabCI(), ...
                 ['This test is not applicable to code running ', ...
                 'on GitLab CI.'] )
 

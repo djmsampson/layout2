@@ -16,8 +16,9 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
 
-            % If running in CI, assume we have at least R2023b.
-            if testCase.isCodeRunningOnCI()
+            % If the code is running in CI, assume that we have at least 
+            % R2023b.
+            if testCase.isCodeRunningOnCI()              
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 
@@ -163,6 +164,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
             % If running in CI, assume we have at least R2023b.
             if testCase.isCodeRunningOnCI()
+                testCase.assumeRunningOnGitHubCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
 

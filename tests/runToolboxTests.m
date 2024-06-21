@@ -6,17 +6,6 @@ function results = runToolboxTests()
 % Record the current folder (the tests directory).
 rootFolder = fileparts( mfilename( 'fullpath' ) );
 
-% Disable warnings that may be generated during the test procedure.
-warningIDs = {'MATLAB:dispatcher:nameConflict', ...
-    'MATLAB:hg:AutoSoftwareOpenGL'};
-warningCleanups = onCleanup.empty( 0, 1 );
-for k = 1 : numel( warningIDs )
-    warningID = warningIDs{k};
-    cleanupTask = @() warning( warning( 'query', warningID ) );
-    warningCleanups(k, 1) = onCleanup( cleanupTask );
-    warning( 'off', warningID )
-end % for
-
 % Create the test suite from the tests root folder, including the tests
 % located in the inner namespaces.
 before18a = verLessThan( 'matlab', '9.4' );
@@ -27,14 +16,14 @@ if before22a
         matlab.unittest.TestSuite.fromPackage( 'uiextrastests' ), ...
         matlab.unittest.TestSuite.fromPackage( 'uixtests' )];
     if ~before18a
-        % If we're between R2018a - R2021b, append the tests using the App 
-        % Testing Framework.
+        % If we're between R2018a - R2021b, append the tests that use the 
+        % App Testing Framework.
         suite = [suite, ...
             matlab.unittest.TestSuite.fromPackage( 'gesturetests' )];
     end % if
 else
     % We're in R2022a onwards, and fromFolder will include the tests in
-    % inner namespaces.
+    % inner namespaces when the 'IncludingSubfolders' option is true.
     suite = matlab.unittest.TestSuite.fromFolder( rootFolder, ...
         'IncludingSubfolders', true );
 end % if

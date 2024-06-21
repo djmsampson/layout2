@@ -265,7 +265,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
             component = feval( ConstructorName, ...
                 'Parent', testCase.ParentFixture.Parent, ...
                 propertyName, expected );
-            componentCleanup = onCleanup( @() delete( component ) );
+            testCase.addTeardown( @() delete( component ) )
 
             % Verify that the property has been assigned correctly.
             actual = component.(propertyName);
@@ -274,7 +274,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
                 'of the ', ConstructorName, ' component on ', ...
                 'construction did not store the value correctly.'] )
 
-        end % tContextMenuPropertyIsAssignedCorrectly
+        end % tContextMenuPropertyIsAssignedOnConstruction
 
         function tSettingContextMenuPropertyStoresValue( testCase, ...
                 ConstructorName )
@@ -320,7 +320,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
             component = feval( ConstructorName, ...
                 'Parent', testCase.ParentFixture.Parent, ...
                 'Enable', 'on' );
-            componentCleanup = onCleanup( @() delete( component ) );
+            testCase.addTeardown( @() delete( component ) )
 
             % Verify that the property has been assigned correctly.
             actual = char( component.Enable );
@@ -355,6 +355,112 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
                 'did not store the value correctly.'] )
 
         end % tSettingEnablePropertyStoresValue
+
+        function tBorderWidthPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % The 'BorderWidth' property was added to uipanel in web
+            % graphics in R2022b.
+            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
+                testCase.assumeGraphicsAreNotWebBased()
+            end % if
+
+            % Specify the property on construction.
+            expected = 2;
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'BorderWidth', expected );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderWidth;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderWidth'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tBorderWidthPropertyIsAssignedOnConstruction
+
+        function tSettingBorderWidthPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % The 'BorderWidth' property was added to uipanel in web
+            % graphics in R2022b.
+            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
+                testCase.assumeGraphicsAreNotWebBased()
+            end % if
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = 2;
+            component.BorderWidth = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderWidth;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderWidth'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingBorderWidthPropertyStoresValue
+
+        function tBorderColorPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % The 'BorderColor' property was added to uipanel in R2023a.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Specify the property on construction.
+            expected = [1, 0.5, 0];
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'BorderColor', expected );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderColor;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderColor'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tBorderColorPropertyIsAssignedOnConstruction
+
+        function tSettingBorderColorPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % The 'BorderColor' property was added to uipanel in R2023a.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )            
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = [1, 0.5, 0];
+            component.BorderColor = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderColor;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderColor'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingBorderColorPropertyStoresValue
 
     end % methods ( Test, Sealed )
 
