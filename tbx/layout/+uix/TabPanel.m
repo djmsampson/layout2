@@ -569,6 +569,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     methods( Access = private )
 
         function onTabSelected( obj, ~, ~ )
+            %onTabSelected  Event handler for interactive tab selection
+            %
+            %  onTabSelected shows the child of the selected tab and
+            %  prevents selection of disabled tabs.
 
             % Update selection
             oldSelection = obj.Selection_;
@@ -585,6 +589,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % onTabSelected
 
         function onBackgroundColorChanged( obj, ~, ~ )
+            %onBackgroundColorChanged  Event handler for background color
+            %
+            %  onBackgroundColorChanged synchronizes the background color
+            %  of each tab with that of the panel.
 
             % Set all tab background colors
             set( obj.TabGroup.Children, 'BackgroundColor', obj.BackgroundColor )
@@ -592,6 +600,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % onBackgroundColorChanged
 
         function onSelectionChanged( obj, source, eventData )
+            %onSelectionChanged  Event handler for programmatic selection
+            %
+            %  onSelectionChanged updates the tab selection when the panel
+            %  selection changes.
 
             % Select tab
             obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.Selection_);
