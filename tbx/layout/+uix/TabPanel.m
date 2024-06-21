@@ -634,7 +634,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  selection changes.
 
             % Select tab
-            obj.TabGroup.SelectedTab = obj.TabGroup.Children(obj.Selection_);
+            selection = obj.Selection_;
+            if selection ~= 0
+                obj.TabGroup.SelectedTab = obj.TabGroup.Children(selection);
+            end
 
             % Call callback
             callback = obj.SelectionChangedFcn;
