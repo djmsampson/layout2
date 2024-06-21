@@ -399,7 +399,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Update tab size
             s = obj.TabSize;
             if s == -1
-                fprintf( 1, 'Updating tab size...' );
                 g = obj.TabGroup;
                 t = g.SelectedTab;
                 f = ancestor( g, 'figure' );
@@ -409,12 +408,15 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 tb = hgconvertunits( f, [0 0 1 1], ...
                     'normalized', 'pixels', t ); % tab bounds
                 switch g.TabLocation
-                    case {'top','bottom'}
+                    case 'top'
+                        s = gb(4) - tb(4) - 3;
+                    case 'bottom'
                         s = gb(4) - tb(4) - 2;
-                    case {'left','right'}
+                    case 'left'
                         s = gb(3) - tb(3) - 2;
+                    case 'right'
+                        s = gb(3) - tb(3) - 3;
                 end
-                fprintf( 1, '%d\n', s );
                 obj.TabSize = s; % store
             end
 
@@ -424,14 +426,29 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             p = obj.Padding_; % padding
             switch obj.TabGroup.TabLocation
                 case 'top'
-                    contentsPosition = [3+p 3+p b(3)-2*p-2 b(4)-s-2*p-2]; % TODO implement
+                    x = 3 + p;
+                    y = 3 + p;
+                    w = b(3) - 2 * p - 3;
+                    h = b(4) - s - 2 * p - 2;
                 case 'bottom'
-                    contentsPosition = [3+p 1+s b(3)-2*p-2 b(4)-2*p-2]; % TODO implement
+                    x = 3 + p;
+                    y = 1 + s + p;
+                    w = b(3) - 2 * p - 3;
+                    h = b(4) - s - 2 * p - 2;
                 case 'left'
-                    contentsPosition = [1+s+p 3+p b(3)-s-2*p-2 b(4)-2*p-2]; % TODO implement
+                    x = 1 + s + p;
+                    y = 3 + p;
+                    w = b(3) - s - 2 * p - 2;
+                    h = b(4) - 2 * p - 4;
                 case 'right'
-                    contentsPosition = [3+p 3+p b(3)-s-2*p-2 b(4)-2*p-2]; % TODO implement
+                    x = 3 + p;
+                    y = 3 + p;
+                    w = b(3) - s - 2 * p - 2;
+                    h = b(4) - 2 * p - 4;
             end
+            w = max( ceil( w ), 1 );
+            h = max( ceil( h ), 1 );
+            contentsPosition = [x y w h];
 
             % Redraw contents
             selection = obj.Selection_;
