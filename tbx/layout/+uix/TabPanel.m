@@ -409,38 +409,37 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         function redraw( obj )
             %redraw  Redraw
 
-            % Get selection
+            % Check for enabled contents
             selection = obj.Selection_;
-            if selection == 0, return, end
-
-            % Update tab size
-            s = obj.TabSize; % retrieve
-            if s == -1 % unknown
-                g = obj.TabGroup;
-                t = g.SelectedTab;
-                f = ancestor( g, 'figure' );
-                drawnow() % force redraw
-                gb = hgconvertunits( f, [0 0 1 1], ...
-                    'normalized', 'pixels', g ); % tab group bounds
-                tb = hgconvertunits( f, [0 0 1 1], ...
-                    'normalized', 'pixels', t ); % tab bounds
-                switch g.TabLocation
-                    case 'top'
-                        s = gb(4) - tb(4) - 3;
-                    case 'bottom'
-                        s = gb(4) - tb(4) - 2;
-                    case 'left'
-                        s = gb(3) - tb(3) - 2;
-                    case 'right'
-                        s = gb(3) - tb(3) - 3;
-                end
-                obj.TabSize = s; % store
+            if selection == 0 % no contents
+                return
+            elseif strcmp( obj.TabEnables_(selection), 'off' ) % disabled
+                return
             end
 
-            % Compute positions
-            b = hgconvertunits( ancestor( obj, 'figure' ), ...
-                [0 0 1 1], 'normalized', 'pixels', obj ); % tab
+            % Get tab size, padding, and border width
+            g = obj.TabGroup;
+            t = g.SelectedTab;
+            f = ancestor( g, 'figure' );
+            gb = hgconvertunits( f, [0 0 1 1], ...
+                'normalized', 'pixels', g ); % tab group bounds
+            tb = hgconvertunits( f, [0 0 1 1], ...
+                'normalized', 'pixels', t ); % tab bounds
+            switch g.TabLocation
+                case 'top'
+                    s = gb(4) - tb(4) - 3;
+                case 'bottom'
+                    s = gb(4) - tb(4) - 2;
+                case 'left'
+                    s = gb(3) - tb(3) - 2;
+                case 'right'
+                    s = gb(3) - tb(3) - 3;
+            end
             p = obj.Padding_; % padding
+            m = 2; % TODO
+
+            % Compute positions
+            b = gb;
             switch obj.TabGroup.TabLocation
                 case 'top'
                     x = 3 + p;
@@ -468,10 +467,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             contentsPosition = [x y w h];
 
             % Redraw contents
-            selection = obj.Selection_;
-            if selection ~= 0 && strcmp( obj.TabEnables_{selection}, 'on' )
-                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
-            end
+            uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
 
         end % redraw
 
@@ -484,9 +480,13 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tabGroup = obj.TabGroup;
             tabs = tabGroup.Children;
             n = numel( tabs );
-            uitab( 'Parent', tabGroup, 'Title', sprintf( 'Tab %d', n+1 ), ...
+            tab = uitab( 'Parent', tabGroup, 'Title', sprintf( 'Tab %d', n+1 ), ...
                 'ForegroundColor', obj.ForegroundColor, ...
                 'BackgroundColor', obj.BackgroundColor );
+            if isprop( tab, "AutoResizeChildren" )
+                tab.AutoResizeChildren = "off";
+            end
+            tab.SizeChangedFcn = @obj.onTabSizeChanged;
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Call superclass method
@@ -663,6 +663,17 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tabGroup.Position = [0 0 1 1]; % maximized
 
         end % onTabGroupSizeChanged
+
+        function onTabSizeChanged( obj, tab, ~ )
+            %onTabSizeChanged  Event handler for tab resize
+
+            % Ignore unselected tabs
+            if obj.TabGroup.SelectedTab ~= tab, return, end
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % onTabSizeChanged
 
     end % event handlers
 
