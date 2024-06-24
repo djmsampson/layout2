@@ -290,10 +290,10 @@ classdef Container < handle
 
         end % figure
 
-        function t = system( obj )
-            %system  Graphics system
+        function t = gsystem( obj )
+            %gsystem  Graphics system
             %
-            %  t = system(c) returns 'java' if the container c is in a
+            %  t = gsystem(c) returns 'java' if the container c is in a
             %  figure, 'javascript' if c is in a uifigure, and 'none' if c
             %  is unrooted.
 
@@ -306,7 +306,7 @@ classdef Container < handle
                 t = 'javascript';
             end
 
-        end % system
+        end % gsystem
 
     end % template methods
 
