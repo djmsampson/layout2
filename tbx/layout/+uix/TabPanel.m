@@ -423,17 +423,18 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             switch g.TabLocation
                 case 'top'
                     m = (gp(3)-tp(3))/2;
-                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
+                    cp = tp + [m m 0 0] + p * [1 1 -2 -2];
                 case 'bottom'
                     m = (gp(3)-tp(3))/2;
-                    cp = tp + [0 gp(4)-tp(4) 0 0] + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
+                    cp = tp + [m gp(4)-tp(4)-m 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'left'
                     m = (gp(4)-tp(4))/2;
-                    cp = tp + [gp(3)-tp(3) 0 0 0] + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
+                    cp = tp + [gp(3)-tp(3)-m m 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'right'
                     m = (gp(4)-tp(4))/2;
-                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
+                    cp = tp + [m m 0 0] + p * [1 1 -2 -2];
             end
+            m
 
             % Redraw contents
             uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
