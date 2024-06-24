@@ -73,6 +73,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'normalized', 'Position', [0 0 1 1], ...
                 'SelectionChangedFcn', @obj.onTabSelected );
+            if isprop( tabGroup, 'AutoResizeChildren' )
+                tabGroup.AutoResizeChildren = 'off';
+            end
 
             % Store properties
             obj.TabGroup = tabGroup;
@@ -191,12 +194,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Set
             obj.TabGroup.TabLocation = value;
 
-            % Unset tab size
-            obj.TabSize = -1;
-
-            % Mark as dirty
-            obj.Dirty = true;
-
         end % set.TabLocation
 
         function value = get.TabTitles( obj )
@@ -228,12 +225,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             for ii = 1:numel( tabs )
                 tabs(ii).Title = value{ii};
             end
-
-            % Unset tab size
-            obj.TabSize = -1;
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % set.TabTitles
 
@@ -417,57 +408,32 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 return
             end
 
-            % Get tab size, padding, and border width
-            g = obj.TabGroup;
-            t = g.SelectedTab;
-            f = ancestor( g, 'figure' );
-            gb = hgconvertunits( f, [0 0 1 1], ...
-                'normalized', 'pixels', g ); % tab group bounds
-            tb = hgconvertunits( f, [0 0 1 1], ...
-                'normalized', 'pixels', t ); % tab bounds
-            switch g.TabLocation
-                case 'top'
-                    s = gb(4) - tb(4) - 3;
-                case 'bottom'
-                    s = gb(4) - tb(4) - 2;
-                case 'left'
-                    s = gb(3) - tb(3) - 2;
-                case 'right'
-                    s = gb(3) - tb(3) - 3;
-            end
-            p = obj.Padding_; % padding
-            m = 2; % TODO
+            disp redraw!
 
             % Compute positions
-            b = gb;
-            switch obj.TabGroup.TabLocation
+            g = obj.TabGroup;
+            f = ancestor( g, 'figure' );
+            gp = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', g );
+            t = g.SelectedTab;
+            tp = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', t );
+            p = obj.Padding_;
+            switch g.TabLocation
                 case 'top'
-                    x = 3 + p;
-                    y = 3 + p;
-                    w = b(3) - 2 * p - 3;
-                    h = b(4) - s - 2 * p - 2;
+                    m = (gp(3)-tp(3))/2;
+                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
                 case 'bottom'
-                    x = 3 + p;
-                    y = 1 + s + p;
-                    w = b(3) - 2 * p - 3;
-                    h = b(4) - s - 2 * p - 2;
+                    m = (gp(3)-tp(3))/2;
+                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'left'
-                    x = 1 + s + p;
-                    y = 3 + p;
-                    w = b(3) - s - 2 * p - 2;
-                    h = b(4) - 2 * p - 4;
+                    m = (gp(4)-tp(4))/2;
+                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'right'
-                    x = 3 + p;
-                    y = 3 + p;
-                    w = b(3) - s - 2 * p - 2;
-                    h = b(4) - 2 * p - 4;
+                    m = (gp(4)-tp(4))/2;
+                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
             end
-            w = max( ceil( w ), 1 );
-            h = max( ceil( h ), 1 );
-            contentsPosition = [x y w h];
 
             % Redraw contents
-            uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+            uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
 
         end % redraw
 
@@ -483,10 +449,15 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tab = uitab( 'Parent', tabGroup, 'Title', sprintf( 'Tab %d', n+1 ), ...
                 'ForegroundColor', obj.ForegroundColor, ...
                 'BackgroundColor', obj.BackgroundColor );
-            if isprop( tab, "AutoResizeChildren" )
-                tab.AutoResizeChildren = "off";
+            if isprop( tab, 'AutoResizeChildren' )
+                tab.AutoResizeChildren = 'off';
             end
-            tab.SizeChangedFcn = @obj.onTabSizeChanged;
+            addprop( tab, 'SizeChangedListener' );
+            tab.SizeChangedListener = listener( tab, ...
+                'SizeChanged', @obj.onTabSizeChanged );
+            addprop( tab, 'LocationChangedListener' );
+            tab.LocationChangedListener = listener( tab, ...
+                'LocationChanged', @obj.onTabLocationChanged );
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Call superclass method
@@ -605,7 +576,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Update selection
             oldSelection = obj.Selection_;
             tabGroup = obj.TabGroup;
-            newSelection = find( tabGroup.SelectedTab == obj.TabGroup.Children );
+            newSelection = find( tabGroup.SelectedTab == tabGroup.Children );
             if oldSelection == newSelection
                 % no op
             elseif strcmp( obj.TabEnables_{newSelection}, 'off' )
@@ -670,10 +641,24 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Ignore unselected tabs
             if obj.TabGroup.SelectedTab ~= tab, return, end
 
+            disp onTabSizeChanged
+
             % Mark as dirty
             obj.Dirty = true;
 
         end % onTabSizeChanged
+
+        function onTabLocationChanged( obj, tab, ~ )
+
+            % Ignore unselected tabs
+            if obj.TabGroup.SelectedTab ~= tab, return, end
+
+            disp onTabLocationChanged
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % onTabLocationChanged
 
     end % event handlers
 
