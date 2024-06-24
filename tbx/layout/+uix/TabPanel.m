@@ -33,7 +33,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         SelectionChangedListener % listener
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
-        TabSize = -1 % tab height or width, -1 for unknown
     end
 
     properties( Access = private, Constant )
