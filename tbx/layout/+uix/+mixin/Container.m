@@ -290,10 +290,10 @@ classdef Container < handle
 
         end % figure
 
-        function t = figuretype( obj )
-            %figuretype  Container figure type
+        function t = system( obj )
+            %system  Graphics system
             %
-            %  t = figuretype(c) returns 'java' if the container c is in a
+            %  t = system(c) returns 'java' if the container c is in a
             %  figure, 'javascript' if c is in a uifigure, and 'none' if c
             %  is unrooted.
 
@@ -306,7 +306,7 @@ classdef Container < handle
                 t = 'javascript';
             end
 
-        end % figuretype
+        end % system
 
     end % template methods
 
