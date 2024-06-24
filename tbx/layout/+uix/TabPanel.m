@@ -459,9 +459,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             addprop( tab, 'SizeChangedListener' );
             tab.SizeChangedListener = event.listener( tab, ...
                 'SizeChanged', @obj.onTabSizeChanged );
-            addprop( tab, 'LocationChangedListener' );
-            tab.LocationChangedListener = event.listener( tab, ...
-                'LocationChanged', @obj.onTabLocationChanged );
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Call superclass method
