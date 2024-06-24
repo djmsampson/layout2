@@ -411,8 +411,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 return
             end
 
-            disp redraw!
-
             % Compute positions
             g = obj.TabGroup;
             f = ancestor( g, 'figure' );
@@ -434,7 +432,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                     m = (gp(4)-tp(4))/2;
                     cp = tp + [m m 0 0] + p * [1 1 -2 -2];
             end
-            m
 
             % Redraw contents
             uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
@@ -643,8 +640,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Ignore unselected tabs
             if obj.TabGroup.SelectedTab ~= tab, return, end
 
-            disp onTabSizeChanged
-
             % Mark as dirty
             obj.Dirty = true;
 
@@ -654,8 +649,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Ignore unselected tabs
             if obj.TabGroup.SelectedTab ~= tab, return, end
-
-            disp onTabLocationChanged
 
             % Mark as dirty
             obj.Dirty = true;
