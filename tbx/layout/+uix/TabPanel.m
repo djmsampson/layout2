@@ -194,6 +194,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Set
             obj.TabGroup.TabLocation = value;
 
+            % Mark as dirty
+            obj.Dirty = true;
+
         end % set.TabLocation
 
         function value = get.TabTitles( obj )
@@ -423,10 +426,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                     cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
                 case 'bottom'
                     m = (gp(3)-tp(3))/2;
-                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
+                    cp = tp + [0 gp(4)-tp(4) 0 0] + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'left'
                     m = (gp(4)-tp(4))/2;
-                    cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
+                    cp = tp + [gp(3)-tp(3) 0 0 0] + m * [1 1 0 0] + p * [1 1 -2 -2]; % TODO
                 case 'right'
                     m = (gp(4)-tp(4))/2;
                     cp = tp + m * [1 1 0 0] + p * [1 1 -2 -2];
@@ -446,7 +449,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tabGroup = obj.TabGroup;
             tabs = tabGroup.Children;
             n = numel( tabs );
-            tab = uitab( 'Parent', tabGroup, 'Title', sprintf( 'Tab %d', n+1 ), ...
+            tab = uitab( 'Parent', tabGroup, ...
+                'Title', sprintf( 'Tab %d', n+1 ), ...
                 'ForegroundColor', obj.ForegroundColor, ...
                 'BackgroundColor', obj.BackgroundColor );
             if isprop( tab, 'AutoResizeChildren' )

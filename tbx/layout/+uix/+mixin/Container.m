@@ -280,6 +280,34 @@ classdef Container < handle
 
         end % isDrawable
 
+        function f = figure( obj )
+            %figure  Figure ancestor
+            %
+            %  f = figure(c) returns the figure ancestor of the container
+            %  c.  This is equivalent to f = ancestor(c,'figure');
+
+            f = obj.FigureObserver.Figure;
+
+        end % figure
+
+        function t = figuretype( obj )
+            %figuretype  Container figure type
+            %
+            %  t = figuretype(c) returns 'java' if the container c is in a
+            %  figure, 'javascript' if c is in a uifigure, and 'none' if c
+            %  is unrooted.
+
+            f = obj.FigureObserver.Figure;
+            if isempty( f )
+                t = 'none';
+            elseif isprop( f, "JavaFrame_I" ) && ~isempty( f.JavaFrame_I )
+                t = 'java';
+            else
+                t = 'javascript';
+            end
+
+        end % figuretype
+
     end % template methods
 
 end % classdef
