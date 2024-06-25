@@ -164,9 +164,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             % Redraw tabs
             obj.redrawTabs()
 
-            % Show selected child
-            obj.showSelection()
-
         end % set.TabEnables
 
         function value = get.TabLocation( obj )
@@ -497,49 +494,16 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
 
+            % Move context menus to new figure
             if ~isequal( oldFigure, newFigure )
-                contextMenus = obj.TabContextMenus;
-                for ii = 1:numel( contextMenus )
-                    contextMenu = contextMenus{ii};
-                    if ~isempty( contextMenu )
-                        contextMenu.Parent = newFigure;
-                    end
-                end
+                contextMenus = vertcat( obj.TabContextMenus{:} );
+                set( contextMenus, 'Parent', newFigure );
             end
 
             % Call superclass method
             reparent@uix.mixin.Panel( obj, oldFigure, newFigure )
 
         end % reparent
-
-        function showSelection( obj )
-            %showSelection  Show selected child, hide the others
-            %
-            %  c.showSelection() shows the selected child of the container
-            %  c, and hides the others.
-
-            % Call superclass method
-            showSelection@uix.mixin.Panel( obj )
-
-            % If not enabled, hide selected contents too
-            selection = obj.Selection_;
-            if selection ~= 0 && strcmp( obj.TabEnables{selection}, 'off' )
-                child = obj.Contents_(selection);
-                child.Visible = 'off';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    child.ContentsVisible = 'off';
-                end
-                % As a remedy for g1100294, move off-screen too
-                margin = 1000;
-                if isa( child, 'matlab.graphics.axis.Axes' ) ...
-                        && strcmp(child.ActivePositionProperty, 'outerposition' )
-                    child.OuterPosition(1) = -child.OuterPosition(3)-margin;
-                else
-                    child.Position(1) = -child.Position(3)-margin;
-                end
-            end
-
-        end % showSelection
 
     end % template methods
 
