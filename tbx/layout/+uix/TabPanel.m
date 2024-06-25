@@ -404,11 +404,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Check for enabled contents
             selection = obj.Selection_;
-            if selection == 0 % no contents
-                return
-            elseif strcmp( obj.TabEnables_(selection), 'off' ) % disabled
-                return
-            end
+            if selection == 0, return, end % no contents
 
             % Compute positions
             g = obj.TabGroup;
