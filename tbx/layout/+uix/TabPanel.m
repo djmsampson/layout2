@@ -543,6 +543,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
                 obj.Selection = newSelection; % update selection
             end
 
+            % Raise event
+            notify( obj, 'SelectionChanged', ...
+                uix.SelectionData( oldSelection, newSelection ) )
+
         end % onTabSelected
 
         function onBackgroundColorChanged( obj, ~, ~ )
@@ -557,18 +561,11 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % onBackgroundColorChanged
 
         function onSelectionChanged( obj, source, eventData )
-            %onSelectionChanged  Event handler for programmatic selection
+            %onSelectionChanged  Event handler for SelectionChangedFcn
             %
-            %  onSelectionChanged updates the tab selection when the panel
-            %  selection changes.
+            %  onSelectionChanged calls the SelectionChangedFcn when a
+            %  SelectionChanged event is raised.
 
-            % Select tab
-            selection = obj.Selection_;
-            if selection ~= 0
-                obj.TabGroup.SelectedTab = obj.TabGroup.Children(selection);
-            end
-
-            % Call callback
             callback = obj.SelectionChangedFcn;
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
