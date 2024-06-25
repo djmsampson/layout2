@@ -72,6 +72,9 @@ classdef Panel < uix.mixin.Container
     methods( Access = protected )
 
         function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
 
             % Check for bug
             if verLessThan( 'MATLAB', '8.5' ) && strcmp( child.Visible, 'off' )
@@ -96,6 +99,9 @@ classdef Panel < uix.mixin.Container
         end % addChild
 
         function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
 
             % Adjust selection if required
             contents = obj.Contents_;
@@ -153,35 +159,57 @@ classdef Panel < uix.mixin.Container
             for ii = 1:numel( children )
                 child = children(ii);
                 if ii == selection
-                    if obj.G1218142
-                        warning( 'uix:G1218142', ...
-                            'Selected child of %s is not visible due to bug G1218142.  The child will become visible at the next redraw.', ...
-                            class( obj ) )
-                        obj.G1218142 = false;
-                    else
-                        child.Visible = 'on';
-                    end
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.ContentsVisible = 'on';
-                    end
+                    obj.showChild( child )
                 else
-                    child.Visible = 'off';
-                    if isa( child, 'matlab.graphics.axis.Axes' )
-                        child.ContentsVisible = 'off';
-                    end
-                    % As a remedy for g1100294, move off-screen too
-                    margin = 1000;
-                    if isa( child, 'matlab.graphics.axis.Axes' ) ...
-                            && strcmp(child.ActivePositionProperty, 'outerposition' )
-                        child.OuterPosition(1) = -child.OuterPosition(3)-margin;
-                    else
-                        child.Position(1) = -child.Position(3)-margin;
-                    end
+                    obj.hideChild( child )
                 end
             end
 
         end % showSelection
 
     end % template methods
+
+    methods
+
+        function showChild( obj, child )
+            %showChild  Show child
+
+            if obj.G1218142 % bug
+                % Work around and warn
+                warning( 'uix:G1218142', ...
+                    'Child of %s is not visible due to bug G1218142, but will become visible at the next redraw.', ...
+                    class( obj ) )
+                obj.G1218142 = false; % show next time
+            else
+                % Show child and its contents
+                child.Visible = 'on';
+                if isa( child, 'matlab.graphics.axis.Axes' )
+                    child.ContentsVisible = 'on';
+                end
+            end
+
+        end % showChild
+
+        function hideChild( ~, child )
+            %hideChild  Hide child
+
+            % Hide child and its contents
+            child.Visible = 'off';
+            if isa( child, 'matlab.graphics.axis.Axes' )
+                child.ContentsVisible = 'off';
+            end
+
+            % As a remedy for g1100294, move off-screen too
+            margin = 1000;
+            if isa( child, 'matlab.graphics.axis.Axes' ) ...
+                    && strcmp(child.ActivePositionProperty, 'outerposition' )
+                child.OuterPosition(1) = -child.OuterPosition(3)-margin;
+            else
+                child.Position(1) = -child.Position(3)-margin;
+            end
+
+        end % hideChild
+
+    end % helper methods
 
 end % classdef
