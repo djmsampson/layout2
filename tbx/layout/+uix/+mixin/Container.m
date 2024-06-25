@@ -90,6 +90,9 @@ classdef Container < handle
             % Call reorder
             obj.reorder( indices )
 
+            % Mark as dirty
+            obj.Dirty = true;
+
         end % set.Contents
 
         function value = get.Padding( obj )
@@ -160,6 +163,9 @@ classdef Container < handle
             % Call template method
             obj.addChild( eventData.Child )
 
+            % Mark as dirty
+            obj.Dirty = true;
+
         end % onChildAdded
 
         function onChildRemoved( obj, ~, eventData )
@@ -173,6 +179,9 @@ classdef Container < handle
 
             % Call template method
             obj.removeChild( eventData.Child )
+
+            % Mark as dirty
+            obj.Dirty = true;
 
         end % onChildRemoved
 
@@ -220,9 +229,6 @@ classdef Container < handle
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
 
-            % Mark as dirty
-            obj.Dirty = true;
-
         end % addChild
 
         function removeChild( obj, child )
@@ -237,9 +243,6 @@ classdef Container < handle
 
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % removeChild
 
@@ -263,9 +266,6 @@ classdef Container < handle
             % Reorder listeners
             obj.ActivePositionPropertyListeners = ...
                 obj.ActivePositionPropertyListeners(indices,:);
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % reorder
 
