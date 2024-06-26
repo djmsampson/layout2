@@ -75,10 +75,8 @@ classdef Container < handle
 
         function set.Contents( obj, value )
 
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+            % Reshape
+            value = reshape( value, [], 1 );
 
             % Check
             [tf, indices] = ismember( value, obj.Contents_ );
