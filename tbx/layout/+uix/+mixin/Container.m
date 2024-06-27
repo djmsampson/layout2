@@ -85,7 +85,7 @@ classdef Container < handle
                 'uix:InvalidOperation', ...
                 'Property ''Contents'' may only be set to a permutation of itself.' )
 
-            % Call reorder
+            % Call template method
             obj.reorder( indices )
 
             % Mark as dirty
