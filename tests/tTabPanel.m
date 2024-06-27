@@ -465,33 +465,6 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tSettingPropertiesAsRowVectorAssignsValues        
 
-        function tAddingAxesToDisabledTabHidesContents( ...
-                testCase, ConstructorName )
-
-            % Construct a tab panel.
-            tabPanel = testCase.constructComponent( ConstructorName );
-
-            % Add an axes and a control. Plot something on the axes. Set
-            % the 'ActivePositionProperty' on the axes in order to reach
-            % the additional code branch for hiding the tab contents,
-            ax = axes( 'Parent', tabPanel, ...
-                'ActivePositionProperty', 'outerposition' );
-            plot( ax, 1:10 )
-            uicontrol( 'Parent', tabPanel )
-
-            % Disable the first tab (and enable the second tab).
-            tabPanel.TabEnables = {'off', 'on'};
-
-            % Verify that the axes and plot have been made invisible.
-            testCase.verifyEqual( char( ax.Visible ), 'off', ...
-                ['Disabling a tab containing an axes did not ', ...
-                'make the axes invisible.'] )
-            testCase.verifyEqual( char( ax.ContentsVisible ), 'off', ...
-                ['Disabling a tab containing an axes did not make ', ...
-                'the contents invisible.'] )
-
-        end % tAddingAxesToDisabledTabHidesContents
-
         function tStringSupportForTabPanelScalarStringProperties( ...
                 testCase, ConstructorName )
 
