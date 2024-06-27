@@ -63,7 +63,7 @@ classdef Panel < uix.mixin.Container
 
             % Raise event
             notify( obj, 'SelectionChanged', ...
-                uix.SelectionData( oldSelection, newSelection ) )
+                uix.SelectionChangedData( oldSelection, newSelection ) )
 
         end % set.Selection
 
@@ -94,7 +94,7 @@ classdef Panel < uix.mixin.Container
 
             % Notify selection change
             obj.notify( 'SelectionChanged', ...
-                uix.SelectionData( oldSelection, newSelection ) )
+                uix.SelectionChangedData( oldSelection, newSelection ) )
 
         end % addChild
 
@@ -125,7 +125,7 @@ classdef Panel < uix.mixin.Container
             % Notify selection change
             if oldSelection ~= newSelection
                 obj.notify( 'SelectionChanged', ...
-                    uix.SelectionData( oldSelection, newSelection ) )
+                    uix.SelectionChangedData( oldSelection, newSelection ) )
             end
 
         end % removeChild
