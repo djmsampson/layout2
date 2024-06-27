@@ -31,6 +31,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     properties( Access = private )
         TabGroup % tab group
         BackgroundColorListener % listener
+        SelectionChangedListener % listener
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
@@ -93,6 +94,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
+            obj.SelectionChangedListener = selectionChangedListener;
 
             % Set properties
             try
@@ -141,17 +143,22 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( obj, value )
+        function set.Selection( obj, newValue )
 
             % Select
+            oldValue = obj.Selection;
             tabGroup = obj.TabGroup;
             try
-                assert( isscalar( value ) )
-                tabGroup.SelectedTab = tabGroup.Children(value);
+                assert( isscalar( newValue ) )
+                tabGroup.SelectedTab = tabGroup.Children(newValue);
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of tabs.' )
             end
+
+            % Raise event
+            notify( obj, 'SelectionChanged', ...
+                uix.SelectionChangedData( oldValue, newValue ) )
 
             % Show selection
             obj.showSelection()
@@ -589,15 +596,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             elseif strcmp( obj.TabEnables_{newSelection}, 'off' )
                 tabGroup.SelectedTab = eventData.OldValue; % revert
             else
-
-
-
-
-
-
                 obj.Selection = newSelection; % update selection
-                notify( obj, 'SelectionChanged', ...
-                    uix.SelectionChangedData( oldSelection, newSelection ) )
             end
 
         end % onTabSelected
