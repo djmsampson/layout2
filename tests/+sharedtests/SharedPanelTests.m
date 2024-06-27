@@ -6,7 +6,7 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
     properties ( TestParameter )
         % Collection of invalid values for the 'Selection' property, used
         % to test that panels issue an error.
-        InvalidSelection = {2.4, int32( 2 ), [2, 3, 4], 5}
+        InvalidSelection = {2.4, -2, [2, 3, 4], 5}
     end % properties ( TestParameter )
 
     properties ( Access = private )

@@ -1,4 +1,4 @@
-classdef TabPanel < uix.Container & uix.mixin.Panel
+classdef TabPanel < uix.Container & uix.mixin.Container
     %uix.TabPanel  Tab panel
     %
     %  p = uix.TabPanel(p1,v1,p2,v2,...) constructs a tab panel and sets
@@ -17,6 +17,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
     properties( Access = public, Dependent, AbortSet )
         ForegroundColor % tab text color [RGB]
+        Selection % selection
         TabContextMenus % tab context menus
         TabEnables % tab enable states
         TabLocation % tab location [top|bottom|left|right]
@@ -30,7 +31,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     properties( Access = private )
         TabGroup % tab group
         BackgroundColorListener % listener
-        SelectionChangedListener % listener
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
@@ -57,6 +57,10 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         TabWidth % tab width
     end % deprecated
 
+    events( NotifyAccess = private )
+        SelectionChanged % selection changed
+    end
+
     methods
 
         function obj = TabPanel( varargin )
@@ -71,7 +75,8 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             tabGroup = matlab.ui.container.TabGroup( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'normalized', 'Position', [0 0 1 1], ...
-                'SelectionChangedFcn', @obj.onTabSelected );
+                'SelectionChangedFcn', @obj.onTabSelected, ...
+                'SizeChangedFcn', @obj.onTabGroupSizeChanged );
             if isprop( tabGroup, 'AutoResizeChildren' )
                 tabGroup.AutoResizeChildren = 'off';
             end
@@ -88,10 +93,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
             % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
-            obj.SelectionChangedListener = selectionChangedListener;
-
-            % Force tab group to be maximized
-            addlistener( tabGroup, 'SizeChanged', @obj.onTabGroupSizeChanged );
 
             % Set properties
             try
@@ -131,6 +132,34 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.redrawTabs()
 
         end % set.ForegroundColor
+
+        function value = get.Selection( obj )
+
+            tabGroup = obj.TabGroup;
+            value = find( tabGroup.Children == tabGroup.SelectedTab );
+            if isempty( value ), value = 0; end
+
+        end % get.Selection
+
+        function set.Selection( obj, value )
+
+            % Select
+            tabGroup = obj.TabGroup;
+            try
+                assert( isscalar( value ) )
+                tabGroup.SelectedTab = tabGroup.Children(value);
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''Selection'' must be between 1 and the number of tabs.' )
+            end
+
+            % Show selection
+            obj.showSelection()
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % set.Selection
 
         function value = get.TabEnables( obj )
 
@@ -400,7 +429,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %redraw  Redraw
 
             % Check for enabled contents
-            selection = obj.Selection_;
+            selection = obj.Selection;
             if selection == 0, return, end % no contents
 
             % Compute positions
@@ -435,6 +464,9 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %
             %  c.addChild(d) adds the child d to the container c.
 
+            % Call superclass method
+            addChild@uix.mixin.Container( obj, child )
+
             % Create new tab
             tabGroup = obj.TabGroup;
             tabs = tabGroup.Children;
@@ -446,13 +478,11 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             if isprop( tab, 'AutoResizeChildren' )
                 tab.AutoResizeChildren = 'off';
             end
-            addprop( tab, 'SizeChangedListener' );
-            tab.SizeChangedListener = event.listener( tab, ...
-                'SizeChanged', @obj.onTabSizeChanged );
+            tab.SizeChangedFcn = @obj.onTabSizeChanged;
             obj.TabEnables_(n+1,:) = {'on'};
 
-            % Call superclass method
-            addChild@uix.mixin.Panel( obj, child )
+            % Show selection
+            obj.showSelection()
 
         end % addChild
 
@@ -461,16 +491,17 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %
             %  c.removeChild(d) removes the child d from the container c.
 
-            % Find index of removed child
-            contents = obj.Contents_;
-            index = find( contents == child );
-
             % Remove tab
-            delete( obj.TabGroup.Children(index) )
+            index = find( obj.Contents_ == child );
+            tabGroup = obj.TabGroup;
+            delete( tabGroup.Children(index) )
             obj.TabEnables_(index,:) = [];
 
+            % Show selection
+            obj.showSelection()
+
             % Call superclass method
-            removeChild@uix.mixin.Panel( obj, child )
+            removeChild@uix.mixin.Container( obj, child )
 
         end % removeChild
 
@@ -480,11 +511,13 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  c.reorder(i) reorders the container contents using indices
             %  i, c.Contents = c.Contents(i).
 
-            % Reorder
-            obj.TabGroup.Children = obj.TabGroup.Children(indices,:);
-
             % Call superclass method
-            reorder@uix.mixin.Panel( obj, indices )
+            reorder@uix.mixin.Container( obj, indices )
+
+            % Reorder
+            tabGroup = obj.TabGroup;
+            tabGroup.Children = tabGroup.Children(indices,:);
+            obj.TabEnables_ = obj.TabEnables_(indices,:);
 
         end % reorder
 
@@ -494,14 +527,14 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
 
+            % Call superclass method
+            reparent@uix.mixin.Container( obj, oldFigure, newFigure )
+
             % Move context menus to new figure
             if ~isequal( oldFigure, newFigure )
                 contextMenus = vertcat( obj.TabContextMenus{:} );
                 set( contextMenus, 'Parent', newFigure );
             end
-
-            % Call superclass method
-            reparent@uix.mixin.Panel( obj, oldFigure, newFigure )
 
         end % reparent
 
@@ -521,31 +554,51 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
 
         end % redrawTabs
 
+        function showSelection( obj )
+            %showSelection  Show selected child, hide other children
+
+            contents = obj.Contents_;
+            selection = obj.Selection;
+            for ii = 1:numel( contents )
+                if ii == selection
+                    obj.showChild( contents(ii) )
+                else
+                    obj.hideChild( contents(ii) )
+                end
+            end
+
+
+        end % showSelection
+
     end % helper methods
 
     methods( Access = private )
 
-        function onTabSelected( obj, ~, ~ )
+        function onTabSelected( obj, ~, eventData )
             %onTabSelected  Event handler for interactive tab selection
             %
             %  onTabSelected shows the child of the selected tab and
             %  prevents selection of disabled tabs.
 
             % Update selection
-            oldSelection = obj.Selection_;
             tabGroup = obj.TabGroup;
-            newSelection = find( tabGroup.SelectedTab == tabGroup.Children );
+            oldSelection = find( tabGroup.Children == eventData.OldValue );
+            newSelection = find( tabGroup.Children == eventData.NewValue );
             if oldSelection == newSelection
                 % no op
             elseif strcmp( obj.TabEnables_{newSelection}, 'off' )
-                tabGroup.SelectedTab = tabGroup.Children(oldSelection); % revert
+                tabGroup.SelectedTab = eventData.OldValue; % revert
             else
-                obj.Selection = newSelection; % update selection
-            end
 
-            % Raise event
-            notify( obj, 'SelectionChanged', ...
-                uix.SelectionData( oldSelection, newSelection ) )
+
+
+
+
+
+                obj.Selection = newSelection; % update selection
+                notify( obj, 'SelectionChanged', ...
+                    uix.SelectionChangedData( oldSelection, newSelection ) )
+            end
 
         end % onTabSelected
 
@@ -561,7 +614,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
         end % onBackgroundColorChanged
 
         function onSelectionChanged( obj, source, eventData )
-            %onSelectionChanged  Event handler for SelectionChangedFcn
+            %onSelectionChanged  Event handler for selection
             %
             %  onSelectionChanged calls the SelectionChangedFcn when a
             %  SelectionChanged event is raised.
@@ -600,16 +653,6 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
             obj.Dirty = true;
 
         end % onTabSizeChanged
-
-        function onTabLocationChanged( obj, tab, ~ )
-
-            % Ignore unselected tabs
-            if obj.TabGroup.SelectedTab ~= tab, return, end
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % onTabLocationChanged
 
     end % event handlers
 

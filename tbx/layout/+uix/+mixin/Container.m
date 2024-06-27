@@ -34,6 +34,10 @@ classdef Container < handle
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
 
+    properties( Access = protected )
+        G1218142 = false % bug flag
+    end
+
     methods
 
         function obj = Container()
@@ -267,6 +271,10 @@ classdef Container < handle
 
         end % reorder
 
+    end % template methods
+
+    methods( Access = protected )
+
         function tf = isDrawable( obj )
             %isDrawable  Test for drawability
             %
@@ -278,7 +286,46 @@ classdef Container < handle
 
         end % isDrawable
 
-    end % template methods
+        function showChild( obj, child )
+            %showChild  Show child
+
+            if obj.G1218142 % bug
+                % Work around and warn
+                warning( 'uix:G1218142', ...
+                    'Child of %s is not visible due to bug G1218142, but will become visible at the next redraw.', ...
+                    class( obj ) )
+                obj.G1218142 = false; % show next time
+            else
+                % Show child and its contents
+                child.Visible = 'on';
+                if isa( child, 'matlab.graphics.axis.Axes' )
+                    child.ContentsVisible = 'on';
+                end
+            end
+
+        end % showChild
+
+        function hideChild( ~, child )
+            %hideChild  Hide child
+
+            % Hide child and its contents
+            child.Visible = 'off';
+            if isa( child, 'matlab.graphics.axis.Axes' )
+                child.ContentsVisible = 'off';
+            end
+
+            % As a remedy for g1100294, move off-screen too
+            margin = 1000;
+            if isa( child, 'matlab.graphics.axis.Axes' ) ...
+                    && strcmp(child.ActivePositionProperty, 'outerposition' )
+                child.OuterPosition(1) = -child.OuterPosition(3)-margin;
+            else
+                child.Position(1) = -child.Position(3)-margin;
+            end
+
+        end % hideChild
+
+    end % helper methods
 
 end % classdef
 
