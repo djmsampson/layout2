@@ -34,13 +34,12 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Create a listener.
             eventRaised = false;
             eventData = struct();
-            event.listener( tabPanel, ...
-                'SelectionChanged', @onSelectionChanged );
+            tabPanel.SelectionChangedFcn = @onSelectionChanged;
 
             % Use the app testing framework to click the first tab. This
             % should not change the selection.
             figureHeight = testFig.Position(4);
-            tabWidth = tabPanel.TabWidth;
+            tabWidth = 56;
             testCase.press( testFig, [tabWidth-5, figureHeight-10] )
             testCase.verifyFalse( eventRaised, ...
                 ['Clicking on the currently selected tab incorrectly ', ...
@@ -48,7 +47,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
             % Use the app testing framework to click the second tab to
             % change the selection.
-            testCase.press( testFig, [2*tabWidth-5, figureHeight-10] )
+            testCase.press( testFig, [2*tabWidth, figureHeight-10] )
 
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
