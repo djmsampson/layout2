@@ -23,19 +23,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         MouseWheelEnabled % mouse wheel scrolling enabled [on|off]
     end
     
-    properties( Access =  )
+    properties( Access = private )
         Height_ = -1 % backing for Height
         MinimumHeight_ = 1 % backing for MinimumHeight
         Width_ = -1 % backing for Width
         MinimumWidth_ = 1 % backing for MinimumWidth
-        HorizontalSlider % slider
         VerticalSlider % slider
-        HorizontalStep_ = obj.SliderStep % step
-        VerticalStep_ = obj.SliderStep % step
+        VerticalStep_ = uix.ScrollingPanel.SliderStep % step
+        HorizontalSlider % slider
+        HorizontalStep_ = uix.ScrollingPanel.SliderStep % step
         BlankingPlate % blanking plate
-    end
-    
-    properties( Access = private )
         MouseWheelListener % mouse listener
         MouseWheelEnabled_ = 'on' % backing for MouseWheelEnabled
         ScrollingListener % slider listener
@@ -62,13 +59,32 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             %
             %  p = uix.ScrollingPanel(p1,v1,p2,v2,...) sets parameter p1 to
             %  value v1, etc.
+
+            % Create sliders
+            vSlider = matlab.ui.control.UIControl( ...
+                'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels', 'Style', 'slider', ...
+                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+            hSlider = matlab.ui.control.UIControl( ...
+                'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels', 'Style', 'slider', ...
+                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+            plate = matlab.ui.control.UIControl( ...
+                'Internal', true, 'Parent', obj, ...
+                'Units', 'pixels', 'Style', 'text', 'Enable', 'inactive', ...
+                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+
+            % Store properties
+            obj.VerticalSlider = vSlider;
+            obj.HorizontalSlider = hSlider;
+            obj.BlankingPlate = plate;
             
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChanged );
             
-            % Store properties
+            % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
             
             % Set properties
@@ -103,7 +119,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Property ''Height'' must be numeric, scalar, real and finite.' )
             
             % Set
-            obj.Height_ = value;
+            obj.Height_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -122,13 +138,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             value = value(:);
             
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && value > 0 && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
+                value > 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''MinimumHeight'' must be numeric, scalar, real, positive, and finite.' )
+                'Property ''MinimumHeight'' must be numeric, scalar, real, finite and positive.' )
             
             % Set
-            obj.MinimumHeight_ = value;
+            obj.MinimumHeight_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -153,7 +170,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Property ''Width'' must be numeric, scalar, real and finite.' )
             
             % Set
-            obj.Width_ = value;
+            obj.Width_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -172,13 +189,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             value = value(:);
             
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && value > 0 && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
+                value > 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''MinimumWidth'' must be numeric, scalar, real, positive, and finite.' )
+                'Property ''MinimumWidth'' must be numeric, scalar, real, finite and positive.' )
             
             % Set
-            obj.MinimumWidth_ = value;
+            obj.MinimumWidth_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -187,18 +205,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         
         function value = get.VerticalOffset( obj )
 
-            slider = obj.VerticalSlider;
-            if isempty( slider )
-                value = zeros( size( slider ) );
-            else
-                value = -vertcat( slider.Value ) - 1;
-                value(value<0) = 0;
-            end
+            value = max( -obj.VerticalSlider.Value - 1, 0 );
             
         end % get.VerticalOffset
         
         function set.VerticalOffset( obj, value )
-            
+
+            % Reshape
+            value = value(:);
+
             % Check
             assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
                 'Property ''VerticalOffset'' must be of type double.' )
@@ -210,10 +225,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Size of property ''VerticalOffset'' must match size of contents.' )
             
             % Set
-            slider = obj.VerticalSlider;
-            for ii = 1:numel( slider )
-                slider(ii).Value = -value(ii) - 1;
-            end
+            obj.VerticalSlider.Value = -value - 1;
             
             % Mark as dirty
             obj.Dirty = true;
@@ -352,16 +364,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             if selection == 0, return, end
             
             % Retrieve width and height of selected contents
-            contentsWidth = obj.Width_(selection);
-            minimumWidth = obj.MinimumWidth_(selection);
-            contentsHeight = obj.Height_(selection);
-            minimumHeight = obj.MinimumHeight_(selection);
+            contentsWidth = obj.Width_;
+            minimumWidth = obj.MinimumWidth_;
+            contentsHeight = obj.Height_;
+            minimumHeight = obj.MinimumHeight_;
             
             % Retrieve selected contents and corresponding decorations
-            child = obj.Contents_(selection);
-            vSlider = obj.VerticalSlider(selection);
-            hSlider = obj.HorizontalSlider(selection);
-            plate = obj.BlankingPlate(selection);
+            child = obj.Contents_;
+            vSlider = obj.VerticalSlider;
+            hSlider = obj.HorizontalSlider;
+            plate = obj.BlankingPlate;
             
             % Compute dimensions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -410,7 +422,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 vSliderValue = -vSlider.Value; % negative sign convention
                 vSliderValue = max( vSliderValue, vSliderMin ); % limit
                 vSliderValue = min( vSliderValue, vSliderMax ); % limit
-                vStep = obj.VerticalStep_(selection);
+                vStep = obj.VerticalStep_;
                 vSliderStep(1) = min( vStep / vSliderMax, 1 );
                 vSliderStep(2) = max( vSliderHeight / vSliderMax, vSliderStep(1) );
                 contentsPosition(2) = contentsPosition(2) + vSliderValue;
@@ -434,7 +446,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 hSliderValue = hSlider.Value; % positive sign convention
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
-                hStep = obj.HorizontalStep_(selection);
+                hStep = obj.HorizontalStep_;
                 hSliderStep(1) = min( hStep / hSliderMax, 1 );
                 hSliderStep(2) = max( hSliderWidth / hSliderMax, hSliderStep(1) );
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
