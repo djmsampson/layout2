@@ -440,32 +440,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             
         end % redraw
         
-        function removeChild( obj, child )
-            %removeChild  Remove child
-            %
-            %  c.removeChild(d) removes the child d from the container c.
-            
-            % Identify child
-            tf = obj.Contents_ == child;
-            
-            % Destroy decorations
-            delete( obj.VerticalSlider(tf,:) )
-            delete( obj.HorizontalSlider(tf,:) )
-            delete( obj.BlankingPlate(tf,:) )
-            
-            % Remove from sizes
-            obj.VerticalSlider(tf,:) = [];
-            obj.HorizontalSlider(tf,:) = [];
-            obj.BlankingPlate(tf,:) = [];
-            obj.VerticalStep_(tf,:) = [];
-            obj.HorizontalStep_(tf,:) = [];
-            obj.updateSliderListeners()
-            
-            % Call superclass method
-            removeChild@uix.mixin.Container( obj, child )
-            
-        end % removeChild
-        
         function reparent( obj, ~, newFigure )
             %reparent  Reparent container
             %
