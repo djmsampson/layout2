@@ -587,15 +587,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  onTabSelected shows the child of the selected tab and
             %  prevents selection of disabled tabs.
 
+            % Find old and new selections
             tabGroup = obj.TabGroup;
             oldValue = find( tabGroup.Children == eventData.OldValue );
             newValue = find( tabGroup.Children == eventData.NewValue );
 
-            if oldValue == newValue
-
-                % no op
-
-            elseif strcmp( obj.TabEnables_{newValue}, 'off' )
+            if strcmp( obj.TabEnables_{newValue}, 'off' )
                 
                 % Revert
                 tabGroup.SelectedTab = eventData.OldValue;
