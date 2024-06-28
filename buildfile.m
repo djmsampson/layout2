@@ -1,5 +1,5 @@
 function plan = buildfile()
-%BUILDFILE Build file for the GUI Layout Toolbox.
+%BUILDFILE Build file for managing GUI Layout Toolbox packaging tasks.
 
 % Initialize the build plan from the local task functions below.
 plan = buildplan( localfunctions() );
@@ -7,13 +7,13 @@ projectRoot = plan.RootFolder;
 
 % Set the project root as the folder in which to check for any static code
 % issues.
-% sourceFiles = projectRoot;
-% plan("assertNoCodeIssues") = matlab.buildtool.tasks...
-%     .CodeIssuesTask( sourceFiles, ...
-%     "IncludeSubfolders", true, ...
-%     "Description", ...
-%     "Assert that there are no code issues in the project.", ...
-%     "WarningThreshold", 0 );
+sourceFiles = projectRoot;
+plan("assertNoCodeIssues") = matlab.buildtool.tasks...
+    .CodeIssuesTask( sourceFiles, ...
+    "IncludeSubfolders", true, ...
+    "Description", ...
+    "Assert that there are no code issues in the project.", ...
+    "WarningThreshold", 0 );
 
 % Add a test task to run the unit tests for the project. Generate and save
 % a coverage report.
@@ -30,20 +30,21 @@ plan("assertTestSuccess") = matlab.buildtool.tasks.TestTask( ...
 plan.DefaultTasks = "packageToolbox";
 
 % Define the task dependencies.
-%plan("generateHTMLDocumentation").Dependencies = "assertNoCodeIssues";
-plan("buildDocSearchDatabase").Dependencies = "generateHTMLDocumentation";
+plan("buildDocSearchDatabase").Dependencies = "publishHTMLDocumentation";
 plan("packageToolbox").Dependencies = "buildDocSearchDatabase";
 
 end % buildfile
 
-function generateHTMLDocumentationTask( context )
-% Generate HTML documentation from the Live Script files.
+function publishHTMLDocumentationTask( context )
+% Publish HTML documentation from the Live Script files.
 
 % List the Live Scripts comprising the documentation.
 projectRoot = context.Plan.RootFolder;
 liveDocFiles = dir( fullfile( projectRoot, "livedocsrc", "*.mlx" ) );
 liveDocFiles = struct2table( liveDocFiles );
 liveDocFiles = convertvars( liveDocFiles, ["folder", "name"], "string" );
+liveDocFolder = liveDocFiles.folder(1);
+liveDocFilenames = liveDocFiles.name;
 
 % Listen for figure creation.
 figureCreatedListener = ...
@@ -54,11 +55,13 @@ figuresToDelete = gobjects( 0, 1 );
 for k = 1 : height( liveDocFiles )
 
     % Run and export the current Live Script.
-    currentFile = fullfile( liveDocFiles.folder(k), liveDocFiles.name(k) );
-    [~, liveDocName] = fileparts( liveDocFiles.name(k) );
-    targetFile = fullfile( projectRoot, "tbx", "layoutlivedoc", ...
-        liveDocName + ".html" );
+    currentFile = fullfile( liveDocFolder, liveDocFilenames(k) );
+    [~, liveDocName] = fileparts( liveDocFilenames(k) );
+    targetFilename = liveDocName + ".html";
+    targetFile = fullfile( projectRoot, "tbx", "layoutdoc", ...
+        targetFilename );
     export( currentFile, targetFile, "Format", "html", "Run", true );
+    disp( "Published " + targetFilename + "." )
 
     % Tidy up.
     delete( figuresToDelete )
@@ -72,7 +75,7 @@ end % for
 
     end % onFigureCreated
 
-end % generateHTMLDocumentationTask
+end % publishHTMLDocumentationTask
 
 function buildDocSearchDatabaseTask( context )
 % Build the documentation search database.
@@ -86,6 +89,7 @@ if ~toolboxOnPath
     pathCleanup = onCleanup( @() rmpath( toolboxRoot ) );
 end % if
 
+% Build the doc search database.
 builddocsearchdb( layoutDocRoot() )
 
 end % buildDocSearchDatabaseTask
@@ -142,7 +146,7 @@ opts.SupportedPlatforms = struct( "Win64", true, ...
     "Glnxa64", true, ...
     "Maci64", true, ...
     "MatlabOnline", true );
-opts.ToolboxGettingStartedGuide = ""; % TODO
+opts.ToolboxGettingStartedGuide = ""; %TODO
 opts.ToolboxImageFile = fullfile( projectRoot, "glt.png" );
 opts.ToolboxName = "GUI Layout Toolbox";
 opts.ToolboxVersion = versionNumber;
@@ -151,5 +155,6 @@ opts.MaximumMatlabRelease = ""; % Current version
 
 % Package the toolbox.
 matlab.addons.toolbox.packageToolbox( opts )
+disp( mltbxName + " has been placed in the releases folder." )
 
 end % packageToolboxTask
