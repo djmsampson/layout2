@@ -457,49 +457,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             
         end % reparent
         
-        function reorder( obj, indices )
-            %reorder  Reorder contents
-            %
-            %  c.reorder(i) reorders the container contents using indices
-            %  i, c.Contents = c.Contents(i).
-            
-            % Reorder
-            obj.VerticalSlider = obj.VerticalSlider(indices,:);
-            obj.HorizontalSlider = obj.HorizontalSlider(indices,:);
-            obj.BlankingPlate = obj.BlankingPlate(indices,:);
-            obj.VerticalStep_ = obj.VerticalStep_(indices,:);
-            obj.HorizontalStep_ = obj.HorizontalStep_(indices,:);
-            
-            % Call superclass method
-            reorder@uix.mixin.Container( obj, indices )
-            
-        end % reorder
-        
-        function showSelection( obj )
-            %showSelection  Show selected child, hide the others
-            %
-            %  c.showSelection() shows the selected child of the container
-            %  c, and hides the others.
-            
-            % Call superclass method
-            showSelection@uix.mixin.Container( obj )
-            
-            % Show and hide slider based on selection
-            selection = obj.Selection_;
-            for ii = 1:numel( obj.Contents_ )
-                if ii == selection
-                    obj.VerticalSlider(ii).Visible = 'on';
-                    obj.HorizontalSlider(ii).Visible = 'on';
-                    obj.BlankingPlate(ii).Visible = 'on';
-                else
-                    obj.VerticalSlider(ii).Visible = 'off';
-                    obj.HorizontalSlider(ii).Visible = 'off';
-                    obj.BlankingPlate(ii).Visible = 'off';
-                end
-            end
-            
-        end % showSelection
-        
     end % template methods
     
     methods( Access = ?matlab.unittest.TestCase )
