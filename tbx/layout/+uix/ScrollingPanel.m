@@ -12,8 +12,8 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     %  Copyright 2009-2024 The MathWorks, Inc.
     
     properties( Dependent )
-        Heights % heights of contents, in pixels and/or weights
-        MinimumHeights % minimum heights of contents, in pixels
+        Height % height of contents, in pixels and/or weights
+        MinimumHeight % minimum height of contents, in pixels
         VerticalOffsets % vertical offsets of contents, in pixels
         VerticalSteps % vertical slider steps, in pixels
         Widths % widths of contents, in pixels and/or weights
@@ -24,8 +24,8 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     end
     
     properties( Access = protected )
-        Heights_ = zeros( [0 1] ) % backing for Heights
-        MinimumHeights_ = zeros( [0 1] ) % backing for MinimumHeights
+        Height_ = zeros( [0 1] ) % backing for Height
+        MinimumHeight_ = zeros( [0 1] ) % backing for MinimumHeight
         Widths_ = zeros( [0 1] ) % backing for Widths
         MinimumWidths_ = zeros( [0 1] ) % backing for MinimumWidths
         HorizontalSliders = matlab.ui.control.UIControl.empty( [0 1] ) % sliders
@@ -85,67 +85,55 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     
     methods
         
-        function value = get.Heights( obj )
+        function value = get.Height( obj )
             
-            value = obj.Heights_;
+            value = obj.Height_;
             
-        end % get.Heights
+        end % get.Height
         
-        function set.Heights( obj, value )
-            
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+        function set.Height( obj, value )
+
+            % Reshape
+            value = value(:);
             
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''Heights'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''Heights'' must be real and finite.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Size of property ''Heights'' must match size of contents.' )
+                'Property ''Height'' must be numeric, scalar, real and finite.' )
             
             % Set
-            obj.Heights_ = value;
+            obj.Height_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.Heights
+        end % set.Height
         
-        function value = get.MinimumHeights( obj )
+        function value = get.MinimumHeight( obj )
             
-            value = obj.MinimumHeights_;
+            value = obj.MinimumHeight_;
             
-        end % get.MinimumHeights
+        end % get.MinimumHeight
         
-        function set.MinimumHeights( obj, value )
-            
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+        function set.MinimumHeight( obj, value )
+
+            % Reshape
+            value = value(:);
             
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''MinimumHeights'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                all( value >= 0 ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''MinimumHeights'' must be non-negative.' )
-            assert( isequal( size( value ), size( obj.Heights_ ) ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Size of property ''MinimumHeights'' must match size of contents.' )
+                'Property ''MinimumHeight'' must be numeric, scalar, real and finite.' )
             
             % Set
-            obj.MinimumHeights_ = value;
+            obj.MinimumHeight_ = value;
             
             % Mark as dirty
             obj.Dirty = true;
             
-        end % set.MinimumHeights
+        end % set.MinimumHeight
         
         function value = get.VerticalOffsets( obj )
             
@@ -378,8 +366,8 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Retrieve width and height of selected contents
             contentsWidth = obj.Widths_(selection);
             minimumWidth = obj.MinimumWidths_(selection);
-            contentsHeight = obj.Heights_(selection);
-            minimumHeight = obj.MinimumHeights_(selection);
+            contentsHeight = obj.Height_(selection);
+            minimumHeight = obj.MinimumHeight_(selection);
             
             % Retrieve selected contents and corresponding decorations
             child = obj.Contents_(selection);
@@ -410,10 +398,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 [contentsWidth;vSliderWidth], ...
                 [minimumWidth;vSliderWidth], 0, 0 );
             contentsWidth = widths(1); % to be offset
-            heights = uix.calcPixelSizes( height, ...
+            height = uix.calcPixelSizes( height, ...
                 [contentsHeight;hSliderHeight], ...
                 [minimumHeight;hSliderHeight], 0, 0 );
-            contentsHeight = heights(1); % to be offset
+            contentsHeight = height(1); % to be offset
             
             % Compute positions
             contentsPosition = [1 1+hSliderHeight+vSliderHeight-contentsHeight contentsWidth contentsHeight];
@@ -497,8 +485,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
             obj.MinimumWidths_(end+1,:) = 1;
-            obj.Heights_(end+1,:) = -1;
-            obj.MinimumHeights_(end+1,:) = 1;
             obj.VerticalSliders(end+1,:) = verticalSlider;
             obj.HorizontalSliders(end+1,:) = horizontalSlider;
             obj.BlankingPlates(end+1,:) = blankingPlate;
@@ -527,8 +513,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Remove from sizes
             obj.Widths_(tf,:) = [];
             obj.MinimumWidths_(tf,:) = [];
-            obj.Heights_(tf,:) = [];
-            obj.MinimumHeights_(tf,:) = [];
             obj.VerticalSliders(tf,:) = [];
             obj.HorizontalSliders(tf,:) = [];
             obj.BlankingPlates(tf,:) = [];
@@ -567,8 +551,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Reorder
             obj.Widths_ = obj.Widths_(indices,:);
             obj.MinimumWidths_ = obj.MinimumWidths_(indices,:);
-            obj.Heights_ = obj.Heights_(indices,:);
-            obj.MinimumHeights_ = obj.MinimumWidths_(indices,:);
             obj.VerticalSliders = obj.VerticalSliders(indices,:);
             obj.HorizontalSliders = obj.HorizontalSliders(indices,:);
             obj.BlankingPlates = obj.BlankingPlates(indices,:);
