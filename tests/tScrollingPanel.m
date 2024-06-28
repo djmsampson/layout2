@@ -20,7 +20,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
         % wheel scroll callbacks.
         UpdateFigureCurrentPoint = {false, true}
         % Scrolling panel dimensions.
-        ScrollingPanelDimension = {{'Widths', 1000}, {'Heights', 1000}}
+        ScrollingPanelDimension = {{'Width', 1000}, {'Height', 1000}}
     end % properties ( TestParameter )
 
     methods ( Test, Sealed )
@@ -73,11 +73,11 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             c = uicontrol( 'Parent', scrollPanel, 'Units', 'pixels' );
 
             % Set the dimensions.
-            scrollPanel.Widths = 500;
-            scrollPanel.Heights = 600;
+            scrollPanel.Width = 500;
+            scrollPanel.Height = 600;
 
             % Verify its initial position.
-            scrollPanelDims = [scrollPanel.Widths, scrollPanel.Heights];
+            scrollPanelDims = [scrollPanel.Width, scrollPanel.Height];
             expectedPosition = [1, -199, scrollPanelDims];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['The initial position of a child of the scrolling ', ...
@@ -94,7 +94,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             end % for
 
             % Change the 'HorizontalOffsets' property.
-            scrollPanel.HorizontalOffsets = 50;
+            scrollPanel.HorizontalOffset = 50;
             expectedPosition = [-19, -199, scrollPanelDims];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Changing the ''HorizontalOffsets'' property of ', ...
@@ -102,7 +102,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
                 'position for its contents.'] )
 
             % Change the 'VerticalOffsets' property.
-            scrollPanel.VerticalOffsets = 50;
+            scrollPanel.VerticalOffset = 50;
             expectedPosition = [-19, -148, scrollPanelDims];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Changing the ''VerticalOffsets'' property of ', ...
@@ -132,8 +132,8 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Set dimensions.
             hBox.MinimumWidths(:) = 100;
-            set( scrollPanel, 'MinimumWidths', 450, ...
-                'MinimumHeights', 450 )
+            set( scrollPanel, 'MinimumWidth', 450, ...
+                'MinimumHeight', 450 )
 
             % Verify the dimensions of the h-box.
             testCase.verifyEqual( hBox.Position(3:4), [450, 450], ...
@@ -172,8 +172,8 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Set dimensions.
             vBox.MinimumHeights(:) = 100;
-            set( scrollPanel, 'MinimumWidths', 450, ...
-                'MinimumHeights', 450 )
+            set( scrollPanel, 'MinimumWidth', 450, ...
+                'MinimumHeight', 450 )
 
             % Verify the dimensions of the v-box.
             testCase.verifyEqual( vBox.Position(3:4), [450, 450], ...
@@ -222,17 +222,17 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
                 'Position', [1, 1, 1000, 1000] )
 
             % Adjust the dimensions.
-            set( scrollPanel, 'Widths', 600, 'Heights', 600 )
+            set( scrollPanel, 'Width', 600, 'Height', 600 )
 
             % Verify the offsets.
-            testCase.verifyEqual( scrollPanel.VerticalOffsets, 0, ...
-                ['The ''VerticalOffsets'' property on the ', ...
+            testCase.verifyEqual( scrollPanel.VerticalOffset, 0, ...
+                ['The ''VerticalOffset'' property on the ', ...
                 'scrolling panel is not correct when a large ', ...
                 'child was added and the dimensions of the panel ', ...
                 'were large.'] )
-            testCase.verifyEqual( scrollPanel.HorizontalOffsets, 0, ...
-                ['The ''HorizontalOffsets'' property on the ', ...
-                'scrolling panel is not correcte when a large ', ...
+            testCase.verifyEqual( scrollPanel.HorizontalOffset, 0, ...
+                ['The ''HorizontalOffset'' property on the ', ...
+                'scrolling panel is not correct when a large ', ...
                 'child was added and the dimensions of the panel ', ...
                 'were large.'] )
 
