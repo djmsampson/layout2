@@ -338,18 +338,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function redraw( obj )
             %redraw  Redraw
             
-            % Return if no contents
-            selection = obj.Selection_;
-            if selection == 0, return, end
-            
-            % Retrieve width and height of selected contents
+            % Retrieve width and height
             contentsWidth = obj.Width_;
             minimumWidth = obj.MinimumWidth_;
             contentsHeight = obj.Height_;
             minimumHeight = obj.MinimumHeight_;
             
-            % Retrieve selected contents and corresponding decorations
-            child = obj.Contents_;
+            % Retrieve decorations
             vSlider = obj.VerticalSlider;
             hSlider = obj.HorizontalSlider;
             plate = obj.BlankingPlate;
@@ -359,7 +354,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 [0 0 1 1], 'normalized', 'pixels', obj );
             width = bounds(3);
             height = bounds(4);
-            sliderSize = obj.SliderSize; % slider size
+            sliderSize = uix.ScrollingPanel.SliderSize; % slider size
             vSliderWidth = sliderSize * ...
                 (contentsHeight > height | ...
                 minimumHeight > height); % first pass
@@ -437,8 +432,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             end
             
             % Set contents and blanking plate positions
-            uix.setPosition( child, contentsPosition, 'pixels' )
-            set( plate, 'Position', platePosition )
+            contents = obj.Contents_;
+            for ii = 1:numel( contents )
+                uix.setPosition( contents(ii), contentsPosition, 'pixels' )
+            end
+            plate.Position = platePosition;
             
         end % redraw
         
