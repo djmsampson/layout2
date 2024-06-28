@@ -316,6 +316,9 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
         function tOnMouseScrolledReturnsWhenNoSelectionExists( ...
                 testCase, ConstructorName )
 
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
             % Create a scrolling panel.
             scrollPanel = testCase.constructComponent( ConstructorName );
 
