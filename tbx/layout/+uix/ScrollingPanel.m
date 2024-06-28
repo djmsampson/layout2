@@ -187,8 +187,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         
         function value = get.VerticalOffset( obj )
 
-            value = -obj.VerticalSlider.Value - 1;
-            
             slider = obj.VerticalSlider;
             if isempty( slider )
                 value = zeros( size( slider ) );
@@ -212,7 +210,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Size of property ''VerticalOffset'' must match size of contents.' )
             
             % Set
-            obj.VerticalSlider.Value = -value - 1;
+            slider = obj.VerticalSlider;
+            for ii = 1:numel( slider )
+                slider(ii).Value = -value(ii) - 1;
+            end
             
             % Mark as dirty
             obj.Dirty = true;
