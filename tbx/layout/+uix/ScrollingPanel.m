@@ -523,9 +523,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
 
-            set( obj.HorizontalSlider, 'BackgroundColor', obj.BackgroundColor )
-            set( obj.VerticalSlider, 'BackgroundColor', obj.BackgroundColor )
-            set( obj.BlankingPlate, 'BackgroundColor', obj.BackgroundColor )
+            backgroundColor = obj.BackgroundColor;
+            set( obj.HorizontalSlider, 'BackgroundColor', backgroundColor )
+            set( obj.VerticalSlider, 'BackgroundColor', backgroundColor )
+            set( obj.BlankingPlate, 'BackgroundColor', backgroundColor )
 
         end % onBackgroundColorChanged
 
