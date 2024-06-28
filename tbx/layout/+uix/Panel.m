@@ -1,11 +1,8 @@
-classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
+classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
     %uix.Panel  Standard panel
     %
     %  b = uix.Panel(p1,v1,p2,v2,...) constructs a standard panel and sets
     %  parameter p1 to value v1, etc.
-    %
-    %  A card panel is a standard panel (uipanel) that shows one its
-    %  contents and hides the others.
     %
     %  See also: uix.CardPanel, uix.BoxPanel, uipanel
 
@@ -51,9 +48,9 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
             position = [padding+1 padding+1 xSizes ySizes];
 
             % Redraw contents
-            selection = obj.Selection_;
-            if selection ~= 0
-                uix.setPosition( obj.Contents_(selection), position, 'pixels' )
+            contents = obj.Contents_;
+            for ii = 1:numel( contents )
+                uix.setPosition( contents(ii), position, 'pixels' )
             end
 
         end % redraw
