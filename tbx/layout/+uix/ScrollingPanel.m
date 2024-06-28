@@ -486,34 +486,31 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function onMouseScrolled( obj, ~, eventData )
             %onMouseScrolled  Event handler
             
-            sel = obj.Selection_;
-            if sel == 0
-                return
-            else
-                % Get pointer position and panel bounds
-                pp = getpixelposition( obj, true );
-                f = ancestor( obj, 'figure' );
-                cpu = f.CurrentPoint; % figure Units
-                cpwhu = [cpu 0 0]; % [x y] to [x y w h] for hgconvertunits
-                cpwh = hgconvertunits( f, cpwhu, f.Units, 'pixels', obj ); % pixels
-                cp = cpwh(1:2); % [x y w h] to [x y]
-                
-                % Check that pointer is over panel
-                if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
-                        cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end
-                % Scroll
-                if strcmp( obj.VerticalSlider(sel).Enable, 'on' ) % scroll vertically
-                    delta = eventData.VerticalScrollCount * ...
-                        eventData.VerticalScrollAmount * obj.VerticalStep(sel);
-                    obj.VerticalOffset(sel) = obj.VerticalOffset(sel) + delta;
-                elseif strcmp( obj.HorizontalSlider(sel).Enable, 'on' ) % scroll horizontally
-                    delta = eventData.VerticalScrollCount * ...
-                        eventData.VerticalScrollAmount * obj.HorizontalStep(sel);
-                    obj.HorizontalOffset(sel) = obj.HorizontalOffset(sel) + delta;
-                end
-                % Raise event
-                notify( obj, 'Scrolled' )
+            % Get pointer position and panel bounds
+            pp = getpixelposition( obj, true );
+            f = ancestor( obj, 'figure' );
+            cpu = f.CurrentPoint; % figure Units
+            cpwhu = [cpu 0 0]; % [x y] to [x y w h] for hgconvertunits
+            cpwh = hgconvertunits( f, cpwhu, f.Units, 'pixels', obj ); % pixels
+            cp = cpwh(1:2); % [x y w h] to [x y]
+
+            % Check that pointer is over panel
+            if cp(1) < pp(1) || cp(1) > pp(1) + pp(3) || ...
+                    cp(2) < pp(2) || cp(2) > pp(2) + pp(4), return, end
+
+            % Scroll
+            if strcmp( obj.VerticalSlider.Enable, 'on' ) % scroll vertically
+                delta = eventData.VerticalScrollCount * ...
+                    eventData.VerticalScrollAmount * obj.VerticalStep;
+                obj.VerticalOffset = obj.VerticalOffset + delta;
+            elseif strcmp( obj.HorizontalSlider.Enable, 'on' ) % scroll horizontally
+                delta = eventData.VerticalScrollCount * ...
+                    eventData.VerticalScrollAmount * obj.HorizontalStep;
+                obj.HorizontalOffset = obj.HorizontalOffset + delta;
             end
+
+            % Raise event
+            notify( obj, 'Scrolled' )
             
         end % onMouseScrolled
         
