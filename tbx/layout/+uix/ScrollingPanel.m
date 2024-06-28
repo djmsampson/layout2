@@ -205,7 +205,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         
         function value = get.VerticalOffset( obj )
 
-            value = max( -obj.VerticalSlider.Value - 1, 0 );
+            value = -obj.VerticalSlider.Value - 1;
             
         end % get.VerticalOffset
         
@@ -215,17 +215,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             value = value(:);
 
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''VerticalOffset'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''VerticalOffset'' must be real and finite.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Size of property ''VerticalOffset'' must match size of contents.' )
+                'Property ''VerticalOffset'' must be numeric, scalar, real and finite.' )
             
             % Set
-            obj.VerticalSlider.Value = -value - 1;
+            obj.VerticalSlider.Value = double( -value - 1 );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -240,24 +236,18 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         
         function set.VerticalStep( obj, value )
             
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+            % Resize
+            value = value(:);
             
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''VerticalStep'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ) && all( value > 0 ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
+                value > 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Elements of property ''VerticalStep'' must be real, finite and positive.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Size of property ''VerticalStep'' must match size of contents.' )
+                'Property ''VerticalStep'' must be numeric, scalar, real, finite and positive.' )
             
             % Set
-            obj.VerticalStep_ = value;
+            obj.VerticalStep_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -265,34 +255,24 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % set.VerticalStep
         
         function value = get.HorizontalOffset( obj )
-            
-            slider = obj.HorizontalSlider;
-            if isempty( slider )
-                value = zeros( size( slider ) );
-            else
-                value = vertcat( slider.Value );
-                value(value<0) = 0;
-            end
+
+            value = obj.HorizontalSlider.Value;
             
         end % get.HorizontalOffset
         
         function set.HorizontalOffset( obj, value )
+
+            % Reshape
+            value = value(:);
             
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''HorizontalOffset'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ), 'uix:InvalidPropertyValue', ...
-                'Elements of property ''HorizontalOffset'' must be real and finite.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
                 'uix:InvalidPropertyValue', ...
-                'Size of property ''HorizontalOffset'' must match size of contents.' )
+                'Property ''HorizontalOffset'' must be numeric, scalar, real and finite.' )
             
             % Set
-            slider = obj.HorizontalSlider;
-            for ii = 1:numel( slider )
-                slider(ii).Value = value(ii);
-            end
+            obj.HorizontalSlider.Value = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -306,25 +286,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.HorizontalStep
         
         function set.HorizontalStep( obj, value )
-            
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+
+            % Resize
+            value = value(:);
             
             % Check
-            assert( isa( value, 'double' ), 'uix:InvalidPropertyValue', ...
-                'Property ''HorizontalStep'' must be of type double.' )
-            assert( all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                ~any( isnan( value ) ) && all( value > 0 ), ...
+            assert( isnumeric( value ) && isscalar( value ) && ...
+                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
+                value > 0, ...
                 'uix:InvalidPropertyValue', ...
-                'Elements of property ''HorizontalStep'' must be real, finite and positive.' )
-            assert( isequal( size( value ), size( obj.Contents_ ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Size of property ''HorizontalStep'' must match size of contents.' )
+                'Property ''HorizontalStep'' must be numeric, scalar, real, finite and positive.' )
             
             % Set
-            obj.HorizontalStep_ = value;
+            obj.VerticalStep_ = double( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -338,17 +312,22 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.MouseWheelEnabled
         
         function set.MouseWheelEnabled( obj, value )
-            
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'MouseWheelEnabled' );
-            assert( any( strcmp( value, {'on','off'} ) ), ...
-                'uix:InvalidArgument', ...
-                'Property ''MouseWheelEnabled'' must ''on'' or ''off''.' )
+
+            % Check
+            try
+                value = char( value );
+                assert( ismember( value, {'on','off'} ) )
+            catch
+                error( 'uix:InvalidArgument', ...
+                    'Property ''MouseWheelEnabled'' must ''on'' or ''off''.' )
+            end
+
+            % Set
+            obj.MouseWheelEnabled_ = value;
             listener = obj.MouseWheelListener;
             if ~isempty( listener )
                 listener.Enabled = strcmp( value, 'on' );
             end
-            obj.MouseWheelEnabled_ = value;
             
         end % set.MouseWheelEnabled
         
