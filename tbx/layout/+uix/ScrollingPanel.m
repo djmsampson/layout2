@@ -440,38 +440,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             
         end % redraw
         
-        function addChild( obj, child )
-            %addChild  Add child
-            %
-            %  c.addChild(d) adds the child d to the container c.
-            
-            % Create decorations
-            verticalSlider = matlab.ui.control.UIControl( ...
-                'Internal', true, 'Parent', obj, ...
-                'Units', 'pixels', 'Style', 'slider', ...
-                'BackgroundColor', obj.BackgroundColor );
-            horizontalSlider = matlab.ui.control.UIControl( ...
-                'Internal', true, 'Parent', obj, ...
-                'Units', 'pixels', 'Style', 'slider', ...
-                'BackgroundColor', obj.BackgroundColor );
-            blankingPlate = matlab.ui.control.UIControl( ...
-                'Internal', true, 'Parent', obj, ...
-                'Units', 'pixels', 'Style', 'text', 'Enable', 'inactive', ...
-                'BackgroundColor', obj.BackgroundColor );
-            
-            % Add to sizes
-            obj.VerticalSlider(end+1,:) = verticalSlider;
-            obj.HorizontalSlider(end+1,:) = horizontalSlider;
-            obj.BlankingPlate(end+1,:) = blankingPlate;
-            obj.VerticalStep_(end+1,:) = obj.SliderStep;
-            obj.HorizontalStep_(end+1,:) = obj.SliderStep;
-            obj.updateSliderListeners()
-            
-            % Call superclass method
-            addChild@uix.mixin.Container( obj, child )
-            
-        end % addChild
-        
         function removeChild( obj, child )
             %removeChild  Remove child
             %
