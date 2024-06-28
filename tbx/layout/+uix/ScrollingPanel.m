@@ -64,15 +64,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             vSlider = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'slider', ...
-                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+                'BackgroundColor', obj.BackgroundColor );
             hSlider = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'slider', ...
-                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+                'BackgroundColor', obj.BackgroundColor );
             plate = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'text', 'Enable', 'inactive', ...
-                'Visible', 'off', 'BackgroundColor', obj.BackgroundColor );
+                'BackgroundColor', obj.BackgroundColor );
 
             % Store properties
             obj.VerticalSlider = vSlider;
@@ -211,7 +211,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function value = get.VerticalOffset( obj )
 
-            value = -obj.VerticalSlider.Value - 1;
+            value = max( -obj.VerticalSlider.Value - 1, 0 );
 
         end % get.VerticalOffset
 
@@ -262,7 +262,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function value = get.HorizontalOffset( obj )
 
-            value = obj.HorizontalSlider.Value;
+            value = max( obj.HorizontalSlider.Value, 0 );
 
         end % get.HorizontalOffset
 
