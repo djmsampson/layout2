@@ -1,4 +1,4 @@
-classdef CardPanel < uix.Container & uix.mixin.Panel
+classdef CardPanel < uix.Container & uix.mixin.Container
     %uix.CardPanel  Card panel
     %
     %  b = uix.CardPanel(p1,v1,p2,v2,...) constructs a card panel and sets
@@ -9,7 +9,19 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
     %
     %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
     
-    %  Copyright 2009-2020 The MathWorks, Inc.
+    %  Copyright 2009-2024 The MathWorks, Inc.
+
+    properties( Access = public, Dependent, AbortSet )
+        Selection % selection
+    end
+
+    properties
+        SelectionChangedFcn = '' % selection change callback
+    end
+
+    events( NotifyAccess = private )
+        SelectionChanged % selection changed
+    end
     
     methods
         
@@ -32,6 +44,42 @@ classdef CardPanel < uix.Container & uix.mixin.Panel
         end % constructor
         
     end % structors
+
+    methods
+
+        function value = get.Selection( obj )
+
+            value = obj.Selection_;
+
+        end % get.Selection
+
+        function set.Selection( obj, newValue )
+
+            % Select
+            oldValue = obj.Selection;
+            tabGroup = obj.TabGroup;
+            try
+                assert( isscalar( newValue ) )
+                tabGroup.SelectedTab = tabGroup.Children(newValue);
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''Selection'' must be between 1 and the number of tabs.' )
+            end
+
+            % Raise event
+            notify( obj, 'SelectionChanged', ...
+                uix.SelectionChangedData( oldValue, newValue ) )
+
+            % Show selection
+            obj.showSelection()
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % set.Selection
+
+
+    end % accessors
     
     methods( Access = protected )
         
