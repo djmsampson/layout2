@@ -14,12 +14,12 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     properties( Dependent )
         Height % height of contents, in pixels and/or weights
         MinimumHeight % minimum height of contents, in pixels
-        VerticalOffset % vertical offset of contents, in pixels
-        VerticalStep % vertical slider step, in pixels
         Width % width of contents, in pixels and/or weights
         MinimumWidth % minimum width of contents, in pixels
-        HorizontalOffset % horizontal offset of contents, in pixels
+        VerticalStep % vertical slider step, in pixels
+        VerticalOffset % vertical offset of contents, in pixels
         HorizontalStep % horizontal slider step, in pixels
+        HorizontalOffset % horizontal offset of contents, in pixels
         MouseWheelEnabled % mouse wheel scrolling enabled [on|off]
     end
     
@@ -30,9 +30,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         MinimumWidth_ = 1 % backing for MinimumWidth
         HorizontalSlider % slider
         VerticalSlider % slider
-        BlankingPlate % blanking plate
         HorizontalStep_ = obj.SliderStep % step
         VerticalStep_ = obj.SliderStep % step
+        BlankingPlate % blanking plate
     end
     
     properties( Access = private )
@@ -186,6 +186,8 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % set.MinimumWidth
         
         function value = get.VerticalOffset( obj )
+
+            value = -obj.VerticalSlider.Value - 1;
             
             slider = obj.VerticalSlider;
             if isempty( slider )
@@ -210,10 +212,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Size of property ''VerticalOffset'' must match size of contents.' )
             
             % Set
-            slider = obj.VerticalSlider;
-            for ii = 1:numel( slider )
-                slider(ii).Value = -value(ii) - 1;
-            end
+            obj.VerticalSlider.Value = -value - 1;
             
             % Mark as dirty
             obj.Dirty = true;
