@@ -1,4 +1,4 @@
-classdef ScrollingPanel < uix.Container & uix.mixin.Panel
+classdef ScrollingPanel < uix.Container & uix.mixin.Container
     %uix.ScrollingPanel  Scrolling panel
     %
     %  p = uix.ScrollingPanel(p1,v1,p2,v2,...) constructs a scrolling panel
@@ -9,7 +9,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     %
     %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
     
-    %  Copyright 2009-2020 The MathWorks, Inc.
+    %  Copyright 2009-2024 The MathWorks, Inc.
     
     properties( Dependent )
         Heights % heights of contents, in pixels and/or weights
@@ -507,7 +507,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.updateSliderListeners()
             
             % Call superclass method
-            addChild@uix.mixin.Panel( obj, child )
+            addChild@uix.mixin.Container( obj, child )
             
         end % addChild
         
@@ -537,7 +537,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.updateSliderListeners()
             
             % Call superclass method
-            removeChild@uix.mixin.Panel( obj, child )
+            removeChild@uix.mixin.Container( obj, child )
             
         end % removeChild
         
@@ -576,7 +576,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             obj.HorizontalSteps_ = obj.HorizontalSteps_(indices,:);
             
             % Call superclass method
-            reorder@uix.mixin.Panel( obj, indices )
+            reorder@uix.mixin.Container( obj, indices )
             
         end % reorder
         
@@ -587,7 +587,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             %  c, and hides the others.
             
             % Call superclass method
-            showSelection@uix.mixin.Panel( obj )
+            showSelection@uix.mixin.Container( obj )
             
             % Show and hide sliders based on selection
             selection = obj.Selection_;
