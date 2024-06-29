@@ -8,7 +8,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
     %  its contents and hides the others.
     %
     %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
-    
+
     %  Copyright 2009-2024 The MathWorks, Inc.
 
     properties( Access = public, Dependent, AbortSet )
@@ -19,16 +19,12 @@ classdef CardPanel < uix.Container & uix.mixin.Container
         Selection_ = 0 % backing for Selection
     end
 
-    properties
-        SelectionChangedFcn = '' % selection change callback
-    end
-
     events( NotifyAccess = private )
         SelectionChanged % selection changed
     end
-    
+
     methods
-        
+
         function obj = CardPanel( varargin )
             %uix.CardPanel  Card panel constructor
             %
@@ -36,7 +32,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             %
             %  p = uix.CardPanel(p1,v1,p2,v2,...) sets parameter p1 to
             %  value v1, etc.
-            
+
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -44,9 +40,9 @@ classdef CardPanel < uix.Container & uix.mixin.Container
                 delete( obj )
                 e.throwAsCaller()
             end
-            
+
         end % constructor
-        
+
     end % structors
 
     methods
@@ -63,7 +59,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             try
                 validateattributes( newValue, {'numeric'}, ...
                     {'scalar','integer','positive'} )
-                assert( newValue <= numel( obj.Contents_ ) ) % 0 AbortSet
+                assert( newValue <= numel( obj.Contents_ ) ) % nb AbortSet
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of contents.' )
@@ -77,10 +73,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             notify( obj, 'SelectionChanged', ... )
                 uix.SelectionChangedData( oldValue, newValue ) )
 
-            % Hide old selection
+            % Show and hide
             obj.hideChild( obj.Contents_(oldValue) )
-
-            % Show new selection
             obj.showChild( obj.Contents_(newValue) )
 
             % Mark as dirty
@@ -89,16 +83,16 @@ classdef CardPanel < uix.Container & uix.mixin.Container
         end % set.Selection
 
     end % accessors
-    
+
     methods( Access = protected )
-        
+
         function redraw( obj )
             %redraw  Redraw
 
-            % Return if no contents
+            % Skip if no contents
             selection = obj.Selection_;
             if selection == 0, return, end
-            
+
             % Compute positions
             b = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
@@ -106,10 +100,10 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             w = uix.calcPixelSizes( b(3), -1, 1, p, 0 );
             h = uix.calcPixelSizes( b(4), -1, 1, p, 0 );
             position = [1+p 1+p w h];
-            
+
             % Redraw contents
             uix.setPosition( obj.Contents_(selection), position, 'pixels' )
-            
+
         end % redraw
 
         function addChild( obj, child )
@@ -117,22 +111,20 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             %
             %  c.addChild(d) adds the child d to the container c.
 
-            % Hide old selection
-            oldSelection = obj.Selection_;
+            % Capture old state
             oldContents = obj.Contents_;
-            if oldSelection ~= 0
-                obj.hideChild( oldContents(oldSelection) )
-            end
+            oldSelection = obj.Selection_;
 
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
 
-            % Select new child
-            newContents = obj.Contents_;
-            newSelection = find( newContents == child );
-            obj.Selection_ = newSelection;
+            % Update selection
+            obj.Selection_ = find( obj.Contents_ == child );
 
-            % Show new selection
+            % Show and hide
+            if oldSelection ~= 0
+                obj.hideChild( oldContents(oldSelection) )
+            end
             obj.showChild( child )
 
             % Mark as dirty
@@ -145,34 +137,24 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             %
             %  c.removeChild(d) removes the child d from the container c.
 
-            % Compute new selection
-            contents = obj.Contents_;
-            index = find( contents == child );
+            % Capture old state
+            oldContents = obj.Contents_;
             oldSelection = obj.Selection_;
-            if index < oldSelection
-                newSelection = oldSelection - 1;
-            elseif index > oldSelection
-                newSelection = oldSelection;
-            else % index == oldSelection
-                newSelection = min( oldSelection, numel( contents ) - 1 );
-            end
-
-            % Hide old selection
-            obj.hideChild( contents(oldSelection) )
 
             % Call superclass method
             removeChild@uix.mixin.Container( obj, child )
 
-            % Select
-            obj.Selection_ = newSelection;
-
-            % Show new selection
-            if newSelection ~= 0
-                obj.showChild( obj.Contents_(newSelection) )
+            % Update selection
+            newContents = obj.Contents_;
+            if isempty( newContents ) % remove only child
+                obj.Selection_ = 0;
+            elseif oldContents(oldSelection) == child % remove selected child
+                newSelection = min( oldSelection, numel( newContents ) );
+                obj.Selection_ = newSelection;
+                obj.showChild( newContents(newSelection) )
+            else % remove other child, retain selection
+                obj.Selection_ = find( newContents == oldContents(oldSelection) );
             end
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % removeChild
 
@@ -188,12 +170,11 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             % Update selection
             oldSelection = obj.Selection_;
             if oldSelection ~= 0
-                newSelection = find( indices == oldSelection );
-                obj.Selection_ = newSelection;
+                obj.Selection_ = find( indices == oldSelection );
             end
 
         end % reorder
-        
+
     end % template methods
-    
+
 end % classdef
