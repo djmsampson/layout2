@@ -77,6 +77,12 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             notify( obj, 'SelectionChanged', ... )
                 uix.SelectionChangedData( oldValue, newValue ) )
 
+            % Hide old selection
+            obj.hideChild( obj.Contents_(oldValue) )
+
+            % Show new selection
+            obj.showChild( obj.Contents_(newValue) )
+
             % Mark as dirty
             obj.Dirty = true;
 
