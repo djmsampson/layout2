@@ -160,8 +160,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             notify( obj, 'SelectionChanged', ...
                 uix.SelectionChangedData( oldValue, newValue ) )
 
-            % Show selection
-            obj.showSelection()
+            % Show and hide
+            contents = obj.Contents_;
+            obj.hideChild( contents(oldValue) )
+            obj.showChild( contents(newValue) )
 
             % Mark as dirty
             obj.Dirty = true;
@@ -488,8 +490,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             tab.SizeChangedFcn = @obj.onTabSizeChanged;
             obj.TabEnables_(n+1,:) = {'on'};
 
-            % Show selection
-            obj.showSelection()
+            % Show and hide
+            if isequal( obj.Contents_, child )
+                obj.showChild( child )
+            else
+                obj.hideChild( child )
+            end
 
         end % addChild
 
@@ -498,17 +504,27 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %
             %  c.removeChild(d) removes the child d from the container c.
 
+            % Capture old state
+            oldContents = obj.Contents_;
+            oldSelection = obj.Selection;
+
+            % Call superclass method
+            removeChild@uix.mixin.Container( obj, child )
+
             % Remove tab
-            index = find( obj.Contents_ == child );
+            index = find( oldContents == child );
             tabGroup = obj.TabGroup;
             delete( tabGroup.Children(index) )
             obj.TabEnables_(index,:) = [];
 
-            % Show selection
-            obj.showSelection()
-
-            % Call superclass method
-            removeChild@uix.mixin.Container( obj, child )
+            % Show
+            if index == oldSelection
+                newContents = obj.Contents_;
+                newSelection = obj.Selection;
+                if newSelection ~= 0
+                    obj.showChild( newContents(newSelection) )
+                end
+            end
 
         end % removeChild
 
@@ -561,21 +577,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % redrawTabs
 
-        function showSelection( obj )
-            %showSelection  Show selected child, hide other children
-
-            contents = obj.Contents_;
-            selection = obj.Selection;
-            for ii = 1:numel( contents )
-                if ii == selection
-                    obj.showChild( contents(ii) )
-                else
-                    obj.hideChild( contents(ii) )
-                end
-            end
-
-        end % showSelection
-
     end % helper methods
 
     methods( Access = private )
@@ -588,10 +589,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Find old and new selections
             tabGroup = obj.TabGroup;
-            oldValue = find( tabGroup.Children == eventData.OldValue );
-            newValue = find( tabGroup.Children == eventData.NewValue );
+            oldSelection = find( tabGroup.Children == eventData.OldValue );
+            newSelection = find( tabGroup.Children == eventData.NewValue );
 
-            if strcmp( obj.TabEnables_{newValue}, 'off' )
+            if strcmp( obj.TabEnables_{newSelection}, 'off' )
 
                 % Revert
                 tabGroup.SelectedTab = eventData.OldValue;
@@ -600,10 +601,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
                 % Raise event
                 notify( obj, 'SelectionChanged', ...
-                    uix.SelectionChangedData( oldValue, newValue ) )
+                    uix.SelectionChangedData( oldSelection, newSelection ) )
 
-                % Show selection
-                obj.showSelection()
+                % Show and hide
+                contents = obj.Contents_;
+                obj.hideChild( contents(oldSelection) )
+                obj.showChild( contents(newSelection) )
 
                 % Mark as dirty
                 obj.Dirty = true;
