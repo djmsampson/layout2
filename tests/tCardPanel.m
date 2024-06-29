@@ -67,26 +67,64 @@ classdef tCardPanel < sharedtests.SharedPanelTests
 
         end % tDeletingEarlierChildPreservesSelection
 
-        function tDeletingSelectedChildPreservesSelection( testCase )
+        function tDeletingSelectedFirstChildSelectsSecondChild( testCase )
 
             % Create a card panel with controls.
             cardPanel = testCase.createCardPanelWithControls();
 
-            % Select the second child, record the current selection, then
-            % delete the second child.
-            cardPanel.Selection = 2;
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Contents(2) )
+            % Select the first child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = 1;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) );
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
 
             % Verify that the 'Selection' property has remained the same.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection, ...
-                ['The ''Selection'' property of the CardPanel ', ...
-                'has not remained the same when the current child ', ...
-                'was deleted (and the current child was not the ', ...
-                'highest index child).'] )
+            testCase.verifyEqual( newContents(newSelection), oldContents(2), ...
+                'Then CardPanel has not selected the second child when the first child was selected and deleted.' )
 
         end % tDeletingSelectedChildPreservesSelection
+
+        function tDeletingSelectedChildSelectsNextChild( testCase )
+
+            % TODO revisit whether this behavior is desirable
+
+            % Create a card panel with controls.
+            cardPanel = testCase.createCardPanelWithControls();
+
+            % Select the first child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = 2;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) );
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
+            % Verify that the 'Selection' property has remained the same.
+            testCase.verifyEqual( newContents(newSelection), oldContents(oldSelection+1), ...
+                'Then CardPanel has not selected the next child when the selected child was deleted.' )
+
+        end % tDeletingSelectedChildSelectsNextChild
+
+        function tDeletingSelectedLastChildSelectsSecondLastChild( testCase )
+
+            % Create a card panel with controls.
+            cardPanel = testCase.createCardPanelWithControls();
+
+            % Select the first child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = numel( oldContents );
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) );
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
+            % Verify that the 'Selection' property has remained the same.
+            testCase.verifyEqual( newContents(newSelection), oldContents(end-1), ...
+                'Then CardPanel has not selected the second last child when the last child was selected and deleted.' )
+
+        end % tDeletingSelectedLastChildSelectsSecondLastChild
 
         function tDeletingLaterChildPreservesSelection( testCase )
 
