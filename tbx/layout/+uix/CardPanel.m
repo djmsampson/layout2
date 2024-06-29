@@ -16,6 +16,10 @@ classdef CardPanel < uix.Container & uix.mixin.Container
     end
 
     properties
+        Selection_ = 0 % backing for Selection
+    end
+
+    properties
         SelectionChangedFcn = '' % selection change callback
     end
 
@@ -55,29 +59,28 @@ classdef CardPanel < uix.Container & uix.mixin.Container
 
         function set.Selection( obj, newValue )
 
-            % Select
-            oldValue = obj.Selection;
-            tabGroup = obj.TabGroup;
+            % Check
             try
-                assert( isscalar( newValue ) )
-                tabGroup.SelectedTab = tabGroup.Children(newValue);
+                newValue = double( newValue(:) );
+                validateattributes( value, {'numeric'}, {'scalar','integer','nonnegative'} )
+                assert( value >= ~isempty( obj.Contents_ ) && value <= numel( obj.Contents_ ) )
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''Selection'' must be between 1 and the number of tabs.' )
+                    'Property ''Selection'' must be between 1 and the number of contents.' )
             end
 
-            % Raise event
-            notify( obj, 'SelectionChanged', ...
-                uix.SelectionChangedData( oldValue, newValue ) )
+            % Set
+            oldValue = obj.Selection_;
+            obj.Selection_ = newValue;
 
-            % Show selection
-            obj.showSelection()
+            % Raise event
+            notify( obj, 'SelectionChanged', ... )
+                uix.SelectionChangedData( oldValue, newValue ) )
 
             % Mark as dirty
             obj.Dirty = true;
 
         end % set.Selection
-
 
     end % accessors
     
@@ -101,6 +104,86 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             end
             
         end % redraw
+
+        function addChild( obj, child )
+            %addChild  Add child
+            %
+            %  c.addChild(d) adds the child d to the container c.
+
+            % Hide old selection
+            oldSelection = obj.Selection_;
+            oldContents = obj.Contents_;
+            if oldSelection ~= 0
+                obj.hideChild( oldContents(oldSelection) )
+            end
+
+            % Call superclass method
+            addChild@uix.mixin.Container( obj, child )
+
+            % Select new child
+            newContents = obj.Contents_;
+            newSelection = find( newContents == child );
+            obj.Selection_ = newSelection;
+
+            % Show new selection
+            obj.showChild( child )
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % addChild
+
+        function removeChild( obj, child )
+            %removeChild  Remove child
+            %
+            %  c.removeChild(d) removes the child d from the container c.
+
+            % Compute new selection
+            contents = obj.Contents_;
+            index = find( contents == child );
+            oldSelection = obj.Selection_;
+            if index < oldSelection
+                newSelection = oldSelection - 1;
+            elseif index > oldSelection
+                newSelection = oldSelection;
+            else % index == oldSelection
+                newSelection = min( oldSelection, numel( contents ) - 1 );
+            end
+
+            % Hide old selection
+            obj.hideChild( contents(oldSelection) )
+
+            % Call superclass method
+            removeChild@uix.mixin.Container( obj, child )
+
+            % Select
+            obj.Selection_ = newSelection;
+
+            % Show new selection
+            obj.showChild( newSelection )
+
+            % Mark as dirty
+            obj.Dirty = true;
+
+        end % removeChild
+
+        function reorder( obj, indices )
+            %reorder  Reorder contents
+            %
+            %  c.reorder(i) reorders the container contents using indices
+            %  i, c.Contents = c.Contents(i).
+
+            % Call superclass method
+            reorder@uix.mixin.Container( obj, indices )
+
+            % Update selection
+            oldSelection = obj.Selection_;
+            if oldSelection ~= 0
+                newSelection = find( indices == oldSelection );
+                obj.Selection_ = newSelection;
+            end
+
+        end % reorder
         
     end % template methods
     
