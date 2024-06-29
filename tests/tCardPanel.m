@@ -25,17 +25,16 @@ classdef tCardPanel < sharedtests.SharedPanelTests
 
         end % tDeletingChildrenUnsetsSelection
 
-        function tAddingChildIncrementsSelection( testCase )
+        function tAddingChildrenSelectsLast( testCase )
 
             % Create a card panel with controls.
             cardPanel = testCase.createCardPanelWithControls();
 
-            % Verify that the third control is selected.
-            testCase.verifyEqual( cardPanel.Selection, 3, ...
-                ['The CardPanel has not correctly updated its ', ...
-                '''Selection'' property when a new child was added.'] )
+            % Verify that the added control is selected.
+            testCase.verifyEqual( cardPanel.Selection, numel( cardPanel.Contents ), ...
+                'The CardPanel has not selected the newly added child.' )
 
-        end % tAddingChildIncrementsSelection
+        end % tAddingChildrenSelectsLast
 
         function tDeletingLowerIndexChildDecrementsSelection( testCase )
 
