@@ -34,27 +34,38 @@ classdef tCardPanel < sharedtests.SharedPanelTests
             testCase.verifyEqual( cardPanel.Selection, numel( cardPanel.Contents ), ...
                 'The CardPanel has not selected the newly added child.' )
 
+            % Select earlier child.
+            cardPanel.Selection = 1;
+
+            % Add child.
+            uicontrol( 'Parent', cardPanel );
+
+            % Verify that the added control is selected.
+            testCase.verifyEqual( cardPanel.Selection, numel( cardPanel.Contents ), ...
+                'The CardPanel has not selected the newly added child.' )
+
         end % tAddingChildrenSelectsLast
 
-        function tDeletingLowerIndexChildDecrementsSelection( testCase )
+        function tDeletingEarlierChildPreservesSelection( testCase )
 
             % Create a card panel with controls.
             cardPanel = testCase.createCardPanelWithControls();
 
             % Record the current selection, then delete the first child.
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Contents(3) )
+            oldContents = cardPanel.Contents;
+            oldSelection = numel( oldContents );
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(1) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
 
             % Test that deleting a child with a lower index than the
             % current selection causes the selection index to decrease by
             % 1.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection - 1, ...
-                ['The CardPanel has not correctly updated its ', ...
-                '''Selection'' property when a child with a lower ', ...
-                'index than the current selection was deleted.'] )
+            testCase.verifyEqual( oldContents(oldSelection), newContents(newSelection), ...
+                'The CardPanel has not preserved its selection when an earlier child was deleted.' )
 
-        end % tDeletingLowerIndexChildDecrementsSelection
+        end % tDeletingEarlierChildPreservesSelection
 
         function tDeletingSelectedChildPreservesSelection( testCase )
 
@@ -77,26 +88,26 @@ classdef tCardPanel < sharedtests.SharedPanelTests
 
         end % tDeletingSelectedChildPreservesSelection
 
-        function tDeletingHigherIndexChildPreservesSelection( testCase )
+        function tDeletingLaterChildPreservesSelection( testCase )
 
             % Create a card panel with controls.
             cardPanel = testCase.createCardPanelWithControls();
 
-            % Select the second child, record the current selection, and
-            % delete the third child.
-            cardPanel.Selection = 2;
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Contents(1) )
+            % Record the current selection, then delete the first child.
+            oldContents = cardPanel.Contents;
+            oldSelection = 1;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(end) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
 
-            % Verify that the 'Selection' property has remained the same.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection, ...
-                ['The ''Selection'' property of the CardPanel ', ...
-                'has not remained the same when a higher index child ', ...
-                'was deleted (and the current child was not the ', ...
-                'highest index child).'] )
+            % Test that deleting a child with a lower index than the
+            % current selection causes the selection index to decrease by
+            % 1.
+            testCase.verifyEqual( oldContents(oldSelection), newContents(newSelection), ...
+                'The CardPanel has not preserved its selection when a later child was deleted.' )
 
-        end % tDeletingHigherIndexChildPreservesSelection
+        end % tDeletingLaterChildPreservesSelection
 
     end % methods ( Test, Sealed )
 
