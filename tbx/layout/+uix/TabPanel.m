@@ -574,7 +574,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 end
             end
 
-
         end % showSelection
 
     end % helper methods
@@ -593,7 +592,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             newValue = find( tabGroup.Children == eventData.NewValue );
 
             if strcmp( obj.TabEnables_{newValue}, 'off' )
-                
+
                 % Revert
                 tabGroup.SelectedTab = eventData.OldValue;
 
