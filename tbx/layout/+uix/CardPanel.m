@@ -61,8 +61,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
 
             % Check
             try
-                newValue = double( newValue(:) );
-                validateattributes( newValue, {'numeric'}, {'scalar','integer','nonnegative'} )
+                validateattributes( newValue, {'numeric'}, {'scalar','integer','positive'} )
                 assert( newValue >= ~isempty( obj.Contents_ ) && newValue <= numel( obj.Contents_ ) )
             catch
                 error( 'uix:InvalidPropertyValue', ...
@@ -166,7 +165,9 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             obj.Selection_ = newSelection;
 
             % Show new selection
-            obj.showChild( newSelection )
+            if newSelection ~= 0
+                obj.showChild( obj.Contents_(newSelection) )
+            end
 
             % Mark as dirty
             obj.Dirty = true;
