@@ -62,8 +62,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             % Check
             try
                 newValue = double( newValue(:) );
-                validateattributes( value, {'numeric'}, {'scalar','integer','nonnegative'} )
-                assert( value >= ~isempty( obj.Contents_ ) && value <= numel( obj.Contents_ ) )
+                validateattributes( newValue, {'numeric'}, {'scalar','integer','nonnegative'} )
+                assert( newValue >= ~isempty( obj.Contents_ ) && newValue <= numel( obj.Contents_ ) )
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of contents.' )
