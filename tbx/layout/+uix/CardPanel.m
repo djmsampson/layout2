@@ -119,7 +119,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             addChild@uix.mixin.Container( obj, child )
 
             % Update selection
-            obj.Selection_ = find( obj.Contents_ == child );
+            obj.Selection_ = find( obj.Contents_ == child ); % added
 
             % Show and hide
             if oldSelection ~= 0
@@ -147,13 +147,13 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             % Update selection
             newContents = obj.Contents_;
             if isempty( newContents ) % remove only child
-                obj.Selection_ = 0;
+                obj.Selection_ = 0; % none
             elseif oldContents(oldSelection) == child % remove selected child
-                newSelection = min( oldSelection, numel( newContents ) );
+                newSelection = min( oldSelection, numel( newContents ) ); % next or last
                 obj.Selection_ = newSelection;
                 obj.showChild( newContents(newSelection) )
             else % remove other child, retain selection
-                obj.Selection_ = find( newContents == oldContents(oldSelection) );
+                obj.Selection_ = find( newContents == oldContents(oldSelection) ); % same
             end
 
         end % removeChild
