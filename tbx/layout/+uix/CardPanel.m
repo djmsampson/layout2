@@ -61,8 +61,9 @@ classdef CardPanel < uix.Container & uix.mixin.Container
 
             % Check
             try
-                validateattributes( newValue, {'numeric'}, {'scalar','integer','positive'} )
-                assert( newValue >= ~isempty( obj.Contents_ ) && newValue <= numel( obj.Contents_ ) )
+                validateattributes( newValue, {'numeric'}, ...
+                    {'scalar','integer','positive'} )
+                assert( newValue <= numel( obj.Contents_ ) ) % 0 AbortSet
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of contents.' )
@@ -93,20 +94,21 @@ classdef CardPanel < uix.Container & uix.mixin.Container
         
         function redraw( obj )
             %redraw  Redraw
+
+            % Return if no contents
+            selection = obj.Selection_;
+            if selection == 0, return, end
             
             % Compute positions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+            b = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            padding = obj.Padding_;
-            xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
-            ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
-            position = [padding+1 padding+1 xSizes ySizes];
+            p = obj.Padding_;
+            w = uix.calcPixelSizes( b(3), -1, 1, p, 0 );
+            h = uix.calcPixelSizes( b(4), -1, 1, p, 0 );
+            position = [1+p 1+p w h];
             
             % Redraw contents
-            selection = obj.Selection_;
-            if selection ~= 0
-                uix.setPosition( obj.Contents_(selection), position, 'pixels' )
-            end
+            uix.setPosition( obj.Contents_(selection), position, 'pixels' )
             
         end % redraw
 
