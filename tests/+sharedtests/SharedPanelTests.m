@@ -14,21 +14,6 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
         WarningState
     end % properties ( Access = private )
 
-    methods ( TestClassSetup )
-
-        function suppressWarnings( testCase )
-
-            % Suppress this warning during the test procedure. Restore the
-            % original warning state when the test completes.
-            warningID = 'uix:G1218142';
-            testCase.WarningState = warning( 'query', warningID );
-            testCase.addTeardown( @() warning( testCase.WarningState ) )
-            warning( 'off', warningID )
-
-        end % suppressWarnings
-
-    end % methods ( TestClassSetup )
-
     methods ( Test, Sealed )
 
         function tContentsRespectPlacingBoxInPanel( ...
