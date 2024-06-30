@@ -75,8 +75,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             contents = obj.Contents_;
-            obj.hideChild( contents(oldValue) )
-            obj.showChild( contents(newValue) )
+            uix.mixin.Container.setVisible( contents(oldValue), 'off' )
+            uix.mixin.Container.setVisible( contents(newValue), 'on' )
 
             % Mark as dirty
             obj.Dirty = true;
@@ -124,9 +124,9 @@ classdef CardPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             if oldSelection ~= 0
-                obj.hideChild( oldContents(oldSelection) )
+                uix.mixin.Container.setVisible( oldContents(oldSelection), 'off' )
             end
-            obj.showChild( child )
+            uix.mixin.Container.setVisible( child, 'on' )
 
             % Mark as dirty
             obj.Dirty = true;
@@ -152,7 +152,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             elseif oldContents(oldSelection) == child % remove selected child
                 newSelection = min( oldSelection, numel( newContents ) ); % next or last
                 obj.Selection_ = newSelection;
-                obj.showChild( newContents(newSelection) )
+                uix.mixin.Container.setVisible( newContents(newSelection), 'on' )
             else % remove other child, retain selection
                 obj.Selection_ = find( newContents == oldContents(oldSelection) ); % same
             end
