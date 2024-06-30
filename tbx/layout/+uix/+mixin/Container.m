@@ -364,6 +364,10 @@ classdef Container < handle
 
         end % setVisible
 
+    end % helpers
+
+    methods( Static, Hidden )
+
         function setVisibleAsync( obj, f, varargin )
             %setVisibleAsync  Show or hide object, asynchronously
             %
@@ -393,14 +397,14 @@ classdef Container < handle
                 try
                     uix.mixin.setVisible( obj, f() ) % evaluate and call
                 catch e
-                    warning( e.identifier, '%s', e.message ) % rethrow as warning
+                    warning( e.identifier, '%s', e.message ) % error to warning
                 end
                 delete( findprop( obj, 'G1136196_Timer' ) ) % clean up
             end % onTimerExecuting
 
         end % setVisibleAsync
 
-    end % helper functions
+    end % hidden helpers
 
 end % classdef
 
