@@ -128,7 +128,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             end
             if obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
                 on = @()isequal( obj.Contents(obj.Selection), child );
-                obj.setVisible( child, on, 0.04 ) % future show new
+                obj.setVisible( child, on, 0.02 ) % future show new
             else
                 obj.setVisible( child, 'on' ) % show new
             end
