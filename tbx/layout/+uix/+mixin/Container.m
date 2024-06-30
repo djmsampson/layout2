@@ -327,6 +327,81 @@ classdef Container < handle
 
     end % helper methods
 
+    methods( Static )
+
+        function setVisible( obj, value )
+            %setVisible  Show or hide object and its contents
+            %
+            %  setVisible(o,'on') shows the object o and its contents.
+            %
+            %  setVisible(o,'off') hides the object o and its contents.
+
+            % Handle inputs
+            if isequal( value, true )
+                value = 'on';
+            elseif isequal( value, false )
+                value = 'off';
+            else
+                value = char( value );
+            end
+
+            % Set Visible and, if relevant, ContentsVisible
+            set( obj, 'Visible', value );
+            if isprop( obj, 'ContentsVisible' )
+                set( obj, 'ContentsVisible', value );
+            end
+
+            % As a remedy for g1100294, move off-screen too
+            margin = 1000;
+            for ii = 1:numel( obj )
+                if isprop( obj(ii), 'ActivePositionProperty' ) && ...
+                        strcmp( obj(ii).ActivePositionProperty, 'outerposition' )
+                    obj(ii).OuterPosition(1) = -obj(ii).OuterPosition(3)-margin;
+                else
+                    obj(ii).Position(1) = -obj(ii).Position(3)-margin;
+                end
+            end
+
+        end % setVisible
+
+        function setVisibleAsync( obj, f, varargin )
+            %setVisibleAsync  Show or hide object, asynchronously
+            %
+            %  uix.mixin.Container.setVisibleAsync(o,v,t) sets the
+            %  visibility of the object t to the value v at a time t
+            %  seconds in the future.  The value can be a literal ('on' or
+            %  'off') as supported by uix.mixin.Container.setVisible, or a
+            %  function handle evaluating to such a literal.
+            % 
+            %  This asynchronous operation should be used in preference to
+            %  its synchronous equivalent *only* to avoid crashes, e.g.,
+            %  G1136196 in R2014b.
+
+            timer = internal.IntervalTimer( varargin{:} ); % create timer
+            addlistener( timer, 'Executing', @onTimerExecuting ) % connect
+            if isprop( obj, 'G1136196_Timer') % already participating
+                stop( obj.G1136196_Timer ) % stop and replace
+            else
+                p = addprop( obj, 'G1136196_Timer' ); % create property
+                p.Hidden = true; % hide property
+            end
+            obj.G1136196_Timer = timer; % store timer
+            start( timer ) % start timer
+
+            function onTimerExecuting( ~, ~ )
+                stop( timer ) % single shot
+                try
+                    uix.mixin.setVisible( obj, f() ) % evaluate and call
+                catch e
+                    warning( e.identifier, '%s', e.message ) % rethrow as warning
+                end
+                delete( findprop( obj, 'G1136196_Timer' ) ) % clean up
+            end % onTimerExecuting
+
+        end % setVisibleAsync
+
+    end % helper functions
+
 end % classdef
 
 function tf = isTreeSurgery( child )

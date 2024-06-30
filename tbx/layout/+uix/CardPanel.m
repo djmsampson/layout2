@@ -126,7 +126,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             if oldSelection ~= 0
                 obj.hideChild( oldContents(oldSelection) )
             end
-            obj.showChild( child )
+            % obj.showChild( child )
+            futureShow( child )
 
             % Mark as dirty
             obj.Dirty = true;
@@ -179,3 +180,24 @@ classdef CardPanel < uix.Container & uix.mixin.Container
     end % template methods
 
 end % classdef
+
+function futureShow( child )
+
+timer = internal.IntervalTimer( 0.01 ); % create timer
+addlistener( timer, 'Executing', @onTimerExecuting ) % wire up
+p = addprop( child, 'G1136196_Timer' ); p.Hidden = true; % hidden property
+child.G1136196_Timer = timer; % store
+start( timer ) % start
+
+    function onTimerExecuting( ~, ~ )
+        stop( timer ) % single shot
+        parent = child.Parent; % container
+        if parent.Selection == find( parent.Contents == child ) % selected
+            child.Visible = 'on'; % show
+        else
+            child.Visible = 'off'; % hide
+        end
+        delete( findprop( child, 'G1136196_Timer' ) ) % clean up
+    end
+
+end
