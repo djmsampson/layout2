@@ -288,7 +288,7 @@ classdef Container < handle
 
     end % helper methods
 
-    methods( Static )
+    methods( Static, Access = protected )
 
         function setVisible( varargin )
             %setVisible  Show or hide object and its contents
