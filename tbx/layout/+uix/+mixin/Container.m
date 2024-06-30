@@ -80,7 +80,7 @@ classdef Container < handle
         function set.Contents( obj, value )
 
             % Reshape
-            value = reshape( value, [], 1 );
+            value = value(:);
 
             % Check
             [tf, indices] = ismember( value, obj.Contents_ );

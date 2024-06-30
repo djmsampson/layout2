@@ -187,7 +187,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
 
             % Reshape
-            value = reshape( value, [], 1 );
+            value = value(:);
 
             % Check
             tabs = obj.TabGroup.Children;
@@ -250,7 +250,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
 
             % Reshape
-            value = reshape( value, [], 1 );
+            value = value(:);
 
             % Check
             tabs = obj.TabGroup.Children;
@@ -274,7 +274,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         function set.TabContextMenus( obj, value )
 
             % Reshape
-            value = reshape( value, [], 1 );
+            value = value(:);
 
             % Check
             tabs = obj.TabGroup.Children;
