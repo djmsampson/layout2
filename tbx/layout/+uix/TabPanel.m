@@ -444,23 +444,23 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Compute positions
             g = obj.TabGroup;
             f = ancestor( g, 'figure' );
-            gp = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', g );
+            gb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', g );
             t = g.SelectedTab;
-            tp = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', t );
-            p = obj.Padding_;
+            tb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', t );
+            pa = obj.Padding_;
             switch g.TabLocation
                 case 'top'
-                    m = (gp(3)-tp(3))/2;
-                    cp = tp + [m m 0 0] + p * [1 1 -2 -2];
+                    m = (gb(3)-tb(3))/2;
+                    cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
                 case 'bottom'
-                    m = (gp(3)-tp(3))/2;
-                    cp = tp + [m gp(4)-tp(4)-m 0 0] + p * [1 1 -2 -2]; % TODO
+                    m = (gb(3)-tb(3))/2;
+                    cp = tb + [m gb(4)-tb(4)-m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'left'
-                    m = (gp(4)-tp(4))/2;
-                    cp = tp + [gp(3)-tp(3)-m m 0 0] + p * [1 1 -2 -2]; % TODO
+                    m = (gb(4)-tb(4))/2;
+                    cp = tb + [gb(3)-tb(3)-m m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'right'
-                    m = (gp(4)-tp(4))/2;
-                    cp = tp + [m m 0 0] + p * [1 1 -2 -2];
+                    m = (gb(4)-tb(4))/2;
+                    cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
             end
 
             % Redraw contents

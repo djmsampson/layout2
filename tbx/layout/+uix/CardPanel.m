@@ -74,8 +74,9 @@ classdef CardPanel < uix.Container & uix.mixin.Container
                 uix.SelectionChangedData( oldValue, newValue ) )
 
             % Show and hide
-            obj.hideChild( obj.Contents_(oldValue) )
-            obj.showChild( obj.Contents_(newValue) )
+            contents = obj.Contents_;
+            obj.hideChild( contents(oldValue) )
+            obj.showChild( contents(newValue) )
 
             % Mark as dirty
             obj.Dirty = true;
@@ -96,13 +97,13 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             % Compute positions
             b = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            p = obj.Padding_;
-            w = uix.calcPixelSizes( b(3), -1, 1, p, 0 );
-            h = uix.calcPixelSizes( b(4), -1, 1, p, 0 );
-            position = [1+p 1+p w h];
+            pa = obj.Padding_;
+            w = uix.calcPixelSizes( b(3), -1, 1, pa, 0 );
+            h = uix.calcPixelSizes( b(4), -1, 1, pa, 0 );
+            cp = [1+pa 1+pa w h];
 
             % Redraw contents
-            uix.setPosition( obj.Contents_(selection), position, 'pixels' )
+            uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
 
         end % redraw
 
