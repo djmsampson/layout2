@@ -126,7 +126,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             if oldSelection ~= 0
                 uix.mixin.Container.setVisible( oldContents(oldSelection), 'off' )
             end
-            uix.mixin.Container.setVisible( child, 'on', 0.04 ) % async
+            uix.mixin.Container.setVisible( child, ...
+                @()isequal( obj.Contents(obj.Selection), child ), 0.04 ) % async
 
             % Mark as dirty
             obj.Dirty = true;
