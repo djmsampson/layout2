@@ -398,13 +398,15 @@ if isprop( obj, 'ContentsVisible' )
 end
 
 % As a remedy for G1100294, move off-screen too
-margin = 1000;
-for ii = 1:numel( obj )
-    if isprop( obj(ii), 'ActivePositionProperty' ) && ...
-            strcmp( obj(ii).ActivePositionProperty, 'outerposition' )
-        obj(ii).OuterPosition(1) = -obj(ii).OuterPosition(3)-margin;
-    else
-        obj(ii).Position(1) = -obj(ii).Position(3)-margin;
+if strcmp( value, 'off' )
+    margin = 1000;
+    for ii = 1:numel( obj )
+        if isprop( obj(ii), 'ActivePositionProperty' ) && ...
+                strcmp( obj(ii).ActivePositionProperty, 'outerposition' )
+            obj(ii).OuterPosition(1) = -obj(ii).OuterPosition(3)-margin;
+        else
+            obj(ii).Position(1) = -obj(ii).Position(3)-margin;
+        end
     end
 end
 
@@ -420,7 +422,7 @@ function setVisibleAsync( obj, f, t )
 %  See also: setVisibleSync, uix.mixin.Container.setVisible
 
 timer = internal.IntervalTimer( t ); % create timer
-addlistener( timer, 'Executing', @onTimerExecuting ) % connect
+addlistener( timer, 'Executing', @onTimerExecuting ); % connect
 if isprop( obj, 'SetVisibleAsyncTimer') % already participating
     stop( obj.SetVisibleAsyncTimer ) % stop and replace
 else
