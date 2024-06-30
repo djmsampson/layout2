@@ -9,11 +9,6 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
         InvalidSelection = {2.4, -2, [2, 3, 4], 5}
     end % properties ( TestParameter )
 
-    properties ( Access = private )
-        % State associated with the warning with ID 'uix:G1218142'.
-        WarningState
-    end % properties ( Access = private )
-
     methods ( Test, Sealed )
 
         function tContentsRespectPlacingBoxInPanel( ...
