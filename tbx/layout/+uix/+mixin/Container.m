@@ -421,13 +421,13 @@ function setVisibleAsync( obj, f, t )
 
 timer = internal.IntervalTimer( t ); % create timer
 addlistener( timer, 'Executing', @onTimerExecuting ) % connect
-if isprop( obj, 'G1136196_Timer') % already participating
-    stop( obj.G1136196_Timer ) % stop and replace
+if isprop( obj, 'SetVisibleAsyncTimer') % already participating
+    stop( obj.SetVisibleAsyncTimer ) % stop and replace
 else
-    p = addprop( obj, 'G1136196_Timer' ); % create property
+    p = addprop( obj, 'SetVisibleAsyncTimer' ); % create property
     p.Hidden = true; % hide property
 end
-obj.G1136196_Timer = timer; % store timer
+obj.SetVisibleAsyncTimer = timer; % store timer
 start( timer ) % start timer
 
     function onTimerExecuting( ~, ~ )
@@ -437,7 +437,7 @@ start( timer ) % start timer
         catch e
             warning( e.identifier, '%s', e.message ) % error to warning
         end
-        delete( findprop( obj, 'G1136196_Timer' ) ) % clean up
+        delete( findprop( obj, 'SetVisibleAsyncTimer' ) ) % clean up
     end % onTimerExecuting
 
 end % setVisibleAsync
