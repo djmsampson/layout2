@@ -162,8 +162,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             contents = obj.Contents_;
-            obj.hideChild( contents(oldValue) )
-            obj.showChild( contents(newValue) )
+            obj.setVisible( contents(oldValue), 'off' ) % hide old selection
+            obj.setVisible( contents(newValue), 'on' ) % show new selection
 
             % Mark as dirty
             obj.Dirty = true;
@@ -492,9 +492,9 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             if obj.Contents_(obj.Selection) == child
-                obj.showChild( child )
+                obj.setVisible( child, 'on' ) % show if selected
             else
-                obj.hideChild( child )
+                obj.setVisible( child, 'off' ) % hide if not
             end
 
         end % addChild
@@ -518,11 +518,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             obj.TabEnables_(index,:) = [];
 
             % Show
-            if index == oldSelection
+            if index == oldSelection % removing selected
                 newContents = obj.Contents_;
                 newSelection = obj.Selection;
                 if newSelection ~= 0
-                    obj.showChild( newContents(newSelection) )
+                    obj.setVisible( newContents(newSelection), 'on' ) % show new selection
                 end
             end
 
@@ -605,8 +605,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
                 % Show and hide
                 contents = obj.Contents_;
-                obj.hideChild( contents(oldSelection) )
-                obj.showChild( contents(newSelection) )
+                obj.setVisible( contents(oldSelection), 'off' ) % hide old selection
+                obj.setVisible( contents(newSelection), 'on' ) % show new selection
 
                 % Mark as dirty
                 obj.Dirty = true;
