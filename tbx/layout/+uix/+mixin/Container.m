@@ -34,8 +34,8 @@ classdef Container < handle
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
 
-    properties( Access = protected )
-        G1218142 = false % bug flag
+    properties( Constant, Access = protected )
+        G1136196 = verLessThan( 'MATLAB', '8.5' ) % bug flag
     end
 
     methods
