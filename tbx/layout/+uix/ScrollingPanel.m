@@ -29,9 +29,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         Width_ = -1 % backing for Width
         MinimumWidth_ = 1 % backing for MinimumWidth
         VerticalSlider % slider
-        VerticalStep_ = uix.ScrollingPanel.SliderStep % step
+        VerticalStep_ = 10 % backing for VerticalStep
         HorizontalSlider % slider
-        HorizontalStep_ = uix.ScrollingPanel.SliderStep % step
+        HorizontalStep_ = 10 % backing for HorizontalStep
         BlankingPlate % blanking plate
         MouseWheelListener % mouse listener
         MouseWheelEnabled_ = 'on' % backing for MouseWheelEnabled
@@ -42,7 +42,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
     properties( Constant, Access = private )
         SliderSize = 20 % slider size, in pixels
-        SliderStep = 10 % slider step, in pixels
     end
 
     events( NotifyAccess = private )
