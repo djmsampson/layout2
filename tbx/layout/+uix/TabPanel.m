@@ -491,7 +491,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Show and hide
-            if isequal( obj.Contents_, child )
+            if obj.Contents_(obj.Selection) == child
                 obj.showChild( child )
             else
                 obj.hideChild( child )
