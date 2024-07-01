@@ -369,7 +369,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.Height = value(1);
+                obj.Height = value(1); % top
             end
 
         end % set.Heights
@@ -392,7 +392,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.MinimumHeight = value(1);
+                obj.MinimumHeight = value(1); % top
             end
 
         end % set.MinimumHeights
@@ -415,7 +415,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.Width = value(1);
+                obj.Width = value(1); % top
             end
 
         end % set.Widths
@@ -438,7 +438,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.MinimumWidth = value(1);
+                obj.MinimumWidth = value(1); % top
             end
 
         end % set.MinimumWidths
@@ -461,7 +461,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.VerticalStep = value(1);
+                obj.VerticalStep = value(1); % top
             end
 
         end % set.VerticalSteps
@@ -484,7 +484,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.VerticalOffset = value(1);
+                obj.VerticalOffset = value(1); % top
             end
 
         end % set.VerticalOffsets
@@ -507,7 +507,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.HorizontalStep = value(1);
+                obj.HorizontalStep = value(1); % top
             end
 
         end % set.HorizontalSteps
@@ -530,7 +530,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.HorizontalOffset = value(1);
+                obj.HorizontalOffset = value(1); % top
             end
 
         end % set.HorizontalOffsets
