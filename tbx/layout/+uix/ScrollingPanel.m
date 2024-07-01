@@ -343,7 +343,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.Height = value(1); % top
+                obj.Height = value(end); % top
             end
 
         end % set.Heights
@@ -363,7 +363,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.MinimumHeight = value(1); % top
+                obj.MinimumHeight = value(end); % top
             end
 
         end % set.MinimumHeights
@@ -383,7 +383,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.Width = value(1); % top
+                obj.Width = value(end); % top
             end
 
         end % set.Widths
@@ -403,7 +403,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.MinimumWidth = value(1); % top
+                obj.MinimumWidth = value(end); % top
             end
 
         end % set.MinimumWidths
@@ -423,7 +423,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.VerticalStep = value(1); % top
+                obj.VerticalStep = value(end); % top
             end
 
         end % set.VerticalSteps
@@ -443,7 +443,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.VerticalOffset = value(1); % top
+                obj.VerticalOffset = value(end); % top
             end
 
         end % set.VerticalOffsets
@@ -463,7 +463,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.HorizontalStep = value(1); % top
+                obj.HorizontalStep = value(end); % top
             end
 
         end % set.HorizontalSteps
@@ -483,7 +483,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Set
             if ~isempty( value )
-                obj.HorizontalOffset = value(1); % top
+                obj.HorizontalOffset = value(end); % top
             end
 
         end % set.HorizontalOffsets
