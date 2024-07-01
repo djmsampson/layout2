@@ -343,7 +343,7 @@ function setVisibleSync( obj, value )
 %
 %  See also: setVisibleAsync, uix.mixin.Container.setVisible
 
-% Convert logicals to 'on' or 'off'
+% Imitate matlab.lang.OnOffSwitchState
 if isequal( value, true )
     value = 'on';
 elseif isequal( value, false )
@@ -388,7 +388,7 @@ if isprop( obj, 'SetVisibleAsyncTimer') % already participating
     stop( obj.SetVisibleAsyncTimer ) % stop and replace
 else
     p = addprop( obj, 'SetVisibleAsyncTimer' ); % create property
-    p.Hidden = true; % hide property
+    p.Hidden = true; p.Transient = true; % hide property
 end
 obj.SetVisibleAsyncTimer = timer; % store timer
 start( timer ) % start timer
