@@ -41,14 +41,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     end
 
     properties( Dependent, Hidden )
-        Heights % height of contents, in pixels and/or weights
-        MinimumHeights % minimum height of contents, in pixels
-        Widths % width of contents, in pixels and/or weights
-        MinimumWidths % minimum width of contents, in pixels
-        VerticalSteps % vertical slider step, in pixels
-        VerticalOffsets % vertical offset of contents, in pixels
-        HorizontalSteps % horizontal slider step, in pixels
-        HorizontalOffsets % horizontal offset of contents, in pixels
+        Heights % transitioned to Height
+        MinimumHeights % transitioned to MinimumHeight
+        Widths % transitioned to Width
+        MinimumWidths % transitioned to MinimumWidth
+        VerticalSteps % transitioned to VerticalStep
+        VerticalOffsets % transitioned to VerticalOffset
+        HorizontalSteps % transitioned to HorizontalStep
+        HorizontalOffsets % transitioned to HorizontalOffset
+        Selection % deprecated
     end % deprecated properties
 
     properties( Constant, Access = private )
@@ -290,7 +291,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Property ''HorizontalStep'' must be numeric, scalar, real, finite and positive.' )
 
             % Set
-            obj.VerticalStep_ = double( value );
+            obj.HorizontalStep_ = double( value );
 
             % Mark as dirty
             obj.Dirty = true;
@@ -486,6 +487,18 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             end
 
         end % set.HorizontalOffsets
+
+        function value = get.Selection( obj )
+
+            value = numel( obj.Contents_ );
+
+        end % get.Selection
+
+        function set.Selection( ~, ~ )
+
+            % Ignore
+
+        end % set.Selection
 
     end % deprecated accessors
 
