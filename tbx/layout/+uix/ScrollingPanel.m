@@ -11,7 +11,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
-    properties( Dependent )
+    properties( Access = public, Dependent, AbortSet )
         Height % height of contents, in pixels and/or weights
         MinimumHeight % minimum height of contents, in pixels
         Width % width of contents, in pixels and/or weights
@@ -40,7 +40,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         BackgroundColorListener % property listener
     end
 
-    properties( Dependent, AbortSet, Hidden )
+    properties( Access = public, Dependent, AbortSet, Hidden )
         Heights % transitioned to Height
         MinimumHeights % transitioned to MinimumHeight
         Widths % transitioned to Width

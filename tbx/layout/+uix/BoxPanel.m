@@ -12,7 +12,7 @@ classdef BoxPanel < uix.Panel
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
-    properties( Dependent )
+    properties( Access = public, Dependent, AbortSet, Hidden )
         TitleColor % title background color [RGB]
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
@@ -45,7 +45,7 @@ classdef BoxPanel < uix.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
 
-    properties
+    properties( Access = public, Dependent )
         MaximizeTooltipString = 'Expand this panel' % tooltip string
         MinimizeTooltipString = 'Collapse this panel' % tooltip string
         UndockTooltipString = 'Undock this panel' % tooltip string

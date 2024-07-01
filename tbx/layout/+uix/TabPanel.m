@@ -36,7 +36,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
 
-    properties( Access = private, Constant )
+    properties( Constant, Access = private )
         DummyControl = matlab.ui.control.UIControl() % dummy uicontrol
         FontAngle_ = get( 0, 'DefaultUicontrolFontAngle' ) % backing for FontAngle
         FontName_ = get( 0, 'DefaultUicontrolFontName' ) % backing for FontName
@@ -47,7 +47,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
     end
 
-    properties( Access = public, Dependent, Hidden )
+    properties( Access = public, Dependent, AbortSet, Hidden )
         FontAngle % font angle
         FontName % font name
         FontSize % font size
