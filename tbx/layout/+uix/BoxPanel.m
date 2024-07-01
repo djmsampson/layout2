@@ -45,7 +45,7 @@ classdef BoxPanel < uix.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
 
-    properties( Access = public, Dependent )
+    properties( Access = public )
         MaximizeTooltipString = 'Expand this panel' % tooltip string
         MinimizeTooltipString = 'Collapse this panel' % tooltip string
         UndockTooltipString = 'Undock this panel' % tooltip string
