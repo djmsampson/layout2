@@ -494,19 +494,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( obj, value )
+        function set.Selection( ~, ~ )
 
-            % Check
-            try
-                validateattributes( value, {'numeric'}, ...
-                    {'scalar','integer','positive'} )
-                assert( value <= numel( obj.Contents_ ) ) % nb AbortSet
-            catch
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''Selection'' must be between 1 and the number of contents.' )
-            end
-
-            % Ignore
+            warning( 'uix:Deprecated', ...
+                'Property ''Selection'' will be removed in a future release.' )
 
         end % set.Selection
 
