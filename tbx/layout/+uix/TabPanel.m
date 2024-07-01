@@ -47,7 +47,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         ShadowColor_ = [0.7 0.7 0.7] % backing for ShadowColor
     end
 
-    properties( Access = public, Dependent, AbortSet, Hidden )
+    properties( Access = public, Dependent, Hidden )
         FontAngle % font angle
         FontName % font name
         FontSize % font size
