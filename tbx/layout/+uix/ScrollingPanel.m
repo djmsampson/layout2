@@ -40,7 +40,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         BackgroundColorListener % property listener
     end
 
-    properties( Dependent, Hidden )
+    properties( Dependent, AbortSet, Hidden )
         Heights % transitioned to Height
         MinimumHeights % transitioned to MinimumHeight
         Widths % transitioned to Width
@@ -494,7 +494,17 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( ~, ~ )
+        function set.Selection( obj, value )
+
+            % Check
+            try
+                validateattributes( value, {'numeric'}, ...
+                    {'scalar','integer','positive'} )
+                assert( value <= numel( obj.Contents_ ) ) % nb AbortSet
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''Selection'' must be between 1 and the number of contents.' )
+            end
 
             % Ignore
 
@@ -608,6 +618,21 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             plate.Position = platePosition;
 
         end % redraw
+
+        function addChild( obj, child )
+
+            % Call superclass method
+            addChild@uix.mixin.Container( obj, child )
+
+            % Bring decorations to front
+            obj.HorizontalSlider.Parent = [];
+            obj.VerticalSlider.Parent = [];
+            obj.BlankingPlate.Parent = [];
+            obj.HorizontalSlider.Parent = obj;
+            obj.VerticalSlider.Parent = obj;
+            obj.BlankingPlate.Parent = obj;
+
+        end % addChild
 
         function reparent( obj, ~, newFigure )
             %reparent  Reparent container
