@@ -125,9 +125,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.Height( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
                 isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
@@ -149,9 +146,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.MinimumHeight
 
         function set.MinimumHeight( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
@@ -176,9 +170,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.Width( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
                 isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
@@ -200,9 +191,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.MinimumWidth
 
         function set.MinimumWidth( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
@@ -227,9 +215,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.VerticalOffset( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
                 isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
@@ -251,9 +236,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.VerticalStep
 
         function set.VerticalStep( obj, value )
-
-            % Resize
-            value = value(:);
 
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
@@ -278,9 +260,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.HorizontalOffset( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
                 isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
@@ -302,9 +281,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.HorizontalStep
 
         function set.HorizontalStep( obj, value )
-
-            % Resize
-            value = value(:);
 
             % Check
             assert( isnumeric( value ) && isscalar( value ) && ...
@@ -359,9 +335,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.Heights( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
                 'uix:InvalidArgument', ...
@@ -381,9 +354,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.MinimumHeights
 
         function set.MinimumHeights( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -405,9 +375,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.Widths( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
                 'uix:InvalidArgument', ...
@@ -427,9 +394,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.MinimumWidths
 
         function set.MinimumWidths( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -451,9 +415,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.VerticalSteps( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
                 'uix:InvalidArgument', ...
@@ -473,9 +434,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.VerticalOffsets
 
         function set.VerticalOffsets( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -497,9 +455,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function set.HorizontalSteps( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
                 'uix:InvalidArgument', ...
@@ -519,9 +474,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % get.HorizontalOffsets
 
         function set.HorizontalOffsets( obj, value )
-
-            % Reshape
-            value = value(:);
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
