@@ -41,18 +41,11 @@ classdef( Abstract ) Flex < handle
             
         end % get.DividerMarkings
         
-        function set.DividerMarkings( ~, value )
+        function set.DividerMarkings( obj, ~ )
             
-            % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'DividerMarkings' );
-            assert( any( strcmp( value, {'on','off'} ) ), ...
-                'uix:InvalidArgument', ...
-                'Property ''DividerMarkings'' must be ''on'' or ''off'.' )
-
-            % Warn
-            % warning( 'uix:Deprecated', ...
-            %     'Property ''DividerMarkings'' will be removed in a future release.' )
+            warning( 'uix:Deprecated', ...
+                'Property ''DividerMarkings'' of %s has no effect and will be removed in a future release.', ...
+                class( obj ) )
             
         end % set.DividerMarkings
         

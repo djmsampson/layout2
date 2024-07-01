@@ -346,6 +346,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.Height = value(end); % top
             end
 
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''Heights'' of %s will be removed in a future release; please use ''Height'' instead.', ...
+                class( obj ) )
+
         end % set.Heights
 
         function value = get.MinimumHeights( obj )
@@ -365,6 +370,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             if ~isempty( value )
                 obj.MinimumHeight = value(end); % top
             end
+
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''MinimumHeights'' of %s will be removed in a future release; please use ''MinimumHeight'' instead.', ...
+                class( obj ) )
 
         end % set.MinimumHeights
 
@@ -386,6 +396,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.Width = value(end); % top
             end
 
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''Widths'' of %s will be removed in a future release; please use ''Width'' instead.', ...
+                class( obj ) )
+
         end % set.Widths
 
         function value = get.MinimumWidths( obj )
@@ -405,6 +420,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             if ~isempty( value )
                 obj.MinimumWidth = value(end); % top
             end
+
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''MinimumWidths'' of %s will be removed in a future release; please use ''MinimumWidth'' instead.', ...
+                class( obj ) )
 
         end % set.MinimumWidths
 
@@ -426,6 +446,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.VerticalStep = value(end); % top
             end
 
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''VerticalSteps'' of %s will be removed in a future release; please use ''VerticalStep'' instead.', ...
+                class( obj ) )
+
         end % set.VerticalSteps
 
         function value = get.VerticalOffsets( obj )
@@ -445,6 +470,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             if ~isempty( value )
                 obj.VerticalOffset = value(end); % top
             end
+
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''VerticalOffsets'' of %s will be removed in a future release; please use ''VerticalOffset'' instead.', ...
+                class( obj ) )
 
         end % set.VerticalOffsets
 
@@ -466,6 +496,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.HorizontalStep = value(end); % top
             end
 
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''HorizontalSteps'' of %s will be removed in a future release; please use ''HorizontalStep'' instead.', ...
+                class( obj ) )
+
         end % set.HorizontalSteps
 
         function value = get.HorizontalOffsets( obj )
@@ -486,6 +521,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.HorizontalOffset = value(end); % top
             end
 
+            % Warn
+            warning( 'uix:Deprecated', ...
+                'Property ''HorizontalOffsets'' of %s will be removed in a future release; please use ''HorizontalOffset'' instead.', ...
+                class( obj ) )
+
         end % set.HorizontalOffsets
 
         function value = get.Selection( obj )
@@ -497,7 +537,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Selection( ~, ~ )
 
             warning( 'uix:Deprecated', ...
-                'Property ''Selection'' of %s will be removed in a future release.', ...
+                'Property ''Selection'' of %s has no effect and will be removed in a future release.', ...
                 class( obj ) )
 
         end % set.Selection
