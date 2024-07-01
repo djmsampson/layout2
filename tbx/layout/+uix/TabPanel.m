@@ -124,7 +124,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 value = obj.DummyControl.ForegroundColor; % RGB
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''ForegroundColor'' should be a colorspec.' )
+                    'Property ''ForegroundColor'' must be a colorspec.' )
             end
 
             % Set
@@ -183,7 +183,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 value = cellstr( value );
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
+                    'Property ''TabEnables'' must be a cell array of strings ''on'' or ''off'', one per tab.' )
             end
 
             % Reshape
@@ -194,7 +194,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             assert( isequal( numel( value ), numel( tabs ) ) && ...
                 all( ismember( value, {'on','off'} ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabEnables'' should be a cell array of strings ''on'' or ''off'', one per tab.' )
+                'Property ''TabEnables'' must be a cell array of strings ''on'' or ''off'', one per tab.' )
 
             % Set
             obj.TabEnables_ = value;
@@ -217,13 +217,13 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 value = char( value );
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''TabLocation'' should be ''top'', ''bottom'', ''left'' or ''right''.' )
+                    'Property ''TabLocation'' must be ''top'', ''bottom'', ''left'' or ''right''.' )
             end
 
             % Check
             assert( ismember( value, {'top','bottom','left','right'} ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabLocation'' should be ''top'', ''bottom'', ''left'' or ''right''.' )
+                'Property ''TabLocation'' must be ''top'', ''bottom'', ''left'' or ''right''.' )
 
             % Set
             obj.TabGroup.TabLocation = value;
@@ -246,7 +246,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 value = cellstr( value );
             catch
                 error( 'uix:InvalidPropertyValue', ...
-                    'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
+                    'Property ''TabTitles'' must be a cell array of strings, one per tab.' )
             end
 
             % Reshape
@@ -256,7 +256,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             tabs = obj.TabGroup.Children;
             assert( isequal( numel( value ), numel( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabTitles'' should be a cell array of strings, one per tab.' )
+                'Property ''TabTitles'' must be a cell array of strings, one per tab.' )
 
             % Set
             for ii = 1:numel( tabs )
@@ -282,7 +282,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 numel( value ) == numel( tabs ) && ...
                 all( cellfun( @iscontextmenu, value(:) ) ), ...
                 'uix:InvalidPropertyValue', ...
-                'Property ''TabContextMenus'' should be a cell array of context menus, one per tab.' )
+                'Property ''TabContextMenus'' must be a cell array of context menus, one per tab.' )
 
             % Set
             for ii = 1:numel( tabs )
