@@ -8,6 +8,10 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
+    properties( Dependent, Hidden )
+        Selection
+    end % deprecated properties
+
     methods
 
         function obj = Panel( varargin )
@@ -34,6 +38,23 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
         end % constructor
 
     end % structors
+
+    methods
+
+        function value = get.Selection( obj )
+
+            value = numel( obj.Contents_ );
+
+        end % get.Selection
+
+        function set.Selection( ~, ~ )
+
+            warning( 'uix:Deprecated', ...
+                'Property ''Selection'' will be removed in a future release.' )
+
+        end % set.Selection
+
+    end % deprecated accessors
 
     methods( Access = protected )
 
