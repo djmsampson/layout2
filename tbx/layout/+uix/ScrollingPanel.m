@@ -40,6 +40,17 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         BackgroundColorListener % property listener
     end
 
+    properties( Dependent, Hidden )
+        Heights % height of contents, in pixels and/or weights
+        MinimumHeights % minimum height of contents, in pixels
+        Widths % width of contents, in pixels and/or weights
+        MinimumWidths % minimum width of contents, in pixels
+        VerticalSteps % vertical slider step, in pixels
+        VerticalOffsets % vertical offset of contents, in pixels
+        HorizontalSteps % horizontal slider step, in pixels
+        HorizontalOffsets % horizontal offset of contents, in pixels
+    end % deprecated properties
+
     properties( Constant, Access = private )
         SliderSize = 20 % slider size, in pixels
     end
@@ -337,6 +348,194 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         end % set.MouseWheelEnabled
 
     end % accessors
+
+    methods
+
+        function value = get.Heights( obj )
+
+            value = repmat( obj.Height, size( obj.Contents_ ) );
+
+        end % get.Heights
+
+        function set.Heights( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''Heights'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.Height = value(1);
+            end
+
+        end % set.Heights
+
+        function value = get.MinimumHeights( obj )
+
+            value = repmat( obj.MinimumHeight, size( obj.Contents_ ) );
+
+        end % get.MinimumHeights
+
+        function set.MinimumHeights( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''MinimumHeights'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.MinimumHeight = value(1);
+            end
+
+        end % set.MinimumHeights
+
+        function value = get.Widths( obj )
+
+            value = repmat( obj.Width, size( obj.Contents_ ) );
+
+        end % get.Widths
+
+        function set.Widths( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''Widths'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.Width = value(1);
+            end
+
+        end % set.Widths
+
+        function value = get.MinimumWidths( obj )
+
+            value = repmat( obj.MinimumWidth, size( obj.Contents_ ) );
+
+        end % get.MinimumWidths
+
+        function set.MinimumWidths( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''MinimumWidths'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.MinimumWidth = value(1);
+            end
+
+        end % set.MinimumWidths
+
+        function value = get.VerticalSteps( obj )
+
+            value = repmat( obj.VerticalStep, size( obj.Contents_ ) );
+
+        end % get.VerticalSteps
+
+        function set.VerticalSteps( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''VerticalSteps'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.VerticalStep = value(1);
+            end
+
+        end % set.VerticalSteps
+
+        function value = get.VerticalOffsets( obj )
+
+            value = repmat( obj.VerticalOffset, size( obj.Contents_ ) );
+
+        end % get.VerticalOffsets
+
+        function set.VerticalOffsets( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''VerticalOffsets'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.VerticalOffset = value(1);
+            end
+
+        end % set.VerticalOffsets
+
+        function value = get.HorizontalSteps( obj )
+
+            value = repmat( obj.HorizontalStep, size( obj.Contents_ ) );
+
+        end % get.HorizontalSteps
+
+        function set.HorizontalSteps( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''HorizontalSteps'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.HorizontalStep = value(1);
+            end
+
+        end % set.HorizontalSteps
+
+        function value = get.HorizontalOffsets( obj )
+
+            value = repmat( obj.HorizontalOffset, size( obj.Contents_ ) );
+
+        end % get.HorizontalOffsets
+
+        function set.HorizontalOffsets( obj, value )
+
+            % Reshape
+            value = value(:);
+
+            % Check
+            assert( numel( value ) == numel( obj.Contents_ ), ...
+                'uix:InvalidArgument', ...
+                'Property ''HorizontalOffsets'' must be an array, one per child.' )
+
+            % Set
+            if ~isempty( value )
+                obj.HorizontalOffset = value(1);
+            end
+
+        end % set.HorizontalOffsets
+
+    end % deprecated accessors
 
     methods( Access = protected )
 
