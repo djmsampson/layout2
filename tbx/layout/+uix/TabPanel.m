@@ -162,8 +162,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             contents = obj.Contents_;
-            obj.setVisible( contents(oldValue), 'off' ) % hide old selection
-            obj.setVisible( contents(newValue), 'on' ) % show new selection
+            uix.setVisible( contents(oldValue), 'off' ) % hide old selection
+            uix.setVisible( contents(newValue), 'on' ) % show new selection
 
             % Mark as dirty
             obj.Dirty = true;
@@ -492,12 +492,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Show and hide
             if obj.Contents_(obj.Selection) ~= child % not selected
-                obj.setVisible( child, 'off' ) % hide
+                uix.setVisible( child, 'off' ) % hide
             elseif obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
                 on = @()isequal( obj.Contents(obj.Selection), child );
-                obj.setVisible( child, on, 0.02 ) % future show
+                uix.setVisible( child, on, 0.02 ) % future show
             else % selected
-                obj.setVisible( child, 'on' ) % show
+                uix.setVisible( child, 'on' ) % show
             end
 
         end % addChild
@@ -525,7 +525,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 newContents = obj.Contents_;
                 newSelection = obj.Selection;
                 if newSelection ~= 0
-                    obj.setVisible( newContents(newSelection), 'on' ) % show new selection
+                    uix.setVisible( newContents(newSelection), 'on' ) % show new selection
                 end
             end
 
@@ -608,8 +608,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
                 % Show and hide
                 contents = obj.Contents_;
-                obj.setVisible( contents(oldSelection), 'off' ) % hide old selection
-                obj.setVisible( contents(newSelection), 'on' ) % show new selection
+                uix.setVisible( contents(oldSelection), 'off' ) % hide old selection
+                uix.setVisible( contents(newSelection), 'on' ) % show new selection
 
                 % Mark as dirty
                 obj.Dirty = true;
