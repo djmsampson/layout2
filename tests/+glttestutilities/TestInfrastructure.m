@@ -105,6 +105,16 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % disableOpenGLWarning
 
+        function disableDeprecationWarning( testCase )
+
+            % Disable the deprecation warning.
+            warningID = 'uix:Deprecated';
+            warningState = warning( 'query', warningID );
+            testCase.addTeardown( @() warning( warningState ) )
+            warning( 'off', warningID )
+
+        end % disableDeprecationWarning
+
     end % methods ( Sealed, TestClassSetup )
 
     methods ( Sealed, Access = protected )
