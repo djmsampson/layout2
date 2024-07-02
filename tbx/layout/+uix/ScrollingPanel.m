@@ -35,7 +35,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         BlankingPlate % blanking plate
         MouseWheelListener % mouse listener
         MouseWheelEnabled_ = 'on' % backing for MouseWheelEnabled
-        ScrollingListener % slider listener
         ScrolledListener % slider listener
         BackgroundColorListener % property listener
     end
@@ -94,14 +93,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             backgroundColorListener = event.proplistener( obj, ...
                 findprop( obj, 'BackgroundColor' ), 'PostSet', ...
                 @obj.onBackgroundColorChanged );
-            scrollingListener = event.listener( [vSlider; hSlider], ...
-                'ContinuousValueChange', @obj.onSliderScrolling );
             scrolledListener = event.listener( [vSlider; hSlider], ...
                 'Action', @obj.onSliderScrolled );
 
             % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
-            obj.ScrollingListener = scrollingListener;
             obj.ScrolledListener = scrolledListener;
 
             % Set properties
@@ -686,17 +682,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     end % template methods
 
     methods( Access = ?matlab.unittest.TestCase )
-
-        function onSliderScrolling( obj, ~, ~ )
-            %onSliderScrolling  Event handler
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-            % Raise event
-            notify( obj, 'Scrolling' )
-
-        end % onSliderScrolling
 
         function onSliderScrolled( obj, ~, ~ )
             %onSliderScrolled  Event handler
