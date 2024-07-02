@@ -600,7 +600,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             warningID = 'uix:Deprecated';
             warningState = warning( 'query', warningID );
             testCase.addTeardown( @() warning( warningState ) )
-            warning( 'on', warningID )
+            uix.warning( 'on', warningID )
 
             % For each deprecated property, check that setting it issues a
             % warning with ID 'uix:Deprecated'.
