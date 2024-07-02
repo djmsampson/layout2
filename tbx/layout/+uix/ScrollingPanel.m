@@ -534,7 +534,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( ~, ~ )
+        function set.Selection( obj, ~ )
 
             warning( 'uix:Deprecated', ...
                 'Property ''Selection'' of %s has no effect and will be removed in a future release.', ...

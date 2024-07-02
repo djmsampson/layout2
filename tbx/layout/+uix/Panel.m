@@ -47,7 +47,7 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( ~, ~ )
+        function set.Selection( obj, ~ )
 
             warning( 'uix:Deprecated', ...
                 'Property ''Selection'' of %s has no effect and will be removed in a future release.', ...
