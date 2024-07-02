@@ -549,11 +549,12 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function redraw( obj )
             %redraw  Redraw
 
-            % Retrieve width and height
+            % Retrieve width, height and padding
             contentsWidth = obj.Width_;
             minimumWidth = obj.MinimumWidth_;
             contentsHeight = obj.Height_;
             minimumHeight = obj.MinimumHeight_;
+            padding = obj.Padding_;
 
             % Retrieve decorations
             vSlider = obj.VerticalSlider;
@@ -561,38 +562,44 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             plate = obj.BlankingPlate;
 
             % Compute dimensions
-            bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
+            panelBounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            width = bounds(3);
-            height = bounds(4);
+            panelWidth = panelBounds(3);
+            panelHeight = panelBounds(4);
             sliderSize = uix.ScrollingPanel.SliderSize; % slider size
             vSliderWidth = sliderSize * ...
-                (contentsHeight > height | ...
-                minimumHeight > height); % first pass
+                (contentsHeight + 2*padding > panelHeight | ...
+                minimumHeight + 2*padding > panelHeight); % first pass
             hSliderHeight = sliderSize * ...
-                (contentsWidth > width - vSliderWidth | ...
-                minimumWidth > width - vSliderWidth);
+                (contentsWidth + 2*padding > panelWidth - vSliderWidth | ...
+                minimumWidth + 2*padding > panelWidth - vSliderWidth);
             vSliderWidth = sliderSize * ...
-                (contentsHeight > height - hSliderHeight | ...
-                minimumHeight > height - hSliderHeight); % second pass
-            vSliderWidth = min( vSliderWidth, width ); % limit
-            hSliderHeight = min( hSliderHeight, height ); % limit
-            vSliderHeight = height - hSliderHeight;
-            hSliderWidth = width - vSliderWidth;
-            width = uix.calcPixelSizes( width, ...
+                (contentsHeight + 2*padding > panelHeight - hSliderHeight | ...
+                minimumHeight + 2*padding > panelHeight - hSliderHeight); % second pass
+            vSliderWidth = min( vSliderWidth, panelWidth ); % limit
+            hSliderHeight = min( hSliderHeight, panelHeight ); % limit
+            vSliderHeight = panelHeight - hSliderHeight;
+            hSliderWidth = panelWidth - vSliderWidth;
+            widths = uix.calcPixelSizes( panelWidth, ...
                 [contentsWidth;vSliderWidth], ...
-                [minimumWidth;vSliderWidth], 0, 0 );
-            contentsWidth = width(1); % to be offset
-            height = uix.calcPixelSizes( height, ...
+                [minimumWidth;vSliderWidth], padding, 0 );
+            contentsWidth = widths(1);
+            heights = uix.calcPixelSizes( panelHeight, ...
                 [contentsHeight;hSliderHeight], ...
-                [minimumHeight;hSliderHeight], 0, 0 );
-            contentsHeight = height(1); % to be offset
+                [minimumHeight;hSliderHeight], padding, 0 );
+            contentsHeight = heights(1);
 
             % Compute positions
-            contentsPosition = [1 1+hSliderHeight+vSliderHeight-contentsHeight contentsWidth contentsHeight];
-            vSliderPosition = [1+hSliderWidth 1+hSliderHeight vSliderWidth vSliderHeight];
-            hSliderPosition = [1 1 hSliderWidth hSliderHeight];
-            platePosition = [1+hSliderWidth 1 vSliderWidth hSliderHeight];
+            contentsPosition = [1 1 0 0] + ...
+                [0 0 contentsWidth contentsHeight] + ...
+                hSliderHeight * [0 1 0 0] + ...
+                padding * [1 1 0 0];
+            vSliderPosition = [1 1 0 0] + ...
+                [hSliderWidth hSliderHeight vSliderWidth vSliderHeight];
+            hSliderPosition = [1 1 0 0] + ...
+                [0 0 hSliderWidth hSliderHeight];
+            platePosition = [1 1 0 0] + ...
+                [hSliderWidth 0 vSliderWidth hSliderHeight];
 
             % Compute and set vertical slider properties
             if vSliderWidth == 0 || vSliderHeight == 0 || vSliderHeight <= vSliderWidth
@@ -603,19 +610,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             else
                 % Compute properties
                 vSliderMin = 0;
-                vSliderMax = contentsHeight - vSliderHeight;
-                vSliderValue = -vSlider.Value; % negative sign convention
+                vSliderMax = contentsHeight + 2*padding - vSliderHeight;
+                vSliderValue = vSlider.Value; % negative sign convention
                 vSliderValue = max( vSliderValue, vSliderMin ); % limit
                 vSliderValue = min( vSliderValue, vSliderMax ); % limit
                 vStep = obj.VerticalStep_;
                 vSliderStep(1) = min( vStep / vSliderMax, 1 );
                 vSliderStep(2) = max( vSliderHeight / vSliderMax, vSliderStep(1) );
-                contentsPosition(2) = contentsPosition(2) + vSliderValue;
+                contentsPosition(2) = contentsPosition(2) - vSliderValue;
                 % Set properties
                 set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
                     'Position', vSliderPosition, ...
-                    'Min', -vSliderMax, 'Max', -vSliderMin, ...
-                    'Value', -vSliderValue, 'SliderStep', vSliderStep )
+                    'Min', vSliderMin, 'Max', vSliderMax, ...
+                    'Value', vSliderValue, 'SliderStep', vSliderStep )
             end
 
             % Compute and set horizontal slider properties
@@ -627,7 +634,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             else
                 % Compute properties
                 hSliderMin = 0;
-                hSliderMax = contentsWidth - hSliderWidth;
+                hSliderMax = contentsWidth + 2*padding - hSliderWidth;
                 hSliderValue = hSlider.Value; % positive sign convention
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
