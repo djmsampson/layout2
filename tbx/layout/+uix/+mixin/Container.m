@@ -38,10 +38,6 @@ classdef Container < handle
         G1136196 = verLessThan( 'MATLAB', '8.5' ) % bug flag
     end
 
-    properties( Constant, Access = private )
-        Setup = setup() % setup
-    end
-
     methods
 
         function obj = Container()
@@ -320,25 +316,6 @@ classdef Container < handle
     end % helpers
 
 end % classdef
-
-function ok = setup()
-%setup  Class setup
-%
-%  setup() sets up GUI Layout Toolbox by:
-%  * disabling deprecation warnings
-
-% Disable warnings
-ids = {'uix:Deprecated'};
-w = warning( 'query' ); % existing overrides
-for ii = 1:numel( ids )
-    id = ids{ii};
-    if ~ismember( id, {w.identifier} ), warning( 'off', id ), end % disable
-end
-
-% Return
-ok = true;
-
-end % setup
 
 function tf = isTreeSurgery( child )
 %isTreeSurgery  Test for internal tree surgery
