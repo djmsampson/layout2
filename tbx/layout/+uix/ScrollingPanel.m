@@ -606,17 +606,18 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 % Slider is invisible or incorrectly oriented
                 set( vSlider, 'Style', 'text', 'Enable', 'inactive', ...
                     'Position', vSliderPosition, ...
-                    'Min', 0, 'Max', 1, 'Value', 1 )
+                    'Min', -1, 'Max', 1, 'Value', 0 )
             else
                 % Compute properties
                 vSliderMin = panelHeight - contentsHeight - 2*padding;
                 vSliderMax = 0;
-                vSliderValue = vSlider.Value; % negative sign convention
+                vSliderValue = vSlider.Value;
                 vSliderValue = max( vSliderValue, vSliderMin );
                 vSliderValue = min( vSliderValue, vSliderMax );
                 vStep = obj.VerticalStep_;
-                vSliderStep(1) = vStep / (vSliderMax - vSliderMin);
-                vSliderStep(2) = panelHeight / (vSliderMax - vSliderMin);
+                vSliderStep(1) = min( vStep / ( vSliderMax - vSliderMin ), 1 ); % minor
+                vSliderStep(2) = panelHeight / ( contentsHeight + 2*padding - panelHeight ); % major
+                vSliderStep(1) = min( vSliderStep(1), vSliderStep(2) ); % limit minor
                 contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
                 % Set properties
                 set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
