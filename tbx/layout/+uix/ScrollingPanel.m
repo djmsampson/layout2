@@ -609,15 +609,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                     'Min', 0, 'Max', 1, 'Value', 1 )
             else
                 % Compute properties
-                vSliderMin = 0;
-                vSliderMax = contentsHeight + 2*padding - vSliderHeight;
+                vSliderMin = panelHeight - contentsHeight - 2*padding;
+                vSliderMax = 0;
                 vSliderValue = vSlider.Value; % negative sign convention
-                vSliderValue = max( vSliderValue, vSliderMin ); % limit
-                vSliderValue = min( vSliderValue, vSliderMax ); % limit
+                vSliderValue = max( vSliderValue, vSliderMin );
+                vSliderValue = min( vSliderValue, vSliderMax );
                 vStep = obj.VerticalStep_;
-                vSliderStep(1) = min( vStep / vSliderMax, 1 );
-                vSliderStep(2) = max( vSliderHeight / vSliderMax, vSliderStep(1) );
-                contentsPosition(2) = contentsPosition(2) - vSliderValue;
+                vSliderStep(1) = vStep / (vSliderMax - vSliderMin);
+                vSliderStep(2) = panelHeight / (vSliderMax - vSliderMin);
+                contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
                 % Set properties
                 set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
                     'Position', vSliderPosition, ...
@@ -630,17 +630,18 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 % Slider is invisible or incorrectly oriented
                 set( hSlider, 'Style', 'text', 'Enable', 'inactive', ...
                     'Position', hSliderPosition, ...
-                    'Min', -1, 'Max', 0, 'Value', -1 )
+                    'Min', -1, 'Max', 1, 'Value', 0 )
             else
                 % Compute properties
                 hSliderMin = 0;
-                hSliderMax = contentsWidth + 2*padding - hSliderWidth;
+                hSliderMax = contentsWidth + 2*padding - panelWidth;
                 hSliderValue = hSlider.Value; % positive sign convention
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
                 hStep = obj.HorizontalStep_;
-                hSliderStep(1) = min( hStep / hSliderMax, 1 );
-                hSliderStep(2) = max( hSliderWidth / hSliderMax, hSliderStep(1) );
+                hSliderStep(1) = min( hStep / ( hSliderMax - hSliderMin ), 1 ); % minor
+                hSliderStep(2) = panelWidth / ( contentsWidth + 2*padding - panelWidth ); % major
+                hSliderStep(1) = min( hSliderStep(1), hSliderStep(2) ); % limit minor
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
                 % Set properties
                 set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
