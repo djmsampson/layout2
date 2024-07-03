@@ -609,14 +609,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                     'Min', -1, 'Max', 1, 'Value', 0 )
             else
                 % Compute properties
-                vSliderMin = panelHeight - contentsHeight - 2*padding;
+                vSliderMin = panelHeight - contentsHeight - 2*padding - hSliderHeight;
                 vSliderMax = 0;
                 vSliderValue = vSlider.Value;
                 vSliderValue = max( vSliderValue, vSliderMin );
                 vSliderValue = min( vSliderValue, vSliderMax );
                 vStep = obj.VerticalStep_;
                 vSliderStep(1) = min( vStep / ( vSliderMax - vSliderMin ), 1 ); % minor
-                vSliderStep(2) = panelHeight / ( contentsHeight + 2*padding - panelHeight ); % major
+                vSliderStep(2) = panelHeight / ( contentsHeight + 2*padding - panelHeight + hSliderHeight ); % major
                 vSliderStep(1) = min( vSliderStep(1), vSliderStep(2) ); % limit minor
                 contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
                 % Set properties
@@ -635,13 +635,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             else
                 % Compute properties
                 hSliderMin = 0;
-                hSliderMax = contentsWidth + 2*padding - panelWidth;
+                hSliderMax = contentsWidth + 2*padding - panelWidth + vSliderWidth;
                 hSliderValue = hSlider.Value; % positive sign convention
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
                 hStep = obj.HorizontalStep_;
                 hSliderStep(1) = min( hStep / ( hSliderMax - hSliderMin ), 1 ); % minor
-                hSliderStep(2) = panelWidth / ( contentsWidth + 2*padding - panelWidth ); % major
+                hSliderStep(2) = panelWidth / ( contentsWidth + 2*padding - panelWidth + vSliderWidth ); % major
                 hSliderStep(1) = min( hSliderStep(1), hSliderStep(2) ); % limit minor
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
                 % Set properties
