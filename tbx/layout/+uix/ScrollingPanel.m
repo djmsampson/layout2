@@ -605,15 +605,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Compute vertical slider properties
             if vSliderWidth == 0 || vSliderHeight == 0 || vSliderHeight <= vSliderWidth
                 % Slider is invisible or incorrectly oriented
-                vSliderMin = -1;
-                vSliderMax = 1;
-                vSliderValue = 0;
+                vSliderMin = -1; % bottom
+                vSliderMax = 0; % top
+                vSliderValue = vSliderMax; % top
                 vSliderStep = vSlider.SliderStep;
             else
                 % Compute properties
-                vSliderMin = (panelHeight - hSliderHeight) - (contentsHeight + 2*padding);
-                vSliderMax = 0;
-                vSliderValue = vSlider.Value;
+                vSliderMin = (panelHeight - hSliderHeight) - (contentsHeight + 2*padding); % bottom
+                vSliderMax = 0; % top
+                vSliderValue = vSlider.Value; % actual
                 vSliderValue = max( vSliderValue, vSliderMin ); % limit
                 vSliderValue = min( vSliderValue, vSliderMax ); % limit
                 vStep = obj.VerticalStep_;
@@ -627,15 +627,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Compute horizontal slider properties
             if hSliderHeight == 0 || hSliderWidth == 0 || hSliderWidth <= hSliderHeight
                 % Slider is invisible or incorrectly oriented
-                hSliderMin = -1;
-                hSliderMax = 1;
-                hSliderValue = 0;
+                hSliderMin = 0; % left
+                hSliderMax = 1; % right
+                hSliderValue = hSliderMin; % left
                 hSliderStep = hSlider.SliderStep;
             else
                 % Compute properties
-                hSliderMin = 0;
-                hSliderMax = (contentsWidth + 2*padding) - (panelWidth - vSliderWidth);
-                hSliderValue = hSlider.Value; % positive sign convention
+                hSliderMin = 0; % left
+                hSliderMax = (contentsWidth + 2*padding) - (panelWidth - vSliderWidth); % right
+                hSliderValue = hSlider.Value; % actual
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
                 hStep = obj.HorizontalStep_;
