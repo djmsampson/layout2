@@ -41,6 +41,10 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         BackgroundColorListener % property listener
     end
 
+    properties( Access = public, Hidden )
+        Continuous = 'on' % continuous scrolling
+    end
+
     properties( Access = public, Dependent, AbortSet, Hidden )
         Heights % transitioned to Height
         MinimumHeights % transitioned to MinimumHeight
@@ -58,7 +62,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     end
 
     events( NotifyAccess = private )
-        Scrolling
         Scrolled
     end
 
@@ -324,6 +327,22 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             end
 
         end % set.MouseWheelEnabled
+
+        function set.Continuous( obj, value )
+
+            % Check
+            try
+                value = char( value );
+                assert( ismember( value, {'on','off'} ) )
+            catch
+                error( 'uix:InvalidArgument', ...
+                    'Property ''Continuous'' must ''on'' or ''off''.' )
+            end
+
+            % Set
+            obj.Continuous = value;
+
+        end % set.Continuous
 
     end % accessors
 
@@ -605,12 +624,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Compute vertical slider properties
             if vSliderWidth == 0 || vSliderHeight == 0 || vSliderHeight <= vSliderWidth
                 % Slider is invisible or incorrectly oriented
+                vSliderEnable = 'off';
                 vSliderMin = -1; % bottom
                 vSliderMax = 0; % top
                 vSliderValue = vSliderMax; % top
                 vSliderStep = vSlider.SliderStep;
             else
                 % Compute properties
+                vSliderEnable = 'on';
                 vSliderMin = (panelHeight - hSliderHeight) - ...
                     (contentsHeight + 2*padding); % bottom
                 vSliderMax = 0; % top
@@ -630,12 +651,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Compute horizontal slider properties
             if hSliderHeight == 0 || hSliderWidth == 0 || hSliderWidth <= hSliderHeight
                 % Slider is invisible or incorrectly oriented
+                hSliderEnable = 'off';
                 hSliderMin = 0; % left
                 hSliderMax = 1; % right
                 hSliderValue = hSliderMin; % left
                 hSliderStep = hSlider.SliderStep;
             else
                 % Compute properties
+                hSliderEnable = 'on';
                 hSliderMin = 0; % left
                 hSliderMax = (contentsWidth + 2*padding) - ...
                     (panelWidth - vSliderWidth); % right
@@ -656,11 +679,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 case 'on'
                     % setting properties interrupts continuous scrolling
                 case 'off'
-                    set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
+                    set( vSlider, 'Style', 'slider', ...
+                        'Enable', vSliderEnable, ...
                         'Position', vSliderPosition, ...
                         'Min', vSliderMin, 'Max', vSliderMax, ...
                         'Value', vSliderValue, 'SliderStep', vSliderStep )
-                    set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
+                    set( hSlider, 'Style', 'slider', ...
+                        'Enable', hSliderEnable, ...
                         'Position', hSliderPosition, ...
                         'Min', hSliderMin, 'Max', hSliderMax, ...
                         'Value', hSliderValue, 'SliderStep', hSliderStep )
@@ -717,11 +742,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             % Set flag
             obj.Scrolling_ = 'on';
 
-            % Mark as dirty
-            obj.Dirty = true;
+            if strcmp( obj.Continuous, 'on' )
 
-            % Raise event
-            notify( obj, 'Scrolling' )
+                % Mark as dirty
+                obj.Dirty = true;
+
+                % Raise event
+                notify( obj, 'Scrolled' )
+
+            end
 
         end % onSliderScrolling
 
