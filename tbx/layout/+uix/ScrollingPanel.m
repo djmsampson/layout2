@@ -210,7 +210,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function value = get.VerticalOffset( obj )
 
-            value = max( -obj.VerticalSlider.Value - 1, 0 );
+            value = -obj.VerticalSlider.Value;
 
         end % get.VerticalOffset
 
@@ -223,7 +223,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Property ''VerticalOffset'' must be numeric, scalar, real and finite.' )
 
             % Set
-            obj.VerticalSlider.Value = double( -value - 1 );
+            obj.VerticalSlider.Value = double( -value );
 
             % Mark as dirty
             obj.Dirty = true;
@@ -255,7 +255,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         function value = get.HorizontalOffset( obj )
 
-            value = max( obj.HorizontalSlider.Value, 0 );
+            value = obj.HorizontalSlider.Value;
 
         end % get.HorizontalOffset
 
@@ -609,15 +609,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                     'Min', -1, 'Max', 1, 'Value', 0 )
             else
                 % Compute properties
-                vSliderMin = panelHeight - hSliderHeight - contentsHeight - 2*padding;
+                vSliderMin = (panelHeight - hSliderHeight) - (contentsHeight + 2*padding);
                 vSliderMax = 0;
                 vSliderValue = vSlider.Value;
-                vSliderValue = max( vSliderValue, vSliderMin );
-                vSliderValue = min( vSliderValue, vSliderMax );
+                vSliderValue = max( vSliderValue, vSliderMin ); % limit
+                vSliderValue = min( vSliderValue, vSliderMax ); % limit
                 vStep = obj.VerticalStep_;
-                vSliderStep(1) = vStep / ( vSliderMax - vSliderMin ); % minor
-                vSliderStep(1) = min( vSliderStep(1), 1 );
-                vSliderStep(2) = panelHeight / ( vSliderMax - vSliderMin); % major
+                vSliderStep(1) = vStep / (vSliderMax - vSliderMin); % minor
+                vSliderStep(1) = min( vSliderStep(1), 1 ); % limit minor
+                vSliderStep(2) = (panelHeight - hSliderHeight) / (vSliderMax - vSliderMin); % major
                 vSliderStep(1) = min( vSliderStep(1), vSliderStep(2) ); % limit minor
                 contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
                 % Set properties
@@ -636,14 +636,14 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             else
                 % Compute properties
                 hSliderMin = 0;
-                hSliderMax = contentsWidth + 2*padding - panelWidth + vSliderWidth;
+                hSliderMax = (contentsWidth + 2*padding) - (panelWidth - vSliderWidth);
                 hSliderValue = hSlider.Value; % positive sign convention
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
                 hStep = obj.HorizontalStep_;
-                hSliderStep(1) = hStep / ( hSliderMax - hSliderMin ); % minor
-                hSliderStep(1) = min( hSliderStep(1), 1 );
-                hSliderStep(2) = panelWidth / ( contentsWidth + 2*padding - panelWidth + vSliderWidth ); % major
+                hSliderStep(1) = hStep / (hSliderMax - hSliderMin); % minor
+                hSliderStep(1) = min( hSliderStep(1), 1 ); % limit minor
+                hSliderStep(2) = (panelWidth - vSliderWidth) / (hSliderMax - hSliderMin); % major
                 hSliderStep(1) = min( hSliderStep(1), hSliderStep(2) ); % limit minor
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
                 % Set properties
