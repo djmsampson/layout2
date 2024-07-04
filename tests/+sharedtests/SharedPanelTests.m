@@ -6,28 +6,8 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
     properties ( TestParameter )
         % Collection of invalid values for the 'Selection' property, used
         % to test that panels issue an error.
-        InvalidSelection = {2.4, int32( 2 ), [2, 3, 4], 5}
+        InvalidSelection = {2.4, -2, [2, 3, 4], 5}
     end % properties ( TestParameter )
-
-    properties ( Access = private )
-        % State associated with the warning with ID 'uix:G1218142'.
-        WarningState
-    end % properties ( Access = private )
-
-    methods ( TestClassSetup )
-
-        function suppressWarnings( testCase )
-
-            % Suppress this warning during the test procedure. Restore the
-            % original warning state when the test completes.
-            warningID = 'uix:G1218142';
-            testCase.WarningState = warning( 'query', warningID );
-            testCase.addTeardown( @() warning( testCase.WarningState ) )
-            warning( 'off', warningID )
-
-        end % suppressWarnings
-
-    end % methods ( TestClassSetup )
 
     methods ( Test, Sealed )
 

@@ -34,6 +34,10 @@ classdef Container < handle
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
 
+    properties( Constant, Access = protected )
+        G1136196 = verLessThan( 'MATLAB', '8.5' ) % bug flag
+    end
+
     methods
 
         function obj = Container()
@@ -75,10 +79,8 @@ classdef Container < handle
 
         function set.Contents( obj, value )
 
-            % For those who can't tell a column from a row...
-            if isrow( value )
-                value = transpose( value );
-            end
+            % Reshape
+            value = value(:);
 
             % Check
             [tf, indices] = ismember( value, obj.Contents_ );
@@ -87,8 +89,11 @@ classdef Container < handle
                 'uix:InvalidOperation', ...
                 'Property ''Contents'' may only be set to a permutation of itself.' )
 
-            % Call reorder
+            % Call template method
             obj.reorder( indices )
+
+            % Mark as dirty
+            obj.Dirty = true;
 
         end % set.Contents
 
@@ -160,6 +165,9 @@ classdef Container < handle
             % Call template method
             obj.addChild( eventData.Child )
 
+            % Mark as dirty
+            obj.Dirty = true;
+
         end % onChildAdded
 
         function onChildRemoved( obj, ~, eventData )
@@ -173,6 +181,9 @@ classdef Container < handle
 
             % Call template method
             obj.removeChild( eventData.Child )
+
+            % Mark as dirty
+            obj.Dirty = true;
 
         end % onChildRemoved
 
@@ -220,9 +231,6 @@ classdef Container < handle
                 obj.ActivePositionPropertyListeners{end+1,:} = [];
             end
 
-            % Mark as dirty
-            obj.Dirty = true;
-
         end % addChild
 
         function removeChild( obj, child )
@@ -237,9 +245,6 @@ classdef Container < handle
 
             % Remove listeners
             obj.ActivePositionPropertyListeners(tf,:) = [];
-
-            % Mark as dirty
-            obj.Dirty = true;
 
         end % removeChild
 
@@ -264,10 +269,11 @@ classdef Container < handle
             obj.ActivePositionPropertyListeners = ...
                 obj.ActivePositionPropertyListeners(indices,:);
 
-            % Mark as dirty
-            obj.Dirty = true;
-
         end % reorder
+
+    end % template methods
+
+    methods( Access = protected )
 
         function tf = isDrawable( obj )
             %isDrawable  Test for drawability
@@ -280,7 +286,7 @@ classdef Container < handle
 
         end % isDrawable
 
-    end % template methods
+    end % helper methods
 
 end % classdef
 

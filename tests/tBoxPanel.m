@@ -1,4 +1,4 @@
-classdef tBoxPanel < sharedtests.SharedPanelTests
+classdef tBoxPanel < sharedtests.SharedContainerTests
     %TBOXPANEL Tests for uiextras.BoxPanel and uix.BoxPanel.
 
     properties ( TestParameter )
@@ -178,60 +178,6 @@ classdef tBoxPanel < sharedtests.SharedPanelTests
                 'store the correct value.'] )
 
         end % tSettingEmptyTitleAssignsCorrectValue
-
-        function tSelectionWhenMinimizedIsCorrect( ...
-                testCase, ConstructorName )
-
-            % Create a component with children.
-            [component, kids] = testCase...
-                .constructComponentWithChildren( ConstructorName );
-
-            % Minimize the component.
-            component.Minimized = true;
-
-            % Make a selection.
-            selectionIndex = 2;
-            component.Selection = selectionIndex;
-
-            % Verify that the selected child is not visible.
-            actualVisibility = char( kids(selectionIndex).Visible );
-            testCase.verifyEqual( actualVisibility, 'off', ...
-                ['Creating a ', ConstructorName, ' component in the ', ...
-                'minimized state and making a selection did not ', ...
-                'switch off the visibility of the selected child.'] )
-
-        end % tSelectionWhenMinimizedIsCorrect
-
-        function tAxesSelectionWhenMinimizedIsCorrect( ...
-                testCase, ConstructorName )
-
-            % Create a component with children.
-            [component, kids] = testCase...
-                .constructComponentWithChildren( ConstructorName );
-
-            % Add an axes.
-            ax = axes( 'Parent', component, ...
-                'ActivePositionProperty', 'outerposition' );
-
-            % Minimize the component.
-            component.Minimized = true;
-
-            % Select the axes.
-            component.Selection = numel( kids ) + 1;
-
-            % Verify that the selected child is not visible.
-            actualVisibility = char( ax.Visible );
-            actualContentsVisibility = char( ax.ContentsVisible );
-            testCase.verifyEqual( actualVisibility, 'off', ...
-                ['Creating a ', ConstructorName, ' component in the ', ...
-                'minimized state and selecting an axes did not ', ...
-                'switch off the axes'' ''Visible'' property.'] )
-            testCase.verifyEqual( actualContentsVisibility, 'off', ...
-                ['Creating a ', ConstructorName, ' component in the ', ...
-                'minimized state and selecting an axes did not ', ...
-                'switch off the axes'' ''ContentsVisible'' property.'] )
-
-        end % tAxesSelectionWhenMinimizedIsCorrect
 
         function tTooltipStringPropertiesSupportStrings( ...
                 testCase, ConstructorName )

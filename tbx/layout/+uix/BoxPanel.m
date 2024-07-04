@@ -12,7 +12,7 @@ classdef BoxPanel < uix.Panel
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
-    properties( Dependent )
+    properties( Access = public, Dependent, AbortSet, Hidden )
         TitleColor % title background color [RGB]
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
@@ -45,7 +45,7 @@ classdef BoxPanel < uix.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
 
-    properties
+    properties( Access = public )
         MaximizeTooltipString = 'Expand this panel' % tooltip string
         MinimizeTooltipString = 'Collapse this panel' % tooltip string
         UndockTooltipString = 'Undock this panel' % tooltip string
@@ -276,9 +276,6 @@ classdef BoxPanel < uix.Panel
 
             % Set
             obj.Minimized_ = value;
-
-            % Show selected child
-            obj.showSelection()
 
             % Mark as dirty
             obj.redrawButtons()
@@ -526,42 +523,13 @@ classdef BoxPanel < uix.Panel
             contentsPosition = [cX cY cW cH];
 
             % Redraw contents
-            selection = obj.Selection_;
-            if selection ~= 0
-                uix.setPosition( obj.Contents_(selection), contentsPosition, 'pixels' )
+            contents = obj.Contents_;
+            for ii = 1:numel( contents )
+                uix.setPosition( contents(ii), contentsPosition, 'pixels' )
             end
             obj.TitleBox.Position = [tX tY tW tH];
 
         end % redraw
-
-        function showSelection( obj )
-            %showSelection  Show selected child, hide the others
-            %
-            %  c.showSelection() shows the selected child of the container
-            %  c, and hides the others.
-
-            % Call superclass method
-            showSelection@uix.mixin.Panel( obj )
-
-            % If minimized, hide selected contents too
-            selection = obj.Selection_;
-            if selection ~= 0 && obj.Minimized_
-                child = obj.Contents_(selection);
-                child.Visible = 'off';
-                if isa( child, 'matlab.graphics.axis.Axes' )
-                    child.ContentsVisible = 'off';
-                end
-                % As a remedy for g1100294, move off-screen too
-                margin = 1000;
-                if isa( child, 'matlab.graphics.axis.Axes' ) ...
-                        && strcmp(child.ActivePositionProperty, 'outerposition' )
-                    child.OuterPosition(1) = -child.OuterPosition(3)-margin;
-                else
-                    child.Position(1) = -child.Position(3)-margin;
-                end
-            end
-
-        end % showSelection
 
     end % template methods
 
