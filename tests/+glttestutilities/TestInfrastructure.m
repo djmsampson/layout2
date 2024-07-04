@@ -111,7 +111,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             warningID = 'uix:Deprecated';
             warningState = warning( 'query', warningID );
             testCase.addTeardown( @() warning( warningState ) )
-            uix.warning( 'off', warningID )
+            warning( 'off', warningID )
 
         end % disableDeprecationWarning
 
