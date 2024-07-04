@@ -354,7 +354,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Heights
 
-        function set.Heights( obj, value )
+        function set.Heights( obj, value ) % moved to Height
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -366,11 +366,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.Height = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''Heights'' of %s will be removed in a future release; please use ''Height'' instead.', ...
-                class( obj ) )
-
         end % set.Heights
 
         function value = get.MinimumHeights( obj )
@@ -379,7 +374,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.MinimumHeights
 
-        function set.MinimumHeights( obj, value )
+        function set.MinimumHeights( obj, value ) % moved to MinimumHeight
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -391,11 +386,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.MinimumHeight = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''MinimumHeights'' of %s will be removed in a future release; please use ''MinimumHeight'' instead.', ...
-                class( obj ) )
-
         end % set.MinimumHeights
 
         function value = get.Widths( obj )
@@ -404,7 +394,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Widths
 
-        function set.Widths( obj, value )
+        function set.Widths( obj, value ) % moved to Width
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -416,11 +406,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.Width = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''Widths'' of %s will be removed in a future release; please use ''Width'' instead.', ...
-                class( obj ) )
-
         end % set.Widths
 
         function value = get.MinimumWidths( obj )
@@ -429,7 +414,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.MinimumWidths
 
-        function set.MinimumWidths( obj, value )
+        function set.MinimumWidths( obj, value ) % moved to MinimumWidth
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -441,11 +426,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.MinimumWidth = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''MinimumWidths'' of %s will be removed in a future release; please use ''MinimumWidth'' instead.', ...
-                class( obj ) )
-
         end % set.MinimumWidths
 
         function value = get.VerticalSteps( obj )
@@ -454,7 +434,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.VerticalSteps
 
-        function set.VerticalSteps( obj, value )
+        function set.VerticalSteps( obj, value ) % moved to VerticalStep
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -466,11 +446,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.VerticalStep = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''VerticalSteps'' of %s will be removed in a future release; please use ''VerticalStep'' instead.', ...
-                class( obj ) )
-
         end % set.VerticalSteps
 
         function value = get.VerticalOffsets( obj )
@@ -479,7 +454,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.VerticalOffsets
 
-        function set.VerticalOffsets( obj, value )
+        function set.VerticalOffsets( obj, value ) % moved to VerticalOffset
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -491,11 +466,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.VerticalOffset = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''VerticalOffsets'' of %s will be removed in a future release; please use ''VerticalOffset'' instead.', ...
-                class( obj ) )
-
         end % set.VerticalOffsets
 
         function value = get.HorizontalSteps( obj )
@@ -504,7 +474,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.HorizontalSteps
 
-        function set.HorizontalSteps( obj, value )
+        function set.HorizontalSteps( obj, value ) % moved to HorizontalStep
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -516,11 +486,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.HorizontalStep = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''HorizontalSteps'' of %s will be removed in a future release; please use ''HorizontalStep'' instead.', ...
-                class( obj ) )
-
         end % set.HorizontalSteps
 
         function value = get.HorizontalOffsets( obj )
@@ -529,7 +494,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.HorizontalOffsets
 
-        function set.HorizontalOffsets( obj, value )
+        function set.HorizontalOffsets( obj, value ) % moved to HorizontalOffset
 
             % Check
             assert( numel( value ) == numel( obj.Contents_ ), ...
@@ -541,11 +506,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 obj.HorizontalOffset = value(end); % top
             end
 
-            % Warn
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''HorizontalOffsets'' of %s will be removed in a future release; please use ''HorizontalOffset'' instead.', ...
-                class( obj ) )
-
         end % set.HorizontalOffsets
 
         function value = get.Selection( obj )
@@ -554,11 +514,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % get.Selection
 
-        function set.Selection( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''Selection'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.Selection( ~, ~ ) % removed
 
         end % set.Selection
 
