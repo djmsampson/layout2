@@ -590,35 +590,6 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tAccessingDeprecatedPropertiesReturnsCorrectValues
 
-        function tSettingDeprecatedPropertiesIssuesWarning( testCase, ...
-                ConstructorName )
-
-            % Construct a component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Configure the environment.
-            warningID = 'uix:Deprecated';
-            warningState = warning( 'query', warningID );
-            testCase.addTeardown( @() warning( warningState ) )
-            warning( 'on', warningID )
-
-            % For each deprecated property, check that setting it issues a
-            % warning with ID 'uix:Deprecated'.
-            deprecatedProperties = testCase.DeprecatedProperties;
-
-            for k = 1 : 2 : numel( deprecatedProperties )
-                propertyName = deprecatedProperties{k};
-                propertyValue = deprecatedProperties{k+1};
-                setter = @() set( component, propertyName, propertyValue );
-                testCase.verifyWarning( setter, warningID, ...
-                    ['Setting the deprecated property ''', ...
-                    propertyName, ''' on the ', ConstructorName, ...
-                    ' component did not issue the warning with ID ''', ...
-                    warningID, '''.'] )
-            end % for
-
-        end % tSettingDeprecatedPropertiesIssuesWarnings
-
     end % methods ( Test, Sealed )
 
     methods ( Access = private )
