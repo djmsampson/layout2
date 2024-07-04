@@ -611,7 +611,8 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 vSliderStep = vSlider.SliderStep;
             else
                 % Compute properties
-                vSliderMin = (panelHeight - hSliderHeight) - (contentsHeight + 2*padding); % bottom
+                vSliderMin = (panelHeight - hSliderHeight) - ...
+                    (contentsHeight + 2*padding); % bottom
                 vSliderMax = 0; % top
                 vSliderValue = vSlider.Value; % actual
                 vSliderValue = max( vSliderValue, vSliderMin ); % limit
@@ -619,9 +620,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 vStep = obj.VerticalStep_;
                 vSliderStep(1) = vStep / (vSliderMax - vSliderMin); % minor
                 vSliderStep(1) = min( vSliderStep(1), 1 ); % limit minor
-                vSliderStep(2) = (panelHeight - hSliderHeight) / (vSliderMax - vSliderMin); % major
+                vSliderStep(2) = (panelHeight - hSliderHeight) / ...
+                    (vSliderMax - vSliderMin); % major
                 vSliderStep(1) = min( vSliderStep(1), vSliderStep(2) ); % limit minor
-                contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
+                contentsPosition(2) = contentsPosition(2) - vSliderValue ...
+                    - vSliderMax + vSliderMin;
             end
 
             % Compute horizontal slider properties
@@ -634,14 +637,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             else
                 % Compute properties
                 hSliderMin = 0; % left
-                hSliderMax = (contentsWidth + 2*padding) - (panelWidth - vSliderWidth); % right
+                hSliderMax = (contentsWidth + 2*padding) - ...
+                    (panelWidth - vSliderWidth); % right
                 hSliderValue = hSlider.Value; % actual
                 hSliderValue = max( hSliderValue, hSliderMin ); % limit
                 hSliderValue = min( hSliderValue, hSliderMax ); % limit
                 hStep = obj.HorizontalStep_;
                 hSliderStep(1) = hStep / (hSliderMax - hSliderMin); % minor
                 hSliderStep(1) = min( hSliderStep(1), 1 ); % limit minor
-                hSliderStep(2) = (panelWidth - vSliderWidth) / (hSliderMax - hSliderMin); % major
+                hSliderStep(2) = (panelWidth - vSliderWidth) / ...
+                    (hSliderMax - hSliderMin); % major
                 hSliderStep(1) = min( hSliderStep(1), hSliderStep(2) ); % limit minor
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
             end
