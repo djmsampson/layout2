@@ -37,6 +37,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         MouseWheelEnabled_ = 'on' % backing for MouseWheelEnabled
         ScrollingListener % slider listener
         ScrolledListener % slider listener
+        Scrolling_ = 'off' % scrolling flag
         BackgroundColorListener % property listener
     end
 
@@ -601,12 +602,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             platePosition = [1 1 0 0] + ...
                 [hSliderWidth 0 vSliderWidth hSliderHeight];
 
-            % Compute and set vertical slider properties
+            % Compute vertical slider properties
             if vSliderWidth == 0 || vSliderHeight == 0 || vSliderHeight <= vSliderWidth
                 % Slider is invisible or incorrectly oriented
-                set( vSlider, 'Style', 'text', 'Enable', 'inactive', ...
-                    'Position', vSliderPosition, ...
-                    'Min', -1, 'Max', 1, 'Value', 0 )
+                vSliderMin = -1;
+                vSliderMax = 1;
+                vSliderValue = 0;
+                vSliderStep = vSlider.SliderStep;
             else
                 % Compute properties
                 vSliderMin = (panelHeight - hSliderHeight) - (contentsHeight + 2*padding);
@@ -620,19 +622,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 vSliderStep(2) = (panelHeight - hSliderHeight) / (vSliderMax - vSliderMin); % major
                 vSliderStep(1) = min( vSliderStep(1), vSliderStep(2) ); % limit minor
                 contentsPosition(2) = contentsPosition(2) - vSliderMax + vSliderMin - vSliderValue;
-                % Set properties
-                set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
-                    'Position', vSliderPosition, ...
-                    'Min', vSliderMin, 'Max', vSliderMax, ...
-                    'Value', vSliderValue, 'SliderStep', vSliderStep )
             end
 
-            % Compute and set horizontal slider properties
+            % Compute horizontal slider properties
             if hSliderHeight == 0 || hSliderWidth == 0 || hSliderWidth <= hSliderHeight
                 % Slider is invisible or incorrectly oriented
-                set( hSlider, 'Style', 'text', 'Enable', 'inactive', ...
-                    'Position', hSliderPosition, ...
-                    'Min', -1, 'Max', 1, 'Value', 0 )
+                hSliderMin = -1;
+                hSliderMax = 1;
+                hSliderValue = 0;
+                hSliderStep = hSlider.SliderStep;
             else
                 % Compute properties
                 hSliderMin = 0;
@@ -646,11 +644,21 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 hSliderStep(2) = (panelWidth - vSliderWidth) / (hSliderMax - hSliderMin); % major
                 hSliderStep(1) = min( hSliderStep(1), hSliderStep(2) ); % limit minor
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
-                % Set properties
-                set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
-                    'Position', hSliderPosition, ...
-                    'Min', hSliderMin, 'Max', hSliderMax, ...
-                    'Value', hSliderValue, 'SliderStep', hSliderStep )
+            end
+
+            % Set scrollbar properties
+            switch obj.Scrolling_
+                case 'on'
+                    % setting properties interrupts continuous scrolling
+                case 'off'
+                    set( vSlider, 'Style', 'slider', 'Enable', 'on', ...
+                        'Position', vSliderPosition, ...
+                        'Min', vSliderMin, 'Max', vSliderMax, ...
+                        'Value', vSliderValue, 'SliderStep', vSliderStep )
+                    set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
+                        'Position', hSliderPosition, ...
+                        'Min', hSliderMin, 'Max', hSliderMax, ...
+                        'Value', hSliderValue, 'SliderStep', hSliderStep )
             end
 
             % Set contents and blanking plate positions
@@ -701,6 +709,12 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function onSliderScrolling( obj, ~, ~ )
             %onSliderScrolling  Event handler
 
+            % Set flag
+            obj.Scrolling_ = 'on';
+
+            % Mark as dirty
+            obj.Dirty = true;
+
             % Raise event
             notify( obj, 'Scrolling' )
 
@@ -714,6 +728,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Raise event
             notify( obj, 'Scrolled' )
+
+            % Unset flag
+            obj.Scrolling_ = 'off';
 
         end % onSliderScrolled
 
