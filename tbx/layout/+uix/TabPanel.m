@@ -467,12 +467,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 'BackgroundColor', obj.BackgroundColor ); %#ok<NASGU>
             shadowTab = uitab( 'Parent', shadowTabGroup, ...
                 'Title', sprintf( 'Tab %d', n+1 ) );
-            if n == 0 % only listen for SizeChanged on one tab
-                if isprop( shadowTab, 'AutoResizeChildren' )
-                    shadowTab.AutoResizeChildren = 'off';
-                end
-                shadowTab.SizeChangedFcn = @obj.onTabSizeChanged;
+            if isprop( shadowTab, 'AutoResizeChildren' )
+                shadowTab.AutoResizeChildren = 'off';
             end
+            shadowTab.SizeChangedFcn = @obj.onTabSizeChanged;
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Show and hide
@@ -651,8 +649,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % onTabGroupSizeChanged
 
-        function onTabSizeChanged( obj, ~, ~ )
+        function onTabSizeChanged( obj, tab, ~ )
             %onTabSizeChanged  Event handler for tab resize
+
+            % Deprecated unselected tabs
+            if obj.ShadowTabGroup.SelectedTab ~= tab, return, end
 
             % Mark as dirty
             obj.Dirty = true;
