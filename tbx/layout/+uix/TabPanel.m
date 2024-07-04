@@ -418,11 +418,17 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %redraw  Redraw
 
             % Check for enabled contents
-            selection = obj.Selection;
-            if selection == 0, return, end % no contents
+            g = obj.TabGroup;
+            s = obj.ShadowTabGroup;
+            i = obj.Selection;
+            if i == 0 % no contents
+                g.Visible = 'off';
+                return
+            else
+                g.Visible = 'on';
+            end
 
             % Compute positions
-            s = obj.ShadowTabGroup;
             f = ancestor( s, 'figure' );
             sb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', s );
             t = s.SelectedTab;
@@ -431,20 +437,25 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             switch s.TabLocation
                 case 'top'
                     m = (sb(3)-tb(3))/2;
+                    gp = sb + (tb(4)+m) * [0 1 0 -1];
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
                 case 'bottom'
                     m = (sb(3)-tb(3))/2;
+                    gp = sb; % TODO
                     cp = tb + [m sb(4)-tb(4)-m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'left'
                     m = (sb(4)-tb(4))/2;
+                    gp = sb; % TODO
                     cp = tb + [sb(3)-tb(3)-m m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'right'
                     m = (sb(4)-tb(4))/2;
+                    gp = sb; % TODO
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
             end
 
             % Redraw contents
-            uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
+            uix.setPosition( g, gp, 'pixels' );
+            uix.setPosition( obj.Contents_(i), cp, 'pixels' )
 
         end % redraw
 
