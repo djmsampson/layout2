@@ -294,7 +294,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
         end % tStringSupportForMouseWheelEnabled
 
-        function tOnSliderScrollingMethodRaisesScrollingEvent( ...
+        function tOnSliderScrollingMethodRaisesScrolledEvent( ...
                 testCase, ConstructorName )
 
             % Create a scrolling panel.
@@ -302,7 +302,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Create a listener to receive the event.
             eventRaised = false;
-            event.listener( scrollPanel, 'Scrolling', @onSliderScrolling );
+            event.listener( scrollPanel, 'Scrolled', @onSliderScrolling );
 
             function onSliderScrolling( ~, ~ )
 
@@ -310,14 +310,29 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             end % onSliderScrolling
 
+            % Do not fire event when scrolling.
+            scrollPanel.Continuous = 'off';
+
+            % Invoke the method.
+            scrollPanel.onSliderScrolling()
+            
+            % Verify that the event not raised.
+            testCase.verifyFalse( eventRaised, ...
+                ['The ''onSliderScrolled'' method of ', ...
+                ConstructorName, ' raised the ''Scrolled''', ...
+                ' event with continuous scrolling ''off''.'] )
+
+            % Fire event when scrolling.
+            scrollPanel.Continuous = 'on';
+
             % Invoke the method.
             scrollPanel.onSliderScrolling()
 
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
-                ['The ''onSliderScrolling'' method of ', ...
-                ConstructorName, ' did not raise the ''Scrolling''', ...
-                ' event.'] )
+                ['The ''onSliderScrolled'' method of ', ...
+                ConstructorName, ' did not raise the ''Scrolled''', ...
+                ' event with continuous scrolling ''on''.'] )
 
         end % tOnSliderScrollingMethodRaisesScrollingEvent
 
@@ -339,7 +354,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Invoke the method.
             scrollPanel.onSliderScrolled()
-
+            
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
                 ['The ''onSliderScrolled'' method of ', ...
