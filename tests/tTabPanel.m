@@ -41,7 +41,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             'FunctionHandleCallback', ...
             @() disp( 'Function handle callback' ), ...
             'CellArrayCallback', ...
-            {{@disp, 'Cell array callback'}} )        
+            {{@disp, 'Cell array callback'}} )
     end % properties ( TestParameter )
 
     properties ( Constant, GetAccess = private )
@@ -463,7 +463,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
                 'property of the TabPanel as a row vector did ', ...
                 'not assign the value correctly.'] )
 
-        end % tSettingPropertiesAsRowVectorAssignsValues        
+        end % tSettingPropertiesAsRowVectorAssignsValues
 
         function tStringSupportForTabPanelScalarStringProperties( ...
                 testCase, ConstructorName )
@@ -567,7 +567,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
                 ' of the ', ConstructorName, ' component (when it has', ...
                 ' multiple children) did not accept a string value.'] )
 
-        end % tStringSupportForTabTitlesProperty    
+        end % tStringSupportForTabTitlesProperty
 
         function tAccessingDeprecatedPropertiesReturnsCorrectValues( ...
                 testCase, ConstructorName )
@@ -600,12 +600,12 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             warningID = 'uix:Deprecated';
             warningState = warning( 'query', warningID );
             testCase.addTeardown( @() warning( warningState ) )
-            uix.warning( 'on', warningID )
+            warning( 'on', warningID )
 
             % For each deprecated property, check that setting it issues a
             % warning with ID 'uix:Deprecated'.
             deprecatedProperties = testCase.DeprecatedProperties;
-            
+
             for k = 1 : 2 : numel( deprecatedProperties )
                 propertyName = deprecatedProperties{k};
                 propertyValue = deprecatedProperties{k+1};

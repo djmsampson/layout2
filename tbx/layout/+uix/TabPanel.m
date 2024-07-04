@@ -324,11 +324,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.FontAngle
 
-        function set.FontAngle( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''FontAngle'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.FontAngle( ~, ~ ) % removed
 
         end % set.FontAngle
 
@@ -338,11 +334,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.FontName
 
-        function set.FontName( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''FontName'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.FontName( ~, ~ ) % removed
 
         end % set.FontName
 
@@ -352,11 +344,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.FontSize
 
-        function set.FontSize( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''FontSize'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.FontSize( ~, ~ ) % removed
 
         end % set.FontSize
 
@@ -366,11 +354,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.FontWeight
 
-        function set.FontWeight( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''FontWeight'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.FontWeight( ~, ~ ) % removed
 
         end % set.FontWeight
 
@@ -380,11 +364,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.FontUnits
 
-        function set.FontUnits( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''FontUnits'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.FontUnits( ~, ~ ) % removed
 
         end % set.FontUnits
 
@@ -394,11 +374,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.HighlightColor
 
-        function set.HighlightColor( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''HighlightColor'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.HighlightColor( ~, ~ ) % removed
 
         end % set.HighlightColor
 
@@ -408,11 +384,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.ShadowColor
 
-        function set.ShadowColor( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''ShadowColor'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.ShadowColor( ~, ~ ) % removed
 
         end % set.ShadowColor
 
@@ -422,11 +394,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         end % get.TabWidth
 
-        function set.TabWidth( obj, ~ )
-
-            uix.warning( 'uix:Deprecated', ...
-                'Property ''TabWidth'' of %s has no effect and will be removed in a future release.', ...
-                class( obj ) )
+        function set.TabWidth( ~, ~ ) % removed
 
         end % set.TabWidth
 
@@ -662,7 +630,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         function onTabSizeChanged( obj, tab, ~ )
             %onTabSizeChanged  Event handler for tab resize
 
-            % Ignore unselected tabs
+            % Deprecated unselected tabs
             if obj.TabGroup.SelectedTab ~= tab, return, end
 
             % Mark as dirty
