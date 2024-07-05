@@ -418,17 +418,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %redraw  Redraw
 
             % Check for enabled contents
-            g = obj.TabGroup;
-            s = obj.ShadowTabGroup;
             i = obj.Selection;
-            if i == 0 % no contents
-                g.Visible = 'off';
-                return
-            else
-                g.Visible = 'on';
-            end
+            if i == 0, return, end % no contents
 
             % Compute positions
+            g = obj.TabGroup;
+            s = obj.ShadowTabGroup;
             f = ancestor( s, 'figure' );
             sb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', s );
             t = s.SelectedTab;
@@ -485,6 +480,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Show and hide
+            tabGroup.Visible = 'on';
             if obj.Contents_(obj.Selection) ~= child % not selected
                 uix.setVisible( child, 'off' ) % hide
             elseif obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
@@ -502,6 +498,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  c.removeChild(d) removes the child d from the container c.
 
             % Capture old state
+            tabGroup = obj.TabGroup;
+            shadowTabGroup = obj.ShadowTabGroup;
             oldContents = obj.Contents_;
             oldSelection = obj.Selection;
 
@@ -510,15 +508,17 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Remove tab
             index = find( oldContents == child );
-            delete( obj.TabGroup.Children(index) )
-            delete( obj.ShadowTabGroup.Children(index) )
+            delete( tabGroup.Children(index) )
+            delete( shadowTabGroup.Children(index) )
             obj.TabEnables_(index,:) = [];
 
-            % Show
+            % Show and hide
             if index == oldSelection % removing selected
                 newContents = obj.Contents_;
                 newSelection = obj.Selection;
-                if newSelection ~= 0
+                if newSelection == 0 % none left
+                    obj.TabGroup.Visible = 'off';
+                else % switch
                     uix.setVisible( newContents(newSelection), 'on' ) % show new selection
                 end
             end
