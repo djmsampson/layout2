@@ -30,6 +30,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
     properties( Access = private )
         TabGroup % tab group
+        ShadowTabGroup % tab group
         BackgroundColorListener % listener
         SelectionChangedListener % listener
         ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
@@ -72,18 +73,24 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  p = uix.TabPanel(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
 
-            % Create tab group
+            % Create tab groups
             tabGroup = matlab.ui.container.TabGroup( ...
                 'Internal', true, 'Parent', obj, ...
-                'Units', 'normalized', 'Position', [0 0 1 1], ...
-                'SelectionChangedFcn', @obj.onTabSelected, ...
-                'SizeChangedFcn', @obj.onTabGroupSizeChanged );
+                'SelectionChangedFcn', @obj.onTabSelected );
             if isprop( tabGroup, 'AutoResizeChildren' )
                 tabGroup.AutoResizeChildren = 'off';
+            end
+            shadowTabGroup = matlab.ui.container.TabGroup( ...
+                'Internal', true, 'Parent', obj, ...
+                'Units', 'normalized', 'Position', [-2 -2 1 1], ...
+                'SizeChangedFcn', @obj.onTabGroupSizeChanged );
+            if isprop( shadowTabGroup, 'AutoResizeChildren' )
+                shadowTabGroup.AutoResizeChildren = 'off';
             end
 
             % Store properties
             obj.TabGroup = tabGroup;
+            obj.ShadowTabGroup = shadowTabGroup;
 
             % Create listeners
             backgroundColorListener = event.proplistener( obj, ...
@@ -148,9 +155,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Select
             oldValue = obj.Selection;
             tabGroup = obj.TabGroup;
+            shadowTabGroup = obj.ShadowTabGroup;
             try
                 assert( isscalar( newValue ) )
                 tabGroup.SelectedTab = tabGroup.Children(newValue);
+                shadowTabGroup.SelectedTab = shadowTabGroup.Children(newValue);
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''Selection'' must be between 1 and the number of tabs.' )
@@ -227,6 +236,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Set
             obj.TabGroup.TabLocation = value;
+            obj.ShadowTabGroup.TabLocation = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -254,6 +264,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Check
             tabs = obj.TabGroup.Children;
+            shadowTabs = obj.ShadowTabGroup.Children;
             assert( isequal( numel( value ), numel( tabs ) ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''TabTitles'' must be a cell array of strings, one per tab.' )
@@ -261,6 +272,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Set
             for ii = 1:numel( tabs )
                 tabs(ii).Title = value{ii};
+                shadowTabs(ii).Title = value{ii};
             end
 
         end % set.TabTitles
@@ -405,34 +417,41 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         function redraw( obj )
             %redraw  Redraw
 
-            % Check for enabled contents
-            selection = obj.Selection;
-            if selection == 0, return, end % no contents
+            % Skip if no contents
+            i = obj.Selection;
+            if i == 0, return, end
 
             % Compute positions
             g = obj.TabGroup;
-            f = ancestor( g, 'figure' );
-            gb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', g );
-            t = g.SelectedTab;
+            s = obj.ShadowTabGroup;
+            f = ancestor( s, 'figure' );
+            sb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', s );
+            t = s.SelectedTab;
             tb = hgconvertunits( f, [0 0 1 1], 'normalized', 'pixels', t );
             pa = obj.Padding_;
-            switch g.TabLocation
+            switch s.TabLocation
                 case 'top'
-                    m = (gb(3)-tb(3))/2;
+                    m = (sb(3)-tb(3))/2;
+                    gp = sb + (tb(4)+m) * [0 1 0 -1];
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
                 case 'bottom'
-                    m = (gb(3)-tb(3))/2;
-                    cp = tb + [m gb(4)-tb(4)-m 0 0] + pa * [1 1 -2 -2]; % TODO
+                    m = (sb(3)-tb(3))/2;
+                    gp = sb + (tb(4)+m) * [0 0 0 -1];
+                    cp = tb + [m sb(4)-tb(4)-m 0 0] + pa * [1 1 -2 -2];
                 case 'left'
-                    m = (gb(4)-tb(4))/2;
-                    cp = tb + [gb(3)-tb(3)-m m 0 0] + pa * [1 1 -2 -2]; % TODO
+                    m = (sb(4)-tb(4))/2;
+                    gp = sb + (tb(3)+m) * [0 0 -1 0];
+                    cp = tb + [sb(3)-tb(3)-m m 0 0] + pa * [1 1 -2 -2];
                 case 'right'
-                    m = (gb(4)-tb(4))/2;
+                    m = (sb(4)-tb(4))/2;
+                    gp = sb + (tb(3)+m) * [1 0 -1 0];
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
             end
+            gp = max( gp, [1 1 0 0] ); % maintain floors while tab is resizing
 
-            % Redraw contents
-            uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
+            % Redraw tab group and contents
+            uix.setPosition( g, gp, 'pixels' );
+            uix.setPosition( obj.Contents_(i), cp, 'pixels' )
 
         end % redraw
 
@@ -446,19 +465,23 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Create new tab
             tabGroup = obj.TabGroup;
+            shadowTabGroup = obj.ShadowTabGroup;
             tabs = tabGroup.Children;
             n = numel( tabs );
             tab = uitab( 'Parent', tabGroup, ...
                 'Title', sprintf( 'Tab %d', n+1 ), ...
                 'ForegroundColor', obj.ForegroundColor, ...
-                'BackgroundColor', obj.BackgroundColor );
-            if isprop( tab, 'AutoResizeChildren' )
-                tab.AutoResizeChildren = 'off';
+                'BackgroundColor', obj.BackgroundColor ); %#ok<NASGU>
+            shadowTab = uitab( 'Parent', shadowTabGroup, ...
+                'Title', sprintf( 'Tab %d', n+1 ) );
+            if isprop( shadowTab, 'AutoResizeChildren' )
+                shadowTab.AutoResizeChildren = 'off';
             end
-            tab.SizeChangedFcn = @obj.onTabSizeChanged;
+            shadowTab.SizeChangedFcn = @obj.onTabSizeChanged;
             obj.TabEnables_(n+1,:) = {'on'};
 
             % Show and hide
+            tabGroup.Visible = 'on';
             if obj.Contents_(obj.Selection) ~= child % not selected
                 uix.setVisible( child, 'off' ) % hide
             elseif obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
@@ -476,6 +499,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  c.removeChild(d) removes the child d from the container c.
 
             % Capture old state
+            tabGroup = obj.TabGroup;
+            shadowTabGroup = obj.ShadowTabGroup;
             oldContents = obj.Contents_;
             oldSelection = obj.Selection;
 
@@ -484,15 +509,17 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Remove tab
             index = find( oldContents == child );
-            tabGroup = obj.TabGroup;
             delete( tabGroup.Children(index) )
+            delete( shadowTabGroup.Children(index) )
             obj.TabEnables_(index,:) = [];
 
-            % Show
+            % Show and hide
             if index == oldSelection % removing selected
                 newContents = obj.Contents_;
                 newSelection = obj.Selection;
-                if newSelection ~= 0
+                if newSelection == 0 % none left
+                    obj.TabGroup.Visible = 'off';
+                else % switch
                     uix.setVisible( newContents(newSelection), 'on' ) % show new selection
                 end
             end
@@ -511,6 +538,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Reorder
             tabGroup = obj.TabGroup;
             tabGroup.Children = tabGroup.Children(indices,:);
+            shadowTabGroup = obj.ShadowTabGroup;
+            shadowTabGroup.Children = shadowTabGroup.Children(indices,:);
             obj.TabEnables_ = obj.TabEnables_(indices,:);
 
         end % reorder
@@ -560,6 +589,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Find old and new selections
             tabGroup = obj.TabGroup;
+            shadowTabGroup = obj.ShadowTabGroup;
             oldSelection = find( tabGroup.Children == eventData.OldValue );
             newSelection = find( tabGroup.Children == eventData.NewValue );
 
@@ -567,8 +597,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
                 % Revert
                 tabGroup.SelectedTab = eventData.OldValue;
+                shadowTabGroup.SelectedTab = shadowTabGroup.Children(oldSelection);
 
             else
+
+                % Synchronize
+                shadowTabGroup.SelectedTab = shadowTabGroup.Children(newSelection);
 
                 % Raise event
                 notify( obj, 'SelectionChanged', ...
@@ -623,7 +657,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %  its container, despite the best efforts of
             %  matlab.ui.internal.WebTabGroupController et al.
 
-            tabGroup.Position = [0 0 1 1]; % maximized
+            tabGroup.Position = [-2 -2 1 1]; % maximized
 
         end % onTabGroupSizeChanged
 
@@ -631,7 +665,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %onTabSizeChanged  Event handler for tab resize
 
             % Deprecated unselected tabs
-            if obj.TabGroup.SelectedTab ~= tab, return, end
+            if obj.ShadowTabGroup.SelectedTab ~= tab, return, end
 
             % Mark as dirty
             obj.Dirty = true;
