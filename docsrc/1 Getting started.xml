@@ -220,6 +220,13 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.9">
+        <ul>
+            <li>Released 5 July 2024</li>
+            <li>Reverted changes from version 2.3.8</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.8">
         <ul>
             <li>Released 7 June 2024</li>
