@@ -417,9 +417,9 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         function redraw( obj )
             %redraw  Redraw
 
-            % Check for enabled contents
+            % Skip if no contents
             i = obj.Selection;
-            if i == 0, return, end % no contents
+            if i == 0, return, end
 
             % Compute positions
             g = obj.TabGroup;

@@ -91,8 +91,8 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             %redraw  Redraw
 
             % Skip if no contents
-            selection = obj.Selection_;
-            if selection == 0, return, end
+            i = obj.Selection_;
+            if i == 0, return, end
 
             % Compute positions
             b = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -103,7 +103,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
             cp = [1+pa 1+pa w h];
 
             % Redraw contents
-            uix.setPosition( obj.Contents_(selection), cp, 'pixels' )
+            uix.setPosition( obj.Contents_(i), cp, 'pixels' )
 
         end % redraw
 
