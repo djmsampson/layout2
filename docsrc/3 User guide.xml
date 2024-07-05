@@ -747,28 +747,6 @@ g.Heights = [-1 -1];</code>
     </section>
 
     <!-- ****************************************************************** -->
-    <section name="Deploying GUIs using the MATLAB Compiler" staticref="Compiling">
-        <keywords>Compiler</keywords>
-        <keywords>MATLAB Compiler</keywords>
-        <p>Applications built using these layout tools can be deployed as standalone
-            executables using the <a href="matlab:doc compiler">MATLAB Compiler</a> in
-        the same way as any other MATLAB application. There is, however, one thing to watch out for:</p>
-        <ul>
-            <li>You must explicitly include the "Resources" folder within the +uix package</li>
-        </ul>
-        <h4>Example</h4>
-        <p>Below is a screen-shot of the <matlabfcn>deploytool</matlabfcn> setup
-        used to build the <ref link="ExampleApp">example application</ref>.
-    The "Resources" folder from the toolbox has been explicitly added as a
-shared resource so that the mouse-pointers and panel icons continue to work.</p>
-        <example><result><center><img src="Images/deploy.png"/></center></result></example>
-    </section>
-        
-        
-        
-        
-
-    <!-- ****************************************************************** -->
     <section name="A complete example" staticref="ExampleApp">
         <keywords>Callbacks</keywords>
         <keywords>Application design</keywords>
