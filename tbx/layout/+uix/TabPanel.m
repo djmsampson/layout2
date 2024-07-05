@@ -441,19 +441,19 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
                 case 'bottom'
                     m = (sb(3)-tb(3))/2;
-                    gp = sb; % TODO
+                    gp = sb + (tb(4)+m) * [0 0 0 -1];
                     cp = tb + [m sb(4)-tb(4)-m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'left'
                     m = (sb(4)-tb(4))/2;
-                    gp = sb; % TODO
+                    gp = sb + (tb(3)+m) * [0 0 -1 0];
                     cp = tb + [sb(3)-tb(3)-m m 0 0] + pa * [1 1 -2 -2]; % TODO
                 case 'right'
                     m = (sb(4)-tb(4))/2;
-                    gp = sb; % TODO
+                    gp = sb + (tb(3)+m) * [0 1 0 -1];
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
             end
 
-            % Redraw contents
+            % Redraw tab group and contents
             uix.setPosition( g, gp, 'pixels' );
             uix.setPosition( obj.Contents_(i), cp, 'pixels' )
 
