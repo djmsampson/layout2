@@ -53,7 +53,7 @@
             </tocitem>
             <tocitem target="UsingLayoutsInAppDesigner.html">Using layouts in App Designer
             </tocitem>
-            <tocitem target="DeployingAppsUsingMATLABCompiler.html">Deploying Apps using MATLAB Compiler
+            <tocitem target="UsingLayoutsInGUIDE.html">Using layouts in GUIDE
             </tocitem>
             <tocitem target="ACompleteExample.html">A complete example
                 <tocitem target="ApplicationStructure.html">Application structure
@@ -68,9 +68,7 @@
                 </tocitem>
                 <tocitem target="Scalability.html">Scalability
                 </tocitem>
-            </tocitem>
-            <tocitem target="UsingLayoutsInsGUIDE.html">Using layouts in GUIDE
-            </tocitem>
+            </tocitem>            
         </tocitem>
         <tocitem target="FunctionReference.html">Function reference
             <tocitem target="Panels.html">Panels
