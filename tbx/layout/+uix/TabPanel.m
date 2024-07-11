@@ -28,8 +28,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         SelectionChangedFcn = '' % selection change callback
     end
 
-    properties( Access = private )
+    properties ( GetAccess = ?matlab.unittest.TestCase, SetAccess = private )
         TabGroup % tab group
+    end
+
+    properties( Access = private )       
         ShadowTabGroup % tab group
         BackgroundColorListener % listener
         SelectionChangedListener % listener
