@@ -4,7 +4,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
 
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
-        ConstructorName = {'uix.TabPanel'}
+        ConstructorName = {'uiextras.TabPanel', 'uix.TabPanel'}
     end % properties ( TestParameter )
 
     methods ( Test, Sealed )
@@ -37,13 +37,6 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Define the SelectionChangedFcn callback.
             tabPanel.SelectionChangedFcn = @onSelectionChanged;
 
-            function onSelectionChanged( ~, e )
-
-                callbackInvoked = true;
-                eventData = e;
-
-            end % onSelectionChanged
-
             % Define shared variables for testing.
             callbackInvoked = false;
             eventData = struct();
@@ -63,7 +56,14 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
                 ' in the ''OldValue'' property of the event data.'] )
             testCase.verifyEqual( eventData.NewValue, 2, ...
                 ['Clicking the second tab did not produce a value ', ...
-                'of 2 in the ''NewValue'' property of the event data.'] )            
+                'of 2 in the ''NewValue'' property of the event data.'] )
+
+            function onSelectionChanged( ~, e )
+
+                callbackInvoked = true;
+                eventData = e;
+
+            end % onSelectionChanged
 
         end % tClickingAnotherTabInvokesCallback
 
@@ -95,12 +95,6 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Define the SelectionChangedFcn callback.
             tabPanel.SelectionChangedFcn = @onSelectionChanged;
 
-            function onSelectionChanged( ~, ~ )
-
-                callbackInvoked = true;
-
-            end % onSelectionChanged
-
             % Define a shared variable for testing.
             callbackInvoked = false;
 
@@ -110,6 +104,12 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             testCase.verifyFalse( callbackInvoked, ...
                 ['Clicking on the currently selected tab incorrectly ', ...
                 'called the ''SelectionChangedFcn'' callback.'] )
+
+            function onSelectionChanged( ~, ~ )
+
+                callbackInvoked = true;
+
+            end % onSelectionChanged
 
         end % tClickingSelectedTabDoesNotInvokeCallback
 
@@ -136,12 +136,13 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             testFig = testCase.ParentFixture.Parent;
             testGrid = uigridlayout( testFig, [1, 1], "Padding", 0 );
             tabPanel = feval( ConstructorName, 'Parent', testGrid );
+            testCase.addTeardown( @() delete( testGrid ) )
             testCase.addTeardown( @() delete( tabPanel ) )
 
             % Add controls.
             uicontrol( 'Parent', tabPanel )
             uicontrol( 'Parent', tabPanel )
-            uicontrol( 'Parent', tabPanel )
+            pause( 1 )
 
         end % createTabPanelWithContents
 

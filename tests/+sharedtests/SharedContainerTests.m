@@ -709,6 +709,33 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         end % tSettingAutoResizeChildrenToOffIsPreserved
 
+        function tMovingAxesToContainerIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume we're in R2024a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2024a' )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the action of creating and moving an axes to the
+            % component is warning-free.
+            testCase.verifyWarningFree( @createAndMoveAxes, ...
+                ['Creating an axes on the parent of the ''', ...
+                ConstructorName, ''' component and then moving ', ...
+                'it to the component was not warning-free.'] )
+
+            function createAndMoveAxes()
+
+                % Create an axes on the parent of the component, then
+                % immediately move it to the component.
+                ax = axes( 'Parent', component.Parent );
+                ax.Parent = component;
+
+            end % createAndMoveAxes
+
+        end % tMovingAxesToContainerIsWarningFree
+
     end % methods ( Test, Sealed )
 
     methods ( Test, Sealed, ParameterCombination = 'sequential' )

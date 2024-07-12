@@ -28,14 +28,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             % This collection of tests requires MATLAB R2014b or later.
             testCase.assumeMATLABVersionIsAtLeast( 'R2014b' )
 
-        end % assumeMinimumMATLABVersion
-
-        function clearPersistentData( ~ )
-
-            % Clear classes and functions containing persistent data.
-            clear( 'Container', 'TabPanel' )
-
-        end % clearPersistentData
+        end % assumeMinimumMATLABVersion        
 
         function addToolboxPath( testCase )
 
@@ -158,6 +151,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '23.2';
                 case 'R2024a'
                     versionNumber = '24.1';
+                case 'R2024b'
+                    versionNumber = '24.2';
                 otherwise
                     error( ['AssumeMATLABVersionIsAtLeast:', ...
                         'InvalidVersionString'], ...
