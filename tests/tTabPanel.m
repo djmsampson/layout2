@@ -237,6 +237,37 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tContextMenuIsReparentedWhenTabPanelIsReparented
 
+        function tContextMenuIsDeletedWhenChildIsDeleted( testCase, ...
+                ConstructorName )
+
+            % Filter the unrooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+            testFig = tabPanel.Parent;
+
+            % Add controls and context menus.
+            numTabs = 3;
+            contextMenus = gobjects( numTabs, 1 );            
+            for c = 1 : numTabs
+                uicontrol( 'Parent', tabPanel )
+                contextMenus(c) = uicontextmenu( 'Parent', testFig );
+                uimenu( 'Parent', contextMenus(c) )
+                tabPanel.TabContextMenus{c} = contextMenus(c);
+            end % for
+
+            % Delete the controls one at a time.
+            kids = tabPanel.Contents;
+            for c = 1 : numTabs
+                delete( kids(c) )
+                testCase.verifyFalse( isvalid( contextMenus(c) ), ...
+                    ['Delete a child of ''', ConstructorName, ...
+                    ''' did not delete the corresponding context menu.'] )
+            end % for
+
+        end % tContextMenuIsDeletedWhenChildIsDeleted
+
         function tRotate3dDoesNotAddMoreTabs( testCase, ConstructorName )
 
             % This test applies from R2015b onwards.

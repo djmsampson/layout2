@@ -99,7 +99,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             callbackInvoked = false;
 
             % Use the app testing framework to select the first tab. This
-            % should not change the selection.
+            % should not invoke the callback.
             testCase.choose( tabPanel.TabGroup.Children(1) )
             testCase.verifyFalse( callbackInvoked, ...
                 ['Clicking on the currently selected tab incorrectly ', ...
@@ -112,6 +112,58 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             end % onSelectionChanged
 
         end % tClickingSelectedTabDoesNotInvokeCallback
+
+        function tClickingDisabledTabDoesNotChangeSelection( testCase, ...
+                ConstructorName )
+
+            % Create a tab panel.
+            tabPanel = testCase...
+                .createTabPanelWithContents( ConstructorName );
+
+            % Disable the second tab.
+            tabPanel.TabEnables{2} = 'off';
+
+            % Use the app testing framework to select the second tab. This
+            % should not change the Selection property.
+            testCase.choose( tabPanel.TabGroup.Children(2) )
+
+            % Verify that the Selection property has not changed.
+            testCase.verifyEqual( tabPanel.Selection, 1, ...
+                ['Clicking on a disabled tab incorrectly ', ...
+                'changed the ''Selection'' property.'] )
+
+        end % tClickingDisabledTabDoesNotChangeSelection
+
+        function tClickingDisabledTabDoesNotInvokeCallback( testCase, ...
+                ConstructorName )
+
+            % Create a tab panel.
+            tabPanel = testCase...
+                .createTabPanelWithContents( ConstructorName );
+
+            % Disable the second tab.
+            tabPanel.TabEnables{2} = 'off';
+
+            % Define the SelectionChangedFcn callback.
+            tabPanel.SelectionChangedFcn = @onSelectionChanged;
+
+            % Define a shared variable for testing.
+            callbackInvoked = false;
+
+            % Use the app testing framework to select the second tab. This
+            % should not invoke the callback.
+            testCase.choose( tabPanel.TabGroup.Children(2) )
+            testCase.verifyFalse( callbackInvoked, ...
+                ['Clicking a disabled tab incorrectly ', ...
+                'called the ''SelectionChangedFcn'' callback.'] )
+
+            function onSelectionChanged( ~, ~ )
+
+                callbackInvoked = true;
+
+            end % onSelectionChanged
+
+        end % tClickingDisabledTabDoesNotInvokeCallback
 
     end % methods ( Test, Sealed )
 

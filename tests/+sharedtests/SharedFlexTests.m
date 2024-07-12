@@ -181,8 +181,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Dock the test figure and focus it.
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'docked';
-            windowStyleCleanup = onCleanup( ...
-                @() set( testFig, 'WindowStyle', 'normal' ) );
+            testCase.addTeardown( ...
+                @() set( testFig, 'WindowStyle', 'normal' ) )
             figure( testFig ) % bring to front
 
             % Ensure that grids are two-dimensional.

@@ -339,7 +339,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         function tAxesInComponentRemainsVisibleAfter3DRotation( ...
                 testCase, ConstructorName )
-            
+
             % Assume that we're in R2015b or later.
             testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
 
@@ -375,8 +375,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             warningID = 'MATLAB:modes:mode:InvalidPropertySet';
             warningState = warning( 'query', warningID );
             warning( 'off', warningID )
-            propertySetWarningCleanup = ...
-                onCleanup( @() warning( warningState ) );
+            testCase.addTeardown( @() warning( warningState ) )
 
             % Work around a bug in R2022a-R2023a by disabling a warning for
             % the duration of the test.
@@ -386,8 +385,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 warningID = 'MATLAB:callback:DynamicPropertyEventError';
                 warningState = warning( 'query', warningID );
                 warning( 'off', warningID )
-                propertyEventWarningCleanup = ...
-                    onCleanup( @() warning( warningState ) );
+                testCase.addTeardown( @() warning( warningState ) )
             end % if
 
             % Create the component.
@@ -735,6 +733,48 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             end % createAndMoveAxes
 
         end % tMovingAxesToContainerIsWarningFree
+
+        function tPlacingComponentInGridLayoutIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that we're in web graphics.
+            testCase.assumeGraphicsAreWebBased()
+
+            % Create a grid layout on the test figure.
+            testFig = testCase.ParentFixture.Parent;
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
+
+            % Add the component to the grid layout.
+            f = @() feval( ConstructorName, 'Parent', testGrid );
+            testCase.verifyWarningFree( f, ['Adding a ''', ...
+                ConstructorName, ''' component to a 1-by-1 ', ...
+                'grid layout (uigridlayout) was not warning-free.'] )
+
+        end % tPlacingComponentInGridLayoutIsWarningFree
+
+        function tAddingAndDeletingChildrenIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add children.
+            kids(1) = uicontrol( 'Parent', component );
+            kids(2) = uicontrol( 'Parent', component );
+
+            % Delete the first child and verify that there are no issues.
+            f = @() delete( kids(1) );
+            testCase.verifyWarningFree( f, ['Deleting a child from ', ...
+                'the ''', ConstructorName, ''' component was not ', ...
+                'warning-free.'] )
+
+            % Delete the second child and verify that there are no issues.
+            f = @() delete( kids(2) );
+            testCase.verifyWarningFree( f, ['Deleting the last child ', ...
+                'from the ''', ConstructorName, ''' component was not', ...
+                ' warning-free.'] )
+
+        end % tAddingAndDeletingChildrenIsWarningFree
 
     end % methods ( Test, Sealed )
 

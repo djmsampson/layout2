@@ -77,7 +77,13 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
             'UndockTooltipString';
             'DockTooltipString';
             'HelpTooltipString';
-            'CloseTooltipString'}
+            'CloseTooltipString';
+            'MaximizeTooltip';
+            'MinimizeTooltip';
+            'UndockTooltip';
+            'DockTooltip';
+            'HelpTooltip';
+            'CloseTooltip'}
     end % properties ( Constant )    
 
     methods ( Test, Sealed )

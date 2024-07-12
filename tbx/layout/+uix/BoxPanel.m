@@ -12,7 +12,7 @@ classdef BoxPanel < uix.Panel
 
     %  Copyright 2009-2024 The MathWorks, Inc.
 
-    properties( Access = public, Dependent, AbortSet, Hidden )
+    properties( Access = public, Dependent, AbortSet )
         TitleColor % title background color [RGB]
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
@@ -45,13 +45,22 @@ classdef BoxPanel < uix.Panel
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
 
-    properties( Access = public )
-        MaximizeTooltipString = 'Expand this panel' % tooltip string
-        MinimizeTooltipString = 'Collapse this panel' % tooltip string
-        UndockTooltipString = 'Undock this panel' % tooltip string
-        DockTooltipString = 'Dock this panel' % tooltip string
-        HelpTooltipString = 'Get help on this panel' % tooltip string
-        CloseTooltipString = 'Close this panel' % tooltip string
+    properties( Access = public, AbortSet )
+        MaximizeTooltip = 'Expand this panel' % tooltip string
+        MinimizeTooltip = 'Collapse this panel'% tooltip string
+        UndockTooltip = 'Undock this panel' % tooltip string
+        DockTooltip = 'Dock this panel' % tooltip string
+        HelpTooltip = 'Get help on this panel' % tooltip string
+        CloseTooltip = 'Close this panel' % tooltip string
+    end
+
+    properties( Access = public, Dependent, AbortSet, Hidden )
+        MaximizeTooltipString % transitioned to MaximizeTooltip
+        MinimizeTooltipString % transitioned to MinimizeTooltip
+        UndockTooltipString % transitioned to UndockTooltip
+        DockTooltipString % transitioned to DockTooltip
+        HelpTooltipString % transitioned to HelpTooltip
+        CloseTooltipString % transitioned to CloseTooltip
     end
 
     methods
@@ -99,14 +108,14 @@ classdef BoxPanel < uix.Panel
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'inactive', ...
                 'FontWeight', 'bold', 'String', '?', ...
-                'TooltipString', obj.HelpTooltipString );
+                'TooltipString', obj.HelpTooltip );
             closeButton = uicontrol( 'Parent', [], ...
                 'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'inactive', ...
                 'FontWeight', 'bold', 'String', char( 215 ), ...
-                'TooltipString', obj.CloseTooltipString );
+                'TooltipString', obj.CloseTooltip );
 
             % Store properties
             obj.Title = obj.NullTitle;
@@ -286,7 +295,97 @@ classdef BoxPanel < uix.Panel
 
             value = obj.TitleBox.Position(4);
 
-        end % get.TitleHeight
+        end % get.TitleHeight        
+
+        function set.MaximizeTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'MaximizeTooltip' );
+
+            % Set
+            obj.MaximizeTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.MaximizeTooltip
+
+        function set.MinimizeTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'MinimizeTooltip' );
+
+            % Set
+            obj.MinimizeTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.MinimizeTooltip
+
+        function set.DockTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'DockTooltip' );
+
+            % Set
+            obj.DockTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.DockTooltip
+
+        function set.UndockTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'UndockTooltip' );
+
+            % Set
+            obj.UndockTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.UndockTooltip
+
+        function set.CloseTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'CloseTooltip' );
+
+            % Set
+            obj.CloseTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.CloseTooltip
+
+        function set.HelpTooltip( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'HelpTooltip' );
+
+            % Set
+            obj.HelpTooltip = value;
+
+            % Mark as dirty
+            obj.redrawButtons()
+
+        end % set.HelpTooltip
+
+        function value = get.MaximizeTooltipString( obj )
+
+            value = obj.MaximizeTooltip;
+
+        end % get.MaximizeTooltipString
 
         function set.MaximizeTooltipString( obj, value )
 
@@ -295,12 +394,15 @@ classdef BoxPanel < uix.Panel
                 'MaximizeTooltipString' );
 
             % Set
-            obj.MaximizeTooltipString = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.MaximizeTooltip = value;
 
         end % set.MaximizeTooltipString
+
+        function value = get.MinimizeTooltipString( obj )
+
+            value = obj.MinimizeTooltip;
+
+        end % get.MinimizeTooltipString
 
         function set.MinimizeTooltipString( obj, value )
 
@@ -309,26 +411,15 @@ classdef BoxPanel < uix.Panel
                 'MinimizeTooltipString' );
 
             % Set
-            obj.MinimizeTooltipString = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.MinimizeTooltip = value;
 
         end % set.MinimizeTooltipString
 
-        function set.UndockTooltipString( obj, value )
+        function value = get.DockTooltipString( obj )
 
-            % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'UndockTooltipString' );
+            value = obj.DockTooltip;
 
-            % Set
-            obj.UndockTooltipString = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.UndockTooltipString
+        end % get.DockTooltip
 
         function set.DockTooltipString( obj, value )
 
@@ -337,26 +428,32 @@ classdef BoxPanel < uix.Panel
                 'DockTooltipString' );
 
             % Set
-            obj.DockTooltipString = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.DockTooltip = value;
 
         end % set.DockTooltipString
 
-        function set.HelpTooltipString( obj, value )
+        function value = get.UndockTooltipString( obj )
+
+            value = obj.UndockTooltip;
+
+        end % get.UndockTooltipString
+
+        function set.UndockTooltipString( obj, value )
 
             % Check
             value = uix.validateScalarStringOrCharacterArray( value, ...
-                'HelpTooltipString' );
+                'UndockTooltipString' );
 
             % Set
-            obj.HelpTooltipString = value;
+            obj.UndockTooltip = value;
 
-            % Mark as dirty
-            obj.redrawButtons()
+        end % set.UndockTooltipString
 
-        end % set.HelpTooltipString
+        function value = get.CloseTooltipString( obj )
+
+            value = obj.CloseTooltip;
+
+        end % get.CloseTooltipString
 
         function set.CloseTooltipString( obj, value )
 
@@ -365,12 +462,26 @@ classdef BoxPanel < uix.Panel
                 'CloseTooltipString' );
 
             % Set
-            obj.CloseTooltipString = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.CloseTooltip = value;
 
         end % set.CloseTooltipString
+
+        function value = get.HelpTooltipString( obj )
+
+            value = obj.HelpTooltip;
+
+        end % get.HelpTooltipString
+
+        function set.HelpTooltipString( obj, value )
+
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'HelpTooltipString' );
+
+            % Set
+            obj.HelpTooltip = value;
+
+        end % set.HelpTooltipString   
 
     end % accessors
 
@@ -574,30 +685,30 @@ classdef BoxPanel < uix.Panel
             help = ~isempty( obj.HelpFcn );
             if help
                 helpButton.Parent = box;
-                helpButton.TooltipString = obj.HelpTooltipString;
+                helpButton.TooltipString = obj.HelpTooltip;
                 box.Widths(end) = bW;
             end
             close = ~isempty( obj.CloseRequestFcn );
             if close
                 closeButton.Parent = box;
-                closeButton.TooltipString = obj.CloseTooltipString;
+                closeButton.TooltipString = obj.CloseTooltip;
                 box.Widths(end) = bW;
             end
 
             % Update icons
             if obj.Minimized_
                 minimizeButton.String = char( 9662 );
-                minimizeButton.TooltipString = obj.MaximizeTooltipString;
+                minimizeButton.TooltipString = obj.MaximizeTooltip;
             else
                 minimizeButton.String = char( 9652 );
-                minimizeButton.TooltipString = obj.MinimizeTooltipString;
+                minimizeButton.TooltipString = obj.MinimizeTooltip;
             end
             if obj.Docked_
                 dockButton.String = char( 8599 );
-                dockButton.TooltipString = obj.UndockTooltipString;
+                dockButton.TooltipString = obj.UndockTooltip;
             else
                 dockButton.String = char( 8600 );
-                dockButton.TooltipString = obj.DockTooltipString;
+                dockButton.TooltipString = obj.DockTooltip;
             end
 
         end % redrawButtons

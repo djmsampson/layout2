@@ -89,9 +89,13 @@ if isempty( parent )
     obj.ParentColorListener = [];
 else
     property = getColorProperty( parent );
-    obj.ParentColorListener = event.proplistener( parent, ...
-        findprop( parent, property ), 'PostSet', ...
-        @(~,~)onParentColorChanged(obj) );
-end
+    metaprop = findprop( parent, property );
+    if metaprop.SetObservable
+        obj.ParentColorListener = event.proplistener( parent, ...
+            metaprop, 'PostSet', @(~,~)onParentColorChanged(obj) );
+    else
+        obj.ParentColorListener = [];
+    end % if
+end % if
 
 end % updateListener
