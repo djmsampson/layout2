@@ -1,7 +1,8 @@
 classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
     %PANELCONTAINERTESTS Additional tests common to all panel containers
-    %(*.CardPanel, *.Panel, *.TabPanel, *.BoxPanel, and
-    %uix.ScrollingPanel).
+    %(*.CardPanel and *.TabPanel). Note that *.BoxPanel, ScrollingPanel,
+    %and *.Panel no longer have the 'Selection' property and do not include
+    %these tests.
 
     properties ( TestParameter )
         % Collection of invalid values for the 'Selection' property, used
@@ -226,221 +227,116 @@ classdef ( Abstract ) SharedPanelTests < sharedtests.SharedContainerTests
 
         end % tDynamicAdditionOfEnableProperty
 
-        function tContextMenuPropertyIsAssignedOnConstruction( ...
-                testCase, ConstructorName )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            if verLessThan( 'matlab', '9.8' )
-                % Before R2020a.
-                propertyName = 'UIContextMenu';
-            else
-                % R2020a onwards.
-                propertyName = 'ContextMenu';
-            end % if
-
-            % Specify the property on construction.
-            expected = gobjects( 0 );
-            component = feval( ConstructorName, ...
-                'Parent', testCase.ParentFixture.Parent, ...
-                propertyName, expected );
-            testCase.addTeardown( @() delete( component ) )
-
-            % Verify that the property has been assigned correctly.
-            actual = component.(propertyName);
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ', propertyName, ' property ', ...
-                'of the ', ConstructorName, ' component on ', ...
-                'construction did not store the value correctly.'] )
-
-        end % tContextMenuPropertyIsAssignedOnConstruction
-
-        function tSettingContextMenuPropertyStoresValue( testCase, ...
+        function tAddingChildIsWarningFreeUnderBugConditions( testCase, ...
                 ConstructorName )
 
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
 
-            if verLessThan( 'matlab', '9.8' )
-                % Before R2020a.
-                propertyName = 'UIContextMenu';
-            else
-                % R2020a onwards.
-                propertyName = 'ContextMenu';
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+            testFig = component.Parent;
+
+            % Set the bug flag if we're not in R2014b.
+            if ~verLessThan( 'matlab', '8.5' )
+                component.G1136196 = true;
             end % if
+
+            for visibility = {'on', 'off'}
+                % Create a control.
+                c = uicontrol( 'Parent', testFig, ...
+                    'Visible', visibility{1} );
+                testCase.addTeardown( @() delete( c ) )
+
+                % Test that parenting the control to the component is
+                % warning-free.
+                f = @() set( c, 'Parent', component );
+                testCase.verifyWarningFree( f, ['Parenting a control ', ...
+                    'to a ', ConstructorName, ' component was not ', ...
+                    'warning-free.'] )
+            end % for
+
+        end % tAddingChildIsWarningFreeUnderBugConditions
+
+        function tAddingInvisibleChildUpdatesContents( testCase, ...
+                ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+            testFig = component.Parent;
+
+            % Set the bug flag if we're not in R2014b.
+            if ~verLessThan( 'matlab', '8.5' )
+                component.G1136196 = true;
+            end % if
+
+            % Create a control.
+            c = uicontrol( 'Parent', testFig, 'Visible', 'off' );
+            testCase.addTeardown( @() delete( c ) )
+
+            % Parent the control.
+            c.Parent = component;
+
+            % Verify that the Contents property is correct.
+            actual = component.Contents(component.Selection);
+            testCase.verifySameHandle( actual, c, ['Parenting an ', ...
+                'invisible control to a ', ConstructorName, ...
+                ' component did not update the ''Contents'' ', ...
+                'property correctly.'] )
+
+        end % tAddingInvisibleChildUpdatesContents
+
+        function tAddingInvisibleChildEventuallyMakesLayoutVisible( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+            testFig = component.Parent;
+
+            % Set the bug flag if we're not in R2014b.
+            if ~verLessThan( 'matlab', '8.5' )
+                component.G1136196 = true;
+            end % if
+
+            % Create a control.
+            c = uicontrol( 'Parent', testFig, 'Visible', 'off' );
+            testCase.addTeardown( @() delete( c ) )
+
+            % Parent the control to the component.
+            c.Parent = component;
+            f = @() char( component.Visible );
+            testCase.verifyThat( f, matlab.unittest.constraints...
+                .Eventually( matlab.unittest.constraints...
+                .IsEqualTo( 'on' ), 'WithTimeoutOf', 5 ) )
+
+        end % tAddingInvisibleChildEventuallyMakesLayoutVisible
+
+        function tReorderingEmptyContentsDoesNotChangeSelection( ...
+                testCase, ConstructorName )
 
             % Construct the component.
             component = testCase.constructComponent( ConstructorName );
 
-            % Assign the property.
-            expected = gobjects( 0 );
-            component.(propertyName) = expected;
+            % Verify that the 'Selection' property is 0.
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not 0 immediately after construction.'] )
 
-            % Verify that the property has been assigned correctly.
-            actual = component.(propertyName);
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ', propertyName, ' property ', ...
-                'of the ', ConstructorName, ' component after ', ...
-                'construction did not store the value correctly.'] )
+            % Perform a no-op shuffle of the 'Contents' to trigger the
+            % reorder method.
+            component.Contents = component.Contents([]);
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not 0 after performing a no-op ', ...
+                'shuffle of the empty ''Contents'' property.'] )
 
-        end % tSettingContextMenuPropertyStoresValue
-
-        function tEnablePropertyIsAssignedOnConstruction( ...
-                testCase, ConstructorName )
-
-            % The 'Enable' property was added to uipanel in R2020b.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % Specify the property on construction.
-            expected = 'on';
-            component = feval( ConstructorName, ...
-                'Parent', testCase.ParentFixture.Parent, ...
-                'Enable', 'on' );
-            testCase.addTeardown( @() delete( component ) )
-
-            % Verify that the property has been assigned correctly.
-            actual = char( component.Enable );
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''Enable'' property of the ', ...
-                ConstructorName, ' component on construction did not ', ...
-                'store the value correctly.'] )
-
-        end % tEnablePropertyIsAssignedOnConstruction
-
-        function tSettingEnablePropertyStoresValue( testCase, ...
-                ConstructorName )
-
-            % The 'Enable' property was added to uipanel in R2020b.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % Construct the component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Assign the property.
-            expected = 'on';
-            component.Enable = expected;
-
-            % Verify that the property has been assigned correctly.
-            actual = char( component.Enable );
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''Enable'' property of the ', ...
-                ConstructorName, ' component after construction ', ...
-                'did not store the value correctly.'] )
-
-        end % tSettingEnablePropertyStoresValue
-
-        function tBorderWidthPropertyIsAssignedOnConstruction( ...
-                testCase, ConstructorName )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % The 'BorderWidth' property was added to uipanel in web
-            % graphics in R2022b.
-            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
-                testCase.assumeGraphicsAreNotWebBased()
-            end % if
-
-            % Specify the property on construction.
-            expected = 2;
-            component = feval( ConstructorName, ...
-                'Parent', testCase.ParentFixture.Parent, ...
-                'BorderWidth', expected );
-            testCase.addTeardown( @() delete( component ) )
-
-            % Verify that the property has been assigned correctly.
-            actual = component.BorderWidth;
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''BorderWidth'' property of the ', ...
-                ConstructorName, ' component on construction did not ', ...
-                'store the value correctly.'] )
-
-        end % tBorderWidthPropertyIsAssignedOnConstruction
-
-        function tSettingBorderWidthPropertyStoresValue( testCase, ...
-                ConstructorName )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % The 'BorderWidth' property was added to uipanel in web
-            % graphics in R2022b.
-            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
-                testCase.assumeGraphicsAreNotWebBased()
-            end % if
-
-            % Construct the component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Assign the property.
-            expected = 2;
-            component.BorderWidth = expected;
-
-            % Verify that the property has been assigned correctly.
-            actual = component.BorderWidth;
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''BorderWidth'' property of the ', ...
-                ConstructorName, ' component after construction ', ...
-                'did not store the value correctly.'] )
-
-        end % tSettingBorderWidthPropertyStoresValue
-
-        function tBorderColorPropertyIsAssignedOnConstruction( ...
-                testCase, ConstructorName )
-
-            % The 'BorderColor' property was added to uipanel in R2023a.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )
-
-            % Specify the property on construction.
-            expected = [1, 0.5, 0];
-            component = feval( ConstructorName, ...
-                'Parent', testCase.ParentFixture.Parent, ...
-                'BorderColor', expected );
-            testCase.addTeardown( @() delete( component ) )
-
-            % Verify that the property has been assigned correctly.
-            actual = component.BorderColor;
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''BorderColor'' property of the ', ...
-                ConstructorName, ' component on construction did not ', ...
-                'store the value correctly.'] )
-
-        end % tBorderColorPropertyIsAssignedOnConstruction
-
-        function tSettingBorderColorPropertyStoresValue( testCase, ...
-                ConstructorName )
-
-            % The 'BorderColor' property was added to uipanel in R2023a.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
-
-            % This test is only for panels and box panels.
-            testCase.assumeComponentIsAPanel( ConstructorName )            
-
-            % Construct the component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Assign the property.
-            expected = [1, 0.5, 0];
-            component.BorderColor = expected;
-
-            % Verify that the property has been assigned correctly.
-            actual = component.BorderColor;
-            testCase.verifyEqual( actual, expected, ...
-                ['Setting the ''BorderColor'' property of the ', ...
-                ConstructorName, ' component after construction ', ...
-                'did not store the value correctly.'] )
-
-        end % tSettingBorderColorPropertyStoresValue
+        end % tReorderingEmptyContentsDoesNotChangeSelection
 
     end % methods ( Test, Sealed )
 

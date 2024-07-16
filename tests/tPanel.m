@@ -9,6 +9,57 @@ classdef tPanel < sharedtests.SharedContainerTests
         NameValuePairs = panelNameValuePairs()
     end % properties ( TestParameter )
 
+    methods ( Test, Sealed )
+
+        function tGettingSelectionPropertyReturnsCorrectValue( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the 'Selection' property is 0.
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not 0 immediately after construction.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['The ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not updated ', ...
+                    'after a child was added.'] )
+            end % for
+
+        end % tGettingSelectionPropertyReturnsCorrectValue
+
+        function tSettingSelectionPropertyDoesNothing( testCase, ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that setting the 'Selection' property does nothing.
+            component.Selection = 3;
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['Setting the ''Selection'' property of the ', ...
+                ConstructorName, ' component was not a no-op.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                component.Selection = 5;
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['Setting the ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not a no-op.'] )
+            end % for
+
+        end % tSettingSelectionPropertyDoesNothing
+
+    end % methods ( Test, Sealed )
+
 end % classdef
 
 function nvp = panelNameValuePairs()

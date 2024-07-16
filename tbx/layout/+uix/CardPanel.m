@@ -15,7 +15,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
         Selection % selection
     end
 
-    properties
+    properties( Access = private )
         Selection_ = 0 % backing for Selection
     end
 
@@ -127,7 +127,7 @@ classdef CardPanel < uix.Container & uix.mixin.Container
                 uix.setVisible( oldContents(oldSelection), 'off' ) % hide old
             end
             if obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
-                on = @()isequal( obj.Contents(obj.Selection), child );
+                on = @() eq( obj.Contents(obj.Selection), child );
                 uix.setVisible( child, on, 0.02 ) % future show new
             else
                 uix.setVisible( child, 'on' ) % show new

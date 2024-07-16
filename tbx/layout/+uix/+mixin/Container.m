@@ -34,7 +34,7 @@ classdef Container < handle
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
     end
 
-    properties( Constant, Access = protected )
+    properties( Access = {?uix.mixin.Container, ?matlab.unittest.TestCase} )
         G1136196 = verLessThan( 'MATLAB', '8.5' ) % bug flag
     end
 

@@ -237,7 +237,7 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tContextMenuIsReparentedWhenTabPanelIsReparented
 
-        function tContextMenuIsDeletedWhenChildIsDeleted( testCase, ...
+        function tContextMenuIsRemovedWhenChildIsDeleted( testCase, ...
                 ConstructorName )
 
             % Filter the unrooted case.
@@ -246,27 +246,39 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             % Create a tab panel.
             tabPanel = testCase.constructComponent( ConstructorName );
             testFig = tabPanel.Parent;
-
+            
             % Add controls and context menus.
             numTabs = 3;
             contextMenus = gobjects( numTabs, 1 );            
             for c = 1 : numTabs
                 uicontrol( 'Parent', tabPanel )
-                contextMenus(c) = uicontextmenu( 'Parent', testFig );
+                contextMenus(c) = uicontextmenu( 'Parent', testFig );                
                 uimenu( 'Parent', contextMenus(c) )
                 tabPanel.TabContextMenus{c} = contextMenus(c);
             end % for
+
+            % Clean up the context menus at the end of the test.
+            testCase.addTeardown( @() delete( contextMenus ) )
 
             % Delete the controls one at a time.
             kids = tabPanel.Contents;
             for c = 1 : numTabs
                 delete( kids(c) )
-                testCase.verifyFalse( isvalid( contextMenus(c) ), ...
-                    ['Delete a child of ''', ConstructorName, ...
-                    ''' did not delete the corresponding context menu.'] )
+                testCase.verifySize( tabPanel.TabContextMenus, ...
+                    size( tabPanel.Contents ), ['Deleting a child ', ...
+                    'of a', ConstructorName, ' component did ', ...
+                    'not resize the ''TabContextMenus'' property ', ...
+                    'correctly.'] )
             end % for
 
-        end % tContextMenuIsDeletedWhenChildIsDeleted
+            % Verify that all context menus have been removed from the tab
+            % panel.
+            testCase.verifyEqual( tabPanel.TabContextMenus, ...
+                cell.empty( 0, 1 ), ['Deleting all children of a ', ...
+                ConstructorName, ' component did not reset the ''', ...
+                'TabContextMenus'' property to a 0-by-1 cell array.'] )
+
+        end % tContextMenuIsRemovedWhenChildIsDeleted
 
         function tRotate3dDoesNotAddMoreTabs( testCase, ConstructorName )
 

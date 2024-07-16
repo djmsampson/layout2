@@ -488,7 +488,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             if obj.Contents_(obj.Selection) ~= child % not selected
                 uix.setVisible( child, 'off' ) % hide
             elseif obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
-                on = @()isequal( obj.Contents(obj.Selection), child );
+                on = @() eq( obj.Contents(obj.Selection), child );
                 uix.setVisible( child, on, 0.02 ) % future show
             else % selected
                 uix.setVisible( child, 'on' ) % show
