@@ -60,10 +60,10 @@ function name = getColorProperty( obj )
 %getColorProperty  Get color property
 
 name = '';
-if isprop( obj, 'Color' )
+if isprop( obj, 'BackgroundColor' )
+    name = 'BackgroundColor';    
+elseif isprop( obj, 'Color' )
     name = 'Color';
-elseif isprop( obj, 'BackgroundColor' )
-    name = 'BackgroundColor';
 end % if
 
 end % getColorProperty

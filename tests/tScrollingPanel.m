@@ -13,6 +13,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             'Visible', 'on', ...
             'Padding', 5, ...
             'MouseWheelEnabled', 'on', ...
+            'Continuous', 'off', ...
             'BackgroundColor', [1, 1, 0], ...
             'Heights', double.empty( 0, 1 ), ...
             'MinimumHeights', double.empty( 0, 1 ), ...
@@ -77,13 +78,13 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             expectedPosition = [1, 1, scrollPanel.Position(3:4)];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Adding a child to ', ConstructorName, ' did not ', ...
-                'set the child''s ''Position'' property correctly.'] )            
+                'set the child''s ''Position'' property correctly.'] )
 
             % Update the 'Position' property of the scrolling panel.
             newDims = [0, -50];
             scrollPanel.Position = scrollPanel.Position + [0, 0, newDims];
             drawnow()
-            
+
             % Verify that the child still fills the scroll panel.
             expectedPosition = [1, 1, scrollPanel.Position(3:4)];
             testCase.verifyEqual( c.Position, expectedPosition, ...
@@ -315,7 +316,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Invoke the method.
             scrollPanel.onSliderScrolling()
-            
+
             % Verify that the event not raised.
             testCase.verifyFalse( eventRaised, ...
                 ['The ''onSliderScrolled'' method of ', ...
@@ -354,7 +355,7 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
             % Invoke the method.
             scrollPanel.onSliderScrolled()
-            
+
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
                 ['The ''onSliderScrolled'' method of ', ...
@@ -450,6 +451,36 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             end % if
 
         end % tOnMouseScrolledRaisesScrolledEvent
+
+        function tSettingMouseWheelEnabledErrorsForInvalidInput( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Attempt to set an invalid value for 'MouseWheelEnabled'.
+            f = @() set( component, 'MouseWheelEnabled', false );
+            testCase.verifyError( f, 'uix:InvalidArgument', ...
+                ['Setting the ''MouseWheelEnabled'' property of the ', ...
+                ConstructorName, ' component did not error when an ', ...
+                'invalid value was specified.'] )
+
+        end % tSettingMouseWheelEnabledErrorsForInvalidInput
+
+        function tSettingContinuousErrorsForInvalidInput( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Attempt to set an invalid value for 'Continuous'.
+            f = @() set( component, 'Continuous', false );
+            testCase.verifyError( f, 'uix:InvalidArgument', ...
+                ['Setting the ''Continuous'' property of the ', ...
+                ConstructorName, ' component did not error when an ', ...
+                'invalid value was specified.'] )
+
+        end % tSettingContinuousErrorsForInvalidInput
 
     end % methods ( Test, Sealed )
 

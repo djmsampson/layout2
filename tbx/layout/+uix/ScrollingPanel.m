@@ -316,7 +316,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 assert( ismember( value, {'on','off'} ) )
             catch
                 error( 'uix:InvalidArgument', ...
-                    'Property ''MouseWheelEnabled'' must ''on'' or ''off''.' )
+                    'Property ''MouseWheelEnabled'' must be ''on'' or ''off''.' )
             end
 
             % Set
@@ -336,7 +336,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 assert( ismember( value, {'on','off'} ) )
             catch
                 error( 'uix:InvalidArgument', ...
-                    'Property ''Continuous'' must ''on'' or ''off''.' )
+                    'Property ''Continuous'' must be ''on'' or ''off''.' )
             end
 
             % Set

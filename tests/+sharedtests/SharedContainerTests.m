@@ -784,7 +784,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
             % The 'BorderWidth' property was added to uipanel in web
             % graphics in R2022b.
-            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
+            if verLessThan( 'matlab', '9.13' )
                 testCase.assumeGraphicsAreNotWebBased()
             end % if
 
@@ -812,7 +812,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
             % The 'BorderWidth' property was added to uipanel in web
             % graphics in R2022b.
-            if verLessThan( 'matlab', '9.13' ) %#ok<VERLESSMATLAB>
+            if verLessThan( 'matlab', '9.13' )
                 testCase.assumeGraphicsAreNotWebBased()
             end % if
 
@@ -991,6 +991,63 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'did not store the value correctly.'] )
 
         end % tSettingEnablePropertyStoresValue
+
+        function tGettingSelectionPropertyReturnsCorrectValue( ...
+                testCase, ConstructorName )
+
+            % Assume that the component under test is a Panel, BoxPanel, or
+            % ScrollingPanel.
+            testCase.assumeComponentHasDeprecatedSelectionProperty( ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the 'Selection' property is 0.
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not 0 immediately after construction.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['The ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not updated ', ...
+                    'after a child was added.'] )
+            end % for
+
+        end % tGettingSelectionPropertyReturnsCorrectValue
+
+        function tSettingSelectionPropertyDoesNothing( testCase, ...
+                ConstructorName )
+
+            % Assume that the component under test is a Panel, BoxPanel, or
+            % ScrollingPanel.
+            testCase.assumeComponentHasDeprecatedSelectionProperty( ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that setting the 'Selection' property does nothing.
+            component.Selection = 3;
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['Setting the ''Selection'' property of the ', ...
+                ConstructorName, ' component was not a no-op.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                component.Selection = 5;
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['Setting the ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not a no-op.'] )
+            end % for
+
+        end % tSettingSelectionPropertyDoesNothing
 
     end % methods ( Test, Sealed )
 
@@ -1207,6 +1264,23 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'This test is not applicable to button boxes.' )
 
         end % assumeNotButtonBox
+
+        function assumeComponentHasDeprecatedSelectionProperty( ...
+                testCase, ConstructorName )
+
+            % List the components with a deprecated 'Selection' property.
+            componentsWithDeprecatedSelectionProperty = {...
+                'uiextras.Panel', 'uix.Panel', ...
+                'uiextras.BoxPanel', 'uix.BoxPanel', ...
+                'uix.ScrollingPanel'};
+
+            % Assume that the constructor name belongs to this list.
+            testCase.assumeTrue( any( strcmp( ConstructorName, ...
+                componentsWithDeprecatedSelectionProperty ) ), ...
+                ['The ', ConstructorName, ' component does not have ', ...
+                'a deprecated ''Selection'' property.'] )
+
+        end % assumeComponentHasDeprecatedSelectionProperty
 
     end % methods ( Sealed, Access = protected )
 
