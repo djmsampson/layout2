@@ -675,6 +675,128 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
         end % tMouseScrolledCallbackReturnsWhenMouseIsNotOverPanel
 
+        function tSettingPaddingUpdatesContentsPosition( testCase, ...
+                ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            button = uicontrol( 'Parent', component );
+
+            % With zero padding, the control's dimensions should equal the
+            % scrolling panel's dimensions.
+            component.Padding = 0;
+
+            % Read off the positions.
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            buttonDimensions = buttonPosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check.
+            testCase.verifyEqual( buttonDimensions, panelDimensions, ...
+                ['The dimensions of a button in a ', ConstructorName, ...
+                ' component were not correct when the ''Padding''', ...
+                ' property has value 0.'] )
+
+            % Adjust the 'Padding' property and repeat the test.
+            padding = 20;
+            component.Padding = padding;
+
+            % Read off the positions.
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            buttonDimensions = buttonPosition(3:4);
+            panelDimensions = panelPosition(3:4);
+            expectedButtonDimensions = panelDimensions - 2 * padding;
+
+            % Check.
+            testCase.verifyEqual( buttonDimensions, ...
+                expectedButtonDimensions, ...
+                ['The dimensions of a button in a ', ConstructorName, ...
+                ' component were not correct when the ''Padding''', ...
+                ' property has value ', num2str( padding ), '.'] )
+
+        end % tSettingPaddingUpdatesContentsPosition
+
+        function tSettingPaddingWithScrollbarsUpdatesContentsPosition( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            button = uicontrol( 'Parent', component );
+
+            % Adjust sizes to enable scrollbars.
+            h = 1000;
+            w = 1000;
+            set( component, 'Height', h, 'Width', w )
+
+            % With zero padding, verify the pixel position of the button.
+            component.Padding = 0;
+
+            % Read off the positions.
+            figurePosition = component.Parent.Position;
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            figureDimensions = figurePosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check the component dimensions.
+            testCase.verifyEqual( panelDimensions, figureDimensions, ...
+                ['The dimensions of the ', ConstructorName, ...
+                ' component were not correct when the ''Height''', ...
+                ' was ', num2str( h ), ', the ''Width'' was ', ...
+                num2str( w ), ', and the ''Padding'' was zero.'] )
+
+            % Check the button position.
+            expectedButtonPosition = [1, panelDimensions(2)-h+1, w, h];
+            testCase.verifyEqual( buttonPosition, ...
+                expectedButtonPosition, ['The dimensions of a button ', ...
+                'placed in a ', ConstructorName, ' component were ', ...
+                'not correct when the ''Height'' was ', num2str( h ), ...
+                ', the ''Width'' was ', num2str( w ), ', and the ', ...
+                '''Padding'' was zero.'] )
+
+            % Adjust the 'Padding' property and repeat the test.
+            padding = 20;
+            component.Padding = padding;
+
+            % Read off the positions.
+            figurePosition = component.Parent.Position;
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            figureDimensions = figurePosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check the component dimensions.
+            testCase.verifyEqual( panelDimensions, figureDimensions, ...
+                ['The dimensions of the ', ConstructorName, ...
+                ' component were not correct when the ''Height''', ...
+                ' was ', num2str( h ), ', the ''Width'' was ', ...
+                num2str( w ), ', and the ''Padding'' was ', ...
+                num2str( padding ), '.'] )
+
+            % Check the button position.
+            expectedButtonPosition = ...
+                [1+padding, panelDimensions(2)-h-padding+1, w, h];
+            testCase.verifyEqual( buttonPosition, ...
+                expectedButtonPosition, ['The dimensions of a button ', ...
+                'placed in a ', ConstructorName, ' component were ', ...
+                'not correct when the ''Height'' was ', num2str( h ), ...
+                ', the ''Width'' was ', num2str( w ), ', and the ', ...
+                '''Padding'' was ', num2str( padding ), '.'] )
+
+        end % tSettingPaddingWithScrollbarsUpdatesContentsPosition
+
     end % methods ( Test, Sealed )
 
 end % classdef
