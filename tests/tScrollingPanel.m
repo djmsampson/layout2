@@ -482,6 +482,199 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
 
         end % tSettingContinuousErrorsForInvalidInput
 
+        function tSettingEmptyPropertyValuesStoresValuesCorrectly( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel (with no content).
+            component = testCase.constructComponent( ConstructorName );
+
+            % List the properties.
+            propertyList = {'Heights', 'MinimumHeights', ...
+                'Widths', 'MinimumWidths', ...
+                'VerticalSteps', 'VerticalOffsets', ...
+                'HorizontalSteps', 'HorizontalOffsets'};
+
+            % Iterate over the properties.
+            expected = double.empty( 0, 1 );
+            for propertyIdx = 1 : numel( propertyList )
+                % Extract the current property.
+                currentProperty = propertyList{propertyIdx};
+                % Set the empty value.
+                component.(currentProperty) = [];
+                % Verify that the property has been stored correctly.
+                testCase.verifyEqual( component.(currentProperty), ...
+                    expected, ['Setting an empty value ([]) to the ''', ...
+                    currentProperty, ''' property of the ', ...
+                    ConstructorName, ' component did not store the ', ...
+                    'expected value (double.empty( 0, 1 ).)'] )
+            end % for
+
+        end % tSettingEmptyPropertyValuesStoresValuesCorrectly
+
+        function tSettingMouseWheelEnabledWhenUnrootedStoresValue( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in the case that 'Parent' is [].
+            testCase.assumeComponentHasEmptyParent()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the 'MouseWheelEnabled' property and verify that the
+            % property has been stored correctly.
+            diagnostic = ['Setting the ''MouseWheelEnabled'' ', ...
+                'property of the ', ConstructorName, ...
+                ' component when the ''Parent'' property is [] did ', ...
+                'not store the value.'];
+            if strcmp( component.MouseWheelEnabled, 'on' )
+                expected = 'off';
+                component.MouseWheelEnabled = expected;
+                actual = char( component.MouseWheelEnabled );
+                testCase.verifyEqual( actual, expected, diagnostic )
+            else
+                expected = 'on';
+                component.MouseWheelEnabled = expected;
+                actual = char( component.MouseWheelEnabled );
+                testCase.verifyEqual( actual, expected, diagnostic )
+            end % if
+
+        end % tSettingMouseWheelEnabledWhenUnrootedStoresValue
+
+        function tScrollingMouseWithNoScrollbarsRaisesEvent( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Ensure that no scrollbars are present.
+            set( component, 'Height', -1, 'Width', -1 )
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( component, 'Scrolled', @onScrolled );
+
+            % Move the mouse pointer over the scrolling panel.
+            panelPosition = getpixelposition( component );
+            testFigure = ancestor( component, 'figure' );
+            figurePosition = testFigure.Position;
+            r = groot();
+            midPanelOffset = 0.5 * panelPosition(3:4);
+            r.PointerLocation = figurePosition(1:2) + midPanelOffset;
+
+            % Invoke the onMouseScrolled method.
+            component.onMouseScrolled()
+
+            % Verify that the event was raised.
+            testCase.verifyTrue( eventRaised, ['Scrolling the ', ...
+                'mouse when the ', ConstructorName, ' component has ', ...
+                'no scrollbars did not raise the ''Scrolled'' event.'] )
+
+            function onScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onScrolled
+
+        end % tScrollingMouseWithNoScrollbarsRaisesEvent
+
+        function tRedrawEdgeCasesAreWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the panel Height and Width properties.
+            set( component, 'Height', 1000, 'Width', 1000 )
+
+            % Test several edge cases obtained by varying the slider size.
+            for sliderSize = [0, 0.001, 0.01, 0.1, 1, 5, 20, 50, 500, 5000]
+
+                % Override the slider size property.
+                component.SliderSize = sliderSize;
+
+                % Verify that a redraw is warning-free.
+                f = @() axes( 'Parent', component );
+                testCase.verifyWarningFree( f, ['Adding an axes to ', ...
+                    'the ', ConstructorName, ' component with a ', ...
+                    '''SliderSize'' value of ', num2str( sliderSize ), ...
+                    ' was not warning-free.'] )
+
+                % Tidy up.
+                delete( component.Children )
+
+            end % for
+
+        end % tRedrawEdgeCasesAreWarningFree
+
+        function tMouseScrolledCallbackReturnsWhenMouseIsNotOverPanel( ...
+                testCase, ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( component, 'Scrolled', @onScrolled );
+
+            % Set the figure's 'CurrentPoint' property to be outside the
+            % scrolling panel.
+            testFigure = ancestor( component, 'figure' );
+            figure( testFigure ) % Bring to front
+            figurePosition = testFigure.Position;
+            outsideMargin = 10;
+
+            % Left outside.
+            testFigure.CurrentPoint = [(-1) * outsideMargin, ...
+                figurePosition(4)/2];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Top outside.
+            testFigure.CurrentPoint = [figurePosition(3)/2, ...
+                figurePosition(4) + outsideMargin];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Right outside.
+            testFigure.CurrentPoint = [figurePosition(3) + ...
+                outsideMargin, figurePosition(4)/2];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Bottom outside.
+            testFigure.CurrentPoint = [figurePosition(3)/2, ...
+                (-1) * outsideMargin];
+            component.onMouseScrolled()
+
+            function onScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onScrolled
+
+        end % tMouseScrolledCallbackReturnsWhenMouseIsNotOverPanel
+
     end % methods ( Test, Sealed )
 
 end % classdef
