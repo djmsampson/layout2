@@ -19,6 +19,10 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             'ForegroundColor', [1, 1, 1], ...
             'HandleVisibility', 'on', ...
             'UserData', 'test', ...
+            'TabEnable', cell.empty( 1, 0 ), ...
+            'TabNames', cell.empty( 1, 0 ), ...
+            'TabPosition', 'top', ...
+            'TabSize', -1, ...
             }, ...
             {
             'Units', 'pixels', ...
@@ -246,13 +250,13 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             % Create a tab panel.
             tabPanel = testCase.constructComponent( ConstructorName );
             testFig = tabPanel.Parent;
-            
+
             % Add controls and context menus.
             numTabs = 3;
-            contextMenus = gobjects( numTabs, 1 );            
+            contextMenus = gobjects( numTabs, 1 );
             for c = 1 : numTabs
                 uicontrol( 'Parent', tabPanel )
-                contextMenus(c) = uicontextmenu( 'Parent', testFig );                
+                contextMenus(c) = uicontextmenu( 'Parent', testFig );
                 uimenu( 'Parent', contextMenus(c) )
                 tabPanel.TabContextMenus{c} = contextMenus(c);
             end % for
@@ -612,6 +616,29 @@ classdef tTabPanel < sharedtests.SharedPanelTests
 
         end % tStringSupportForTabTitlesProperty
 
+        function tStringSupportForSelectionChangedFcnProperty( ...
+                testCase, ConstructorName )
+
+            % Assume that we are in R2017b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017b' )
+
+            % Construct a tab panel with children.
+            tabPanel = testCase.createTabPanelWithControls( ...
+                ConstructorName );
+
+            % Set the 'SelectionChangedFcn' property.
+            expected = string( {'1'} ); %#ok<STRCLQT>
+            tabPanel.SelectionChangedFcn = expected;
+
+            % Verify that the stored value is as expected.
+            actual = tabPanel.SelectionChangedFcn;
+            testCase.verifyEqual( actual, expected, ['Setting the ', ...
+                '''SelectionChangedFcn'' property of the ', ...
+                ConstructorName, ' component did not store the ', ...
+                'value correctly.'] )
+
+        end % tStringSupportForSelectionChangedFcnProperty
+
         function tAccessingDeprecatedPropertiesReturnsCorrectValues( ...
                 testCase, ConstructorName )
 
@@ -632,6 +659,136 @@ classdef tTabPanel < sharedtests.SharedPanelTests
             end % for
 
         end % tAccessingDeprecatedPropertiesReturnsCorrectValues
+
+        function tSettingInvalidCallbackValuesThrowsError( testCase, ...
+                ConstructorName )
+
+            % Define the corresponding error IDs and property names for
+            % each component.
+            switch ConstructorName
+                case 'uiextras.TabPanel'
+                    errorID = 'uiextras:InvalidPropertyValue';
+                    propertyName = 'Callback';
+                case 'uix.TabPanel'
+                    errorID = 'uix:InvalidPropertyValue';
+                    propertyName = 'SelectionChangedFcn';
+            end % switch/case
+
+            % Construct a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Define a set of invalid values to exercise the different
+            % parts of the error-checking code.
+            invalidValues = {reshape( cell( 3, 1 ), 1, 1, 3 ), ...
+                cell( 2, 1 ), ...
+                cell( 1, 0 ), ...
+                {1}};
+            for k = 1 : numel( invalidValues )
+                f = @() set( tabPanel, propertyName, invalidValues{k} );
+                testCase.verifyError( f, errorID, ...
+                    ['Setting the ''', propertyName, ''' property of ', ...
+                    'the ', ConstructorName, ' component to an ', ...
+                    'invalid value did not throw the expected error.'] )
+            end % for
+
+        end % tSettingInvalidCallbackValuesThrowsError
+
+        function tSettingInvalidTabContextMenusPropertyThrowsError( ...
+                testCase, ConstructorName )
+
+            % This test relies on the presence of a figure ancestor.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a tab panel.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Add a child.
+            uicontrol( 'Parent', tabPanel )
+
+            % Create context menus.
+            testFigure = ancestor( tabPanel, 'figure' );
+            contextMenus(1) = uicontextmenu( 'Parent', testFigure );
+            uimenu( contextMenus(1) )
+            contextMenus(2) = uicontextmenu( 'Parent', testFigure );
+            uimenu( contextMenus(2) )
+            testCase.addTeardown( @() delete( contextMenus ) )
+
+            % Attempt to attach two context menus to a single tab.
+            f = @() set( tabPanel, 'TabContextMenus', {contextMenus} );
+            testCase.verifyError( f, 'uix:InvalidPropertyValue', ...
+                ['Attaching a nonscalar context menu array to a ', ...
+                ConstructorName, ' component via the property ''', ...
+                'TabContextMenus'' did not throw an error.'] )
+
+        end % tSettingInvalidTabContextMenusPropertyThrowsError
+
+        function tSettingTabLocationIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Create a tab panel with children.
+            tabPanel = testCase.createTabPanelWithControls( ...
+                ConstructorName );
+
+            % Iterate over the possible tab locations.
+            tabLocations = {'top', 'bottom', 'left', 'right'};
+            for k = 1 : numel( tabLocations )
+                f = @() set( tabPanel, 'TabLocation', tabLocations{k} );
+                testCase.verifyWarningFree( f, ['Setting the ''', ...
+                    'TabLocation'' property of the ', ConstructorName, ...
+                    ' component to ', tabLocations{k}, ' was not ', ...
+                    'warning-free.'] )
+            end % for
+
+        end % tSettingTabLocationIsWarningFree
+
+        function tSettingDeprecatedPropertiesHasNoEffect( testCase, ...
+                ConstructorName )
+
+            % Create a component.
+            tabPanel = testCase.constructComponent( ConstructorName );
+
+            % Iterate over the deprecated properties.
+            deprecatedProperties = testCase.DeprecatedProperties;
+            for k = 1 : 2 : numel( deprecatedProperties )
+                % Extract the current property and value.
+                currentProperty = deprecatedProperties{k};
+                currentValue = deprecatedProperties{k+1};
+                % Set the property on the component.
+                previousValue = tabPanel.(currentProperty);
+                tabPanel.(currentProperty) = currentValue;
+                % Verify that the value has not changed.
+                testCase.verifyEqual( tabPanel.(currentProperty), ...
+                    previousValue, ['Setting the deprecated ''', ...
+                    currentProperty, ''' property of the ', ...
+                    ConstructorName, ' component has resulted in ', ...
+                    'a modified value.'] )
+            end % for
+
+        end % tSettingDeprecatedPropertiesHasNoEffect
+
+        function tSettingInvalidPropertyValuesThrowsError( testCase, ...
+                ConstructorName )
+
+            % Create a tab panel with children..
+            tabPanel = testCase.createTabPanelWithControls( ...
+                ConstructorName );
+
+            % Define invalid property values.
+            invalidValues = {'ForegroundColor', true, ...
+                'TabEnables', true( 1, 3 ), ...
+                'TabLocation', true, ...
+                'TabTitles', true( 1, 3 )};
+            for k = 1 : 2 : numel( invalidValues )
+                propertyName = invalidValues{k};
+                propertyValue = invalidValues{k+1};
+                f = @() set( tabPanel, propertyName, propertyValue );
+                testCase.verifyError( f, 'uix:InvalidPropertyValue', ...
+                    ['Setting the ''', propertyName, ''' property ', ...
+                    'of a ', ConstructorName, ' component to an ', ...
+                    'invalid value did not throw an error.'] )
+            end % for
+
+        end % tSettingInvalidPropertyValuesThrowsError
 
     end % methods ( Test, Sealed )
 

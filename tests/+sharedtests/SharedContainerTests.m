@@ -10,6 +10,11 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
         NameValuePairs
     end % properties ( TestParameter, Abstract )
 
+    properties ( TestParameter )
+        % Test figure visibility. Used in reparenting tests.
+        TestFigureVisibility = {'on', 'off'}
+    end % properties ( TestParameter )
+
     properties ( Constant )
         % List of containers with get and set methods for the 'Enable'
         % property.
@@ -482,6 +487,49 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'assign the value correctly.'] )
 
         end % tSettingContentsAcceptsRowOrientation
+
+        function tDynamicAdditionOfEnableProperty( testCase, ...
+                ConstructorName )
+
+            % This test is only for components with a dynamic 'Enable'
+            % property.
+            testCase.assumeComponentHasDynamicEnableProperty( ...
+                ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that getting the 'Enable' property returns 'on'.
+            testCase.verifyEqual( getEnable( component ), 'on', ...
+                ['The get method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not return the ', ...
+                'value ''on''.'] )
+
+            % Verify that setting the 'Enable' property is warning-free.
+            f = @() setEnable( component, 'on' );
+            testCase.verifyWarningFree( f, ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component was not warning-free ', ...
+                'when the value was set to ''on''.'] )
+
+            % Verify that setting a non-char value causes an error.
+            f = @() setEnable( component, 0 );
+            testCase.verifyError( f, 'uiextras:InvalidPropertyValue', ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not throw an error ', ...
+                'with ID ''uiextras:InvalidPropertyValue'' when ', ...
+                'the ''Enable'' property was set to a non-char value.'] )
+
+            % Verify that setting a value not 'on' or 'off' causes an
+            % error.
+            f = @() setEnable( component, 'test' );
+            testCase.verifyError( f, 'uiextras:InvalidPropertyValue', ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not throw an error ', ...
+                'with ID ''uiextras:InvalidPropertyValue'' when ', ...
+                'the ''Enable'' property was not ''on'' or ''off''.'] )
+
+        end % tDynamicAdditionOfEnableProperty
 
         function tContainerEnableGetMethod( testCase, ConstructorName )
 
@@ -1048,6 +1096,174 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             end % for
 
         end % tSettingSelectionPropertyDoesNothing
+
+        function tReparentingFromFigureToWebFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in the JSD and starting with figure-based
+            % graphics.
+            testCase.assumeJavaScriptDesktop()
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = uifigure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'a ', ConstructorName, ' component from a figure ', ...
+                'to a uifigure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tReparentingFromFigureToWebFigureIsWarningFree
+
+        function tReparentingFromWebFigureToFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in the JSD and starting with uifigure-based
+            % graphics.
+            testCase.assumeJavaScriptDesktop()
+            testCase.assumeGraphicsAreWebBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = figure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'a ', ConstructorName, ' component from a uifigure ', ...
+                'to a figure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tReparentingFromWebFigureToFigureIsWarningFree
+
+        function tUnrootingComponentFromFigureIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that we're starting with a figure parent.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Verify that unrooting the component is warning-free.
+            reparenter = @() set( component, 'Parent', [] );
+            testCase.verifyWarningFree( reparenter, ['Unrooting ', ...
+                'a ', ConstructorName, ' component from a figure ', ...
+                'was not warning-free.'] )
+
+        end % tUnrootingComponentFromFigureIsWarningFree
+
+        function tParentingUnrootedComponentToFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're starting with an unrooted component.
+            testCase.assumeComponentHasEmptyParent()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = figure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'an unrooted ', ConstructorName, ' component to a ', ...
+                'figure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tParentingUnrootedComponentIsWarningFree
+
+        function tParentingUnrootedComponentToWebFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in R2022a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+
+            % Assume that we're starting with an unrooted component.
+            testCase.assumeComponentHasEmptyParent()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = uifigure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'an unrooted ', ConstructorName, ' component to a ', ...
+                'uifigure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tParentingUnrootedComponentToWebFigureIsWarningFree
+
+        function tUnrootingComponentFromWebFigureIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in R2022a or later and we're starting in a
+            % web figure.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+            testCase.assumeGraphicsAreWebBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Verify that unrooting the component is warning-free.
+            reparenter = @() set( component, 'Parent', [] );
+            testCase.verifyWarningFree( reparenter, ['Unrooting ', ...
+                'a ', ConstructorName, ' component from a uifigure ', ...
+                'was not warning-free.'] )
+
+        end % tUnrootingComponentFromWebFigureIsWarningFree
+
+        function tSettingComponentParentToSameHandleIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the same 'Parent'.
+            parent = component.Parent;
+            f = @() set( component, 'Parent', parent );
+            testCase.verifyWarningFree( f, ['Setting the ''Parent''', ...
+                ' property of the ', ConstructorName, ' component ', ...
+                'to the same handle was not warning-free.'] )
+            
+        end % tSettingComponentParentToSameHandleIsWarningFree
 
     end % methods ( Test, Sealed )
 

@@ -258,7 +258,7 @@ classdef BoxPanel < uix.Panel
         function set.Docked( obj, value )
 
             % Check
-            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+            assert( islogical( value ) && isscalar( value ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''Docked'' must be true or false.' )
 
@@ -279,7 +279,7 @@ classdef BoxPanel < uix.Panel
         function set.Minimized( obj, value )
 
             % Check
-            assert( islogical( value ) && isequal( size( value ), [1 1] ), ...
+            assert( islogical( value ) && isscalar( value ), ...
                 'uix:InvalidPropertyValue', ...
                 'Property ''Minimized'' must be true or false.' )
 
@@ -300,7 +300,7 @@ classdef BoxPanel < uix.Panel
         function set.MaximizeTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'MaximizeTooltip' );
 
             % Set
@@ -314,7 +314,7 @@ classdef BoxPanel < uix.Panel
         function set.MinimizeTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'MinimizeTooltip' );
 
             % Set
@@ -328,7 +328,7 @@ classdef BoxPanel < uix.Panel
         function set.DockTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'DockTooltip' );
 
             % Set
@@ -342,7 +342,7 @@ classdef BoxPanel < uix.Panel
         function set.UndockTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'UndockTooltip' );
 
             % Set
@@ -356,7 +356,7 @@ classdef BoxPanel < uix.Panel
         function set.CloseTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'CloseTooltip' );
 
             % Set
@@ -370,7 +370,7 @@ classdef BoxPanel < uix.Panel
         function set.HelpTooltip( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'HelpTooltip' );
 
             % Set
@@ -390,7 +390,7 @@ classdef BoxPanel < uix.Panel
         function set.MaximizeTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'MaximizeTooltipString' );
 
             % Set
@@ -407,7 +407,7 @@ classdef BoxPanel < uix.Panel
         function set.MinimizeTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'MinimizeTooltipString' );
 
             % Set
@@ -424,7 +424,7 @@ classdef BoxPanel < uix.Panel
         function set.DockTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'DockTooltipString' );
 
             % Set
@@ -441,7 +441,7 @@ classdef BoxPanel < uix.Panel
         function set.UndockTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'UndockTooltipString' );
 
             % Set
@@ -458,7 +458,7 @@ classdef BoxPanel < uix.Panel
         function set.CloseTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'CloseTooltipString' );
 
             % Set
@@ -475,7 +475,7 @@ classdef BoxPanel < uix.Panel
         function set.HelpTooltipString( obj, value )
 
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
+            value = validateScalarStringOrCharacterArray( value, ...
                 'HelpTooltipString' );
 
             % Set
@@ -759,3 +759,23 @@ if nargin > 1
 end
 
 end % extent
+
+function value = validateScalarStringOrCharacterArray( value, propertyName )
+%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a 
+%scalar string or a character array.
+
+if isa( value, 'string' ) && isscalar( value ) && ismissing( value )
+    value = '';
+end % if
+
+try
+    value = char( value );
+    assert( ismatrix( value ) )
+catch
+    exc = MException( 'uix:InvalidPropertyValue', ['Property ''', ...
+        propertyName, ''' must be a scalar string or a ', ...
+        'character array.'] );
+    exc.throwAsCaller()
+end % try/catch
+
+end % validateScalarStringOrCharacterArray

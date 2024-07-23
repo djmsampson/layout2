@@ -215,10 +215,22 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeGraphicsAreNotWebBased
 
+        function assumeGraphicsAreFigureBased( testCase )
+
+            % Assume that the component under test has a top-level ancestor
+            % created using the figure function.
+            figureBased = strcmp( testCase.ParentFixture.Type, ...
+                testCase.ParentType.JavaFigure );
+            testCase.assumeTrue( figureBased, ...
+                ['This test is only applicable to components ', ...
+                'based in figures created with the ''figure'' function.'] )
+
+        end % assumeGraphicsAreFigureBased
+
         function assumeJavaScriptDesktop( testCase )
 
             testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
-            isJSD = feature( 'webui' );
+            isJSD = logical( feature( 'webui' ) );
             testCase.assumeTrue( isJSD, ...
                 ['This test is only applicable in the new desktop ', ...
                 'environment for MATLAB (the JavaScript Desktop).'] )
