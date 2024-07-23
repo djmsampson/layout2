@@ -595,6 +595,54 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
 
         end % tStringSupportForDividerMarkings
 
+        function tReparentingComponentWhenMouseIsOverDivider( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are figure based.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Assume that we're testing uix.* classes.
+            testCase.assumeComponentIsFromNamespace( ...
+                ConstructorName, 'uix' )
+
+            % Create a flexible layout.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Move the mouse over a divider.            
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2) + ...
+                0.5 * dividers(1).Position(3:4);
+            pause( 0.5 )
+
+            % Capture the mouse pointer.
+            oldPointer = testFig.Pointer;
+
+            % Create a new figure with the same size and location as the
+            % test figure.
+            newFig = figure( 'Units', testFig.Units, ...
+                'Position', testFig.Position );
+            testCase.addTeardown( @() delete( newFig ) )
+            figure( newFig )            
+
+            % Reparent the layout.
+            component.Parent = newFig;
+            r.PointerLocation = r.PointerLocation - 1;
+            pause( 0.5 )
+            r.PointerLocation = r.PointerLocation + 1;
+            pause( 0.5 )
+
+            % Verify that the new pointer is the same.
+            testCase.verifyEqual( newFig.Pointer, oldPointer, ...
+                ['Reparenting a ', ConstructorName, ' component to ', ...
+                'a new figure with the same position did not preserve', ...
+                ' the mouse pointer when the mouse was over a divider.'] )
+
+        end % tReparentingComponentWhenMouseIsOverDivider
+
     end % methods ( Test, Sealed )
 
     methods ( Access = private )
