@@ -38,6 +38,12 @@ classdef tDivider < glttestutilities.TestInfrastructure
                 ['The uix.Divider constructor did not throw the ', ...
                 'expected exception when called with invalid inputs.'] )
 
+            % Attempt to create a divider incorrectly.
+            f = @() uix.Divider( 'Prent', testCase.ParentFixture.Parent );
+            testCase.verifyError( f, 'MATLAB:class:InvalidProperty', ...
+                ['The uix.Divider constructor did not error when ', ...
+                'passed incorrect input arguments.'] )
+
         end % tConstructorErrorsForInvalidArguments
 
         function tConstructorSetsParentCorrectly( testCase )
@@ -187,7 +193,7 @@ classdef tDivider < glttestutilities.TestInfrastructure
                 'containing the internal control (container) in the ', ...
                 '''HitObject'' field was not warning-free.'] )
 
-        end % tIsMouseOverEdgeCases
+        end % tIsMouseOverEdgeCases        
 
     end % methods ( Test, Sealed )
 
