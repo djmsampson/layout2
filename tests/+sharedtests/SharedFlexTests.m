@@ -269,10 +269,11 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components in the JavaScript
-            % desktop environment.
+            % This test is only for rooted components.
             testCase.assumeGraphicsAreRooted()
-            testCase.assumeJavaScriptDesktop()
+
+            % Exclude the test from running on CI.
+            testCase.assumeNotRunningOnCI()            
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
