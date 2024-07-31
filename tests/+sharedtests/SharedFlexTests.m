@@ -413,11 +413,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % This test is only for rooted components.
             testCase.assumeGraphicsAreRooted()
 
-            % If running in CI, assume we have at least R2023b and we're
-            % running in the JavaScript desktop.
-            if testCase.isCodeRunningOnCI()
-                testCase.assumeJavaScriptDesktop()
-            end % if
+            % Exclude the test from running on CI.
+            testCase.assumeNotRunningOnCI()
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
