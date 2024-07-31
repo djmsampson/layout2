@@ -409,8 +409,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOverDivider( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components in the JavaScript
-            % Desktop.
+            % This test is only for rooted components.
             testCase.assumeGraphicsAreRooted()
 
             % If running in CI, assume we have at least R2023b and we're
@@ -424,8 +423,9 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName );
 
             % Move the mouse to the center of a divider.
-            testFig = ancestor( component, 'figure' );
+            testFig = ancestor( component, 'figure' );            
             figure( testFig ) % Focus the figure
+            pause( 2 )
             figureOrigin = getFigureOrigin( testFig );
             dividerCenter = figureOrigin + ...
                 getpixelcenter( dividers(1), true );
