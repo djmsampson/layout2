@@ -56,7 +56,7 @@ classdef ButtonBox < uix.Box
             
             % Check
             try
-                assert( any( strcmp( value, {'left';'center';'right'} ) ) )
+                assert( ismember( value, {'left';'center';'right'} ) )
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''HorizontalAlignment'' must be ''left'', ''center'' or ''right''.' )
@@ -80,7 +80,7 @@ classdef ButtonBox < uix.Box
             
             % Check
             try
-                assert( any( strcmp( value, {'top';'middle';'bottom'} ) ) )
+                assert( ismember( value, {'top';'middle';'bottom'} ) )
             catch
                 error( 'uix:InvalidPropertyValue', ...
                     'Property ''VerticalAlignment'' must be ''top'', ''middle'' or ''bottom''.' )
