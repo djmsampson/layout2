@@ -7,7 +7,7 @@ classdef tPanel < sharedtests.SharedContainerTests
         % Name-value pair arguments to use when testing the component's
         % constructor and get/set methods.
         NameValuePairs = panelNameValuePairs()
-    end % properties ( TestParameter )
+    end % properties ( TestParameter )    
 
 end % classdef
 

@@ -16,7 +16,7 @@ classdef ( Hidden ) Divider < matlab.mixin.SetGet
         Color % color [RGB]
     end
 
-    properties( Access = private )
+    properties( Access = ?matlab.unittest.TestCase )
         Control % graphics
     end
 

@@ -9,7 +9,7 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
             component = testCase.constructComponent( ConstructorName );
 
             % Verify that adding many buttons is warning-free (this will
-            % the shrink-to-fit code). Do this for each possible
+            % call the shrink-to-fit code). Do this for each possible
             % 'HorizontalAlignment' and 'VerticalAlignment' value.
             buttonAdder = @addLotsOfButtons;
             hAlignments = {'left', 'center', 'right'};
@@ -89,6 +89,41 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
                 expectedValue, diagnostic( 'VerticalAlignment' ) )
 
         end % tStringSupportForAlignmentProperties
+
+        function tValidationForAlignmentProperties( testCase, ...
+                ConstructorName )
+
+            % Assume we are in R2016b or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Define a set of invalid values for testing.
+            invalidValues = {string( missing ), '', 'lift', ...
+                string( 'centre' ), string( {'a', 'b'} ), ...
+                string( {'left', 'left', 'left'} ), ...
+                reshape( 'abc', 1, 1, 3 )}; %#ok<STRCLQT>
+
+            % Define the diagnostic message.
+            diagnostic = @( prop ) ['The ', ConstructorName, ...
+                ' component did not error when given an invalid ', ...
+                'value for the ''', prop, ''' property.'];
+
+            % Iterate over the invalid values and test both alignment
+            % properties.
+            exceptionID = 'uix:InvalidPropertyValue';
+            for k = 1 : numel( invalidValues )
+                value = invalidValues{k};
+                f = @() set( component, 'HorizontalAlignment', value );
+                testCase.verifyError( f, exceptionID, ...
+                    diagnostic( 'HorizontalAlignment' ) )
+                f = @() set( component, 'VerticalAlignment', value );
+                testCase.verifyError( f, exceptionID, ...
+                    diagnostic( 'VerticalAlignment' ) )
+            end % for
+
+        end % tValidationForAlignmentProperties
 
     end % methods ( Test, Sealed )
 

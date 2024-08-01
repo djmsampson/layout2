@@ -110,6 +110,37 @@ classdef tGetPosition < glttestutilities.TestInfrastructure
 
         end % tGetPositionConvertsUnitsCorrectly
 
+        function tGettingAxesPositionIsCorrect( testCase )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Check both values of the 'ActivePositionProperty' property on
+            % the axes.
+            positionProperties = {'outerposition', 'position'};
+            units = {'pixels', 'normalized'};
+
+            for k1 = 1 : numel( positionProperties )
+                for k2 = 1 : numel( units )
+                    % Create an axes.
+                    testFig = testCase.ParentFixture.Parent;
+                    ax = axes( 'Parent', testFig, ...
+                        'ActivePositionProperty', positionProperties{k1} );
+                    testCase.addTeardown( @() delete( ax ) )
+                    % Compute its position.
+                    pos = uix.getPosition( ax, units{k2} );
+                    % Verify.
+                    testCase.verifyClass( pos, 'double', ...
+                        ['The uix.getPosition function did not ', ...
+                        'return a double array.'] )
+                    testCase.verifySize( pos, [1, 4], ...
+                        ['The uix.getPosition function did not return', ...
+                        ' a 1-by-4 vector.'] )
+                end % for
+            end % for
+
+        end % tGettingAxesPositionIsCorrect
+
     end % methods ( Test, Sealed )
 
 end % classdef

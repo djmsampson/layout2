@@ -28,8 +28,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         SelectionChangedFcn = '' % selection change callback
     end
 
-    properties( Access = private )
+    properties ( GetAccess = ?matlab.unittest.TestCase, SetAccess = private )
         TabGroup % tab group
+    end
+
+    properties( Access = private )       
         ShadowTabGroup % tab group
         BackgroundColorListener % listener
         SelectionChangedListener % listener
@@ -309,12 +312,12 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             if ischar( value ) || isa( value, 'string' ) % string
                 % OK
             elseif isa( value, 'function_handle' ) && ...
-                    isequal( size( value ), [1 1] ) % function handle
+                    isscalar( value ) % function handle
                 % OK
             elseif iscell( value ) && ndims( value ) == 2 && ...
                     size( value, 1 ) == 1 && size( value, 2 ) > 0 && ...
                     isa( value{1}, 'function_handle' ) && ...
-                    isequal( size( value{1} ), [1 1] ) %#ok<ISMAT> % cell callback
+                    isscalar( value{1} ) %#ok<ISMAT> % cell callback
                 % OK
             else
                 error( 'uix:InvalidPropertyValue', ...
@@ -485,7 +488,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             if obj.Contents_(obj.Selection) ~= child % not selected
                 uix.setVisible( child, 'off' ) % hide
             elseif obj.G1136196 && strcmp( child.Visible, 'off' ) % bug
-                on = @()isequal( obj.Contents(obj.Selection), child );
+                on = @() eq( obj.Contents(obj.Selection), child );
                 uix.setVisible( child, on, 0.02 ) % future show
             else % selected
                 uix.setVisible( child, 'on' ) % show

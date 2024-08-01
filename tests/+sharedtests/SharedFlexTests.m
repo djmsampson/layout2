@@ -181,8 +181,8 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Dock the test figure and focus it.
             testFig = ancestor( component, 'figure' );
             testFig.WindowStyle = 'docked';
-            windowStyleCleanup = onCleanup( ...
-                @() set( testFig, 'WindowStyle', 'normal' ) );
+            testCase.addTeardown( ...
+                @() set( testFig, 'WindowStyle', 'normal' ) )
             figure( testFig ) % bring to front
 
             % Ensure that grids are two-dimensional.
@@ -269,10 +269,11 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components in the JavaScript
-            % desktop environment.
+            % This test is only for rooted components.
             testCase.assumeGraphicsAreRooted()
-            testCase.assumeJavaScriptDesktop()
+
+            % Exclude the test from running on CI.
+            testCase.assumeNotRunningOnCI()            
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
@@ -409,15 +410,11 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOverDivider( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components in the JavaScript
-            % Desktop.
+            % This test is only for rooted components.
             testCase.assumeGraphicsAreRooted()
 
-            % If running in CI, assume we have at least R2023b and we're
-            % running in the JavaScript desktop.
-            if testCase.isCodeRunningOnCI()
-                testCase.assumeJavaScriptDesktop()
-            end % if
+            % Exclude the test from running on CI.
+            testCase.assumeNotRunningOnCI()
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
@@ -426,6 +423,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
             % Move the mouse to the center of a divider.
             testFig = ancestor( component, 'figure' );
             figure( testFig ) % Focus the figure
+            pause( 2 )
             figureOrigin = getFigureOrigin( testFig );
             dividerCenter = figureOrigin + ...
                 getpixelcenter( dividers(1), true );
@@ -594,6 +592,54 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 ' property.'] )
 
         end % tStringSupportForDividerMarkings
+
+        function tReparentingComponentWhenMouseIsOverDivider( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are figure based.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Assume that we're testing uix.* classes.
+            testCase.assumeComponentIsFromNamespace( ...
+                ConstructorName, 'uix' )
+
+            % Create a flexible layout.
+            [component, dividers] = testCase...
+                .createFlexibleLayoutWithChildren( ConstructorName );
+
+            % Move the mouse over a divider.            
+            r = groot();
+            testFig = ancestor( component, 'figure' );
+            figure( testFig ) % Focus the figure
+            r.PointerLocation = testFig.Position(1:2) + ...
+                dividers(1).Position(1:2) + ...
+                0.5 * dividers(1).Position(3:4);
+            pause( 0.5 )
+
+            % Capture the mouse pointer.
+            oldPointer = testFig.Pointer;
+
+            % Create a new figure with the same size and location as the
+            % test figure.
+            newFig = figure( 'Units', testFig.Units, ...
+                'Position', testFig.Position );
+            testCase.addTeardown( @() delete( newFig ) )
+            figure( newFig )            
+
+            % Reparent the layout.
+            component.Parent = newFig;
+            r.PointerLocation = r.PointerLocation - 1;
+            pause( 0.5 )
+            r.PointerLocation = r.PointerLocation + 1;
+            pause( 0.5 )
+
+            % Verify that the new pointer is the same.
+            testCase.verifyEqual( newFig.Pointer, oldPointer, ...
+                ['Reparenting a ', ConstructorName, ' component to ', ...
+                'a new figure with the same position did not preserve', ...
+                ' the mouse pointer when the mouse was over a divider.'] )
+
+        end % tReparentingComponentWhenMouseIsOverDivider
 
     end % methods ( Test, Sealed )
 

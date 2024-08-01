@@ -10,6 +10,11 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
         NameValuePairs
     end % properties ( TestParameter, Abstract )
 
+    properties ( TestParameter )
+        % Test figure visibility. Used in reparenting tests.
+        TestFigureVisibility = {'on', 'off'}
+    end % properties ( TestParameter )
+
     properties ( Constant )
         % List of containers with get and set methods for the 'Enable'
         % property.
@@ -339,7 +344,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         function tAxesInComponentRemainsVisibleAfter3DRotation( ...
                 testCase, ConstructorName )
-            
+
             % Assume that we're in R2015b or later.
             testCase.assumeMATLABVersionIsAtLeast( 'R2015b' )
 
@@ -375,8 +380,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             warningID = 'MATLAB:modes:mode:InvalidPropertySet';
             warningState = warning( 'query', warningID );
             warning( 'off', warningID )
-            propertySetWarningCleanup = ...
-                onCleanup( @() warning( warningState ) );
+            testCase.addTeardown( @() warning( warningState ) )
 
             % Work around a bug in R2022a-R2023a by disabling a warning for
             % the duration of the test.
@@ -386,8 +390,7 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 warningID = 'MATLAB:callback:DynamicPropertyEventError';
                 warningState = warning( 'query', warningID );
                 warning( 'off', warningID )
-                propertyEventWarningCleanup = ...
-                    onCleanup( @() warning( warningState ) );
+                testCase.addTeardown( @() warning( warningState ) )
             end % if
 
             % Create the component.
@@ -484,6 +487,49 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'assign the value correctly.'] )
 
         end % tSettingContentsAcceptsRowOrientation
+
+        function tDynamicAdditionOfEnableProperty( testCase, ...
+                ConstructorName )
+
+            % This test is only for components with a dynamic 'Enable'
+            % property.
+            testCase.assumeComponentHasDynamicEnableProperty( ...
+                ConstructorName )
+
+            % Create the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that getting the 'Enable' property returns 'on'.
+            testCase.verifyEqual( getEnable( component ), 'on', ...
+                ['The get method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not return the ', ...
+                'value ''on''.'] )
+
+            % Verify that setting the 'Enable' property is warning-free.
+            f = @() setEnable( component, 'on' );
+            testCase.verifyWarningFree( f, ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component was not warning-free ', ...
+                'when the value was set to ''on''.'] )
+
+            % Verify that setting a non-char value causes an error.
+            f = @() setEnable( component, 0 );
+            testCase.verifyError( f, 'uiextras:InvalidPropertyValue', ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not throw an error ', ...
+                'with ID ''uiextras:InvalidPropertyValue'' when ', ...
+                'the ''Enable'' property was set to a non-char value.'] )
+
+            % Verify that setting a value not 'on' or 'off' causes an
+            % error.
+            f = @() setEnable( component, 'test' );
+            testCase.verifyError( f, 'uiextras:InvalidPropertyValue', ...
+                ['The set method for ''Enable'' on the ', ...
+                ConstructorName, ' component did not throw an error ', ...
+                'with ID ''uiextras:InvalidPropertyValue'' when ', ...
+                'the ''Enable'' property was not ''on'' or ''off''.'] )
+
+        end % tDynamicAdditionOfEnableProperty
 
         function tContainerEnableGetMethod( testCase, ConstructorName )
 
@@ -709,6 +755,516 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
 
         end % tSettingAutoResizeChildrenToOffIsPreserved
 
+        function tMovingAxesToContainerIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume we're in R2024a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2024a' )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the action of creating and moving an axes to the
+            % component is warning-free.
+            testCase.verifyWarningFree( @createAndMoveAxes, ...
+                ['Creating an axes on the parent of the ''', ...
+                ConstructorName, ''' component and then moving ', ...
+                'it to the component was not warning-free.'] )
+
+            function createAndMoveAxes()
+
+                % Create an axes on the parent of the component, then
+                % immediately move it to the component.
+                ax = axes( 'Parent', component.Parent );
+                ax.Parent = component;
+
+            end % createAndMoveAxes
+
+        end % tMovingAxesToContainerIsWarningFree
+
+        function tPlacingComponentInGridLayoutIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that we're in web graphics.
+            testCase.assumeGraphicsAreWebBased()
+
+            % Create a grid layout on the test figure.
+            testFig = testCase.ParentFixture.Parent;
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
+
+            % Add the component to the grid layout.
+            f = @() feval( ConstructorName, 'Parent', testGrid );
+            testCase.verifyWarningFree( f, ['Adding a ''', ...
+                ConstructorName, ''' component to a 1-by-1 ', ...
+                'grid layout (uigridlayout) was not warning-free.'] )
+
+        end % tPlacingComponentInGridLayoutIsWarningFree
+
+        function tAddingAndDeletingChildrenIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add children.
+            kids(1) = uicontrol( 'Parent', component );
+            kids(2) = uicontrol( 'Parent', component );
+
+            % Delete the first child and verify that there are no issues.
+            f = @() delete( kids(1) );
+            testCase.verifyWarningFree( f, ['Deleting a child from ', ...
+                'the ''', ConstructorName, ''' component was not ', ...
+                'warning-free.'] )
+
+            % Delete the second child and verify that there are no issues.
+            f = @() delete( kids(2) );
+            testCase.verifyWarningFree( f, ['Deleting the last child ', ...
+                'from the ''', ConstructorName, ''' component was not', ...
+                ' warning-free.'] )
+
+        end % tAddingAndDeletingChildrenIsWarningFree
+
+        function tBorderWidthPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % The 'BorderWidth' property was added to uipanel in web
+            % graphics in R2022b.
+            if verLessThan( 'matlab', '9.13' )
+                testCase.assumeGraphicsAreNotWebBased()
+            end % if
+
+            % Specify the property on construction.
+            expected = 2;
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'BorderWidth', expected );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderWidth;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderWidth'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tBorderWidthPropertyIsAssignedOnConstruction
+
+        function tSettingBorderWidthPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % The 'BorderWidth' property was added to uipanel in web
+            % graphics in R2022b.
+            if verLessThan( 'matlab', '9.13' )
+                testCase.assumeGraphicsAreNotWebBased()
+            end % if
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = 2;
+            component.BorderWidth = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderWidth;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderWidth'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingBorderWidthPropertyStoresValue
+
+        function tBorderColorPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % The 'BorderColor' property was added to uipanel in R2023a.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Specify the property on construction.
+            expected = [1, 0.5, 0];
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'BorderColor', expected );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderColor;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderColor'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tBorderColorPropertyIsAssignedOnConstruction
+
+        function tSettingBorderColorPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % The 'BorderColor' property was added to uipanel in R2023a.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2023a' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = [1, 0.5, 0];
+            component.BorderColor = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.BorderColor;
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''BorderColor'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingBorderColorPropertyStoresValue
+
+        function tContextMenuPropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            if verLessThan( 'matlab', '9.8' )
+                % Before R2020a.
+                propertyName = 'UIContextMenu';
+            else
+                % R2020a onwards.
+                propertyName = 'ContextMenu';
+            end % if
+
+            % Specify the property on construction.
+            expected = gobjects( 0 );
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                propertyName, expected );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = component.(propertyName);
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ', propertyName, ' property ', ...
+                'of the ', ConstructorName, ' component on ', ...
+                'construction did not store the value correctly.'] )
+
+        end % tContextMenuPropertyIsAssignedOnConstruction
+
+        function tSettingContextMenuPropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            if verLessThan( 'matlab', '9.8' )
+                % Before R2020a.
+                propertyName = 'UIContextMenu';
+            else
+                % R2020a onwards.
+                propertyName = 'ContextMenu';
+            end % if
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = gobjects( 0 );
+            component.(propertyName) = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = component.(propertyName);
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ', propertyName, ' property ', ...
+                'of the ', ConstructorName, ' component after ', ...
+                'construction did not store the value correctly.'] )
+
+        end % tSettingContextMenuPropertyStoresValue
+
+        function tEnablePropertyIsAssignedOnConstruction( ...
+                testCase, ConstructorName )
+
+            % The 'Enable' property was added to uipanel in R2020b.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Specify the property on construction.
+            expected = 'on';
+            component = feval( ConstructorName, ...
+                'Parent', testCase.ParentFixture.Parent, ...
+                'Enable', 'on' );
+            testCase.addTeardown( @() delete( component ) )
+
+            % Verify that the property has been assigned correctly.
+            actual = char( component.Enable );
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''Enable'' property of the ', ...
+                ConstructorName, ' component on construction did not ', ...
+                'store the value correctly.'] )
+
+        end % tEnablePropertyIsAssignedOnConstruction
+
+        function tSettingEnablePropertyStoresValue( testCase, ...
+                ConstructorName )
+
+            % The 'Enable' property was added to uipanel in R2020b.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2020b' )
+
+            % This test is only for panels and box panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the property.
+            expected = 'on';
+            component.Enable = expected;
+
+            % Verify that the property has been assigned correctly.
+            actual = char( component.Enable );
+            testCase.verifyEqual( actual, expected, ...
+                ['Setting the ''Enable'' property of the ', ...
+                ConstructorName, ' component after construction ', ...
+                'did not store the value correctly.'] )
+
+        end % tSettingEnablePropertyStoresValue
+
+        function tGettingSelectionPropertyReturnsCorrectValue( ...
+                testCase, ConstructorName )
+
+            % Assume that the component under test is a Panel, BoxPanel, or
+            % ScrollingPanel.
+            testCase.assumeComponentHasDeprecatedSelectionProperty( ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the 'Selection' property is 0.
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not 0 immediately after construction.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['The ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not updated ', ...
+                    'after a child was added.'] )
+            end % for
+
+        end % tGettingSelectionPropertyReturnsCorrectValue
+
+        function tSettingSelectionPropertyDoesNothing( testCase, ...
+                ConstructorName )
+
+            % Assume that the component under test is a Panel, BoxPanel, or
+            % ScrollingPanel.
+            testCase.assumeComponentHasDeprecatedSelectionProperty( ...
+                ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that setting the 'Selection' property does nothing.
+            component.Selection = 3;
+            testCase.verifyEqual( component.Selection, 0, ...
+                ['Setting the ''Selection'' property of the ', ...
+                ConstructorName, ' component was not a no-op.'] )
+
+            % Add children and verify that the 'Selection' property is
+            % updated.
+            for k = 1 : 3
+                uicontrol( 'Parent', component )
+                component.Selection = 5;
+                testCase.verifyEqual( component.Selection, k, ...
+                    ['Setting the ''Selection'' property of the ', ...
+                    ConstructorName, ' component was not a no-op.'] )
+            end % for
+
+        end % tSettingSelectionPropertyDoesNothing
+
+        function tReparentingFromFigureToWebFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in the JSD and starting with figure-based
+            % graphics.
+            testCase.assumeJavaScriptDesktop()
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = uifigure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'a ', ConstructorName, ' component from a figure ', ...
+                'to a uifigure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tReparentingFromFigureToWebFigureIsWarningFree
+
+        function tReparentingFromWebFigureToFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in the JSD and starting with uifigure-based
+            % graphics.
+            testCase.assumeJavaScriptDesktop()
+            testCase.assumeGraphicsAreWebBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = figure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'a ', ConstructorName, ' component from a uifigure ', ...
+                'to a figure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tReparentingFromWebFigureToFigureIsWarningFree
+
+        function tUnrootingComponentFromFigureIsWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that we're starting with a figure parent.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Verify that unrooting the component is warning-free.
+            reparenter = @() set( component, 'Parent', [] );
+            testCase.verifyWarningFree( reparenter, ['Unrooting ', ...
+                'a ', ConstructorName, ' component from a figure ', ...
+                'was not warning-free.'] )
+
+        end % tUnrootingComponentFromFigureIsWarningFree
+
+        function tParentingUnrootedComponentToFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're starting with an unrooted component.
+            testCase.assumeComponentHasEmptyParent()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = figure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'an unrooted ', ConstructorName, ' component to a ', ...
+                'figure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tParentingUnrootedComponentIsWarningFree
+
+        function tParentingUnrootedComponentToWebFigureIsWarningFree( ...
+                testCase, ConstructorName, TestFigureVisibility )
+
+            % Assume that we're in R2022a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+
+            % Assume that we're starting with an unrooted component.
+            testCase.assumeComponentHasEmptyParent()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Create a new figure.
+            testFigure = uifigure( 'Visible', TestFigureVisibility );
+            testCase.addTeardown( @() delete( testFigure ) )
+
+            % Verify that reparenting the component to the new figure is
+            % warning-free.
+            reparenter = @() set( component, 'Parent', testFigure );
+            testCase.verifyWarningFree( reparenter, ['Reparenting ', ...
+                'an unrooted ', ConstructorName, ' component to a ', ...
+                'uifigure with visibility set to ', ...
+                TestFigureVisibility, ' was not warning-free.'] )
+
+        end % tParentingUnrootedComponentToWebFigureIsWarningFree
+
+        function tUnrootingComponentFromWebFigureIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in R2022a or later and we're starting in a
+            % web figure.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2022a' )
+            testCase.assumeGraphicsAreWebBased()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            uicontrol( 'Parent', component )
+
+            % Verify that unrooting the component is warning-free.
+            reparenter = @() set( component, 'Parent', [] );
+            testCase.verifyWarningFree( reparenter, ['Unrooting ', ...
+                'a ', ConstructorName, ' component from a uifigure ', ...
+                'was not warning-free.'] )
+
+        end % tUnrootingComponentFromWebFigureIsWarningFree
+
+        function tSettingComponentParentToSameHandleIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Create a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Assign the same 'Parent'.
+            parent = component.Parent;
+            f = @() set( component, 'Parent', parent );
+            testCase.verifyWarningFree( f, ['Setting the ''Parent''', ...
+                ' property of the ', ConstructorName, ' component ', ...
+                'to the same handle was not warning-free.'] )
+            
+        end % tSettingComponentParentToSameHandleIsWarningFree
+
     end % methods ( Test, Sealed )
 
     methods ( Test, Sealed, ParameterCombination = 'sequential' )
@@ -924,6 +1480,23 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
                 'This test is not applicable to button boxes.' )
 
         end % assumeNotButtonBox
+
+        function assumeComponentHasDeprecatedSelectionProperty( ...
+                testCase, ConstructorName )
+
+            % List the components with a deprecated 'Selection' property.
+            componentsWithDeprecatedSelectionProperty = {...
+                'uiextras.Panel', 'uix.Panel', ...
+                'uiextras.BoxPanel', 'uix.BoxPanel', ...
+                'uix.ScrollingPanel'};
+
+            % Assume that the constructor name belongs to this list.
+            testCase.assumeTrue( any( strcmp( ConstructorName, ...
+                componentsWithDeprecatedSelectionProperty ) ), ...
+                ['The ', ConstructorName, ' component does not have ', ...
+                'a deprecated ''Selection'' property.'] )
+
+        end % assumeComponentHasDeprecatedSelectionProperty
 
     end % methods ( Sealed, Access = protected )
 

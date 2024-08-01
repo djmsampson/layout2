@@ -55,13 +55,15 @@ classdef ButtonBox < uix.Box
         function set.HorizontalAlignment( obj, value )
             
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'HorizontalAlignment' );
-            assert( any( strcmp( value, {'left';'center';'right'} ) ), ...
-                'Property ''HorizontalAlignment'' must be ''left'', ''center'' or ''right''.' )
+            try
+                assert( ismember( value, {'left';'center';'right'} ) )
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''HorizontalAlignment'' must be ''left'', ''center'' or ''right''.' )
+            end % try/catch
             
             % Set
-            obj.HorizontalAlignment_ = value;
+            obj.HorizontalAlignment_ = char( value );
             
             % Mark as dirty
             obj.Dirty = true;
@@ -77,13 +79,15 @@ classdef ButtonBox < uix.Box
         function set.VerticalAlignment( obj, value )
             
             % Check
-            value = uix.validateScalarStringOrCharacterArray( value, ...
-                'VerticalAlignment' );
-            assert( any( strcmp( value, {'top';'middle';'bottom'} ) ), ...
-                'Property ''VerticalAlignment'' must be ''top'', ''middle'' or ''bottom''.' )
+            try
+                assert( ismember( value, {'top';'middle';'bottom'} ) )
+            catch
+                error( 'uix:InvalidPropertyValue', ...
+                    'Property ''VerticalAlignment'' must be ''top'', ''middle'' or ''bottom''.' )
+            end % try/catch
             
             % Set
-            obj.VerticalAlignment_ = value;
+            obj.VerticalAlignment_ = char( value );
             
             % Mark as dirty
             obj.Dirty = true;
