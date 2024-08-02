@@ -190,8 +190,9 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
     
     <inlinesubsection name="Version 2.3.9">
         <ul>
-            <li>Released 21 June 2024</li>
-            <li>Removed divider markings</li>
+            <li>Released 5 July 2024</li>
+            <li>Reverted changes from version 2.3.8, as these introduced issues with the 
+            	  appearance of dividers and tabs</li>
         </ul>
     </inlinesubsection> 
     

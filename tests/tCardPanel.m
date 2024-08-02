@@ -1,6 +1,6 @@
 classdef tCardPanel < sharedtests.SharedPanelTests
     %TCARDPANEL Tests for uiextras.CardPanel and uix.CardPanel.
-    
+
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
         ConstructorName = {'uiextras.CardPanel', 'uix.CardPanel'}
@@ -8,124 +8,226 @@ classdef tCardPanel < sharedtests.SharedPanelTests
         % constructor and get/set methods.
         NameValuePairs = cardPanelNameValuePairs()
     end % properties ( TestParameter )
-    
+
     methods ( Test, Sealed )
-        
-        function tDeletingChildrenSetsSelectionToZero( testCase )
-            
+
+        function tDeletingChildrenUnsetsSelection( testCase, ...
+                ConstructorName )
+
             % Create a card panel with controls.
-            cardPanel = testCase.createCardPanelWithControls();
-            
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
             % Delete all the children.
-            delete( cardPanel.Children )
-            
+            delete( cardPanel.Contents )
+
             % Verify that the 'Selection' property is equal to 0.
             testCase.verifyEqual( cardPanel.Selection, 0, ...
-                ['The ''Selection'' property of the CardPanel ', ...
-                'was not set to 0 when all the children of the ', ...
-                'CardPanel were deleted.'] )
-            
-        end % tDeletingChildrenSetsSelectionToZero
-        
-        function tAddingChildIncrementsSelection( testCase )
-            
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component was not set to 0 when all the children ', ...
+                'were deleted.'] )
+
+        end % tDeletingChildrenUnsetsSelection
+
+        function tAddingChildrenSelectsLastChild( testCase, ...
+                ConstructorName )
+
             % Create a card panel with controls.
-            cardPanel = testCase.createCardPanelWithControls();
-            
-            % Verify that the third control is selected.
-            testCase.verifyEqual( cardPanel.Selection, 3, ...
-                ['The CardPanel has not correctly updated its ', ...
-                '''Selection'' property when a new child was added.'] )
-            
-        end % tAddingChildIncrementsSelection
-        
-        function tDeletingLowerIndexChildDecrementsSelection( testCase )
-            
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
+            % Verify that the added control is selected.
+            testCase.verifyEqual( cardPanel.Selection, ...
+                numel( cardPanel.Contents ), ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component is not equal to the number of elements ', ...
+                'of the ''Contents'' property when new children ', ...
+                'were added.'] )
+
+            % Select an earlier child.
+            cardPanel.Selection = 1;
+
+            % Add a new child.
+            uicontrol( 'Parent', cardPanel );
+
+            % Verify that the added control is selected.
+            testCase.verifyEqual( cardPanel.Selection, ...
+                numel( cardPanel.Contents ), ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component is not equal to the number of elements ', ...
+                'of the ''Contents'' property when the ''Selection''', ...
+                ' property was set to a lower value then a new child ', ...
+                'was added.'] )
+
+        end % tAddingChildrenSelectsLastChild
+
+        function tDeletingEarlierChildPreservesSelection( testCase, ...
+                ConstructorName )
+
             % Create a card panel with controls.
-            cardPanel = testCase.createCardPanelWithControls();
-            
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
             % Record the current selection, then delete the first child.
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Children(3) )
-            
+            oldContents = cardPanel.Contents;
+            oldSelection = cardPanel.Selection;
+            delete( cardPanel.Contents(1) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
             % Test that deleting a child with a lower index than the
             % current selection causes the selection index to decrease by
             % 1.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection - 1, ...
-                ['The CardPanel has not correctly updated its ', ...
-                '''Selection'' property when a child with a lower ', ...
-                'index than the current selection was deleted.'] )
-            
-        end % tDeletingLowerIndexChildDecrementsSelection
-        
-        function tDeletingSelectedChildPreservesSelection( testCase )
-            
+            testCase.verifyEqual( newSelection, oldSelection-1, ...
+                ['Deleting a child of the ', ConstructorName, ...
+                ' component with a lower index than the current ', ...
+                'selection did not decrement the ''Selection''', ...
+                ' property by 1.'] )
+            testCase.verifySameHandle( oldContents(oldSelection), ...
+                newContents(newSelection), ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'updated the selected child when a child with a ', ...
+                'lower index than the current selection was deleted.'] )
+
+        end % tDeletingEarlierChildPreservesSelection
+
+        function tDeletingSelectedFirstChildSelectsSecondChild( ...
+                testCase, ConstructorName )
+
             % Create a card panel with controls.
-            cardPanel = testCase.createCardPanelWithControls();
-            
-            % Select the second child, record the current selection, then
-            % delete the second child.
-            cardPanel.Selection = 2;
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Children(2) )
-            
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
+            % Select the first child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = 1;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
             % Verify that the 'Selection' property has remained the same.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection, ...
-                ['The ''Selection'' property of the CardPanel ', ...
-                'has not remained the same when the current child ', ...
-                'was deleted (and the current child was not the ', ...
-                'highest index child).'] )
-            
+            testCase.verifyEqual( newSelection, oldSelection, ...
+                ['The ', ConstructorName, ' component did not ', ...
+                'preserve the ''Selection'' property when the ', ...
+                'first child was deleted in the presence of ', ...
+                'multiple children.'] )
+            testCase.verifySameHandle( newContents(newSelection), ...
+                oldContents(2), ['The ', ConstructorName, ' component', ...
+                'has not selected the second child when the first ', ...
+                'child was selected and deleted.'] )
+
         end % tDeletingSelectedChildPreservesSelection
-        
-        function tDeletingHigherIndexChildPreservesSelection( testCase )
+
+        function tDeletingSelectedChildSelectsNextChild( testCase, ...
+                ConstructorName )
             
             % Create a card panel with controls.
-            cardPanel = testCase.createCardPanelWithControls();
-            
-            % Select the second child, record the current selection, and
-            % delete the third child.
-            cardPanel.Selection = 2;
-            currentSelection = cardPanel.Selection;
-            delete( cardPanel.Children(1) )
-            
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
+            % Select the second child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = 2;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
             % Verify that the 'Selection' property has remained the same.
-            testCase.verifyEqual( cardPanel.Selection, ...
-                currentSelection, ...
-                ['The ''Selection'' property of the CardPanel ', ...
-                'has not remained the same when a higher index child ', ...
-                'was deleted (and the current child was not the ', ...
-                'highest index child).'] )
-            
-        end % tDeletingHigherIndexChildPreservesSelection
-        
+            testCase.verifyEqual( newSelection, oldSelection, ...
+                ['The ''Selection'' property of the ', ConstructorName, ...
+                ' component did not stay the same when the second ', ...
+                'child of three was selected then deleted.'] )
+            testCase.verifySameHandle( newContents(newSelection), ...
+                oldContents(oldSelection + 1), ...
+                ['The ', ConstructorName, ' component has not ', ...
+                'selected the next child when the selected child ', ...
+                'was deleted.'] )
+
+        end % tDeletingSelectedChildSelectsNextChild
+
+        function tDeletingSelectedLastChildSelectsSecondLastChild( ...
+                testCase, ConstructorName )
+
+            % Create a card panel with controls.
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
+            % Select the last child, then delete it.
+            oldContents = cardPanel.Contents;
+            oldSelection = numel( oldContents );
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(oldSelection) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
+            % Verify that the 'Selection' property has decreased by 1.
+            testCase.verifyEqual( newSelection, oldSelection - 1, ...
+                ['Deleting the selected last child of the ', ...
+                ConstructorName, ' component did not update the ', ...
+                '''Selection'' property correctly.'] )
+            testCase.verifySameHandle( newContents(newSelection), ...
+                oldContents(end - 1), ['The ', ConstructorName, ...
+                ' component has not selected the second last child ', ...
+                'when the last child was selected and deleted.'] )
+
+        end % tDeletingSelectedLastChildSelectsSecondLastChild
+
+        function tDeletingLaterChildPreservesSelection( testCase, ...
+                ConstructorName )
+
+            % Create a card panel with controls.
+            cardPanel = testCase...
+                .createCardPanelWithControls( ConstructorName );
+
+            % Record the current selection, then delete the first child.
+            oldContents = cardPanel.Contents;
+            oldSelection = 1;
+            cardPanel.Selection = oldSelection;
+            delete( cardPanel.Contents(end) )
+            newContents = cardPanel.Contents;
+            newSelection = cardPanel.Selection;
+
+            % Test that deleting a child with a lower index than the
+            % current selection causes the selection index to decrease by
+            % 1.
+            testCase.verifyEqual( newSelection, oldSelection, ...
+                ['Deleting a child of index greater than the ', ...
+                'current ''Selection'' property did not preserve ', ...
+                'the ''Selection'' property.'] )
+            testCase.verifySameHandle( oldContents(oldSelection), ...
+                newContents(newSelection), ...
+                ['The ', ConstructorName, ' component did not ', ...
+                'preserve the selected child when a child of index ', ...
+                'greater than the current ''Selection'' property ', ...
+                'was deleted.'] )
+
+        end % tDeletingLaterChildPreservesSelection
+
     end % methods ( Test, Sealed )
-    
+
     methods ( Access = private )
-        
-        function cardPanel = createCardPanelWithControls( testCase )
-            
+
+        function component = createCardPanelWithControls( testCase, ...
+                ConstructorName )
+
             % Create a CardPanel with three controls.
-            parent = testCase.ParentFixture.Parent;
-            cardPanelConstructor = testCase.ConstructorName{1};
-            cardPanel = feval( cardPanelConstructor, 'Parent', parent );
-            testCase.addTeardown( @() delete( cardPanel ) )
-            uicontrol( 'Parent', cardPanel, ...
+            component = testCase.constructComponent( ConstructorName );            
+            uicontrol( 'Parent', component, ...
                 'Style', 'frame', ...
                 'BackgroundColor', 'r' )
-            uicontrol( 'Parent', cardPanel, ...
+            uicontrol( 'Parent', component, ...
                 'Style', 'frame', ...
                 'BackgroundColor', 'g' )
-            uicontrol( 'Parent', cardPanel, ...
+            uicontrol( 'Parent', component, ...
                 'Style', 'frame', ...
                 'BackgroundColor', 'b' )
-            
+
         end % createCardPanelWithControls
-        
+
     end % methods ( Access = private )
-    
+
 end % classdef
 
 function nvp = cardPanelNameValuePairs()

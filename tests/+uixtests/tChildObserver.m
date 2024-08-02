@@ -233,6 +233,77 @@ classdef tChildObserver < glttestutilities.TestInfrastructure
 
         end % tSettingInternalFalseRaisesChildAddedEvent
 
+        function tCreatingChildObserverOnObjectWithChildren( testCase )
+
+            % Assume that we have a test figure.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Add a control to the figure.
+            testFigure = testCase.ParentFixture.Parent;
+            uicontrol( 'Parent', testFigure )
+
+            % Verify that creating a child observer is warning-free.
+            f = @() uix.ChildObserver( testFigure );
+            testCase.verifyWarningFree( f, ['Creating an object of ', ...
+                'type uix.ChildObserver from a figure containing a ', ...
+                'control was not warning-free.'] )
+
+        end % tCreatingChildObserverOnObjectWithChildren
+
+        function tChangingInternalChildPropertyRaisesEvents( testCase )
+
+            % Assume that we have a test figure.
+            testCase.assumeGraphicsAreFigureBased()
+
+            % Add a control to the figure.
+            testFigure = testCase.ParentFixture.Parent;
+            button = uicontrol( 'Parent', testFigure );
+
+            % Create a child observer.
+            observer = uix.ChildObserver( testFigure );
+
+            % Create listeners.
+            childRemovedListener = event.listener( observer, ...
+                'ChildRemoved', @onChildRemoved );
+            childAddedListener = event.listener( observer, ...
+                'ChildAdded', @onChildAdded );
+            childRemovedEventRaised = false;
+            childAddedEventRaised = false;
+
+            % Trigger a child removed event.
+            button.Internal = true;
+            testCase.verifyTrue( childRemovedEventRaised, ['Setting ', ...
+                ' ''Internal'' to true on an observed child did ', ...
+                'not raise the ''ChildRemoved'' event.'] )
+
+            % Trigger a child added event.
+            button.Internal = false;
+            testCase.verifyTrue( childAddedEventRaised, ['Setting ', ...
+                ' ''Internal'' to false on an observed child did ', ...
+                'not raise the ''ChildAdded'' event.'] )
+
+            % Reset the variable and verify that no event was raised when
+            % the 'Internal' property is set to the same value.
+            childRemovedEventRaised = false;
+            button.Internal = false;
+            testCase.verifyFalse( childRemovedEventRaised, ['Setting ', ...
+                ' ''Internal'' to the same value on an observed ', ...
+                'child incorrectly raised an event.'] )
+
+            function onChildRemoved( ~, ~ )
+
+                childRemovedEventRaised = true;
+
+            end % onChildRemoved
+
+            function onChildAdded( ~, ~ )
+
+                childAddedEventRaised = true;
+
+            end % onChildAdded
+
+        end % tChangingInternalChildPropertyRaisesEvents
+
     end % methods ( Test, Sealed )
 
 end % classdef

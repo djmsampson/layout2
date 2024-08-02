@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<Info>
+    <Info name="New Test Suite" type="FOLDERS">
+        <Info value="tests/tBoxPanel"></Info>
+    </Info>
+</Info>

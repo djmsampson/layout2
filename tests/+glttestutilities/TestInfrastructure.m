@@ -28,14 +28,7 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
             % This collection of tests requires MATLAB R2014b or later.
             testCase.assumeMATLABVersionIsAtLeast( 'R2014b' )
 
-        end % assumeMinimumMATLABVersion
-
-        function clearPersistentData( ~ )
-
-            % Clear classes and functions containing persistent data.
-            clear( 'Container', 'TabPanel' )
-
-        end % clearPersistentData
+        end % assumeMinimumMATLABVersion        
 
         function addToolboxPath( testCase )
 
@@ -158,6 +151,8 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                     versionNumber = '23.2';
                 case 'R2024a'
                     versionNumber = '24.1';
+                case 'R2024b'
+                    versionNumber = '24.2';
                 otherwise
                     error( ['AssumeMATLABVersionIsAtLeast:', ...
                         'InvalidVersionString'], ...
@@ -220,10 +215,22 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeGraphicsAreNotWebBased
 
+        function assumeGraphicsAreFigureBased( testCase )
+
+            % Assume that the component under test has a top-level ancestor
+            % created using the figure function.
+            figureBased = strcmp( testCase.ParentFixture.Type, ...
+                testCase.ParentType.JavaFigure );
+            testCase.assumeTrue( figureBased, ...
+                ['This test is only applicable to components ', ...
+                'based in figures created with the ''figure'' function.'] )
+
+        end % assumeGraphicsAreFigureBased
+
         function assumeJavaScriptDesktop( testCase )
 
             testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
-            isJSD = feature( 'webui' );
+            isJSD = logical( feature( 'webui' ) );
             testCase.assumeTrue( isJSD, ...
                 ['This test is only applicable in the new desktop ', ...
                 'environment for MATLAB (the JavaScript Desktop).'] )

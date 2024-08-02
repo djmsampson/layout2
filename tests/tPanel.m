@@ -1,4 +1,4 @@
-classdef tPanel < sharedtests.SharedPanelTests
+classdef tPanel < sharedtests.SharedContainerTests
     %TPANEL Tests for uiextras.Panel and uix.Panel.
 
     properties ( TestParameter )
@@ -7,7 +7,7 @@ classdef tPanel < sharedtests.SharedPanelTests
         % Name-value pair arguments to use when testing the component's
         % constructor and get/set methods.
         NameValuePairs = panelNameValuePairs()
-    end % properties ( TestParameter )
+    end % properties ( TestParameter )    
 
 end % classdef
 

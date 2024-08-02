@@ -1,4 +1,4 @@
-classdef tScrollingPanel < sharedtests.SharedPanelTests
+classdef tScrollingPanel < sharedtests.SharedContainerTests
     %TSCROLLINGPANEL Tests for uix.ScrollingPanel.
 
     properties ( TestParameter )
@@ -11,9 +11,9 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
             'Position', [10, 10, 400, 400], ...
             'Tag', 'Test', ...
             'Visible', 'on', ...
-            'Selection', 0, ...
             'Padding', 5, ...
             'MouseWheelEnabled', 'on', ...
+            'Continuous', 'off', ...
             'BackgroundColor', [1, 1, 0], ...
             'Heights', double.empty( 0, 1 ), ...
             'MinimumHeights', double.empty( 0, 1 ), ...
@@ -78,13 +78,13 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
             expectedPosition = [1, 1, scrollPanel.Position(3:4)];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Adding a child to ', ConstructorName, ' did not ', ...
-                'set the child''s ''Position'' property correctly.'] )            
+                'set the child''s ''Position'' property correctly.'] )
 
             % Update the 'Position' property of the scrolling panel.
             newDims = [0, -50];
             scrollPanel.Position = scrollPanel.Position + [0, 0, newDims];
             drawnow()
-            
+
             % Verify that the child still fills the scroll panel.
             expectedPosition = [1, 1, scrollPanel.Position(3:4)];
             testCase.verifyEqual( c.Position, expectedPosition, ...
@@ -139,7 +139,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
             % Change the 'VerticalOffsets' property.
             scrollPanel.VerticalOffsets = 50;
-            expectedPosition = [-19, -148, scrollPanelDims];
+            expectedPosition = [-19, -149, scrollPanelDims];
             testCase.verifyEqual( c.Position, expectedPosition, ...
                 ['Changing the ''VerticalOffsets'' property of ', ...
                 'the scrolling panel resulted in an incorrect ', ...
@@ -268,7 +268,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
                 'were large.'] )
             testCase.verifyEqual( scrollPanel.HorizontalOffsets, 0, ...
                 ['The ''HorizontalOffsets'' property on the ', ...
-                'scrolling panel is not correcte when a large ', ...
+                'scrolling panel is not correct when a large ', ...
                 'child was added and the dimensions of the panel ', ...
                 'were large.'] )
 
@@ -295,7 +295,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
         end % tStringSupportForMouseWheelEnabled
 
-        function tOnSliderScrollingMethodRaisesScrollingEvent( ...
+        function tOnSliderScrollingMethodRaisesScrolledEvent( ...
                 testCase, ConstructorName )
 
             % Create a scrolling panel.
@@ -303,7 +303,7 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
             % Create a listener to receive the event.
             eventRaised = false;
-            event.listener( scrollPanel, 'Scrolling', @onSliderScrolling );
+            event.listener( scrollPanel, 'Scrolled', @onSliderScrolling );
 
             function onSliderScrolling( ~, ~ )
 
@@ -311,14 +311,29 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
             end % onSliderScrolling
 
+            % Do not fire event when scrolling.
+            scrollPanel.Continuous = 'off';
+
+            % Invoke the method.
+            scrollPanel.onSliderScrolling()
+
+            % Verify that the event not raised.
+            testCase.verifyFalse( eventRaised, ...
+                ['The ''onSliderScrolled'' method of ', ...
+                ConstructorName, ' raised the ''Scrolled''', ...
+                ' event with continuous scrolling ''off''.'] )
+
+            % Fire event when scrolling.
+            scrollPanel.Continuous = 'on';
+
             % Invoke the method.
             scrollPanel.onSliderScrolling()
 
             % Verify that the event was raised.
             testCase.verifyTrue( eventRaised, ...
-                ['The ''onSliderScrolling'' method of ', ...
-                ConstructorName, ' did not raise the ''Scrolling''', ...
-                ' event.'] )
+                ['The ''onSliderScrolled'' method of ', ...
+                ConstructorName, ' did not raise the ''Scrolled''', ...
+                ' event with continuous scrolling ''on''.'] )
 
         end % tOnSliderScrollingMethodRaisesScrollingEvent
 
@@ -351,6 +366,9 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
 
         function tOnMouseScrolledReturnsWhenNoSelectionExists( ...
                 testCase, ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
 
             % Create a scrolling panel.
             scrollPanel = testCase.constructComponent( ConstructorName );
@@ -433,6 +451,351 @@ classdef tScrollingPanel < sharedtests.SharedPanelTests
             end % if
 
         end % tOnMouseScrolledRaisesScrolledEvent
+
+        function tSettingMouseWheelEnabledErrorsForInvalidInput( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Attempt to set an invalid value for 'MouseWheelEnabled'.
+            f = @() set( component, 'MouseWheelEnabled', false );
+            testCase.verifyError( f, 'uix:InvalidArgument', ...
+                ['Setting the ''MouseWheelEnabled'' property of the ', ...
+                ConstructorName, ' component did not error when an ', ...
+                'invalid value was specified.'] )
+
+        end % tSettingMouseWheelEnabledErrorsForInvalidInput
+
+        function tSettingContinuousErrorsForInvalidInput( ...
+                testCase, ConstructorName )
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Attempt to set an invalid value for 'Continuous'.
+            f = @() set( component, 'Continuous', false );
+            testCase.verifyError( f, 'uix:InvalidArgument', ...
+                ['Setting the ''Continuous'' property of the ', ...
+                ConstructorName, ' component did not error when an ', ...
+                'invalid value was specified.'] )
+
+        end % tSettingContinuousErrorsForInvalidInput
+
+        function tSettingEmptyPropertyValuesStoresValuesCorrectly( ...
+                testCase, ConstructorName )
+
+            % Create a scrolling panel (with no content).
+            component = testCase.constructComponent( ConstructorName );
+
+            % List the properties.
+            propertyList = {'Heights', 'MinimumHeights', ...
+                'Widths', 'MinimumWidths', ...
+                'VerticalSteps', 'VerticalOffsets', ...
+                'HorizontalSteps', 'HorizontalOffsets'};
+
+            % Iterate over the properties.
+            expected = double.empty( 0, 1 );
+            for propertyIdx = 1 : numel( propertyList )
+                % Extract the current property.
+                currentProperty = propertyList{propertyIdx};
+                % Set the empty value.
+                component.(currentProperty) = [];
+                % Verify that the property has been stored correctly.
+                testCase.verifyEqual( component.(currentProperty), ...
+                    expected, ['Setting an empty value ([]) to the ''', ...
+                    currentProperty, ''' property of the ', ...
+                    ConstructorName, ' component did not store the ', ...
+                    'expected value (double.empty( 0, 1 ).)'] )
+            end % for
+
+        end % tSettingEmptyPropertyValuesStoresValuesCorrectly
+
+        function tSettingMouseWheelEnabledWhenUnrootedStoresValue( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in the case that 'Parent' is [].
+            testCase.assumeComponentHasEmptyParent()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the 'MouseWheelEnabled' property and verify that the
+            % property has been stored correctly.
+            diagnostic = ['Setting the ''MouseWheelEnabled'' ', ...
+                'property of the ', ConstructorName, ...
+                ' component when the ''Parent'' property is [] did ', ...
+                'not store the value.'];
+            if strcmp( component.MouseWheelEnabled, 'on' )
+                expected = 'off';
+                component.MouseWheelEnabled = expected;
+                actual = char( component.MouseWheelEnabled );
+                testCase.verifyEqual( actual, expected, diagnostic )
+            else
+                expected = 'on';
+                component.MouseWheelEnabled = expected;
+                actual = char( component.MouseWheelEnabled );
+                testCase.verifyEqual( actual, expected, diagnostic )
+            end % if
+
+        end % tSettingMouseWheelEnabledWhenUnrootedStoresValue
+
+        function tScrollingMouseWithNoScrollbarsRaisesEvent( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Construct a component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Ensure that no scrollbars are present.
+            set( component, 'Height', -1, 'Width', -1 )
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( component, 'Scrolled', @onScrolled );
+
+            % Move the mouse pointer over the scrolling panel.
+            panelPosition = getpixelposition( component );
+            testFigure = ancestor( component, 'figure' );
+            figurePosition = testFigure.Position;
+            r = groot();
+            midPanelOffset = 0.5 * panelPosition(3:4);
+            r.PointerLocation = figurePosition(1:2) + midPanelOffset;
+
+            % Invoke the onMouseScrolled method.
+            component.onMouseScrolled()
+
+            % Verify that the event was raised.
+            testCase.verifyTrue( eventRaised, ['Scrolling the ', ...
+                'mouse when the ', ConstructorName, ' component has ', ...
+                'no scrollbars did not raise the ''Scrolled'' event.'] )
+
+            function onScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onScrolled
+
+        end % tScrollingMouseWithNoScrollbarsRaisesEvent
+
+        function tRedrawEdgeCasesAreWarningFree( testCase, ...
+                ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Set the panel Height and Width properties.
+            set( component, 'Height', 1000, 'Width', 1000 )
+
+            % Test several edge cases obtained by varying the slider size.
+            for sliderSize = [0, 0.001, 0.01, 0.1, 1, 5, 20, 50, 500, 5000]
+
+                % Override the slider size property.
+                component.SliderSize = sliderSize;
+
+                % Verify that a redraw is warning-free.
+                f = @() axes( 'Parent', component );
+                testCase.verifyWarningFree( f, ['Adding an axes to ', ...
+                    'the ', ConstructorName, ' component with a ', ...
+                    '''SliderSize'' value of ', num2str( sliderSize ), ...
+                    ' was not warning-free.'] )
+
+                % Tidy up.
+                delete( component.Children )
+
+            end % for
+
+        end % tRedrawEdgeCasesAreWarningFree
+
+        function tMouseScrolledCallbackReturnsWhenMouseIsNotOverPanel( ...
+                testCase, ConstructorName )
+
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Create a listener to receive the event.
+            eventRaised = false;
+            event.listener( component, 'Scrolled', @onScrolled );
+
+            % Set the figure's 'CurrentPoint' property to be outside the
+            % scrolling panel.
+            testFigure = ancestor( component, 'figure' );
+            figure( testFigure ) % Bring to front
+            figurePosition = testFigure.Position;
+            outsideMargin = 10;
+
+            % Left outside.
+            testFigure.CurrentPoint = [(-1) * outsideMargin, ...
+                figurePosition(4)/2];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Top outside.
+            testFigure.CurrentPoint = [figurePosition(3)/2, ...
+                figurePosition(4) + outsideMargin];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Right outside.
+            testFigure.CurrentPoint = [figurePosition(3) + ...
+                outsideMargin, figurePosition(4)/2];
+            component.onMouseScrolled()
+
+            % Verify that the event was not raised.
+            testCase.verifyFalse( eventRaised, ['Scrolling the ', ...
+                'mouse outside the ', ConstructorName, ' component ', ...
+                'has raised the ''Scrolled'' event.'] )
+
+            % Bottom outside.
+            testFigure.CurrentPoint = [figurePosition(3)/2, ...
+                (-1) * outsideMargin];
+            component.onMouseScrolled()
+
+            function onScrolled( ~, ~ )
+
+                eventRaised = true;
+
+            end % onScrolled
+
+        end % tMouseScrolledCallbackReturnsWhenMouseIsNotOverPanel
+
+        function tSettingPaddingUpdatesContentsPosition( testCase, ...
+                ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            button = uicontrol( 'Parent', component );
+
+            % With zero padding, the control's dimensions should equal the
+            % scrolling panel's dimensions.
+            component.Padding = 0;
+
+            % Read off the positions.
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            buttonDimensions = buttonPosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check.
+            testCase.verifyEqual( buttonDimensions, panelDimensions, ...
+                ['The dimensions of a button in a ', ConstructorName, ...
+                ' component were not correct when the ''Padding''', ...
+                ' property has value 0.'] )
+
+            % Adjust the 'Padding' property and repeat the test.
+            padding = 20;
+            component.Padding = padding;
+
+            % Read off the positions.
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            buttonDimensions = buttonPosition(3:4);
+            panelDimensions = panelPosition(3:4);
+            expectedButtonDimensions = panelDimensions - 2 * padding;
+
+            % Check.
+            testCase.verifyEqual( buttonDimensions, ...
+                expectedButtonDimensions, ...
+                ['The dimensions of a button in a ', ConstructorName, ...
+                ' component were not correct when the ''Padding''', ...
+                ' property has value ', num2str( padding ), '.'] )
+
+        end % tSettingPaddingUpdatesContentsPosition
+
+        function tSettingPaddingWithScrollbarsUpdatesContentsPosition( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in the rooted case.
+            testCase.assumeGraphicsAreRooted()
+
+            % Create a scrolling panel.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Add a control.
+            button = uicontrol( 'Parent', component );
+
+            % Adjust sizes to enable scrollbars.
+            h = 1000;
+            w = 1000;
+            set( component, 'Height', h, 'Width', w )
+
+            % With zero padding, verify the pixel position of the button.
+            component.Padding = 0;
+
+            % Read off the positions.
+            figurePosition = component.Parent.Position;
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            figureDimensions = figurePosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check the component dimensions.
+            testCase.verifyEqual( panelDimensions, figureDimensions, ...
+                ['The dimensions of the ', ConstructorName, ...
+                ' component were not correct when the ''Height''', ...
+                ' was ', num2str( h ), ', the ''Width'' was ', ...
+                num2str( w ), ', and the ''Padding'' was zero.'] )
+
+            % Check the button position.
+            expectedButtonPosition = [1, panelDimensions(2)-h+1, w, h];
+            testCase.verifyEqual( buttonPosition, ...
+                expectedButtonPosition, ['The dimensions of a button ', ...
+                'placed in a ', ConstructorName, ' component were ', ...
+                'not correct when the ''Height'' was ', num2str( h ), ...
+                ', the ''Width'' was ', num2str( w ), ', and the ', ...
+                '''Padding'' was zero.'] )
+
+            % Adjust the 'Padding' property and repeat the test.
+            padding = 20;
+            component.Padding = padding;
+
+            % Read off the positions.
+            figurePosition = component.Parent.Position;
+            buttonPosition = getpixelposition( button, true );
+            panelPosition = getpixelposition( component, true );
+            figureDimensions = figurePosition(3:4);
+            panelDimensions = panelPosition(3:4);
+
+            % Check the component dimensions.
+            testCase.verifyEqual( panelDimensions, figureDimensions, ...
+                ['The dimensions of the ', ConstructorName, ...
+                ' component were not correct when the ''Height''', ...
+                ' was ', num2str( h ), ', the ''Width'' was ', ...
+                num2str( w ), ', and the ''Padding'' was ', ...
+                num2str( padding ), '.'] )
+
+            % Check the button position.
+            expectedButtonPosition = ...
+                [1+padding, panelDimensions(2)-h-padding+1, w, h];
+            testCase.verifyEqual( buttonPosition, ...
+                expectedButtonPosition, ['The dimensions of a button ', ...
+                'placed in a ', ConstructorName, ' component were ', ...
+                'not correct when the ''Height'' was ', num2str( h ), ...
+                ', the ''Width'' was ', num2str( w ), ', and the ', ...
+                '''Padding'' was ', num2str( padding ), '.'] )
+
+        end % tSettingPaddingWithScrollbarsUpdatesContentsPosition
 
     end % methods ( Test, Sealed )
 

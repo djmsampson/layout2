@@ -164,6 +164,24 @@ classdef tEmpty < glttestutilities.TestInfrastructure
 
         end % tColorUpdatesWhenComponentIsReparented
 
+        function tPlacingEmptyComponentInGridLayoutIsWarningFree( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in web graphics.
+            testCase.assumeGraphicsAreWebBased()
+
+            % Create a grid layout on the test figure.
+            testFig = testCase.ParentFixture.Parent;
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
+
+            % Add the empty component.
+            f = @() feval( ConstructorName, 'Parent', testGrid );
+            testCase.verifyWarningFree( f, ['Adding a ''', ...
+                ConstructorName, ''' component to a 1-by-1 ', ...
+                'grid layout (uigridlayout) was not warning-free.'] )
+
+        end % tPlacingEmptyComponentInGridLayoutIsWarningFree
+
     end % methods ( Test, Sealed )
 
 end % classdef
