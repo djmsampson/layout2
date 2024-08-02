@@ -30,10 +30,20 @@ plan("assertTestSuccess") = matlab.buildtool.tasks.TestTask( ...
 plan.DefaultTasks = "packageToolbox";
 
 % Define the task dependencies.
+plan("publishHTMLDocumentation").Dependencies = "checkDocerInstallation";
 plan("buildDocSearchDatabase").Dependencies = "publishHTMLDocumentation";
 plan("packageToolbox").Dependencies = "buildDocSearchDatabase";
 
 end % buildfile
+
+function checkDocerInstallationTask( ~ )
+% Check that Doc_er software is installed.
+
+v = ver( "docer" );
+assert( ~isempty( v ), "buildfile:NoDocer", ...
+    "Building GUI Layout Toolbox documentation requires Doc_er." )
+
+end % checkDocerInstallationTask
 
 function publishHTMLDocumentationTask( context )
 % Publish HTML documentation from the Live Script files.

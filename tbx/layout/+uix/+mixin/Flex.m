@@ -35,7 +35,7 @@ classdef( Abstract ) Flex < handle
 
     methods
 
-        function value = get.DividerMarkings( obj )
+        function value = get.DividerMarkings( ~ )
 
             value = 'off';
 
