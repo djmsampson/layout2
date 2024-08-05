@@ -30,14 +30,16 @@ plan("assertTestSuccess") = matlab.buildtool.tasks.TestTask( ...
 plan.DefaultTasks = "packageToolbox";
 
 % Define the task dependencies.
-plan("publishHTMLDocumentation").Dependencies = "checkDocerInstallation";
-plan("buildDocSearchDatabase").Dependencies = "publishHTMLDocumentation";
-plan("packageToolbox").Dependencies = "buildDocSearchDatabase";
+plan("deletePreviousDocFiles").Dependencies = "checkDocerInstallation";
+plan("convertMarkdownToHTML").Dependencies = "deletePreviousDocFiles";
+plan("runDocExamples").Dependencies = "convertMarkdownToHTML";
+plan("createDocIndex").Dependencies = "runDocExamples";
+plan("packageToolbox").Dependencies = "createDocIndex";
 
 end % buildfile
 
 function checkDocerInstallationTask( ~ )
-% Check that Doc_er software is installed.
+% Check that the Doc_er toolbox is installed.
 
 v = ver( "docer" );
 assert( ~isempty( v ), "buildfile:NoDocer", ...
@@ -45,64 +47,29 @@ assert( ~isempty( v ), "buildfile:NoDocer", ...
 
 end % checkDocerInstallationTask
 
-function publishHTMLDocumentationTask( context )
-% Publish HTML documentation from the Live Script files.
+function deletePreviousDocFilesTask( context )
+% Use Doc_er to delete any previous documentation files.
 
-% List the Live Scripts comprising the documentation.
-projectRoot = context.Plan.RootFolder;
-liveDocFiles = dir( fullfile( projectRoot, "livedocsrc", "*.mlx" ) );
-liveDocFiles = struct2table( liveDocFiles );
-liveDocFiles = convertvars( liveDocFiles, ["folder", "name"], "string" );
-liveDocFolder = liveDocFiles.folder(1);
-liveDocFilenames = liveDocFiles.name;
+end % deletePreviousDocFilesTask
 
-% Listen for figure creation.
-figureCreatedListener = ...
-    listener( groot(), "ChildAdded", @onFigureCreated );
-listenerCleanup = onCleanup( @() delete( figureCreatedListener ) );
-figuresToDelete = gobjects( 0, 1 );
+function convertMarkdownToHTMLTask( context )
+% Use Doc_er to convert the markdown (.md) files to HTML.
 
-for k = 1 : height( liveDocFiles )
 
-    % Run and export the current Live Script.
-    currentFile = fullfile( liveDocFolder, liveDocFilenames(k) );
-    [~, liveDocName] = fileparts( liveDocFilenames(k) );
-    targetFilename = liveDocName + ".html";
-    targetFile = fullfile( projectRoot, "tbx", "layoutdoc", ...
-        targetFilename );
-    export( currentFile, targetFile, "Format", "html", "Run", true );
-    disp( "Published " + targetFilename + "." )
+end % convertMarkdownToHTMLTask
 
-    % Tidy up.
-    delete( figuresToDelete )
-    figuresToDelete = gobjects( 0, 1 );
+function runDocExamplesTask( context )
+% Use Doc_er to evaluate and capture the code within the doc pages.
 
-end % for
 
-    function onFigureCreated( ~, e )
+end % runDocExamplesTask
 
-        figuresToDelete(end+1, 1) = e.Child;
+function createDocIndexTask( context )
+% Use Doc_er to create the documentation index files and search database.
 
-    end % onFigureCreated
 
-end % publishHTMLDocumentationTask
 
-function buildDocSearchDatabaseTask( context )
-% Build the documentation search database.
-
-% Ensure that info.xml is on the MATLAB path.
-currentPath = split( path(), ";" );
-toolboxRoot = fullfile( context.Plan.RootFolder, "tbx" );
-toolboxOnPath = ismember( toolboxRoot, currentPath );
-if ~toolboxOnPath
-    addpath( toolboxRoot )
-    pathCleanup = onCleanup( @() rmpath( toolboxRoot ) );
-end % if
-
-% Build the doc search database.
-builddocsearchdb( layoutDocRoot() )
-
-end % buildDocSearchDatabaseTask
+end % createDocIndexTask
 
 function packageToolboxTask( context )
 % Package the GUI Layout Toolbox.
