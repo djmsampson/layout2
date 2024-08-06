@@ -1,0 +1,9 @@
+# List of untracked files to ignore
+.buildtool
+tbx/layoutdoc/**/*.html
+tbx/layoutdoc/**/*.png
+tbx/layoutdoc/helptoc.xml
+tbx/layoutdoc/info.xml
+tbx/layoutdoc/custom_toolbox.json
+tbx/layoutdoc/resources
+tbx/layoutdoc/helpsearch-v*
