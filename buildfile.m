@@ -50,11 +50,19 @@ end % checkDocerInstallationTask
 function deletePreviousDocFilesTask( context )
 % Use Doc_er to delete any previous documentation files.
 
+projectRoot = context.Plan.RootFolder;
+docFolder = fullfile( projectRoot, "tbx", "layoutdoc" );
+docerdelete( docFolder )
+
 end % deletePreviousDocFilesTask
 
 function convertMarkdownToHTMLTask( context )
 % Use Doc_er to convert the markdown (.md) files to HTML.
 
+projectRoot = context.Plan.RootFolder;
+docFolder = fullfile( projectRoot, "tbx", "layoutdoc" );
+allMDFiles = fullfile( docFolder, "**", "*.md" );
+docerconvert( allMDFiles )
 
 end % convertMarkdownToHTMLTask
 

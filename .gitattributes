@@ -33,3 +33,13 @@
 *.pdf binary
 *.png binary
 *.xlsx binary
+
+## Doc
+tbx/layoutdoc/**/*.html
+tbx/layoutdoc/**/*.html
+tbx/layoutdoc/**/*.png
+tbx/layoutdoc/info.xml
+tbx/layoutdoc/helptoc.xml
+tbx/layoutdoc/custom_toolbox.json
+tbx/layoutdoc/resources
+tbx/layoutdoc/helpsearch-v*
