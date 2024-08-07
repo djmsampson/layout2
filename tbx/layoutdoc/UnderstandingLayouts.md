@@ -7,8 +7,8 @@ The purpose of a *layout* is to manage the positioning of one or more user inter
 The best way to understand what layouts are and why they are a good user interface design tool is to see some examples. The sections below go through the basics of building an interface using layouts and how to build complex interfaces using them.
 
 # Section Contents
--  [Layout basics](matlab: web(fullfile(layoutDocRoot, 'LayoutBasics.html'))) 
--  [Types of layout](matlab: web(fullfile(layoutDocRoot, 'TypesOfLayout.html'))) 
--  [Sizes and units](matlab: web(fullfile(layoutDocRoot, 'SizesAndUnits.html'))) 
--  [Layout hierarchies](matlab: web(fullfile(layoutDocRoot, 'LayoutHierarchies.html'))) 
--  [Why use layouts?](matlab: web(fullfile(layoutDocRoot, 'WhyUseLayouts.html'))) 
+-  [Layout Basics](LayoutBasics.md)
+-  [Types of Layout](TypesOfLayout.md)
+-  [Sizes and Units](SizesAndUnits.md)
+-  [Layout Hierarchies](LayoutHierarchies.md)
+-  [Why use Layouts?](WhyUseLayouts.md)

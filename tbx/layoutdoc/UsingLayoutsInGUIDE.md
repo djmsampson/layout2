@@ -1,21 +1,11 @@
 
 # **Using Layouts in GUIDE**
-<a name="beginToc"></a>
-
-## Table of Contents
-&emsp;[Important Note](#important-note)
- 
-[Insert the layout](#insert-the-layout)
- 
-[Source code](#source-code)
- 
-<a name="endToc"></a>
 
 # **Overview**
 
 Whilst the layouts in this toolbox do not integrate into the MATLAB Graphical User Interface Design Environment ([**`GUIDE`**](https://www.mathworks.com/help/matlab/ref/guide.html)), it is possible to insert layouts into an app created with GUIDE using the process described below.
 
-## Important Note
+# Important Note
 
 In the R2019b release, MathWorks announced that **`GUIDE`** will be removed in a future release. For further information on this upcoming change, and migration strategies, see [**GUIDE Migration Strategies**](https://www.mathworks.com/help/matlab/creating_guis/differences-between-app-designer-and-guide.html).
 
@@ -23,8 +13,7 @@ In the R2019b release, MathWorks announced that **`GUIDE`** will be removed in a
 
 Create your **`GUIDE`** application as usual, placing a panel where you want to insert the layout. You can turn the panel border and title off if you do not want them.
 
-
-![image_0.png](UsingLayoutsInGUIDE_media/image_0.png)
+![A new GUIDE app](UsingLayoutsInGUIDE01.png "A new GUIDE app")
 
 # Insert the layout
 
@@ -57,9 +46,10 @@ Launch the app.
 guideApp
 ```
 
-![figure_0.png](UsingLayoutsInGUIDE_media/figure_0.png)
-
 # Source code
 
-Full source code this application is available here: \[ [view](matlab: web(fullfile(layoutDocRoot, 'Examples', 'guideApp.m'))) | [edit](matlab: edit(fullfile(layoutDocRoot, 'Examples', 'guideApp.m'))) | [run](matlab: p = pwd(); cd(fullfile(layoutDocRoot, 'Examples')); guideApp; cd(p)) \].
+The source code for this application is available in `guideApp.m`.
 
+```matlab
+edit guideApp 
+```

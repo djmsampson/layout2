@@ -1,17 +1,5 @@
 
 # **Visible Example**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Example](#example)
- 
-[Put some buttons inside the panel.](#put-some-buttons-inside-the-panel.)
- 
-[Toggle the visibility of the box panel.](#toggle-the-visibility-of-the-box-panel.)
- 
-[Restore the box panel visibility.](#restore-the-box-panel-visibility.)
- 
-<a name="endToc"></a>
 
 # **Overview**
 
@@ -19,8 +7,11 @@ This example shows how the **`Visible`** property can be used to hide whole sect
 
 # Example
 
-(The code for this example can be found here: \[ [view](matlab: web(fullfile(layoutDocRoot, 'Examples', 'visibleExample.m'))) | [edit](matlab: edit(fullfile(layoutDocRoot, 'Examples', 'visibleExample.m'))) | [run](matlab: p = pwd(); cd(fullfile(layoutDocRoot, 'Examples')); visibleExample; cd(p)) \]).
+The code for this example is available in `visibleExample.m`.
 
+```matlab
+edit visibleExample 
+```
 
 Create a new figure window and add a box panel.
 
@@ -34,8 +25,6 @@ panel = uix.BoxPanel( 'Parent', f, ...
     'Title', 'BoxPanel', ...
     'FontSize', 12 );
 ```
-
-![figure_0.png](VisibleExample_media/figure_0.png)
 
 # Put some buttons inside the panel.
 
@@ -58,14 +47,10 @@ uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 5', ...
 uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 6' )
 ```
 
-![figure_1.png](VisibleExample_media/figure_1.png)
-
 # Toggle the visibility of the box panel.
 ```matlab
 panel.Visible = 'off';
 ```
-
-![figure_2.png](VisibleExample_media/figure_2.png)
 
 # Restore the box panel visibility.
 
@@ -74,5 +59,3 @@ Note that the original **`Visible`** state of each button has been preserved.
 ```matlab
 panel.Visible = 'on';
 ```
-
-![figure_3.png](VisibleExample_media/figure_3.png)

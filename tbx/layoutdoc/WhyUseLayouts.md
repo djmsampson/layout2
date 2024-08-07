@@ -1,25 +1,5 @@
 
 # **Why Use Layouts?**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Introduction](#introduction)
- 
-[Normalized units](#normalized-units)
- 
-[Resize the figure window](#resize-the-figure-window)
- 
-[Pixel units](#pixel-units)
- 
-[Resize the figure window](#resize-the-figure-window)
- 
-[Using layouts](#using-layouts)
- 
-&emsp;[Example](#example)
- 
-[Resize the figure window](#resize-the-figure-window)
- 
-<a name="endToc"></a>
 
 # Introduction
 
@@ -44,8 +24,6 @@ uicontrol( 'Parent', f, ...
     'String', 'Button 2' )
 ```
 
-![figure_0.png](WhyUseLayouts_media/figure_0.png)
-
 # Resize the figure window
 
 After the figure window is resized, note that the buttons have grown proportionally.
@@ -53,8 +31,6 @@ After the figure window is resized, note that the buttons have grown proportiona
 ```matlab
 f.Position(3:4) = 400;
 ```
-
-![figure_1.png](WhyUseLayouts_media/figure_1.png)
 
 # Pixel units
 
@@ -75,8 +51,6 @@ uicontrol( 'Parent', f, ...
     'String', 'Button 2' )
 ```
 
-![figure_2.png](WhyUseLayouts_media/figure_2.png)
-
 # Resize the figure window
 
 After the figure window is resized, note that there is empty space on the figure.
@@ -84,8 +58,6 @@ After the figure window is resized, note that there is empty space on the figure
 ```matlab
 f.Position(3:4) = 400;
 ```
-
-![figure_3.png](WhyUseLayouts_media/figure_3.png)
 
 # Using layouts
 
@@ -109,8 +81,6 @@ uicontrol( 'Parent', hbox, ...
 vbox.Heights = [-1, 35];
 ```
 
-![figure_4.png](WhyUseLayouts_media/figure_4.png)
-
 # Resize the figure window
 
 Note that the buttons in the button box have remained with a fixed height, whereas the axes has grown to fill the available space.
@@ -118,5 +88,3 @@ Note that the buttons in the button box have remained with a fixed height, where
 ```matlab
 f.Position(3:4) = 400;
 ```
-
-![figure_5.png](WhyUseLayouts_media/figure_5.png)

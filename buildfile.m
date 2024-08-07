@@ -50,8 +50,7 @@ end % checkDocerInstallationTask
 function deletePreviousDocFilesTask( context )
 % Use Doc_er to delete any previous documentation files.
 
-projectRoot = context.Plan.RootFolder;
-docFolder = fullfile( projectRoot, "tbx", "layoutdoc" );
+docFolder = layoutDocRoot( context );
 docerdelete( docFolder )
 
 end % deletePreviousDocFilesTask
@@ -59,8 +58,7 @@ end % deletePreviousDocFilesTask
 function convertMarkdownToHTMLTask( context )
 % Use Doc_er to convert the markdown (.md) files to HTML.
 
-projectRoot = context.Plan.RootFolder;
-docFolder = fullfile( projectRoot, "tbx", "layoutdoc" );
+docFolder = layoutDocRoot( context );
 allMDFiles = fullfile( docFolder, "**", "*.md" );
 docerconvert( allMDFiles )
 
@@ -69,13 +67,17 @@ end % convertMarkdownToHTMLTask
 function runDocExamplesTask( context )
 % Use Doc_er to evaluate and capture the code within the doc pages.
 
+docFolder = layoutDocRoot( context );
+allHTMLFiles = fullfile( docFolder, "**", "*.html" );
+docerrun( allHTMLFiles )
 
 end % runDocExamplesTask
 
 function createDocIndexTask( context )
 % Use Doc_er to create the documentation index files and search database.
 
-
+docFolder = layoutDocRoot( context );
+docerindex( docFolder )
 
 end % createDocIndexTask
 
@@ -120,6 +122,7 @@ contentsFile = fullfile( toolboxRoot, "layout", "Contents.m" );
 contentsFileText = fileread( contentsFile );
 versionNumber = string( extractBetween( ...
     contentsFileText, "Version ", " (" ) );
+versionNumber = "5.0.0";
 mltbxName = "GUI Layout Toolbox " + versionNumber + ".mltbx";
 
 % Place the .mltbx file in the releases folder.
@@ -143,3 +146,11 @@ matlab.addons.toolbox.packageToolbox( opts )
 disp( mltbxName + " has been placed in the releases folder." )
 
 end % packageToolboxTask
+
+function docFolder = layoutDocRoot( context )
+%LAYOUTDOCROOT Return the layout doc root from the build context.
+
+projectRoot = context.Plan.RootFolder;
+docFolder = fullfile( projectRoot, "tbx", "layoutdoc" );
+
+end % layoutDocRoot

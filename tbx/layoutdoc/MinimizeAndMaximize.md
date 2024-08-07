@@ -1,32 +1,26 @@
 
 # **Minimize and Maximize**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Example](#example)
- 
-&emsp;[Create the layout with three panels](#create-the-layout-with-three-panels)
- 
-&emsp;[Add the minimize/maximize callback](#add-the-minimize/maximize-callback)
- 
-<a name="endToc"></a>
 
 # **Overview**
 
-When the **`MinimizeFcn`** property of a [**`uix.BoxPanel`**](matlab: web(fullfile(layoutDocRoot, 'uixBoxPanel.html'))) object has been populated with a callback function, a minimize/maximize button (with symbol **`▴/▾`**) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
+When the **`MinimizeFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a minimize/maximize button (with symbol :arrow_up_small: or :arrow_down_small:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
 
-Since the behavior of the parent container is different in different use cases, it is up to the user to write some code to actually resize the panel. Note that minimizing a panel to its title bar only really makes sense inside a [**`uix.VBox`**](matlab: web(fullfile(layoutDocRoot, 'uixVBox.html'))) or [**`uix.VBoxFlex`**](matlab: web(fullfile(layoutDocRoot, 'uixVBoxFlex.html'))) layout.
+Since the behavior of the parent container is different in different use cases, it is up to the user to write some code to actually resize the panel. Note that minimizing a panel to its title bar only really makes sense inside a [**`uix.VBox`**](uixVBox.md) or [**`uix.VBoxFlex`**](uixVBox.md) layout.
 
 # Example
 
-The following example shows how to add minimize/maximize functionality to a box containing panels. (The code for this example can be found here: \[ view | [edit](matlab: edit(fullfile(layoutDocRoot, 'Examples', 'minimizeExample.m'))) | [run](matlab: p = pwd(); cd(fullfile(layoutDocRoot, 'Examples')); minimizeExample; cd(p)) \]).
+The following example shows how to add minimize/maximize functionality to a box containing panels. The code for this example is available in `minimizeExample.m`.
+
+```matlab
+edit minimizeExample 
+```
+
+Run the example.
 
 ```matlab
 minimizeExample
 ```
-
-![figure_0.png](MinimizeAndMaximize_media/figure_0.png)
 
 # The `minimizeExample` function
 ## Create the layout with three panels
@@ -60,7 +54,7 @@ uicontrol( 'Parent', boxPanels(2), 'Style', 'pushbutton', 'String', 'Button 2' )
 uicontrol( 'Parent', boxPanels(3), 'Style', 'pushbutton', 'String', 'Button 3' )
 
 % Resize the figure window.
-f.Position(3:4) = [figureWidth, sum( vbox.Heights )];
+f.Position(3:4) = [figureWidth, sum( vbox.Heights )]; 
 ```
 
 ## Add the minimize/maximize callback
@@ -101,5 +95,5 @@ boxPanels(3).MinimizeFcn = {@onMinimize, 3};
 
     end % onMinimize
 
-end % minimizeExample
+end % minimizeExample 
 ```

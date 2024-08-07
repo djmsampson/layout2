@@ -1,17 +1,5 @@
 
 # **Axes inside Layouts**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Example](#example)
- 
-&emsp;[Create a figure](#create-a-figure)
- 
-&emsp;[Create the layout](#create-the-layout)
- 
-[Fill the axes](#fill-the-axes)
- 
-<a name="endToc"></a>
 
 #  **The** `PositionConstraint` **property of an axes** 
 
@@ -23,18 +11,18 @@ Note that the **`PositionConstraint`** property of the axes is available from R2
 
 The default value for the **`PositionConstraint`** axes property is **`'outerposition'`**. The following table summarizes the differences between the **`PositionConstraint`** and **`ActivePositionProperty`** axes properties.
 
-|      |      |      |      |
+| **Axes Property** | **Availability** | **Possible Values** | **Default Value** |
 | :-- | :-- | :-- | :-- |
-| **Axes property** <br>  | **Availability** <br>  | **Possible values** <br>  | **Default value** <br>   |
-| **`PositionConstraint`** <br>  | R2022a onwards <br>  | **`'outerposition', 'innerposition'`** <br>  | **`'outerposition'`** <br>   |
-| **`ActivePositionProperty`** <br>  | all versions; discouraged from R2022a onwards <br>  | **`'outerposition', 'position'`** <br>  | **`'outerposition'`** <br>   |
-|      |      |      |       |
-
+| **`PositionConstraint`** | R2022a onwards | **`'outerposition', 'innerposition'`** | **`'outerposition'`** |
+| **`ActivePositionProperty`** | all versions; discouraged from R2022a onwards | **`'outerposition', 'position'`** | **`'outerposition'`** |
 
 # Example
 
-(The code for this example can be found here: \[ [view](matlab: web(fullfile(layoutDocRoot, 'Examples', 'axesInsideLayouts.m'))) | [edit](matlab: edit(fullfile(layoutDocRoot, 'Examples', 'axesInsideLayouts.m'))) | [run](matlab: p = pwd(); cd(fullfile(layoutDocRoot, 'Examples')); axesInsideLayouts; cd(p)) \]).
+The code for this example is available in `axesInsideLayouts.m`.
 
+```matlab
+edit axesInsideLayouts 
+```
 
 The following example illustrates the two usages.
 
@@ -60,8 +48,6 @@ axes2 = axes( 'Parent', hbox, 'PositionConstraint', 'innerposition' );
 hbox.Widths = [-2, -1];
 ```
 
-![figure_0.png](AxesInsideLayouts_media/figure_0.png)
-
 # Fill the axes
 
 Using the **`OuterPosition`** axes property (used by the left\-hand axes) is the normal mode, and looks good for virtually any plot type. Using the **`Position`** axes property is only really useful for 2D plots with the axes turned off, such as images.
@@ -78,5 +64,3 @@ axis( axes1, 'tight' )
 imagesc( x, 'Parent', axes2 )
 set( axes2, 'XTickLabel', [], 'YTickLabel', [] )
 ```
-
-![figure_1.png](AxesInsideLayouts_media/figure_1.png)

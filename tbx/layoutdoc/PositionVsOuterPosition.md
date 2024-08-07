@@ -1,11 +1,5 @@
 
 # **`Position`** **vs.** **`OuterPosition`**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Controlling axes layout](#controlling-axes-layout)
- 
-<a name="endToc"></a>
 
 # **Introduction**
 
@@ -21,8 +15,6 @@ ax = axes( 'Parent', f, 'Units', 'normalized', 'OuterPosition', [0, 0, 1, 1] );
 title( ax, 'OuterPosition = [0, 0, 1, 1]' )
 ```
 
-![figure_0.png](PositionVsOuterPosition_media/figure_0.png)
-
 # `Position` Example
 
 Let's now create an axes on a figure with **`Position`** set to **`[0, 0, 1, 1]`**.
@@ -32,8 +24,6 @@ f = figure;
 ax = axes( 'Parent', f, 'Units', 'normalized', 'Position', [0, 0, 1, 1] );
 title( ax, 'Position = [0, 0, 1, 1]' )
 ```
-
-![figure_1.png](PositionVsOuterPosition_media/figure_1.png)
 
 # Controlling axes layout
 

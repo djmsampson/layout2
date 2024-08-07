@@ -1,33 +1,7 @@
 
 # **Compatibility Considerations**
-<a name="beginToc"></a>
 
-## Table of Contents
-[Web graphics support.](#web-graphics-support.)
- 
-&emsp;[Support](#support)
- 
-&emsp;[Usage](#usage)
- 
-[Compatibility with version 1](#compatibility-with-version-1)
- 
-&emsp;[Namespace name](#namespace-name)
- 
-&emsp;[Autoparenting](#autoparenting)
- 
-&emsp;[Defaults mechanism](#defaults-mechanism)
- 
-&emsp;[Enable and disable](#enable-and-disable)
- 
-&emsp;[Other property name changes](#other-property-name-changes)
- 
-&emsp;[Property shape changes](#property-shape-changes)
- 
-&emsp;[Tab selection behavior](#tab-selection-behavior)
- 
-<a name="endToc"></a>
-
-# Web graphics support.
+# Web Graphics Support
 
 In R2016a, MathWorks introduced JavaScript\-based MATLAB graphics (*web graphics*) alongside the earlier Java\-based system. Web graphics offers additional components and deployment technologies, and has been maturing ever since. The web graphics system is accessed by creating a figure using the [**`uifigure`**](https://www.mathworks.com/help/matlab/ref/uifigure.html) function rather than the [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html) function.
 
@@ -44,14 +18,12 @@ From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022
 
 In detail:
 
-|      |      |      |
-| :-- | :-- | :-- |
-| **Layout** <br>  | **From** <br>  | **Comments** <br>   |
-| **`uix.CardPanel`** <br> **`uix.HBox`** <br> **`uix.VBox`** <br> **`uix.HButtonBox`** <br> **`uix.VButtonBox`** <br> **`uix.Grid`** <br> **`uix.Empty`** <br>  | R2020b <br>  |   |
-| **`uix.HBoxFlex`** <br> **`uix.VBoxFlex`** <br> **`uix.GridFlex`** <br> **`uix.ScrollingPane`**l <br>  | R2022a <br>  | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. <br>   |
-| **`uix.TabPanel`** <br>  | R2022a <br>  | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. Use [**`uitabgroup`**](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [**`uitab`**](https://www.mathworks.com/help/matlab/ref/uitab.html) unless the require the ability to disable tabs. <br>   |
-| **`uix.Panel`** <br> **`uix.BoxPanel`** <br>  | R2022b <br>  | In R2022b, due to a bug, **`Units`** and **`Position`** specified during construction are ignored, and the panel is placed in the default position. As a workaround, set the panel **`Units`** and **`Position`** after construction. This bug is fixed in R2023a. <br>   |
-|      |      |       |
+| **Layout** | **From** | **Comments** |
+| :-- | :---: | :-- |
+| **`uix.CardPanel`** <br> **`uix.HBox`** <br> **`uix.VBox`** <br> **`uix.HButtonBox`** <br> **`uix.VButtonBox`** <br> **`uix.Grid`** <br> **`uix.Empty`** <br>  | R2020b |   |
+| **`uix.HBoxFlex`** <br> **`uix.VBoxFlex`** <br> **`uix.GridFlex`** <br> **`uix.ScrollingPanel`** <br>  | R2022a | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. |
+| **`uix.TabPanel`** <br>  | R2022a | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. Use [**`uitabgroup`**](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [**`uitab`**](https://www.mathworks.com/help/matlab/ref/uitab.html) unless the require the ability to disable tabs. <br>   |
+| **`uix.Panel`** <br> **`uix.BoxPanel`** <br>  | R2022b <br>  | In R2022b, due to a bug, **`Units`** and **`Position`** specified during construction are ignored, and the panel is placed in the default position. As a workaround, set the panel **`Units`** and **`Position`** after construction. This bug is fixed in R2023a. |
 
 ## Usage
 
@@ -69,9 +41,6 @@ uitable( g, "Data", magic(3) );
 uilabel( g, "Text", "Label", "HorizontalAlignment", "center" );
 g.Widths = [-1, -1];
 ```
-
-![figure_0.png](CompatibilityConsiderations_media/figure_0.png)
-
 To create a card panel in a **`uipanel`**:
 
 ```matlab
@@ -86,13 +55,11 @@ uibutton( cp, "Text", "Button 1" );
 uibutton( cp, "Text", "Button 2" );
 ```
 
-![figure_1.png](CompatibilityConsiderations_media/figure_1.png)
-
-# **Minimum MATLAB version**
+# **Minimum MATLAB Version**
 
 This is version 2 of GUI Layout Toolbox, designed to work with the new MATLAB graphics system that was introduced in R2014b. Version 1 works with MATLAB releases prior to R2014b that use the old graphics system.
 
-# Compatibility with version 1
+# Compatibility with Version 1
 
 If you are upgrading from version 1, there are a number of compatibility considerations.
 
@@ -132,13 +99,11 @@ Version 1 provided a mechanism to enable and disable container contents using th
 
 A number of property names have changed to achieve greater consistency across the namespace. For example, **`RowSizes`** and **`ColumnSizes`** in **`uiextras.Grid`** are now **`Heights`** and **`Widths`** in **`uix.Grid`**. The namespace **`uiextras`** provides support for legacy property names.
 
-|      |      |
+| **`uiextras`** | **`uix`** |
 | :-- | :-- |
-| **`uiextras`** <br>  | **`uix`** <br>   |
-| **`RowSizes`** <br>  | **`Heights`** <br>   |
-| **`ColumnSizes`** <br>  | **`Widths`** <br>   |
-| **`ShowMarkings`** <br>  | **`DividerMarkings`** <br>   |
-|      |       |
+| **`RowSizes`** | **`Heights`** |
+| **`ColumnSizes`** | **`Widths`** |
+| **`ShowMarkings`** | **`DividerMarkings`**  |
 
 ## Property shape changes
 

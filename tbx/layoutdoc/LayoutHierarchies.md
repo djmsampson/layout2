@@ -1,34 +1,22 @@
 
 # **Layout Hierarchies**
-<a name="beginToc"></a>
-
-## Table of Contents
-[A simple layout hierarchy](#a-simple-layout-hierarchy)
- 
-[Create the figure and the axes in a vertical layout](#create-the-figure-and-the-axes-in-a-vertical-layout)
- 
-[Add the buttons to a horizontal layout inside the vertical layout](#add-the-buttons-to-a-horizontal-layout-inside-the-vertical-layout)
- 
-<a name="endToc"></a>
 
 # A simple layout hierarchy
 
 Consider the following simple interface:
 
-
-![image_0.png](LayoutHierarchies_media/image_0.png)
-
+![A simple interface with an axes and two buttons](LayoutHierarchies01.png "A simple interface with an axes and two buttons")
 
 Instead of thinking of this in terms of three elements that need positioning, we can break it up into two simple linear ("box") arrangements: a vertical box with the axes at the top and a control area at the bottom, and a horizontal box containing two buttons:
 
 
-![image_1.png](LayoutHierarchies_media/image_1.png)![image_2.png](LayoutHierarchies_media/image_2.png)
+![The simple interface partitioned vertically](LayoutHierarchies02.png "The simple interface partitioned vertically")![The two buttons arranged in a horizontal layout](LayoutHierarchies03.png "The two buttons arranged in a horizontal layout")
 
 
 By placing the second layout (horizontal box) inside the first (vertical box), we arrive at the complete layout. Since the sizes of the elements in each list can be set to be fixed or flexible, we can achieve a user interface that is not just arranged correctly when created, but also behaves well when resized.
 
 
-![image_3.png](LayoutHierarchies_media/image_3.png)
+![The resized simple interface](LayoutHierarchies04.png "The resized simple interface")
 
 
 Note that the buttons have remained with a fixed height after the window size has been increased, and the axes have resized to fill the remaining space.
@@ -51,8 +39,6 @@ vbox = uix.VBox( 'Parent', f );
 axes( 'Parent', vbox )
 ```
 
-![figure_0.png](LayoutHierarchies_media/figure_0.png)
-
 # Add the buttons to a horizontal layout inside the vertical layout
 
 Create the second layout (the horizontal box). Inside this horizontal box we place the two buttons.
@@ -68,5 +54,3 @@ Set the sizes. We want the axes to resize dynamically as the figure window is re
 ```matlab
 vbox.Heights = [-1, 35];
 ```
-
-![figure_1.png](LayoutHierarchies_media/figure_1.png)

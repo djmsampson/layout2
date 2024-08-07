@@ -1,11 +1,5 @@
 
 # **Sizes and Units**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Minimum sizes](#minimum-sizes)
- 
-<a name="endToc"></a>
 
 # **`Heights`** **and** **`Widths`**
 
@@ -45,8 +39,6 @@ uicontrol( 'Parent', layout, ...
     'FontSize', 16 );
 ```
 
-![figure_0.png](SizesAndUnits_media/figure_0.png)
-
 # Adjust the `Widths` using variable sizes
 
 We can set the middle element to be twice as wide as the others (but still variable width) by settings its weight to \-2 with the other widths kept at \-1:
@@ -63,11 +55,8 @@ Alternatively, we might want the first element to have a fixed width of 100 pixe
 layout.Widths = [100, -1, -1];
 ```
 
-![figure_1.png](SizesAndUnits_media/figure_1.png)
-
 This ability to mix fixed and variable sized elements is crucial in interface design. It really comes into its own when building a hierarchy of layouts, described next.
 
 # Minimum sizes
 
 Many of the multi\-element layouts also provide a **`MinimumWidths`** or **`MinimumHeights`** property to prevent an element from becoming too small. This is measured in pixels, and defaults to one pixel. Take care to ensure that the available space is at least the sum of the minimum sizes, plus any padding or spacing.
-

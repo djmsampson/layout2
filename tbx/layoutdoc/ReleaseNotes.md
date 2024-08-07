@@ -6,38 +6,10 @@ The GUI Layout Toolbox version numbers take the form **`major.minor.iter`**. The
 ```
 >> ver("layout")
 ```
-<a name="beginToc"></a>
 
-## Table of Contents
-[Version 2.3.8](#version-2.3.8)
- 
-[Version 2.3.7](#version-2.3.7)
- 
-[Version 2.3.6](#version-2.3.6)
- 
-[Version 2.3.4](#version-2.3.4)
- 
-[Version 2.3.3](#version-2.3.3)
- 
-[Version 2.3.2](#version-2.3.2)
- 
-[Version 2.3.1](#version-2.3.1)
- 
-[Version 2.3](#version-2.3)
- 
-[Verson 2.2.2](#verson-2.2.2)
- 
-[Version 2.2.1](#version-2.2.1)
- 
-[Version 2.2](#version-2.2)
- 
-[Version 2.1.2](#version-2.1.2)
- 
-[Version 2.1.1](#version-2.1.1)
- 
-[Version 2.1](#version-2.1)
- 
-<a name="endToc"></a>
+# Version 2.3.9
+- Released 5 July 2024
+- Reverted changes from version 2.3.8, as these introduced issues with the appearance of dividers and tabs
 
 # Version 2.3.8
 -  Released 7 June 2024 

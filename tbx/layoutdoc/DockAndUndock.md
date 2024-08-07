@@ -1,43 +1,32 @@
 
 # **Dock and Undock**
-<a name="beginToc"></a>
-
-## Table of Contents
-[Example](#example)
- 
-[Click the dock buttons](#click-the-dock-buttons)
- 
-&emsp;[Create the layout with three panels](#create-the-layout-with-three-panels)
- 
-&emsp;[Add the dock/undock callback](#add-the-dock/undock-callback)
- 
-&emsp;[Add the close callback](#add-the-close-callback)
- 
-<a name="endToc"></a>
 
 # **Overview**
 
-When the **`DockFcn`** property of a [**`uix.BoxPanel`**](matlab: web(fullfile(layoutDocRoot, 'uixBoxPanel.html'))) object has been populated with a callback function, a dock/undock button (with symbol **`↘ / ↗`**) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
+When the **`DockFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a dock/undock button (with symbol :arrow_lower_right: or :arrow_upper_right:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
 
 Since redocking the panel into its previous parent depends on the type of parent object, it is up to the developer to write some code to actually extract or insert the panel.
 
 # Example
 
-The following example shows how to add dock/undock functionality to a box containing panels. (The code for this example can be found here: \[ view | [edit](matlab: edit(fullfile(layoutDocRoot, 'Examples', 'dockExample.m'))) | [run](matlab: p = pwd(); cd(fullfile(layoutDocRoot, 'Examples')); dockExample; cd(p)) \]).
+The following example shows how to add dock/undock functionality to a box containing panels. The code for this example is available in `dockExample.m`.
 
+```matlab
+edit dockExample 
+```
+
+Run the example.
 ```matlab
 dockExample
 ```
 
-![figure_0.png](DockAndUndock_media/figure_0.png)
-
 # Click the dock buttons
 
-Undocking the middle panel causes the other two to fill the vacated space. The undocked panel appears in its own window, with the undock symbol (**`↗`**) replaced by a dock symbol (**`↘`**).
+Undocking the middle panel causes the other two to fill the vacated space. The undocked panel appears in its own window, with the undock symbol :arrow_upper_right: replaced by a dock symbol :arrow_lower_right:.
 
 
-![image_0.png](DockAndUndock_media/image_0.png)![image_1.png](DockAndUndock_media/image_1.png)
+![Panels 1 and 3 side-by-side](DockAndUndock01.png "Panels 1 and 3 side-by-side")![Panel 2 in a separate figure](DockAndUndock02.png "Panel 2 in a separate figure")
 
 
 Redocking the panel would place it in its original position within the horizontal layout. Closing the main figure window causes all panels, docked or undocked, and their enclosing figure windows to be closed.
@@ -70,7 +59,7 @@ uicontrol( 'Parent', boxPanels(1), 'Style', 'pushbutton', ...
 uicontrol( 'Parent', boxPanels(2), 'Style', 'pushbutton', ...
     'String', 'Button 2' )
 uicontrol( 'Parent', boxPanels(3), 'Style', 'pushbutton', ...
-    'String', 'Button 3' )
+    'String', 'Button 3' ) 
 ```
 
 ## Add the dock/undock callback
@@ -112,7 +101,7 @@ boxPanels(3).DockFcn = {@onDock, 3};
                 'Position', [0, 0, 1, 1] )
         end % if
 
-    end % onDock
+    end % onDock 
 ```
 
 ## Add the close callback
@@ -131,5 +120,5 @@ If the user closes the main figure window, we also need to close any other windo
 
     end % onCloseAll
 
-end % dockExample
+end % dockExample 
 ```

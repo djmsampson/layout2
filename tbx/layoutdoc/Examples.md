@@ -5,38 +5,39 @@ The following examples are provided as part of this documentation. Click the nam
 
 # Basics
 
-[Layout hierarchies](matlab: web(fullfile(layoutDocRoot, 'LayoutHierarchies.html')))
+[Layout Hierarchies](LayoutHierarchies.md)
 
--  Using layouts inside layouts to produce more complex designs 
-# Using axes
+-  Using layouts inside layouts to produce more complex designs
 
-[Positioning axes](matlab: web(fullfile(layoutDocRoot, 'PositioningAxes.html')))
+# Using Axes
+
+[Positioning Axes](PositioningAxes.md)
 
 -  Using the different axes position properties 
 
-[Colorbars and legends](matlab: web(fullfile(layoutDocRoot, 'ColorbarsAndLegends.html')))
+[Colorbars and Legends](ColorbarsAndLegends.md)
 
 -  How to work with axes that may have colorbars and/or legends 
-# Using panels
+# Using Panels
 
-[Context help](matlab: web(fullfile(layoutDocRoot, 'ContextHelp.html')))
+[Context Help](ContextHelp.md)
 
 -  Adding context\-sensitve help using panels 
 
-[Minimize and maximize](matlab: web(fullfile(layoutDocRoot, 'MinimizeAndMaximize.html')))
+[Minimize and Maximize](MinimizeAndMaximize.md)
 
 -  Creating a user interface with panels that can be minimized and maximized 
 
-[Dock and undock](matlab: web(fullfile(layoutDocRoot, 'DockAndUndock.html')))
+[Dock and Undock](DockAndUndock.md)
 
 -  Creating a user interface with panels that can be undocked into separate windows 
 # Visible
 
-[Visible example](matlab: web(fullfile(layoutDocRoot, 'VisibleExample.html')))
+[Visible Example](VisibleExample.md)
 
 -  Showing and hiding a layout and its contents 
 # Applications
 
-[Building a complete application](matlab: web(fullfile(layoutDocRoot, 'BuildingACompleteApplication.html')))
+[A Complete Example](ACompleteExample.md)
 
--  Using layouts together to produce a complete application 
+-  Using multiple layouts to build a complete application 
