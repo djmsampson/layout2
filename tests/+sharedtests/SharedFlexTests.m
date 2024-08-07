@@ -155,18 +155,21 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMouseOverDividerInDockedFigureUpdatesPointer( ...
                 testCase, ConstructorName )
 
-            % Exclude unrooted and web graphics.
-            testCase.assumeGraphicsAreRooted()
-            testCase.assumeGraphicsAreNotWebBased()
-
-            % Exclude Mac OS.
-            testCase.assumeNotMac()
+            % Exclude IMT.
+            testCase.assumeNotRunningInIMT()
 
             % If running in CI, assume we have at least R2023b.
             if testCase.isCodeRunningOnCI()
                 testCase.assumeRunningOnGitHubCI()
                 testCase.assumeMATLABVersionIsAtLeast( 'R2023b' )
             end % if
+
+            % Exclude Mac OS.
+            testCase.assumeNotMac()
+
+            % Exclude unrooted and web graphics.
+            testCase.assumeGraphicsAreRooted()
+            testCase.assumeGraphicsAreNotWebBased()            
 
             % Create the flexible container.
             component = testCase.constructComponent( ConstructorName, ...
@@ -269,11 +272,14 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOnFlexChange( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
-            testCase.assumeGraphicsAreRooted()
+            % Exclude IMT.
+            testCase.assumeNotRunningInIMT()
 
             % Exclude the test from running on CI.
-            testCase.assumeNotRunningOnCI()            
+            testCase.assumeNotRunningOnCI()
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
 
             % Create the component
             testFig = testCase.ParentFixture.Parent;
@@ -410,11 +416,14 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tMousePointerUpdatesOverDivider( ...
                 testCase, ConstructorName )
 
-            % This test is only for rooted components.
-            testCase.assumeGraphicsAreRooted()
+            % Exclude IMT.
+            testCase.assumeNotRunningInIMT()
 
             % Exclude the test from running on CI.
             testCase.assumeNotRunningOnCI()
+
+            % This test is only for rooted components.
+            testCase.assumeGraphicsAreRooted()
 
             % Create the layout and add children.
             [component, dividers] = createFlexibleLayoutWithChildren( ...
