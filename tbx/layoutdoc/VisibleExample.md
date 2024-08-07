@@ -26,7 +26,7 @@ panel = uix.BoxPanel( 'Parent', f, ...
     'FontSize', 12 );
 ```
 
-# Put some buttons inside the panel.
+# Put some buttons inside the panel
 
 First, create a vertical button box to hold the buttons.
 
@@ -47,7 +47,7 @@ uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 5', ...
 uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 6' )
 ```
 
-# Toggle the visibility of the box panel.
+# Toggle the visibility of the box panel
 ```matlab
 panel.Visible = 'off';
 ```

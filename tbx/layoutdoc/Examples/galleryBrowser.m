@@ -49,72 +49,72 @@ end % if
 
     end % createData
 
-    function gui = createInterface( exampleList )
+    function app = createInterface( exampleList )
 
         % Create the user interface for the application and return a
         % structure of handles for global use.
-        gui = struct();
+        app = struct();
 
         % Create a figure and add some menus
-        gui.Figure = figure( ...
+        app.Figure = figure( ...
             'Name', 'Gallery Browser', ...
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
             'HandleVisibility', 'off' );
 
-        % + File menu
-        gui.FileMenu = uimenu( gui.Figure, 'Label', 'File' );
-        uimenu( gui.FileMenu, 'Label', 'Exit', 'Callback', @onExit );
+        % File menu
+        app.FileMenu = uimenu( app.Figure, 'Label', 'File' );
+        uimenu( app.FileMenu, 'Label', 'Exit', 'Callback', @onExit )
 
-        % + View menu
-        gui.ViewMenu = uimenu( gui.Figure, 'Label', 'View' );
-        for ii=1:numel( exampleList )
-            uimenu( gui.ViewMenu, 'Label', exampleList{ii}, ...
-                'Callback', @onMenuSelection );
+        % View menu
+        app.ViewMenu = uimenu( app.Figure, 'Label', 'View' );
+        for ii = 1 : numel( exampleList )
+            uimenu( app.ViewMenu, 'Label', exampleList{ii}, ...
+                'Callback', @onMenuSelection )
         end
 
-        % + Help menu
-        helpMenu = uimenu( gui.Figure, 'Label', 'Help' );
-        uimenu( helpMenu, 'Label', 'Documentation', 'Callback', @onHelp );
+        % Help menu
+        helpMenu = uimenu( app.Figure, 'Label', 'Help' );
+        uimenu( helpMenu, 'Label', 'GUI Layout Toolbox Documentation', ...
+            'Callback', @onHelp )
 
         % Arrange the main interface
-        mainLayout = uix.HBoxFlex( 'Parent', gui.Figure, 'Spacing', 3 );
+        mainLayout = uix.HBoxFlex( 'Parent', app.Figure, 'Spacing', 3 );
 
-        % + Create the panels
+        % Create the panels
         controlPanel = uix.BoxPanel( ...
             'Parent', mainLayout, ...
             'Title', 'Select an example' );
-        gui.ViewPanel = uix.BoxPanel( ...
+        app.ViewPanel = uix.BoxPanel( ...
             'Parent', mainLayout, ...
             'Title', 'Viewing: ???', ...
-            'HelpFcn', @onExampleHelp );
-        gui.ViewContainer = uicontainer( ...
-            'Parent', gui.ViewPanel );
+            'HelpFcn', @onSourceCodeRequested );
+        app.ViewContainer = uicontainer( ...
+            'Parent', app.ViewPanel );
 
-        % + Adjust the main layout
-        set( mainLayout, 'Widths', [-1, -2]  );
+        % Adjust the main layout
+        mainLayout.Widths = [-1, -2];
 
-        % + Create the controls
+        % Create the controls
         controlLayout = uix.VBox( 'Parent', controlPanel, ...
             'Padding', 3, 'Spacing', 3 );
-        gui.ListBox = uicontrol( 'Style', 'list', ...
+        app.ListBox = uicontrol( 'Style', 'list', ...
             'BackgroundColor', 'w', ...
             'Parent', controlLayout, ...
             'String', exampleList(:), ...
             'Value', 1, ...
-            'Callback', @onListSelection);
-        gui.HelpButton = uicontrol( 'Style', 'PushButton', ...
+            'Callback', @onListSelection );
+        app.SourceCodeButton = uicontrol( 'Style', 'pushbutton', ...
             'Parent', controlLayout, ...
-            'String', 'Help for <example>', ...
-            'Callback', @onExampleHelp );
+            'String', 'Source Code for <example>', ...
+            'Callback', @onSourceCodeRequested );
 
         % Make the list fill the space
-        set( controlLayout, 'Heights', [-1, 28] );
+        controlLayout.Heights = [-1, 28];
 
-        % + Create the view
-        p = gui.ViewContainer;
-        gui.ViewAxes = axes( 'Parent', p );
+        % Create the view        
+        app.ViewAxes = axes( 'Parent', app.ViewContainer );
 
     end % createInterface
 
@@ -123,15 +123,16 @@ end % if
         % being changed.
 
         % Update the list and menu to show the current example
-        set( app.ListBox, 'Value', data.SelectedExample )
+        app.ListBox.Value = data.SelectedExample;
 
-        % Update the help button label
-        exampleName = data.ExampleNames{ data.SelectedExample };
-        set( app.HelpButton, 'String', ['Help for ', exampleName] )
+        % Update the source code button label
+        exampleFunction = data.ExampleFunctions{data.SelectedExample};
+        app.SourceCodeButton.String = ...
+            ['Source code for ', exampleFunction];
 
         % Update the view panel title
-        set( app.ViewPanel, 'Title', ...
-            sprintf( 'Viewing: %s', exampleName ) )
+        exampleName = data.ExampleNames{data.SelectedExample};
+        app.ViewPanel.Title = sprintf( 'Viewing: %s', exampleName );
 
         % Untick all menus
         menus = get( app.ViewMenu, 'Children' );
@@ -139,7 +140,7 @@ end % if
 
         % Use the name to work out which menu item should be ticked
         whichMenu = strcmpi( exampleName, get( menus, 'Label' ) );
-        set( menus(whichMenu), 'Checked', 'on' )
+        menus(whichMenu).Checked = 'on';
 
     end % updateInterface
 
@@ -159,10 +160,9 @@ end % if
                 evalin( 'base', fcnName );
                 app.ViewAxes = gca();
                 fig = gcf();
-                set( fig, 'Visible', 'off' )
-
+                fig.Visible = 'off';
             otherwise
-                % These examples need a window opening
+                % These examples need a figure
                 fig = figure( 'Visible', 'off' );
                 evalin( 'base', fcnName );
                 app.ViewAxes = gca();
@@ -171,9 +171,9 @@ end % if
         % Now copy the axes from the example into our window and restore its
         % state.
         cmap = colormap( app.ViewAxes );
-        set( app.ViewAxes, 'Parent', app.ViewContainer );
-        colormap( app.ViewAxes, cmap );
-        rotate3d( app.ViewAxes, 'on' );
+        app.ViewAxes.Parent = app.ViewContainer;
+        colormap( app.ViewAxes, cmap )
+        rotate3d( app.ViewAxes, 'on' )
 
         % Get rid of the example figure
         close( fig )
@@ -203,17 +203,17 @@ end % if
 
     function onHelp( ~, ~ )
 
-        % User has asked for the documentation
-        doc layout
+        % Open the toolbox documentation
+        doc( 'GUI Layout Toolbox' )
 
     end % onHelp
 
-    function onExampleHelp( ~, ~ )
+    function onSourceCodeRequested( ~, ~ )
 
-        % User wants documentation for the current example
-        showdemo( data.ExampleFunctions{data.SelectedExample} )
+        % Open the source code for the selected example
+        edit( data.ExampleFunctions{data.SelectedExample} )
 
-    end % onExampleHelp
+    end % onSourceCodeRequested
 
     function onExit( ~, ~ )
 

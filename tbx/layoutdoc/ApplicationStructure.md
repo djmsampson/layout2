@@ -30,9 +30,24 @@ function galleryBrowser()
    function redrawExample() ... end
 
    % Callback subfunctions.
-   function onMenuSelection() ... end
    function onListSelection() ... end
-   function onExampleHelp() ... end
+   function onMenuSelection() ... end   
    function onHelp() ... end
+   function onSourceCodeRequested() ... end
    function onExit() ... end 
+```
+
+Note that all of the work is done in nested functions. Most of these are callbacks executed when a button is pressed or a menu selected. The four used at startup are helper functions:
+
+* **`createData`**: build the structure which contains all application data
+* **`createInterface`**: build the user interface
+* **`updateInterface`**: update selectors etc in response to a change in the data
+* **`redrawExample`**: redraw the axes contents
+
+We will not dig into all the nested functions aand callbacks, but instead concentrate on the app creation (`createInterface`) and update (`updateInterface`).
+
+The complete source code for this application is available in `galleryBrowser.m`.
+
+```matlab
+edit galleryBrowser 
 ```
