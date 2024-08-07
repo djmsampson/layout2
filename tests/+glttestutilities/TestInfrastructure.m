@@ -277,6 +277,14 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
 
         end % assumeNotRunningOnCI
 
+        function assumeNotRunningInIMT( testCase )
+
+            testCase.assumeFalse( testCase.isCodeRunningInIMT(), ...
+                ['This test is not applicable to code running in ', ...
+                'the industry model testing (IMT) environment.'] )
+
+        end % assumeNotRunningInIMT
+
         function component = constructComponent( ...
                 testCase, constructorName, varargin )
 
@@ -313,6 +321,14 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                 .isCodeRunningOnGitLabCI;
 
         end % isCodeRunningOnCI
+
+        function tf = isCodeRunningInIMT()
+
+            % Determine whether the tests are running in the industry model
+            % testing (IMT) environment.
+            tf = strcmp( getenv( 'imt' ), '1' );
+
+        end % isCodeRunningInIMT
 
     end % methods ( Sealed, Static )
 
