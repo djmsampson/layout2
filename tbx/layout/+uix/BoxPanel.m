@@ -226,7 +226,7 @@ classdef BoxPanel < uix.Panel
         function set.HelpFcn( obj, value )
 
             % Set
-            obj.HelpButton.ButtonDownFcn = value;
+            obj.HelpButton.Callback = value;
 
             % Mark as dirty
             obj.redrawButtons()
@@ -295,7 +295,7 @@ classdef BoxPanel < uix.Panel
 
             value = obj.TitleBox.Position(4);
 
-        end % get.TitleHeight        
+        end % get.TitleHeight
 
         function set.MaximizeTooltip( obj, value )
 
@@ -481,7 +481,7 @@ classdef BoxPanel < uix.Panel
             % Set
             obj.HelpTooltip = value;
 
-        end % set.HelpTooltipString   
+        end % set.HelpTooltipString
 
     end % accessors
 
@@ -761,7 +761,7 @@ end
 end % extent
 
 function value = validateScalarStringOrCharacterArray( value, propertyName )
-%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a 
+%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a
 %scalar string or a character array.
 
 if isa( value, 'string' ) && isscalar( value ) && ismissing( value )

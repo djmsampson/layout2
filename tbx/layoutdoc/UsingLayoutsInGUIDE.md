@@ -13,13 +13,13 @@ In the R2019b release, MathWorks announced that **`GUIDE`** will be removed in a
 
 Create your **`GUIDE`** application as usual, placing a panel where you want to insert the layout. You can turn the panel border and title off if you do not want them.
 
-![A new GUIDE app](UsingLayoutsInGUIDE01.png "A new GUIDE app")
+![A new GUIDE app](Images/UsingLayoutsInGUIDE01.png "A new GUIDE app")
 
 # Insert the layout
 
 Edit the **`OpeningFcn`** in the **`GUIDE`**\-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel with tag **`uipanel1`**.
 
-```
+```matlab
 % --- Executes just before guideApp is made visible. 
 function guideApp_OpeningFcn(hObject, eventdata, handles, varargin)
 
@@ -37,7 +37,7 @@ uix.BoxPanel( 'Parent', g, 'Title', 'Panel 1' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 2' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 3' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 4' );
-g.Heights = [-1, -1];
+g.Heights = [-1, -1]; 
 ```
 
 Launch the app.

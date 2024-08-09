@@ -3,8 +3,8 @@
 
 The GUI Layout Toolbox version numbers take the form **`major.minor.iter`**. The current version you have installed can be checked by typing [**`ver`**](https://www.mathworks.com/help/matlab/ref/ver.html) at the MATLAB Command prompt.
 
-```
->> ver("layout")
+```matlab
+ver("layout") 
 ```
 
 # Version 2.3.9

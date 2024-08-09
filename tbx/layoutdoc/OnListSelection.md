@@ -12,7 +12,7 @@ data.SelectedExample = get( src, 'Value' );
 updateInterface()
 redrawExample() 
 ```
-![The interface after being updated](UpdateInterface01.png "The interface after being updated")
+![The interface after being updated](Images/UpdateInterface01.png "The interface after being updated")
 
 The complete source code for this application is available in `galleryBrowser.m`.
 

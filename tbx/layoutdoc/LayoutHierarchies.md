@@ -5,18 +5,18 @@
 
 Consider the following simple interface:
 
-![A simple interface with an axes and two buttons](LayoutHierarchies01.png "A simple interface with an axes and two buttons")
+![A simple interface with an axes and two buttons](Images/LayoutHierarchies01.png "A simple interface with an axes and two buttons")
 
 Instead of thinking of this in terms of three elements that need positioning, we can break it up into two simple linear ("box") arrangements: a vertical box with the axes at the top and a control area at the bottom, and a horizontal box containing two buttons:
 
 
-![The simple interface partitioned vertically](LayoutHierarchies02.png "The simple interface partitioned vertically")![The two buttons arranged in a horizontal layout](LayoutHierarchies03.png "The two buttons arranged in a horizontal layout")
+![The simple interface partitioned vertically](Images/LayoutHierarchies02.png "The simple interface partitioned vertically")![The two buttons arranged in a horizontal layout](LayoutHierarchies03.png "The two buttons arranged in a horizontal layout")
 
 
 By placing the second layout (horizontal box) inside the first (vertical box), we arrive at the complete layout. Since the sizes of the elements in each list can be set to be fixed or flexible, we can achieve a user interface that is not just arranged correctly when created, but also behaves well when resized.
 
 
-![The resized simple interface](LayoutHierarchies04.png "The resized simple interface")
+![The resized simple interface](Images/LayoutHierarchies04.png "The resized simple interface")
 
 
 Note that the buttons have remained with a fixed height after the window size has been increased, and the axes have resized to fill the remaining space.

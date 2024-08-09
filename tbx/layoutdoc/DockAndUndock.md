@@ -26,7 +26,7 @@ dockExample
 Undocking the middle panel causes the other two to fill the vacated space. The undocked panel appears in its own window, with the undock symbol :arrow_upper_right: replaced by a dock symbol :arrow_lower_right:.
 
 
-![Panels 1 and 3 side-by-side](DockAndUndock01.png "Panels 1 and 3 side-by-side")![Panel 2 in a separate figure](DockAndUndock02.png "Panel 2 in a separate figure")
+![Panels 1 and 3 side-by-side](Images/DockAndUndock01.png "Panels 1 and 3 side-by-side")![Panel 2 in a separate figure](Images/DockAndUndock02.png "Panel 2 in a separate figure")
 
 
 Redocking the panel would place it in its original position within the horizontal layout. Closing the main figure window causes all panels, docked or undocked, and their enclosing figure windows to be closed.

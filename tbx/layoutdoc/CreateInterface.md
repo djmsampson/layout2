@@ -20,7 +20,7 @@ app.ViewContainer = uicontainer( 'Parent', app.ViewPanel );
 mainLayout.Widths = [-1, -2]; 
 ```
 
-![The top-level layout and panels](CreateInterface01.png "The top-level layout and panels")
+![The top-level layout and panels](Images/CreateInterface01.png "The top-level layout and panels")
 
 Next, we create a vertical layout in the control panel containing the listbox and a button. Note the callbacks that are specified for both the list and button. These both call further nested functions that are able to access the common `data` and `app` shared structures.
 
@@ -43,7 +43,7 @@ app.SourceCodeButton = uicontrol( 'Style', 'pushbutton', ...
 controlLayout.Heights = [-1, 28]; 
 ```
 
-![The listbox and button in the control panel](CreateInterface02.png "The listbox and button in the control panel")
+![The listbox and button in the control panel](Images/CreateInterface02.png "The listbox and button in the control panel")
 
 Finally, the view itself is simply an axes placed inside the view panel.
 
@@ -52,7 +52,7 @@ Finally, the view itself is simply an axes placed inside the view panel.
 app.ViewAxes = axes( 'Parent', app.ViewContainer ); 
 ```
 
-![The axes in the view panel](CreateInterface03.png "The axes in the view panel")
+![The axes in the view panel](Images/CreateInterface03.png "The axes in the view panel")
 
 The complete source code for this application is available in `galleryBrowser.m`.
 

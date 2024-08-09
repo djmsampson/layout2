@@ -31,7 +31,7 @@ whichMenu = strcmpi( exampleName, get( menus, 'Label' ) );
 menus(whichMenu).Checked = 'on'; 
 ```
 
-![The interface after being updated](UpdateInterface01.png "The interface after being updated")
+![The interface after being updated](Images/UpdateInterface01.png "The interface after being updated")
 
 In general, this update function is called whenever the underlying shared `data` structure is changed. This happens when the user clicks a button, or selects a list item or menu. Next, we will look at a typical callback.
 
