@@ -226,7 +226,7 @@ classdef BoxPanel < uix.Panel
         function set.HelpFcn( obj, value )
 
             % Set
-            obj.HelpButton.Callback = value;
+            obj.HelpButton.ButtonDownFcn = value;
 
             % Mark as dirty
             obj.redrawButtons()

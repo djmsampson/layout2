@@ -24,15 +24,15 @@ p = uix.Panel( 'Parent', f, 'Title', 'A Panel', 'Padding', 5 );
 uicontrol( 'Parent', p, 'Style', 'pushbutton', 'BackgroundColor', 'r' )
 ```
 
-### Add a button and a listbox to a [horizontal layout](uixHBox.md) inside a panel
+### Add a listbox and a button to a [horizontal layout](uixHBox.md) inside a panel
 
 ```matlab
 f = figure();
 p = uix.Panel( 'Parent', f, 'Title', 'A Panel', 'TitlePosition', 'centertop' );
-h = uix.HBox( 'Parent', p, 'Spacing', 5, 'Padding', 5 );
-uicontrol( 'Parent', h, 'Style', 'listbox', 'String', {'Item 1', 'Item 2'} )
-uicontrol( 'Parent', h, 'BackgroundColor', 'b' )
-h.Widths = [100, -1];
+hb = uix.HBox( 'Parent', p, 'Spacing', 5, 'Padding', 5 );
+uicontrol( 'Parent', hb, 'Style', 'listbox', 'String', {'Item 1', 'Item 2'} )
+uicontrol( 'Parent', hb, 'BackgroundColor', 'b' )
+hb.Widths = [100, -1];
 ```
 
 ### Add a table to a panel in web graphics
