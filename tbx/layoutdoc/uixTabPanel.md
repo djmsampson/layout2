@@ -1,4 +1,4 @@
-# `uix.TabPanel`
+# :point_right: **`uix.TabPanel`**
 
 ![TabPanel](Images/bigicon_TabPanel.png "TabPanel")
 
@@ -6,10 +6,10 @@ Arrange elements in a panel with tabs for selecting which element is visible
 
 ## Syntax
 
-* `tp = uix.TabPanel()` creates a panel with tabs along one edge to allow selection between the different child elements contained in the panel.
-* `tp = uix.TabPanel( <propertyName>, <propertyValue>, ... )` also sets one or more property values.
+* **`tp = uix.TabPanel()`** creates a new, default, *unparented* panel with tabs along one edge to allow selection between the different child elements contained in the panel.
+* **`tp = uix.TabPanel( n1, v1, n2, v2, ... )`** also sets one or more property values.
 
-## `uix.TabPanel` Properties
+## Properties
 
 ## Examples
 

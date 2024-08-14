@@ -9,5 +9,6 @@ This chapter describes the purpose and overall design of the layout tools that t
 -  [Controlling Visibility](ControllingVisibility.md)
 -  [Advanced Maneuvers with Panels](AdvancedManeuversWithPanels.md)
 -  [Using Layouts in App Designer](UsingLayoutsInAppDesigner.md)
+-  [Using Layouts with uigridlayout and tiledlayout](UsingLayoutsWithGridManagers.md)
 -  [Using Layouts in GUIDE](UsingLayoutsInGUIDE.md)
 -  [A Complete Example](ACompleteExample.md)

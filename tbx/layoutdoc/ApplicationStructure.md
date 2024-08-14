@@ -34,7 +34,9 @@ function galleryBrowser()
    function onMenuSelection() ... end   
    function onHelp() ... end
    function onSourceCodeRequested() ... end
-   function onExit() ... end 
+   function onExit() ... end
+   
+end 
 ```
 
 Note that all of the work is done in nested functions. Most of these are callbacks executed when a button is pressed or a menu selected. The four used at startup are helper functions:

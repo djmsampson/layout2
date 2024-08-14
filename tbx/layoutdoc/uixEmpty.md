@@ -23,7 +23,7 @@ Create an empty space
 f = figure();
 hb = uix.HBox( 'Parent', f, 'Spacing', 5 );
 uicontrol( 'Parent', hb, 'Style', 'pushbutton', 'BackgroundColor', 'r' )
-uix.Empty( 'Parent', hb )
+uix.Empty( 'Parent', hb );
 uicontrol( 'Parent', hb, 'Style', 'pushbutton', 'BackgroundColor', 'g' )
 ```
 

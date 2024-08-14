@@ -22,7 +22,7 @@ The following examples are provided as part of this documentation. Click the nam
 
 [Context Help](ContextHelp.md)
 
--  Adding context\-sensitve help using panels 
+-  Adding context\-sensitive help using panels 
 
 [Minimize and Maximize](MinimizeAndMaximize.md)
 
@@ -30,12 +30,24 @@ The following examples are provided as part of this documentation. Click the nam
 
 [Dock and Undock](DockAndUndock.md)
 
--  Creating a user interface with panels that can be undocked into separate windows 
+-  Creating a user interface with panels that can be undocked into separate windows
+
+[Using Tabs](uixTabPanel.md)
+
+- How to use tabs within a layout, and using the **`SelectionChangedFcn`** callback to update other user-interface elements when the selected tab is changed.
+
 # Visible
 
 [Visible Example](VisibleExample.md)
 
--  Showing and hiding a layout and its contents 
+-  Showing and hiding a layout and its contents
+
+# Callbacks
+
+[Callback Example](uixPanel.md)
+
+- Building a simple app and defining a callback
+
 # Applications
 
 [A Complete Example](ACompleteExample.md)
