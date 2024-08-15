@@ -1,24 +1,44 @@
-# `uix.HBox`, `uix.HBoxFlex`
+# :arrow_right: **`uix.HBox`**, :left_right_arrow: **`uix.HBoxFlex`**
 
 [![HBox](Images/bigIcon_HBox.png "HBox")](uixHBox.md)[![HBoxFlex](Images/bigIcon_HBoxFlex.png "HBoxFlex")](uixHBox.md)
 
-* `uix.HBox`: Arrange elements horizontally in a single row
-* `uix.HBoxFlex`: Arrange elements horizontally with draggable dividers
+* **`uix.HBox`**: Arrange elements horizontally in a single row
+* **`uix.HBoxFlex`**: Arrange elements horizontally with draggable dividers
 
 ## Syntax
 
-### `uix.HBox` 
+* **`hb = uix.HBox()`** or **`hbf = uix.HBoxFlex()`** creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user-interface components.
+* **`hb = uix.HBox( n1, v1, n2, v2, ... )`** or **`hbf = uix.HBoxFlex( n1, v1, n2, v2, ... )`** also sets one or more property values.
+* **`uix.HBoxFlex`** extends **`uix.HBox`**, adding draggable dividers between the columns.
 
-* `hb = uix.HBox()` creates a new horizontal box layout. The output is a new layout object that can be used as the parent for other user-interface components.
-* `hb = uix.HBox( <propertyName>, <propertyValue>, ... )` also sets one or more property values.
+To interleave empty space within the horizontal layout, use [**`uix.Empty`**](uixEmpty.md). Column widths can be fixed or variable, and are equipped with minimum values. Variable-sized columns fill available container space, subject to minima, according to specified weights.
 
-### `uix.HBoxFlex`
+## Properties
 
-* `hbf = uix.HBoxFlex()` creates a new horizontal box layout with draggable dividers. The output is a new layout object that can be used as the parent for other user-interface components.
-* `hbf = uix.HBoxFlex( <propertyName>, <propertyValue>, ... )` also sets one or more property values.
+| Name | Description | Type |
+| --- | --- | --- |
+| **`BackgroundColor`** | Background color. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself. | graphics vector |
+| **`MinimumWidths`** | Minimum width of each of the columns, in pixels. | nonnegative double vector |
+| **`Padding`** | Space around contents, in pixels. | nonnegative scalar integer
+| **`Parent`** | Parent figure or container. | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]`  |
+| **`Spacing`** | Space between columns, in pixels. | nonnegative scalar |
+| **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
+| **`Widths`** | Width of the each of the columns. Nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing. | real double vector |
 
-## `uix.HBox` and `uix.HBoxFlex` Properties
+plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
+* Interactivity: **`ContextMenu`**
+* Callbacks: **`SizeChangedFcn`**, **`ButtonDownFcn`**, **`CreateFcn`**, **`DeleteFcn`**
+* Callback execution control: **`Interruptible`**, **`BusyAction`**, **`BeingDeleted`**, **`HitTest`**
+* Parent/child: **`Children`**, **`HandleVisibility`**
+* Identifiers: **`Type`**, **`Tag`**, **`UserData`**
 
+### :warning: Deprecated
+| Name | Alternative | Type | Notes |
+| --- | --- | --- | --- |
+| **`DividerMarkings`** (for **`uix.HBox`**) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect. This property toggled the markings on the draggable dividers. |
 
 ## Examples
 
@@ -81,7 +101,7 @@ uilistbox( hbf );
 
 ## See also
 
-* [`uix.VBox`](uixVBox.md): Arrange elements vertically in a single column
-* [`uix.VBoxFlex`](uixVBox.md): Arrange elements vertically with draggable dividers
-* [`uix.HButtonBox`](uixHButtonBox.md): Arrange buttons horizontally in a single row
-* [`uix.VButtonBox`](uixVButtonBox.md): Arrange buttons vertically in a single column
+* :arrow_down: [**`uix.VBox`**](uixVBox.md): Arrange elements vertically in a single column
+* :arrow_up_down: [**`uix.VBoxFlex`**](uixVBox.md): Arrange elements vertically with draggable dividers
+* :traffic_light: [**`uix.HButtonBox`**](uixHButtonBox.md): Arrange buttons horizontally in a single row
+* :vertical_traffic_light: [**`uix.VButtonBox`**](uixVButtonBox.md): Arrange buttons vertically in a single column

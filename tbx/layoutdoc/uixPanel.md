@@ -29,7 +29,6 @@ Arrange a single element inside a standard panel
 | **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]` |
 | **`Title`** | Title string. | `string` scalar |
 | **`TitlePosition`** | Location of title text in relation to the panel. | `"lefttop"` \| `"centertop"` \| `"righttop"` \| `"leftbottom"` \| `"centerbottom"` \| `"rightbottom"` |
-| **`UndockTooltip`** | Custom tooltip for dock icon (when panel is docked). If the **`DockFcn`** is empty, then no dock icon is shown. | `string` scalar |
 | **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
 
@@ -46,7 +45,6 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | **`Selection`** | none | nonnegative scalar integer | No longer has any effect. In previous versions, the currently visible child was determined using this property. |
-
 
 ## Examples
 
@@ -79,7 +77,8 @@ uitable( p, "Data", magic( 5 ) );
 
 ### Create a simple color-changing app
 
-The code for this example is available in `callbackExample.m`.
+This example shows how to arrange layouts and controls in
+a simple app with a callback. The app contains a listbox with multiple color names, and a panel with background color controlled by the selection in the listbox. The code for this example is available in `callbackExample.m`.
 
 ```matlab
 edit callbackExample 
@@ -162,7 +161,7 @@ callbackExample
 ```
 
 ## See also
-* :card_index: [`uix.CardPanel`](uixCardPanel.md): Show one element (card) from a list
-* :black_square_button: [`uix.BoxPanel`](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls
-* :point_right: [`uixTabPanel`](uixTabPanel.md): Arrange elements in a panel with tabs for selecting which element is visible
-* :scroll: [`uix.ScrollingPanel`](uixScrollingPanel.md): Arrange a single element inside a scrollable panel
+* :card_index: [**`uix.CardPanel`**](uixCardPanel.md): Show one element (card) from a list
+* :black_square_button: [**`uix.BoxPanel`**](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls
+* :point_right: [**`uixTabPanel`**](uixTabPanel.md): Arrange elements in a panel with tabs for selecting which element is visible
+* :scroll: [**`uix.ScrollingPanel`**](uixScrollingPanel.md): Arrange a single element inside a scrollable panel

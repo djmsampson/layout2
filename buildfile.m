@@ -16,7 +16,7 @@ plan("assertNoCodeIssues") = matlab.buildtool.tasks...
     "WarningThreshold", 0 );
 
 % Add a test task to run the unit tests for the project. Generate and save
-% a coverage report.
+% a coverage report. This build task is optional.
 testFolder = fullfile( projectRoot, "tests" );
 codeFolder = fullfile( projectRoot, "tbx", "layout"  );
 plan("assertTestSuccess") = matlab.buildtool.tasks.TestTask( ...
@@ -26,10 +26,12 @@ plan("assertTestSuccess") = matlab.buildtool.tasks.TestTask( ...
     "CodeCoverageResults", "reports/Coverage.html", ...
     "OutputDetail", "none" );
 
-% Set all the tasks to run by default.
+% Set the package toolbox task to run by default.
 plan.DefaultTasks = "packageToolbox";
 
 % Define the task dependencies.
+coreDependencies = ["assertNoCodeIssues", "assertNoProjectIssues"];
+plan("checkDocerInstallation").Dependencies = coreDependencies;
 plan("deletePreviousDocFiles").Dependencies = "checkDocerInstallation";
 plan("convertMarkdownToHTML").Dependencies = "deletePreviousDocFiles";
 plan("runDocExamples").Dependencies = "convertMarkdownToHTML";
@@ -37,6 +39,17 @@ plan("createDocIndex").Dependencies = "runDocExamples";
 plan("packageToolbox").Dependencies = "createDocIndex";
 
 end % buildfile
+
+function assertNoProjectIssuesTask( ~ )
+% Assert that there are no project issues.
+
+results = table( currentProject().runChecks() );
+assert( all( results.Passed ), "buildfile:ProjectIssue", ...
+    "At least one project check has failed. " + ...
+    "Resolve the failures shown below to continue." )
+disp( results(~results.Passed, :) )
+
+end % assertNoProjectIssuesTask
 
 function checkDocerInstallationTask( ~ )
 % Check that the Doc_er toolbox is installed.
@@ -118,10 +131,10 @@ opts.Description = "This toolbox provides tools to create " + ...
     "matlabcentral/fileexchange/27758-gui-layout-toolbox).";
 
 % Read the version number from Contents.m.
-contentsFile = fullfile( toolboxRoot, "layout", "Contents.m" );
-contentsFileText = fileread( contentsFile );
-versionNumber = string( extractBetween( ...
-    contentsFileText, "Version ", " (" ) );
+%contentsFile = fullfile( toolboxRoot, "layout", "Contents.m" );
+%contentsFileText = fileread( contentsFile );
+% versionNumber = string( extractBetween( ...
+%     contentsFileText, "Version ", " (" ) );
 versionNumber = "5.0.0";
 mltbxName = "GUI Layout Toolbox " + versionNumber + ".mltbx";
 

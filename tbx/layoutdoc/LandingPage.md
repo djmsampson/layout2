@@ -22,7 +22,6 @@ This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabce
 | :bulb: | [Examples](Examples.md) | A list of the examples that are provided in the documentation |
 | :book: | [User Guide](UserGuide.md) | Describes how to use these tools |
 | :memo: | [Function Reference](FunctionReference.md) | A list of the available functions |
-| :scroll: | [Index](Index.md) | Alphabetical index of sections, functions, and concepts |
 
 ___
 
