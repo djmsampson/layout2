@@ -1,4 +1,4 @@
-# :symbols: **`uix.Grid`**, :symbols: **`uix.GridFlex`**
+# :symbols: **`uix.Grid`**, :arrow_up_down::left_right_arrow: **`uix.GridFlex`**
 
 [![Grid](Images/bigIcon_Grid.png "Grid")](uixGrid.md)[![GridFlex](Images/bigIcon_GridFlex.png "GridFlex")](uixGrid.md)
 

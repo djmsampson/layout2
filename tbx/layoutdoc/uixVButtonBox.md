@@ -2,7 +2,7 @@
 
 [![VButtonBox](Images/bigIcon_VButtonBox.png "VButtonBox")](uixVButtonBox.md)
 
-Arrange buttons vertically in a single row
+Arrange buttons vertically in a single column
 
 ## Syntax
 
