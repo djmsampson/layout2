@@ -20,10 +20,21 @@ In detail:
 
 | **Layout** | **From** | **Comments** |
 | :-- | :---: | :-- |
-| **`uix.CardPanel`** <br> **`uix.HBox`** <br> **`uix.VBox`** <br> **`uix.HButtonBox`** <br> **`uix.VButtonBox`** <br> **`uix.Grid`** <br> **`uix.Empty`** <br>  | R2020b |   |
-| **`uix.HBoxFlex`** <br> **`uix.VBoxFlex`** <br> **`uix.GridFlex`** <br> **`uix.ScrollingPanel`** <br>  | R2022a | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. |
-| **`uix.TabPanel`** <br>  | R2022a | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. Use [**`uitabgroup`**](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [**`uitab`**](https://www.mathworks.com/help/matlab/ref/uitab.html) unless the require the ability to disable tabs. <br>   |
-| **`uix.Panel`** <br> **`uix.BoxPanel`** <br>  | R2022b <br>  | In R2022b, due to a bug, **`Units`** and **`Position`** specified during construction are ignored, and the panel is placed in the default position. As a workaround, set the panel **`Units`** and **`Position`** after construction. This bug is fixed in R2023a. |
+| **`uix.CardPanel`** <br> **`uix.HBox`** <br> **`uix.VBox`** <br> **`uix.HButtonBox`** <br> **`uix.VButtonBox`** <br> **`uix.Grid`** <br> **`uix.Empty`** <br> **`uix.TabPanel`** <br> **`uix.Panel`** | R2020b | **`uix.TabPanel`** now uses a **`uitab`**-backed implementation.  |
+| **`uix.HBoxFlex`** <br> **`uix.VBoxFlex`** <br> **`uix.GridFlex`** <br> | R2021a | The draggable dividers in the flexible layouts now use a **`uicontainer`**-backed implementation. Support for the `ButtonDownFcn` callback on a **`uicontainer`** was added in R2021a. |
+ **`uix.ScrollingPanel`** <br> **`uix.BoxPanel`** | R2022a | The implementations use [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html), so rely on **`uicontrol`** support in web graphics that was introduced in R2022a. |
+
+### :warning: Known issues in web graphics
+
+* In R2022b, due to a bug, specifying **`Units`** and **`Position`** during construction of a **`uix.Panel`** are ignored, and the panel is placed in the default position. As a workaround, set the panel **`Units`** and **`Position`** after construction. This bug is fixed in R2023a.
+* In R2023b, the same bug appeared for all layouts. The **`Position`** property is only updated after it has been changed to a different value. To achieve a **`Position`** of `[0, 0, 1, 1]` after construction, use the following workaround.
+
+```matlab
+f = uifigure( "AutoResizeChildren", "off" );
+hb = uix.HBox( "Parent", f );
+set( hb, "Position", [0, 0, 0.5, 0.5], "Position", [0, 0, 1, 1] ) 
+```
+* In R2024a, this bug has been fixed for all layouts except **`uix.Panel`** and **`uix.BoxPanel`**.
 
 ## Usage
 

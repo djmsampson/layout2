@@ -37,8 +37,9 @@ classdef tExamples < glttestutilities.TestInfrastructure
             functionList = cellstr( char( ...
                 ls( fullfile( examplesFolder, '*.m' ) ) ) );
             
-            % Add the App Designer example if are in R2016a or later.
-            if ~verLessThan( 'matlab', '9.0' )
+            % Add the App Designer example if are in R2022a or later (this
+            % example requires support for uix.BoxPanel).
+            if ~verLessThan( 'matlab', '9.12' ) %#ok<VERLESSMATLAB>
                 functionList = [functionList;
                     cellstr( ...
                     ls( fullfile( examplesFolder, '*.mlapp' ) ) )];
