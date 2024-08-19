@@ -605,6 +605,9 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
         function tReparentingComponentWhenMouseIsOverDivider( testCase, ...
                 ConstructorName )
 
+            % Exclude IMT.
+            testCase.assumeNotRunningInIMT()
+
             % Assume that the graphics are figure based.
             testCase.assumeGraphicsAreFigureBased()
 
