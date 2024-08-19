@@ -6,15 +6,15 @@
 When including axes in layouts, the axes' size and location is set automatically by the layout, not directly by the user. Whether the axes' **`Position/InnerPosition`** or **`OuterPosition`** property is used to set the size and location is determined by the **`PositionConstraint`** property of the axes. 
 
 
-Note that the **`PositionConstraint`** property of the axes is available from R2022a. In MATLAB versions prior to R2022a, the corresponding property was named **`ActivePositionProperty`**. In the following discussion we will refer to the **`PositionConstraint`** property assuming that we are working in R2022a or later, but the same remarks apply to the **`ActivePositionProperty`** property of the axes in releases prior to R2022a.
+Note that the **`PositionConstraint`** property of the axes is available from R2020a. In MATLAB versions prior to R2020a, the corresponding property was named **`ActivePositionProperty`**. In the following discussion we will refer to the **`PositionConstraint`** property assuming that we are working in R2020a or later, but the same remarks apply to the **`ActivePositionProperty`** property of the axes in releases prior to R2020a.
 
 
 The default value for the **`PositionConstraint`** axes property is **`'outerposition'`**. The following table summarizes the differences between the **`PositionConstraint`** and **`ActivePositionProperty`** axes properties.
 
 | **Axes Property** | **Availability** | **Possible Values** | **Default Value** |
 | :-- | :-- | :-- | :-- |
-| **`PositionConstraint`** | R2022a onwards | **`'outerposition', 'innerposition'`** | **`'outerposition'`** |
-| **`ActivePositionProperty`** | all versions; discouraged from R2022a onwards | **`'outerposition', 'position'`** | **`'outerposition'`** |
+| **`PositionConstraint`** | R2020a onwards | **`'outerposition', 'innerposition'`** | **`'outerposition'`** |
+| **`ActivePositionProperty`** | all versions; discouraged from R2020a onwards | **`'outerposition', 'position'`** | **`'outerposition'`** |
 
 # Example
 
@@ -42,10 +42,17 @@ f = figure( 'Name', 'Axes Inside Layouts', ...
 The layout involves two axes side by side. This is done using a flexible horizontal box. The left\-hand axes is left with the **`PositionConstraint`** property set to **`'outerposition'`**, but the right\-hand axes is switched to use **`'innerposition'`**.
 
 ```matlab
-hbox = uix.HBoxFlex( 'Parent', f, 'Spacing', 3 );
-axes1 = axes( 'Parent', hbox, 'PositionConstraint', 'outerposition' );
-axes2 = axes( 'Parent', hbox, 'PositionConstraint', 'innerposition' );
-hbox.Widths = [-2, -1];
+hb = uix.HBoxFlex( 'Parent', f, 'Spacing', 3 );
+axes1 = axes( 'Parent', hb );
+axes2 = axes( 'Parent', hb );
+if isprop( axes1, 'PositionConstraint' )
+    axes1.PositionConstraint = 'outerposition';
+    axes2.PositionConstraint = 'innerposition';
+else
+    axes1.ActivePositionProperty = 'outerposition';
+    axes2.ActivePositionProperty = 'position';
+end % if
+hb.Widths = [-2, -1];
 ```
 
 # Fill the axes

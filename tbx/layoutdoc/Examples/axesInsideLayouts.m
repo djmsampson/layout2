@@ -2,8 +2,8 @@ function varargout = axesInsideLayouts()
 %AXESINSIDELAYOUTS Axes inside layouts
 % This example demonstrates how axes are affected by being placed into
 % layouts. The layouts take into account the "PositionConstraint" property
-% (from R2022a onwards) or the "ActivePositionProperty" property (prior to
-% R2022a) in order to determine whether to set the "Position" or 
+% (from R2020a onwards) or the "ActivePositionProperty" property (prior to
+% R2020a) in order to determine whether to set the "Position" or 
 % "OuterPosition" (default) property of the axes.
 
 %  Copyright 2009-2024 The MathWorks, Inc.
@@ -20,10 +20,17 @@ f = figure( 'Name', 'Axes Inside Layouts', ...
 % flexible horizontal box. The left-hand axes is left with the
 % "PositionConstraint" property set to "outerposition", but the right-hand 
 % axes is switched to use "innerposition".
-hbox = uix.HBoxFlex( 'Parent', f, 'Spacing', 3 );
-axes1 = axes( 'Parent', hbox, 'PositionConstraint', 'outerposition' );
-axes2 = axes( 'Parent', hbox, 'PositionConstraint', 'innerposition' );
-hbox.Widths = [-2, -1];
+hb = uix.HBoxFlex( 'Parent', f, 'Spacing', 3 );
+axes1 = axes( 'Parent', hb );
+axes2 = axes( 'Parent', hb );
+if isprop( axes1, 'PositionConstraint' )
+    axes1.PositionConstraint = 'outerposition';
+    axes2.PositionConstraint = 'innerposition';
+else
+    axes1.ActivePositionProperty = 'outerposition';
+    axes2.ActivePositionProperty = 'position';
+end % if
+hb.Widths = [-2, -1];
 
 %% Fill the axes.
 % Using "OuterPosition" (left-hand axes) is the normal mode and looks good
