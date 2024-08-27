@@ -33,7 +33,7 @@ obj.ParentListener = event.proplistener( obj, ...
 p = addprop( obj, 'ParentColorListener' );
 p.Hidden = true;
 
-% Create properties for FigureObserver and corresponding listener
+% Create properties for FigureObserver and a corresponding listener
 p = addprop( obj, 'FigureObserver' );
 p.Hidden = true;
 obj.FigureObserver = uix.FigureObserver( obj );
@@ -141,7 +141,7 @@ end % if
 end % updateAncestorThemeListener
 
 function onThemeChanged( obj )
-%onThemeChanged Respond to the ThemeChanged event.
+%onThemeChanged Respond to the ThemeChanged event
 
 if strcmp( obj.BackgroundColorMode, 'manual' )
     return

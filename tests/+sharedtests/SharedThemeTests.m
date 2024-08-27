@@ -8,6 +8,41 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
 
     methods ( Test, Sealed )
 
+        function tReparentingComponentUpdatesBackgroundColor( ...
+                testCase, ConstructorName )
+
+            % Prepare the component.
+            [component, testFigLight] = testCase.prepareComponent( ...
+                ConstructorName );
+            lightThemeBackgroundColor = component.BackgroundColor;            
+
+            % Create a separate figure in dark mode.
+            testFigDark = uifigure( 'AutoResizeChildren', 'off', ...
+                'Theme', 'dark' );
+            testCase.addTeardown( @() delete( testFigDark ) )            
+
+            % Reparent the component.
+            component.Parent = testFigDark;
+            darkThemeBackgroundColor = component.BackgroundColor;            
+
+            % Verify that the BackgroundColor has changed.
+            diagnostic = @( from, to ) ['Reparenting a ', ...
+                ConstructorName, ' component from a figure with ', ...
+                from, ' theme to a figure with ', to, ' theme did ', ...
+                'change the ''BackgroundColor'' of the component.'];
+            testCase.verifyNotEqual( darkThemeBackgroundColor, ...
+                lightThemeBackgroundColor, ...
+                diagnostic( 'light', 'dark' ) )
+
+            % Repeat the test in the other direction.
+            component.Parent = testFigLight;
+            lightThemeBackgroundColor = component.BackgroundColor;
+            testCase.verifyNotEqual( lightThemeBackgroundColor, ...
+                darkThemeBackgroundColor, ...
+                diagnostic( 'dark', 'light' ) )
+
+        end % tReparentingComponentUpdatesBackgroundColor
+
         function tBackgroundColorRespondsToThemeChanges( testCase, ...
                 ConstructorName )
 
@@ -28,7 +63,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 ConstructorName )
 
             testCase.tComponentRespectsColorPropertyMode( ...
-                ConstructorName, 'BackgroundColor' )
+                ConstructorName, 'BackgroundColor', true )
 
         end % tComponentRespectsBackgroundColorMode
 
@@ -36,7 +71,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 testCase, ConstructorName )
 
             testCase.tComponentRespectsModeAfterSettingColorProperty( ...
-                ConstructorName, 'BackgroundColor' )
+                ConstructorName, 'BackgroundColor', true )
 
         end % tComponentRespectsModeAfterSettingBackgroundColor
 
@@ -64,6 +99,30 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
 
         end % tHighlightColorIgnoresThemeChangesIfSetManually
 
+        function tPanelsRespectHighlightColorMode( testCase, ...
+                ConstructorName )
+
+            % This test only applies to panels and box panels.
+            testCase.assumeComponentIsAPanelOrBoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsColorPropertyMode( ...
+                ConstructorName, 'HighlightColor', false )
+
+        end % tPanelsRespectHighlightColorMode
+
+        function tPanelsRespectModeAfterSettingHighlightColor( ...
+                testCase, ConstructorName )
+
+            % This test only applies to panels and box panels.
+            testCase.assumeComponentIsAPanelOrBoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsModeAfterSettingColorProperty( ...
+                ConstructorName, 'HighlightColor', false )
+
+        end % tPanelsRespectModeAfterSettingHighlightColor
+
         function tBorderColorRespondsToThemeChangesForPanels( ...
                 testCase, ConstructorName )
 
@@ -87,6 +146,203 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 ConstructorName, 'BorderColor' )
 
         end % tBorderColorIgnoresThemeChangesIfSetManually
+
+        function tPanelForegroundColorRespondsToThemeChanges( testCase, ...
+                ConstructorName )
+
+            % This test only applies to panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+            
+            % Run the test.
+            testCase.tColorPropertyRespondsToThemeChanges( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tPanelForegroundColorRespondsToThemeChanges
+
+        function tPanelForegroundColorIgnoresThemeChangesIfSetManually( ...
+                testCase, ConstructorName )
+
+            % This test only applies to panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+            
+            % Run the test.
+            testCase.tColorPropertyIgnoresThemeChangesIfSetManually( ...
+                ConstructorName, 'ForegroundColor' )
+
+        end % tPanelForegroundColorIgnoresThemeChangesIfSetManually
+
+        function tPanelRespectsForegroundColorMode( testCase, ...
+                ConstructorName )
+
+            % This test only applies to panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+            
+            % Run the test.
+            testCase.tComponentRespectsColorPropertyMode( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tPanelRespectsForegroundColorMode
+
+        function tPanelRespectsModeAfterSettingForegroundColor( ...
+                testCase, ConstructorName )
+
+            % This test only applies to panels.
+            testCase.assumeComponentIsAPanel( ConstructorName )
+            
+            % Run the test.
+            testCase.tComponentRespectsModeAfterSettingColorProperty( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tPanelRespectsModeAfterSettingForegroundColor
+
+        function tBoxPanelForegroundColorIgnoresThemeChanges( testCase, ...
+                ConstructorName )
+
+            % This test only applies to box panels.
+            testCase.assumeComponentIsABoxPanel( ConstructorName )
+
+            % Create a component.
+            [component, testFig] = testCase.prepareComponent( ...
+                ConstructorName );
+
+            % Verify that ForegroundColorMode is 'manual' on construction.
+            testCase.verifyEqual( component.ForegroundColorMode, ...
+                'manual', ['The ''ForegroundColorMode'' property ', ...
+                'of the ', ConstructorName, ' component was not ', ...
+                'set to ''manual'' on construction.'] )
+
+            % Verify that the ForegroundColor is white.
+            white = [1, 1, 1];
+            testCase.verifyEqual( component.ForegroundColor, ...
+                white, ['The ''ForegroundColor'' property of ', ...
+                'the ', ConstructorName, ' component was not set', ...
+                ' to white ([1, 1, 1]) on construction.'] )
+
+            % Change the theme.
+            testFig.Theme = 'dark';
+
+            % Verify that the ForegroundColor is still white.
+            diagnostic = @( from , to ) ['The ''ForegroundColor'' ', ...
+                'property of the ', ConstructorName, ' component did ', ...
+                'not remain white after changing the theme from ', ...
+                from, ' to ', to];
+            testCase.verifyEqual( component.ForegroundColor, white, ...
+                diagnostic( 'light', 'dark' ) )
+
+            % Repeat the test in reverse.
+            testFig.Theme = 'light';
+            testCase.verifyEqual( component.ForegroundColor, white, ...
+                diagnostic( 'dark', 'light' ) )
+
+        end % tBoxPanelForegroundColorIgnoresThemeChanges
+
+        function tBoxPanelTitleColorRespondsToThemeChanges( testCase, ...
+                ConstructorName )           
+
+            % This test is only for box panels.
+            testCase.assumeComponentIsABoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tColorPropertyRespondsToThemeChanges( ...
+                ConstructorName, 'TitleColor', true )
+
+        end % tBoxPanelTitleColorRespondsToThemeChanges
+
+        function tBoxPanelTitleColorIgnoresThemeIfSetManually( ...
+                testCase, ConstructorName )
+
+            % Assume we're in R2025a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+
+            % This test is only for box panels.
+            testCase.assumeComponentIsABoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tColorPropertyIgnoresThemeChangesIfSetManually( ...
+                ConstructorName, 'TitleColor' )
+
+        end % tBoxPanelTitleColorIgnoresThemeIfSetManually
+
+        function tBoxPanelRespectsTitleColorMode( testCase, ...
+                ConstructorName )
+
+            % Assume we're in R2025a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+
+            % This test is only for box panels.
+            testCase.assumeComponentIsABoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsColorPropertyMode( ...
+                ConstructorName, 'TitleColor', true )
+
+        end % tBoxPanelRespectsTitleColorMode
+
+        function tBoxPanelRespectsModeAfterSettingTitleColor( testCase, ...
+                ConstructorName )            
+
+            % This test is only for box panels.
+            testCase.assumeComponentIsABoxPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsModeAfterSettingColorProperty( ...
+                ConstructorName, 'TitleColor', true )
+
+        end % tBoxPanelRespectsModeAfterSettingTitleColor
+
+        function tTabPanelForegroundColorRespondsToThemeChanges( ...
+                testCase, ConstructorName )            
+
+            % This test is only for tab panels.
+            testCase.assumeComponentIsATabPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tColorPropertyRespondsToThemeChanges( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tTabPanelForegroundColorRespondsToThemeChanges
+
+        function tTabPanelForegroundColorIgnoresThemeIfSetManually( ...
+                testCase, ConstructorName )
+
+            % Assume we're in R2025a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+
+            % This test is only for tab panels.
+            testCase.assumeComponentIsATabPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tColorPropertyIgnoresThemeChangesIfSetManually( ...
+                ConstructorName, 'ForegroundColor' )
+
+        end % tTabPanelForegroundColorIgnoresThemeIfSetManually
+
+        function tTabPanelRespectsForegroundColorMode( testCase, ...
+                ConstructorName )
+
+            % Assume we're in R2025a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+
+            % This test is only for tab panels.
+            testCase.assumeComponentIsATabPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsColorPropertyMode( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tTabPanelRespectsForegroundColorMode
+
+        function tTabPanelRespectsModeAfterSettingForegroundColor( ...
+                testCase, ConstructorName )            
+
+            % This test is only for tab panels.
+            testCase.assumeComponentIsATabPanel( ConstructorName )
+
+            % Run the test.
+            testCase.tComponentRespectsModeAfterSettingColorProperty( ...
+                ConstructorName, 'ForegroundColor', true )
+
+        end % tTabPanelRespectsModeAfterSettingForegroundColor
 
     end % methods ( Test, Sealed )
 
@@ -172,7 +428,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tColorPropertyIgnoresThemeChangesIfSetManually
 
         function tComponentRespectsColorPropertyMode( testCase, ...
-                ConstructorName, colorProperty )
+                ConstructorName, colorProperty, colorShouldChange )
 
             % Prepare the component.
             [component, testFig] = prepareComponent( testCase, ...
@@ -211,24 +467,39 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
 
             % Change the theme.
             testFig.Theme = 'dark';
-
-            % Verify that the color property has now changed.
-            diagnostic = ['Setting the ''', colorPropertyMode, '''', ...
-                'property of the ', ConstructorName, ' component ', ...
-                'to ''auto'' and changing the theme did not change ', ...
-                'the ''', colorProperty, ''' of the component.'];
             darkThemeColor = component.(colorProperty);
-            testCase.verifyNotEqual( darkThemeColor, color, diagnostic )
+
+            % Verify that the color property has now changed (or not).
+            diagnostic = @( context ) ['Setting the ''', ...
+                colorPropertyMode, '''', ...
+                'property of the ', ConstructorName, ' component ', ...
+                'to ''auto'' and changing the theme ', context, ...
+                'the ''', colorProperty, ''' of the component.'];
+
+            if colorShouldChange
+                testCase.verifyNotEqual( darkThemeColor, color, ...
+                    diagnostic( 'did not change' ) )
+            else
+                testCase.verifyEqual( darkThemeColor, color, ...
+                    diagnostic( 'changed' ) )
+            end % if
 
             % Change the theme and repeat the test.
             testFig.Theme = 'light';
-            testCase.verifyNotEqual( component.(colorProperty), ...
-                darkThemeColor, diagnostic )
+
+            if colorShouldChange
+                testCase.verifyNotEqual( component.(colorProperty), ...
+                    darkThemeColor, diagnostic( 'did not change' ) )
+            else
+                testCase.verifyEqual( component.(colorProperty), ...
+                    darkThemeColor, diagnostic( 'changed' ) )
+            end % if
 
         end % tComponentRespectsColorPropertyMode
 
         function tComponentRespectsModeAfterSettingColorProperty( ...
-                testCase, ConstructorName, colorProperty )
+                testCase, ConstructorName, colorProperty, ...
+                colorShouldChange )
 
             % Prepare the component.
             [component, testFig] = prepareComponent( testCase, ...
@@ -246,23 +517,31 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 'update the ''', colorPropertyMode, ''' to ''manual''.'] )
 
             % Reset the color property mode back to 'auto'.
-            component.(colorPropertyMode) = 'auto';
+            component.(colorPropertyMode) = 'auto';           
 
             % Change the theme.
             testFig.Theme = 'dark';
+            darkThemeColorProperty = component.(colorProperty);
 
             % Verify that the color property has changed.
-            diagnostic = ['The ''', colorProperty, ''' of the ', ...
-                ConstructorName, ' component did not change when the ', ...
-                'theme was changed and ''', colorPropertyMode, '''', ...
-                'set to ''auto''.'];
-            testCase.verifyNotEqual( component.(colorProperty), ...
-                requiredColor, diagnostic )
+            diagnostic = @( context ) ['The ''', colorProperty, ...
+                ''' of the ', ConstructorName, ' component ', ...
+                context, ' when the theme was changed and ''', ...
+                colorPropertyMode, ''' was set to ''auto''.'];            
+            testCase.verifyNotEqual( darkThemeColorProperty, ...
+                requiredColor, diagnostic( 'did not change' ) )                     
 
             % Repeat the test when changing from dark to light theme.
             testFig.Theme = 'light';
-            testCase.verifyNotEqual( component.(colorProperty), ...
-                requiredColor, diagnostic )
+            lightThemeColorProperty = component.(colorProperty);
+            if colorShouldChange
+                testCase.verifyNotEqual( darkThemeColorProperty, ...
+                    lightThemeColorProperty, ...
+                    diagnostic( 'did not change' ) )
+            else
+                testCase.verifyEqual( darkThemeColorProperty, ...
+                    lightThemeColorProperty, diagnostic( 'changed' ) )
+            end % if  
 
         end % tComponentRespectsModeAfterSettingColorProperty
 
@@ -298,6 +577,33 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 'uix/uiextras.Panel/BoxPanel.'] )
 
         end % assumeComponentIsAPanelOrBoxPanel
+
+        function assumeComponentIsAPanel( testCase, ConstructorName )
+
+            isPanel = ismember( ConstructorName, ...
+                {'uiextras.Panel', 'uix.Panel'} );
+            testCase.assumeTrue( isPanel, ...
+                'This test is only applicable to uix/uiextras.Panel.' )
+
+        end % assumeComponentIsAPanel
+
+        function assumeComponentIsABoxPanel( testCase, ConstructorName )
+
+            isPanel = ismember( ConstructorName, ...
+                {'uiextras.BoxPanel', 'uix.BoxPanel'} );
+            testCase.assumeTrue( isPanel, ...
+                'This test is only applicable to uix/uiextras.BoxPanel.' )
+
+        end % assumeComponentIsABoxPanel
+
+        function assumeComponentIsATabPanel( testCase, ConstructorName )
+
+            isTabPanel = ismember( ConstructorName, ...
+                {'uiextras.TabPanel', 'uix.TabPanel'} );
+            testCase.assumeTrue( isTabPanel, ...
+                'This test is only applicable to uix/uiextras.TabPanel.' )
+
+        end % assumeComponentIsATabPanel
 
     end % methods ( Access = private )
 
