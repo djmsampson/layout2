@@ -44,7 +44,9 @@ end % buildfile
 function assertNoProjectIssuesTask( ~ )
 % Assert that there are no project issues.
 
-results = table( currentProject().runChecks() );
+proj = currentProject();
+proj.updateDependencies()
+results = table( proj.runChecks() );
 assert( all( results.Passed ), "buildfile:ProjectIssue", ...
     "At least one project check has failed. " + ...
     "Resolve the failures shown below to continue." )

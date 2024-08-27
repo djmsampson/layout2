@@ -28,6 +28,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         SelectionChangedFcn = '' % selection change callback
     end
 
+    properties( Access = public, Hidden )
+        ForegroundColor_I = get( 0, 'DefaultUicontrolForegroundColor' ) % Backing for ForegroundColor
+        ForegroundColorMode = 'auto' % ForegroundColor mode ('auto' | 'manual')
+    end
+
     properties ( GetAccess = ?matlab.unittest.TestCase, SetAccess = private )
         TabGroup % tab group
     end
@@ -35,8 +40,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     properties( Access = private )       
         ShadowTabGroup % tab group
         BackgroundColorListener % listener
-        SelectionChangedListener % listener
-        ForegroundColor_ = get( 0, 'DefaultUicontrolForegroundColor' ) % backing for ForegroundColor
+        SelectionChangedListener % listener        
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
 
@@ -122,7 +126,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         function value = get.ForegroundColor( obj )
 
-            value = obj.ForegroundColor_;
+            value = obj.ForegroundColor_I;
 
         end % get.ForegroundColor
 
@@ -138,12 +142,36 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
 
             % Set
-            obj.ForegroundColor_ = value;
+            obj.ForegroundColorMode = 'manual';
+            obj.ForegroundColor_I = value;            
+
+        end % set.ForegroundColor
+
+        function set.ForegroundColor_I( obj, value )
+
+            % Store internal value
+            obj.ForegroundColor_I = value;
 
             % Redraw tabs
             obj.redrawTabs()
 
-        end % set.ForegroundColor
+        end % set.ForegroundColor_I
+
+        function set.ForegroundColorMode( obj, value )
+
+            % Check
+            try
+                assert( ismember( value, {'auto', 'manual'} ), ...
+                    'uix:InvalidProperty', ['''ForegroundColorMode''', ...
+                    ' must be either ''auto'' or ''manual''.'] )
+            catch e
+                e.throw()
+            end % if
+
+            % Set
+            obj.ForegroundColorMode = char( value );
+
+        end % set.ForegroundColorMode        
 
         function value = get.Selection( obj )
 
@@ -566,12 +594,25 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
     end % template methods
 
+    methods( Access = protected, Static )
+
+        function map = getThemeMap()
+            %GETTHEMEMAP This method returns a struct describing the
+            %relationship between class properties and theme attributes.
+
+            map = getThemeMap@uix.Container();
+            map.ForegroundColor = '--mw-color-primary';
+
+        end % getThemeMap
+
+    end % protected static methods
+
     methods( Access = private )
 
         function redrawTabs( obj )
             %redrawTabs  Redraw tabs
 
-            enableColor = obj.ForegroundColor_;
+            enableColor = obj.ForegroundColor_I;
             disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
             tf = strcmp( obj.TabEnables_, 'on' );
             tabs = obj.TabGroup.Children;

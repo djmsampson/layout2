@@ -63,6 +63,11 @@ classdef BoxPanel < uix.Panel
         CloseTooltipString % transitioned to CloseTooltip
     end
 
+    properties( Access = public, Hidden )
+        TitleColor_I = [0, 0.251, 0.451] % Backing for TitleColor
+        TitleColorMode = 'auto' % TitleColor mode ('auto' | 'manual')
+    end
+
     methods
 
         function obj = BoxPanel( varargin )
@@ -75,7 +80,7 @@ classdef BoxPanel < uix.Panel
 
             % Define default colors
             foregroundColor = [1 1 1];
-            backgroundColor = [0.05 0.25 0.5];
+            backgroundColor = obj.TitleColor_I;
 
             % Set default colors
             obj.ForegroundColor = foregroundColor;
@@ -169,21 +174,40 @@ classdef BoxPanel < uix.Panel
 
         function value = get.TitleColor( obj )
 
-            value = obj.TitleBox.BackgroundColor;
+            value = obj.TitleColor_I;
 
         end % get.TitleColor
 
         function set.TitleColor( obj, value )
 
-            % Set
-            obj.TitleBox.BackgroundColor = value;
-            obj.TitleText.BackgroundColor = value;
-            obj.MinimizeButton.BackgroundColor = value;
-            obj.DockButton.BackgroundColor = value;
-            obj.HelpButton.BackgroundColor = value;
-            obj.CloseButton.BackgroundColor = value;
+            % Update internal properties
+            obj.TitleColorMode = 'manual';
+            obj.TitleColor_I = value;
 
         end % set.TitleColor
+
+        function set.TitleColor_I( obj, value )
+
+            obj.TitleColor_I = value;
+            obj.paintTitle()
+
+        end % set.TitleColor_I
+
+        function set.TitleColorMode( obj, value )
+
+            % Check
+            value = validateScalarStringOrCharacterArray( ...
+                value, 'TitleColorMode' );
+            if ~ismember( value, {'auto', 'manual'} )
+                error( 'uix:InvalidProperty', ...
+                    ['''TitleColorMode'' must be either ''auto'' ', ...
+                    'or ''manual''.'] )
+            end % if
+
+            % Set
+            obj.TitleColorMode = char( value );
+
+        end % set.TitleColorMode
 
         function value = get.CloseRequestFcn( obj )
 
@@ -640,9 +664,22 @@ classdef BoxPanel < uix.Panel
             end
             obj.TitleBox.Position = [tX tY tW tH];
 
-        end % redraw
+        end % redraw        
 
     end % template methods
+
+    methods( Access = protected, Static )
+
+        function map = getThemeMap()
+            %GETTHEMEMAP This method returns a struct describing the
+            %relationship between class properties and theme attributes.
+
+            map = getThemeMap@uix.Panel();
+            map.TitleColor = '--mw-backgroundColor-panelHeader';
+
+        end % getThemeMap
+
+    end % protected static methods
 
     methods( Access = private )
 
@@ -712,6 +749,19 @@ classdef BoxPanel < uix.Panel
             end
 
         end % redrawButtons
+
+        function paintTitle( obj )
+            %PAINTTITLE Color the title bar and controls.
+
+            newColor = obj.TitleColor_I;
+            obj.TitleBox.BackgroundColor = newColor;
+            obj.TitleText.BackgroundColor = newColor;
+            obj.MinimizeButton.BackgroundColor = newColor;
+            obj.DockButton.BackgroundColor = newColor;
+            obj.HelpButton.BackgroundColor = newColor;
+            obj.CloseButton.BackgroundColor = newColor;
+
+        end % paintTitle
 
     end % helper methods
 

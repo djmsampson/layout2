@@ -26,4 +26,3 @@ This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabce
 ___
 
 :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
-

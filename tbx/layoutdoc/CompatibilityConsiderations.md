@@ -34,6 +34,7 @@ p = uix.Panel( "Parent", f, "Position", [0, 0, 0.5, 0.5], "Position", [0, 0, 1, 
 This bug is fixed in R2023a.
 * In R2023b, the same bug reappeared, but this time affecting all layouts.
 * In R2024a, the bug has been fixed for all layouts except **`uix.Panel`** and **`uix.BoxPanel`**.
+* In R2024b, the bug has been fixed for all layouts, including **`uix.Panel`** and **`uix.BoxPanel`**.
 
 ## Usage
 

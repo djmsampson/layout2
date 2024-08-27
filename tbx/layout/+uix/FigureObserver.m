@@ -12,8 +12,8 @@ classdef ( Hidden, Sealed ) FigureObserver < handle
     end
     
     properties( Access = private )
-        PreSetListeners % listeners to Parent PreGet
-        PostSetListeners % listeners to Parent PreGet
+        PreSetListeners % listeners to Parent PreSet
+        PostSetListeners % listeners to Parent PostSet
         OldFigure = gobjects( 0 ) % previous figure ancestor
     end
     

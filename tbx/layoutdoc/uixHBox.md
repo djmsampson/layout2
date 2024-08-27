@@ -38,7 +38,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 ### :warning: Deprecated
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| **`DividerMarkings`** (for **`uix.HBox`**) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect. This property toggled the markings on the draggable dividers. |
+| **`DividerMarkings`** (for **`uix.HBoxFlex`**) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect. This property toggled the markings on the draggable dividers. |
 
 ## Examples
 

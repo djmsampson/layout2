@@ -286,7 +286,7 @@ classdef Container < handle
 
         end % isDrawable
 
-    end % helper methods
+    end % helper methods    
 
 end % classdef
 
