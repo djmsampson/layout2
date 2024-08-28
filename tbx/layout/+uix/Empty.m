@@ -130,7 +130,9 @@ f = ancestor( obj, 'figure' );
 if isempty( f )
     obj.AncestorThemeListener = [];
 else
-    if isprop( f, 'Theme' )
+    figureMetadata = ?matlab.ui.Figure;
+    figureEventNames = {figureMetadata.EventList.Name};
+    if isprop( f, 'Theme' ) && ismember( 'ThemeChanged', figureEventNames )
         obj.AncestorThemeListener = event.listener( f, 'ThemeChanged', ...
             @(~, ~) onThemeChanged( obj ) );
     else
