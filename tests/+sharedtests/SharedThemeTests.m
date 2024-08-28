@@ -548,9 +548,11 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         function [component, testFig] = prepareComponent( testCase, ...
                 ConstructorName )
 
-            % Assume that we have the new desktop environment enabled and
-            % that we're in R2024a onwards. Assume that the component
-            % parent is either a figure or a uifigure.
+            % Assume that we're not running in CI, that we have the new 
+            % desktop environment enabled, and that we're in R2024a 
+            % onwards. Assume that the component parent is either a figure
+            % or a uifigure.
+            testCase.assumeNotRunningOnCI()
             testCase.assumeJavaScriptDesktop()
             testCase.assumeMATLABVersionIsAtLeast( 'R2024a' )
             testCase.assumeGraphicsAreRooted()
