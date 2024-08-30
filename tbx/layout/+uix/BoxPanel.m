@@ -38,6 +38,7 @@ classdef BoxPanel < uix.Panel
         CloseButton % title button
         Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
+        FigureSelectionListener = event.proplistener.empty( [0 0] ) % listener
     end
 
     properties( Constant, Access = private )
@@ -295,7 +296,7 @@ classdef BoxPanel < uix.Panel
 
             value = obj.TitleBox.Position(4);
 
-        end % get.TitleHeight        
+        end % get.TitleHeight
 
         function set.MaximizeTooltip( obj, value )
 
@@ -481,7 +482,7 @@ classdef BoxPanel < uix.Panel
             % Set
             obj.HelpTooltip = value;
 
-        end % set.HelpTooltipString   
+        end % set.HelpTooltipString
 
     end % accessors
 
@@ -604,6 +605,47 @@ classdef BoxPanel < uix.Panel
 
         end % onTitleChanged
 
+        function onFigureSelectionChanged( obj, source, eventData )
+
+            f = eventData.AffectedObject.CurrentObject; % figure
+            o = f.CurrentObject; % current object
+
+            % Identify callback
+            switch eventData.AffectedObject.SelectionType
+                case 'normal' % single left click
+                    if isempty( eventData.AffectedObject.CurrentObject ) % none
+                        callback = ''; % do nothing
+                    else
+                        switch eventData.AffectedObject.CurrentObject
+                            case obj.CloseButton
+                                callback = obj.CloseRequestFcn;
+                            case obj.DockButton
+                                callback = obj.DockFcn;
+                            case obj.HelpButton
+                                callback = obj.HelpFcn;
+                            case obj.MinimizeButton
+                                callback = obj.MinimizeFcn;
+                            otherwise % other object
+                                callback = ''; % do nothing
+                        end
+                    end
+                otherwise % other interaction
+                    callback = '';
+            end
+
+            % Call callback
+            if ischar( callback ) && isequal( callback, '' )
+                % do nothing
+            elseif ischar( callback )
+                feval( callback, source, eventData ) %#ok<FVAL>
+            elseif isa( callback, 'function_handle' )
+                callback( source, eventData ) %#ok<NOPRT>
+            elseif iscell( callback )
+                feval( callback{1}, source, eventData, callback{2:end} )
+            end
+
+        end % onFigureSelectionChanged
+
     end % property event handlers
 
     methods( Access = protected )
@@ -641,6 +683,27 @@ classdef BoxPanel < uix.Panel
             obj.TitleBox.Position = [tX tY tW tH];
 
         end % redraw
+
+        function reparent( obj, oldFigure, newFigure )
+            %reparent  Reparent container
+            %
+            %  c.reparent(a,b) reparents the container c from the figure a
+            %  to the figure b.
+
+            % Update listeners
+            if isempty( newFigure )
+                figureSelectionListener = event.listener.empty( [0 0] );
+            else
+                figureSelectionListener = event.proplistener( ...
+                    newFigure, findprop( newFigure, 'CurrentObject' ), ...
+                    'PostSet', @obj.onFigureSelectionChanged );
+            end
+            obj.FigureSelectionListener = figureSelectionListener;
+
+            % Call superclass method
+            reparent@uix.Panel( obj, oldFigure, newFigure )
+
+        end % reparent
 
     end % template methods
 
@@ -761,7 +824,7 @@ end
 end % extent
 
 function value = validateScalarStringOrCharacterArray( value, propertyName )
-%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a 
+%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a
 %scalar string or a character array.
 
 if isa( value, 'string' ) && isscalar( value ) && ismissing( value )
