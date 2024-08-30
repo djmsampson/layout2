@@ -190,8 +190,8 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
     
     <inlinesubsection name="Version 2.3.10">
         <ul>
-            <li>Released 29 August 2024</li>
-            <li>Limited prerelease with features to be included in version 2.4</li>
+            <li><em>Limited prerelease with features to be included in version 2.4</em></li>
+            <li>Released 30 August 2024</li>
             <li>Reimplemented uix.TabPanel using uitab, for standardized appearance and easier 
                 deployment</li>
             <li>Added uix.TabPanel tab location options left and right; this is available through 
@@ -204,8 +204,6 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
                 instructions; these are no longer required</li>
             <li>Reimplemented uix.BoxPanel titlebar buttons, for compatibility with web 
                 graphics</li>
-            <li>uix.BoxPanel titlebar button tooltips are not enabled; these may return in a 
-                future release</li>
             <li>Added padding to uix.ScrollingPanel</li>
             <li>Fixed bugs in uix.ScrollingPanel</li>
             <li>Removed property Selection from uix.Panel, uix.BoxPanel, uix.ScrollingPanel; 
