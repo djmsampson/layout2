@@ -106,14 +106,18 @@
                 instructions; these are no longer required</li>
             <li>Reimplemented uix.BoxPanel titlebar buttons, for compatibility with web 
                 graphics</li>
-            <li>Added padding to uix.ScrollingPanel</li>
+            <li>Honor padding in uix.ScrollingPanel</li>
             <li>Fixed bugs in uix.ScrollingPanel</li>
             <li>Removed property Selection from uix.Panel, uix.BoxPanel, uix.ScrollingPanel; 
                 these layouts now stack children; use uix.CardPanel to select one of several 
                 children</li>
-            <li>Changed uix.ScrollingPanel per-child properties Height, MinimumHeight, Width, 
-                MinimumWidth, VerticalStep, VerticalOffset, HorizontalStep, HorizontalOffset to 
-                scalars; this simplifies usability</li>
+            <li>Changed uix.ScrollingPanel per-child properties Heights, MinimumHeights, Widths, 
+                MinimumWidths, VerticalSteps, VerticalOffsets, HorizontalSteps, HorizontalOffsets 
+                to scalar properties Height, MinimumHeight, Width, MinimumWidth, VerticalStep, 
+                VerticalOffset, HorizontalStep, HorizontalOffset; this simplifies usability</li>
+            <li>Renamed uix.BoxPanel tooltip properties from ...TooltipString to ...Tooltip; 
+                previous property names are still supported
+            </li>
             <li>Removed decorations on draggable dividers, for compatibility with web 
                 graphics</li>
         </ul>
