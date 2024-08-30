@@ -135,11 +135,13 @@
                          <value>[x y w h]</value>
                          <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
+                     <!---
                      <property>
                          <name>Selection</name>
                          <value>positive integer or empty</value>
                          <description>Which child is visible.</description>
                      </property>
+                     -->
                      <property>
                          <name>ShadowColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
@@ -406,17 +408,24 @@
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the panel close icon is clicked. Note that if empty, no close button is shown.</description>
                      </property>
-					 <property>
-                         <name>CloseTooltipString</name>
+                     <property>
+                         <name>CloseTooltip</name>
                          <value>string</value>
                          <description>Custom tooltip string for close button. Note that if CloseRequestFcn is empty, no close button is shown.</description>
                      </property>
+                     <!---
                      <property>
+                        <name>CloseTooltipString</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for close button. Note that if CloseRequestFcn is empty, no close button is shown.</description>
+                    </property>
+                    -->
+                    <property>
                          <name>DeleteFcn</name>
                          <value><matlabfcn>function_handle</matlabfcn></value>
                          <description>Function to call when the layout is being deleted.</description>
                      </property>
-					 <property>
+                     <property>
                          <name>Docked</name>
                          <value>logical</value>
                          <description>Is this panel in a docked state. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
@@ -426,12 +435,19 @@
                          <value>function handle</value>
                          <description>Function to call when panel is docked or undocked. Note that if empty, no dock button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
-					 <property>
-                         <name>DockTooltipString</name>
-                         <value>string</value>
-                         <description>Custom tooltip string for dock button (when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
-                     </property>
-                     <!--
+                     <property>
+                        <name>DockTooltip</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for dock button (when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
+                    </property>
+                    <!---
+                    <property>
+                        <name>DockTooltipString</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for dock button (when panel is undocked). Note that if DockFcn is empty, no dock button is shown.</description>
+                    </property>
+                    -->
+                    <!--
                      <property>
                          <name>Enable</name>
                          <value>on | off</value>
@@ -473,21 +489,35 @@
                          <value>function handle</value>
                          <description>Function to call when the help icon is clicked. Note that if empty, no help button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
-					 <property>
-                         <name>HelpTooltipString</name>
+                     <property>
+                         <name>HelpTooltip</name>
                          <value>string</value>
                          <description>Custom tooltip string for help button. Note that if HelpFcn is empty, no help button is shown.</description>
                      </property>
+                     <!--
                      <property>
+                        <name>HelpTooltipString</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for help button. Note that if HelpFcn is empty, no help button is shown.</description>
+                    </property>
+                    -->
+                    <property>
                          <name>HighlightColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>3-D frame highlight color.</description>
                      </property>
-					 <property>
-                         <name>MaximizeTooltipString</name>
+                     <property>
+                         <name>MaximizeTooltip</name>
                          <value>string</value>
                          <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
-                     </property>					 
+                     </property>
+                     <!--
+                     <property>
+                        <name>MaximizeTooltipString</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for minimize button (when panel is minimized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
+                     </property>
+                     -->
                      <property>
                          <name>Minimized</name>
                          <value>logical</value>
@@ -498,16 +528,25 @@
                          <value>function handle</value>
                          <description>Function to call when panel is minimized or maximized. Note that if empty, no minimize button is shown. See <ref link="BoxPanelFancyStuff">advanced maneuvers with panels</ref> for details.</description>
                      </property>
-					 <property>
+                     <property>
+                        <name>MinimizeTooltip</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for minimize button (when panel is maximized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
+                     </property>
+                     <!--
+                     <property>
                          <name>MinimizeTooltipString</name>
                          <value>string</value>
                          <description>Custom tooltip string for minimize button (when panel is maximized). Note that if MinimizeFcn is empty, no minimize button is shown.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>Padding</name>
                          <value>positive integer</value>
                          <description>Number of pixels of extra space around the outside of the layout.</description>
                      </property>
+                     -->
                      <property>
                          <name>Parent</name>
                          <value>empty GraphicsPlaceholder array | figure | container</value>
@@ -518,11 +557,12 @@
                          <value>[x y w h]</value>
                          <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
-                     <property>
+                     <!--<property>
                          <name>Selection</name>
                          <value>positive integer or empty</value>
                          <description>Which child is visible.</description>
                      </property>
+                     -->
                      <property>
                          <name>ShadowColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
@@ -548,12 +588,19 @@
                          <value>string</value>
                          <description>Type of graphics object.</description>
                      </property>
-					 <property>
-                         <name>UndockTooltipString</name>
+                     <property>
+                         <name>UndockTooltip</name>
                          <value>string</value>
                          <description>Custom tooltip string for dock button (when panel is docked). Note that if DockFcn is empty, no dock button is shown.</description>
                      </property>					 
+                     <!--
                      <property>
+                        <name>UndockTooltipString</name>
+                        <value>string</value>
+                        <description>Custom tooltip string for dock button (when panel is docked). Note that if DockFcn is empty, no dock button is shown.</description>
+                    </property>
+                    -->
+                    <property>
                          <name>Units</name>
                          <value>inches | centimeters | normalized | points | pixels | characters</value>
                          <description>Position units.</description>
@@ -663,26 +710,35 @@
                          <description>Is interaction with this layout enabled? Note that changing the enable property will cause all children contained to also be enabled/disabled, however since they can be individually re-enabled the state of this property does not reflect the state of the children. See the <ref link="EnableExample">enable example</ref> for more details.</description>
                      </property>
                      -->
+                     <!--
                      <property>
                          <name>FontAngle</name>
                          <value>normal | italic | oblique</value>
                          <description>Title font angle.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>FontName</name>
                          <value>string</value>
                          <description>Title font name (e.g. Arial, Helvetica etc).</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>FontSize</name>
                          <value>positive integer</value>
                          <description>Title font size.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>FontUnits</name>
                          <value>inches | centimeters | normalized | points | pixels</value>
                          <description>Title font units for measuring size.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>FontWeight</name>
                          <value>light | normal | demi | bold</value>
@@ -693,16 +749,21 @@
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>Title font color and/or color of 2-D border line.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>HighlightColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>3-D frame highlight color.</description>
                      </property>
+                     -->
+                     <!--
                      <property>
                          <name>ShadowColor</name>
                          <value><matlabfcn>colorspec</matlabfcn></value>
                          <description>3-D frame shadow color.</description>
                      </property>
+                     -->
                      <property>
                          <name>Padding</name>
                          <value>positive integer</value>
@@ -734,20 +795,27 @@
                          <description>The context menu (or []) for each tab.</description>
                      </property>
                      <property>
-                         <name>TabEnables</name>
-                         <value>cell array of on | off</value>
-                         <description>A list of the enabled state of each tab (default is all 'on').</description>
-                     </property>
-                     <property>
+                        <name>TabEnables</name>
+                        <value>cell array of on | off</value>
+                        <description>A list of the enabled state of each tab (default is all 'on').</description>
+                    </property>
+                    <property>
+                        <name>TabLocation</name>
+                        <value>top | bottom | left | right</value>
+                        <description>The location of the tabs (default is 'top').</description>
+                    </property>
+                    <property>
                          <name>TabTitles</name>
                          <value>cell array of strings</value>
                          <description>A list of the names of the tabs with one entry per tab.</description>
                      </property>
+                     <!--
                      <property>
                          <name>TabWidth</name>
                          <value>positive integer</value>
                          <description>Width of each tab in pixels (default 50).</description>
                      </property>
+                     -->
                      <property>
                          <name>Tag</name>
                          <value>string</value>
@@ -858,30 +926,65 @@
                      </property>
                      -->
                      <property>
+                        <name>Height</name>
+                        <value>double</value>
+                        <description>Height of the children. Positive value indicates fixed size in pixels, negative value indicates fill the available space.</description>
+                     </property>
+                     <!--
+                     <property>
                          <name>Heights</name>
                          <value>double vector</value>
                          <description>Height of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
+                     -->
                      <property>
-                         <name>HorizontalOffsets</name>
-                         <value>double vector</value>
-                         <description>Horizontal offset of each of the children. Each value is limited to between 0 and the difference between the width of child and the width of the panel. The size of this vector must always match the size of Contents.</description>
+                         <name>HorizontalOffset</name>
+                         <value>positive double</value>
+                         <description>Horizontal offset of the children in pixels. Value is limited to between 0 and the difference between Width and the width of the panel.</description>
                      </property>
+                     <!--
+                     <property>
+                        <name>HorizontalOffsets</name>
+                        <value>double vector</value>
+                        <description>Horizontal offset of each of the children. Each value is limited to between 0 and the difference between the width of child and the width of the panel. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     -->
+                     <property>
+                        <name>HorizontalStep</name>
+                        <value>positive double</value>
+                        <description>Horizontal slider step in pixels.</description>
+                     </property>
+                     <!--
                      <property>
                          <name>HorizontalSteps</name>
                          <value>positive double vector</value>
                          <description>Horizontal slider step for each of the children. The size of this vector must always match the size of Contents.</description>
                      </property>
+                     -->
                      <property>
-                         <name>MinimumHeights</name>
-                         <value>double vector</value>
-                         <description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description>
+                         <name>MinimumHeight</name>
+                         <value>positive double</value>
+                         <description>Minimum height of the children in pixels.</description>
                      </property>
+                     <!--
                      <property>
-                         <name>MinimumWidths</name>
-                         <value>double vector</value>
-                         <description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description>
+                        <name>MinimumHeights</name>
+                        <value>double vector</value>
+                        <description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description>
                      </property>
+                     -->
+                     <property>
+                         <name>MinimumWidth</name>
+                         <value>positive double</value>
+                         <description>Minimum width of the children in pixels.</description>
+                     </property>
+                     <!--
+                     <property>
+                        <name>MinimumWidths</name>
+                        <value>double vector</value>
+                        <description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description>
+                     </property>
+                     -->
                      <property>
                          <name>MouseWheelEnabled</name>
                          <value>on | off</value>
@@ -890,7 +993,7 @@
                      <property>
                          <name>Padding</name>
                          <value>positive integer</value>
-                         <description>This property is not honored by this class.</description>
+                         <description>Number of pixels of extra space around the outside of the children.</description>
                      </property>
                      <property>
                          <name>Parent</name>
@@ -902,11 +1005,13 @@
                          <value>[x y w h]</value>
                          <description>Position (x,y) and size (w,h) within figure or container.</description>
                      </property>
+                     <!--
                      <property>
                          <name>Selection</name>
                          <value>positive integer or empty</value>
                          <description>Which child is visible.</description>
                      </property>
+                     -->
                      <property>
                          <name>Tag</name>
                          <value>string</value>
@@ -923,25 +1028,46 @@
                          <description>Position units.</description>
                      </property>
                      <property>
-                         <name>VerticalOffsets</name>
-                         <value>double vector</value>
-                         <description>Vertical offset of each of the children. Each value is limited to between 0 and the difference between the height of child and the height of the panel. The size of this vector must always match the size of Contents.</description>
+                         <name>VerticalOffset</name>
+                         <value>positive double</value>
+                         <description>Vertical offset of the children in pixels. Value is limited to between 0 and the difference between Height and the height of the panel.</description>
                      </property>
+                     <!--
+                     <property>
+                        <name>VerticalOffsets</name>
+                        <value>double vector</value>
+                        <description>Vertical offset of each of the children. Each value is limited to between 0 and the difference between the height of child and the height of the panel. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     -->
                      <property>
                          <name>VerticalSteps</name>
-                         <value>positive double vector</value>
-                         <description>Vertical slider step for each of the children. The size of this vector must always match the size of Contents.</description>
+                         <value>positive double</value>
+                         <description>Vertical slider step in pixels.</description>
                      </property>
+                     <!--
+                     <property>
+                        <name>VerticalSteps</name>
+                        <value>positive double vector</value>
+                        <description>Vertical slider step for each of the children. The size of this vector must always match the size of Contents.</description>
+                     </property>
+                     -->
                      <property>
                          <name>Visible</name>
                          <value>on | off</value>
                          <description>Visibility.</description>
                      </property>
                      <property>
+                        <name>Width</name>
+                        <value>double</value>
+                        <description>Width of the children. Positive value indicates fixed sizes in pixels, negative value indicates fill the available space.</description>
+                     </property>
+                     <!--
+                     <property>
                          <name>Widths</name>
                          <value>double vector</value>
                          <description>Width of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description>
                      </property>
+                     -->
                  </propertytable>                 
              
              <examples>

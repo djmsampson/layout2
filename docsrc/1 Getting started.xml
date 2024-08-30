@@ -188,6 +188,39 @@ cp = <matlabfcn>uix.CardPanel</matlabfcn>('Parent', p);
         at the MATLAB command prompt.
     </para>
     
+    <inlinesubsection name="Version 2.3.10">
+        <ul>
+            <li><em>Limited prerelease with features to be included in version 2.4</em></li>
+            <li>Released 30 August 2024</li>
+            <li>Reimplemented uix.TabPanel using uitab, for standardized appearance and easier 
+                deployment</li>
+            <li>Added uix.TabPanel tab location options left and right; this is available through 
+                uitab</li>
+            <li>Removed font and some color properties from uix.TabPanel; these are not available 
+                in uitab</li>
+            <li>Show contents of selected but disabled tabs; this is more useful than the 
+                previous behavior</li>
+            <li>Removed folder Resources with tab images, and special MATLAB Compliler deployment 
+                instructions; these are no longer required</li>
+            <li>Reimplemented uix.BoxPanel titlebar buttons, for compatibility with web 
+                graphics</li>
+            <li>Honor padding in uix.ScrollingPanel</li>
+            <li>Fixed bugs in uix.ScrollingPanel</li>
+            <li>Removed property Selection from uix.Panel, uix.BoxPanel, uix.ScrollingPanel; 
+                these layouts now stack children; use uix.CardPanel to select one of several 
+                children</li>
+            <li>Changed uix.ScrollingPanel per-child properties Heights, MinimumHeights, Widths, 
+                MinimumWidths, VerticalSteps, VerticalOffsets, HorizontalSteps, HorizontalOffsets 
+                to scalar properties Height, MinimumHeight, Width, MinimumWidth, VerticalStep, 
+                VerticalOffset, HorizontalStep, HorizontalOffset; this simplifies usability</li>
+            <li>Renamed uix.BoxPanel tooltip properties from ...TooltipString to ...Tooltip; 
+                previous property names are still supported
+            </li>
+            <li>Removed decorations on draggable dividers, for compatibility with web 
+                graphics</li>
+        </ul>
+    </inlinesubsection> 
+    
     <inlinesubsection name="Version 2.3.9">
         <ul>
             <li>Released 5 July 2024</li>

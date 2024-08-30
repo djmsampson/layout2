@@ -2,12 +2,12 @@
 <!-- $Revision: 28 $ $Date: 2008-09-05 12:36:45 +0100 (Fri, 05 Sep 2008) $ -->
 
 <index version="1.0">
-<indexitem target="User_guide7.html">A complete example</indexitem>
+<indexitem target="User_guide6.html">A complete example</indexitem>
 <indexitem target="Getting_Started1.html">About</indexitem>
 <indexitem target="Getting_Started6.html">Acknowledgements</indexitem>
 <indexitem target="User_guide4.html">Advanced maneuvers with panels</indexitem>
-<indexitem target="User_guide7.html">Application design</indexitem>
-<indexitem target="User_guide7_1.html">Application structure</indexitem>
+<indexitem target="User_guide6.html">Application design</indexitem>
+<indexitem target="User_guide6_1.html">Application structure</indexitem>
 <indexitem target="User_guide2.html">axes</indexitem>
 <indexitem target="User_guide2_2.html">Axes inside layouts</indexitem>
 <indexitem>Box
@@ -22,15 +22,13 @@
     <indexitem target="Function_reference2_5.html">uix.HButtonBox (Function reference: 2.5)</indexitem>
     <indexitem target="Function_reference2_6.html">uix.VButtonBox (Function reference: 2.6)</indexitem>
 </indexitem>
-<indexitem target="User_guide7.html">Callbacks</indexitem>
+<indexitem target="User_guide6.html">Callbacks</indexitem>
 <indexitem target="Function_reference1_2.html">CardPanel</indexitem>
 <indexitem target="User_guide2_3.html">Colorbars and legends</indexitem>
 <indexitem target="Getting_Started2.html">Compatibility considerations</indexitem>
-<indexitem target="User_guide6.html">Compiler</indexitem>
 <indexitem target="User_guide4_1.html">Context help</indexitem>
 <indexitem target="User_guide3.html">Controlling visibility</indexitem>
-<indexitem target="User_guide7_2.html">createInterface</indexitem>
-<indexitem target="User_guide6.html">Deploying GUIs using the MATLAB Compiler</indexitem>
+<indexitem target="User_guide6_2.html">createInterface</indexitem>
 <indexitem target="User_guide4_3.html">Dock and undock</indexitem>
 <indexitem>Draggable dividers
     <indexitem target="Function_reference2_3.html">uix.HBoxFlex (Function reference: 2.3)</indexitem>
@@ -64,10 +62,9 @@
 <indexitem target="User_guide1_1.html">Layout basics</indexitem>
 <indexitem target="User_guide1_4.html">Layout hierarchies</indexitem>
 <indexitem target="Function_reference4_3.html">layoutRoot</indexitem>
-<indexitem target="User_guide6.html">MATLAB Compiler</indexitem>
 <indexitem target="User_guide4_2.html">Minimize and maximize</indexitem>
 <indexitem target="User_guide1_3.html#1.3.1">Minimum sizes</indexitem>
-<indexitem target="User_guide7_4.html">onListSelection</indexitem>
+<indexitem target="User_guide6_4.html">onListSelection</indexitem>
 <indexitem target="Function_reference.html#4">Other functions</indexitem>
 <indexitem target="Function_reference1_1.html">Panel</indexitem>
 <indexitem target="Function_reference.html#1">Panels</indexitem>
@@ -75,8 +72,8 @@
 <indexitem target="User_guide2.html">Positioning axes</indexitem>
 <indexitem target="Getting_Started3.html">Release notes</indexitem>
 <indexitem target="Function_reference4_3.html">Root</indexitem>
-<indexitem target="User_guide7_5.html">Running it</indexitem>
-<indexitem target="User_guide7_6.html">Scalability</indexitem>
+<indexitem target="User_guide6_5.html">Running it</indexitem>
+<indexitem target="User_guide6_6.html">Scalability</indexitem>
 <indexitem target="Function_reference1_5.html">ScrollingPanel</indexitem>
 <indexitem target="User_guide1_3.html">Sizes and units</indexitem>
 <indexitem target="Getting_Started5.html">Support</indexitem>
@@ -101,7 +98,7 @@
 <indexitem target="User_guide1.html">Understanding layouts</indexitem>
 <indexitem target="User_guide4_3.html">Undock</indexitem>
 <indexitem target="Getting_Started4.html">Uninstall</indexitem>
-<indexitem target="User_guide7_3.html">updateInterface</indexitem>
+<indexitem target="User_guide6_3.html">updateInterface</indexitem>
 <indexitem target="User_guide.html">User guide</indexitem>
 <indexitem target="User_guide5.html">Using layouts inside GUIDE GUIs</indexitem>
 <indexitem target="Function_reference2_2.html">VBox</indexitem>
