@@ -607,9 +607,6 @@ classdef BoxPanel < uix.Panel
 
         function onFigureSelectionChanged( obj, source, eventData )
 
-            f = eventData.AffectedObject.CurrentObject; % figure
-            o = f.CurrentObject; % current object
-
             % Identify callback
             switch eventData.AffectedObject.SelectionType
                 case 'normal' % single left click
@@ -630,7 +627,7 @@ classdef BoxPanel < uix.Panel
                         end
                     end
                 otherwise % other interaction
-                    callback = '';
+                    callback = ''; % do nothing
             end
 
             % Call callback
