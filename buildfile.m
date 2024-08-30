@@ -47,10 +47,10 @@ function assertNoProjectIssuesTask( ~ )
 proj = currentProject();
 proj.updateDependencies()
 results = table( proj.runChecks() );
+disp( results(~results.Passed, :) )
 assert( all( results.Passed ), "buildfile:ProjectIssue", ...
     "At least one project check has failed. " + ...
-    "Resolve the failures shown below to continue." )
-disp( results(~results.Passed, :) )
+    "Resolve the failures shown above to continue." )
 
 end % assertNoProjectIssuesTask
 
@@ -140,7 +140,7 @@ versionNumber = string( extractBetween( ...
     contentsFileText, "Version ", " (" ) );
 mltbxName = "GUI Layout Toolbox " + versionNumber + ".mltbx";
 
-% Place the .mltbx file in the releases folder.
+% Place the .mltbx file in the project root.
 opts.OutputFile = fullfile( projectRoot, mltbxName );
 
 % Continue filling in the options.
