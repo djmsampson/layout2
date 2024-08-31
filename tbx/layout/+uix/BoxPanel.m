@@ -64,6 +64,13 @@ classdef BoxPanel < uix.Panel
         CloseTooltipString % transitioned to CloseTooltip
     end
 
+    events( Hidden, NotifyAccess = private )
+        CloseClicked
+        DockClicked
+        MinimizeClicked
+        HelpClicked
+    end
+
     methods
 
         function obj = BoxPanel( varargin )
@@ -150,6 +157,14 @@ classdef BoxPanel < uix.Panel
                 @obj.onTitleReturned );
             addlistener( obj, 'Title', 'PostSet', ...
                 @obj.onTitleChanged );
+            addlistener( obj, 'CloseClicked', ...
+                @obj.onButtonClicked );
+            addlistener( obj, 'DockClicked', ...
+                @obj.onButtonClicked );
+            addlistener( obj, 'HelpClicked', ...
+                @obj.onButtonClicked );
+            addlistener( obj, 'MinimizeClicked', ...
+                @obj.onButtonClicked );
 
             % Draw buttons
             obj.redrawButtons()
@@ -489,6 +504,7 @@ classdef BoxPanel < uix.Panel
     methods( Access = private )
 
         function onBorderWidthChanged( obj, ~, ~ )
+            %onBorderWidthChanged  Event handler for BorderWidth changes
 
             % Mark as dirty
             obj.Dirty = true;
@@ -496,6 +512,7 @@ classdef BoxPanel < uix.Panel
         end % onBorderWidthChanged
 
         function onBorderTypeChanged( obj, ~, ~ )
+            %onBorderTypeChanged  Event handler for BorderType changes
 
             % Mark as dirty
             obj.Dirty = true;
@@ -503,12 +520,14 @@ classdef BoxPanel < uix.Panel
         end % onBorderTypeChanged
 
         function onFontAngleChanged( obj, ~, ~ )
+            %onFontAngleChanged  Event handler for FontAngle changes
 
             obj.TitleText.FontAngle = obj.FontAngle;
 
         end % onFontAngleChanged
 
         function onFontNameChanged( obj, ~, ~ )
+            %onFontNameChanged  Event handler for FontName changes
 
             % Set
             obj.TitleText.FontName = obj.FontName;
@@ -520,6 +539,7 @@ classdef BoxPanel < uix.Panel
         end % onFontNameChanged
 
         function onFontSizeChanged( obj, ~, ~ )
+            %onFontSizeChanged  Event handler for FontSize changes
 
             % Set
             fontSize = obj.FontSize;
@@ -536,6 +556,7 @@ classdef BoxPanel < uix.Panel
         end % onFontSizeChanged
 
         function onFontUnitsChanged( obj, ~, ~ )
+            %onFontUnitsChanged  Event handler for FontUnits changes
 
             fontUnits = obj.FontUnits;
             obj.TitleText.FontUnits = fontUnits;
@@ -547,12 +568,14 @@ classdef BoxPanel < uix.Panel
         end % onFontUnitsChanged
 
         function onFontWeightChanged( obj, ~, ~ )
+            %onFontWeightChanged  Event handler for FontWeight changes
 
             obj.TitleText.FontWeight = obj.FontWeight;
 
         end % onFontWeightChanged
 
         function onForegroundColorChanged( obj, ~, ~ )
+            %onForegroundColorChanged  Event handler for ForegroundColor changes
 
             foregroundColor = obj.ForegroundColor;
             obj.TitleText.ForegroundColor = foregroundColor;
@@ -564,6 +587,7 @@ classdef BoxPanel < uix.Panel
         end % onForegroundColorChanged
 
         function onTitleReturning( obj, ~, ~ )
+            %onTitleReturning  Event handler for Title changes
 
             if strcmp( obj.TitleAccess, 'public' ) && isjsdrawing() == false
                 obj.TitleAccess = 'private'; % start
@@ -573,6 +597,7 @@ classdef BoxPanel < uix.Panel
         end % onTitleReturning
 
         function onTitleReturned( obj, ~, ~ )
+            %onTitleReturned  Event handler for Title changes
 
             if isjsdrawing() == false
                 obj.Title = obj.NullTitle; % unset Title
@@ -582,6 +607,7 @@ classdef BoxPanel < uix.Panel
         end % onTitleReturned
 
         function onTitleChanged( obj, ~, ~ )
+            %onTitleChanged  Event handler for Title changes
 
             if strcmp( obj.TitleAccess, 'public' ) && isjsdrawing() == false
 
@@ -605,45 +631,65 @@ classdef BoxPanel < uix.Panel
 
         end % onTitleChanged
 
-        function onFigureSelectionChanged( obj, source, eventData )
+        function onFigureSelectionChanged( obj, ~, eventData )
+            %onFigureSelectionChanged  Event handler for figure clicks
 
-            % Identify callback
+            % Raise event if titlebar button was clicked
             switch eventData.AffectedObject.SelectionType
                 case 'normal' % single left click
                     if isempty( eventData.AffectedObject.CurrentObject ) % none
-                        callback = ''; % do nothing
+                        % do nothing
                     else
                         switch eventData.AffectedObject.CurrentObject
                             case obj.CloseButton
-                                callback = obj.CloseRequestFcn;
+                                notify( obj, "CloseClicked" )
                             case obj.DockButton
-                                callback = obj.DockFcn;
+                                notify( obj, "DockClicked" )
                             case obj.HelpButton
-                                callback = obj.HelpFcn;
+                                notify( obj, "HelpClicked" )
                             case obj.MinimizeButton
-                                callback = obj.MinimizeFcn;
-                            otherwise % other object
-                                callback = ''; % do nothing
+                                notify( obj, "DockClicked" )
+                            otherwise
+                                % do nothing
                         end
                     end
                 otherwise % other interaction
-                    callback = ''; % do nothing
+                    % do nothing
+            end
+
+        end % onFigureSelectionChanged
+
+        function onButtonClicked( obj, source, eventData )
+            %onButtonClicked  Event handler for titlebar button clicks
+
+            % Retrieve callback corresponding to event type
+            switch eventData.EventName
+                case 'CloseClicked'
+                    callback = obj.CloseRequestFcn;
+                case 'DockClicked'
+                    callback = obj.DockFcn;
+                case 'HelpClicked'
+                    callback = obj.HelpFcn;
+                case 'MinimizeClicked'
+                    callback = obj.MinimizeFcn;
+                otherwise
+                    return
             end
 
             % Call callback
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
             elseif ischar( callback )
-                feval( callback, source, eventData ) %#ok<FVAL>
+                feval( callback, source, eventData )
             elseif isa( callback, 'function_handle' )
-                callback( source, eventData ) %#ok<NOPRT>
+                callback( source, eventData )
             elseif iscell( callback )
                 feval( callback{1}, source, eventData, callback{2:end} )
             end
 
-        end % onFigureSelectionChanged
+        end % onButtonClicked
 
-    end % property event handlers
+    end % event handlers
 
     methods( Access = protected )
 
