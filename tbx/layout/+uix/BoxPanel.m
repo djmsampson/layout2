@@ -44,6 +44,12 @@ classdef BoxPanel < uix.Panel
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
+        MaximizeIcon = char( 9662 ) % icon
+        MinimizeIcon = char( 9652 ) % icon
+        UndockIcon = char( 8599 ) % icon
+        DockIcon = char( 8600 ) % icon
+        HelpIcon = '?' % icon
+        CloseIcon = char( 215 ) % icon
     end
 
     properties( Access = public, AbortSet )
