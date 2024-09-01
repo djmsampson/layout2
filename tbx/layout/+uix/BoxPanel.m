@@ -29,8 +29,8 @@ classdef BoxPanel < uix.Panel
     end
 
     properties( Access = private )
-        TitleBox % title bar box
-        TitleText % title text label
+        TitleBar % title bar
+        TitleText % title text
         Title_ = '' % cache of title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
@@ -94,10 +94,12 @@ classdef BoxPanel < uix.Panel
             % Set default colors
             obj.ForegroundColor = foregroundColor;
 
-            % Create panels and decorations
-            titleBox = uix.HBox( 'Internal', true, 'Parent', obj, ...
+            % Create title bar
+            titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', backgroundColor );
-            titleText = uicontrol( 'Parent', titleBox, ...
+
+            % Create title text
+            titleText = uicontrol( 'Parent', titleBar, ...
                 'Style', 'text', 'String', obj.BlankTitle, ...
                 'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
@@ -149,7 +151,7 @@ classdef BoxPanel < uix.Panel
 
             % Store properties
             obj.Title = obj.NullTitle;
-            obj.TitleBox = titleBox;
+            obj.TitleBar = titleBar;
             obj.TitleText = titleText;
             obj.MinimizeButton = minimizeButton;
             obj.MaximizeButton = maximizeButton;
@@ -210,14 +212,14 @@ classdef BoxPanel < uix.Panel
 
         function value = get.TitleColor( obj )
 
-            value = obj.TitleBox.BackgroundColor;
+            value = obj.TitleBar.BackgroundColor;
 
         end % get.TitleColor
 
         function set.TitleColor( obj, value )
 
             % Set
-            obj.TitleBox.BackgroundColor = value;
+            obj.TitleBar.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
             obj.MaximizeButton.BackgroundColor = value;
@@ -380,7 +382,7 @@ classdef BoxPanel < uix.Panel
 
         function value = get.TitleHeight( obj )
 
-            value = obj.TitleBox.Position(4);
+            value = obj.TitleBar.Position(4);
 
         end % get.TitleHeight
 
@@ -671,7 +673,7 @@ classdef BoxPanel < uix.Panel
         function onFigureSelectionChanged( obj, ~, eventData )
             %onFigureSelectionChanged  Event handler for figure clicks
 
-            % Raise event if titlebar button was clicked
+            % Raise event if title bar button was clicked
             switch eventData.AffectedObject.SelectionType
                 case 'normal' % single left click
                     if isempty( eventData.AffectedObject.CurrentObject ) % none
@@ -701,7 +703,7 @@ classdef BoxPanel < uix.Panel
         end % onFigureSelectionChanged
 
         function onButtonClicked( obj, source, eventData )
-            %onButtonClicked  Event handler for titlebar button clicks
+            %onButtonClicked  Event handler for title bar button clicks
 
             % Retrieve callback corresponding to event type
             switch eventData.EventName
@@ -751,9 +753,9 @@ classdef BoxPanel < uix.Panel
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
                 e = extent( obj.TitleText, 4 );
-                tH = e + 2 * obj.TitleBox.Padding;
+                tH = e + 2 * obj.TitleBar.Padding;
                 obj.TitleHeight_ = tH; % store
-                obj.TitleBox.Widths(2:end) = e;
+                obj.TitleBar.Widths(2:end) = e;
             end
             tY = 1 + bounds(4) - tH;
             p = obj.Padding_;
@@ -768,7 +770,7 @@ classdef BoxPanel < uix.Panel
             for ii = 1:numel( contents )
                 uix.setPosition( contents(ii), contentsPosition, 'pixels' )
             end
-            obj.TitleBox.Position = [tX tY tW tH];
+            obj.TitleBar.Position = [tX tY tW tH];
 
         end % redraw
 
@@ -798,7 +800,7 @@ classdef BoxPanel < uix.Panel
     methods( Access = private )
 
         function rebutton( obj )
-            %rebutton  Update titlebar buttons
+            %rebutton  Update title bar buttons
             %
             %  p.rebutton() adds used buttons and removes unused buttons.
 
@@ -814,38 +816,38 @@ classdef BoxPanel < uix.Panel
             if isempty( obj.MinimizeButton.Callback )
                 % OK
             elseif obj.Minimized_
-                obj.MaximizeButton.Parent = obj.TitleBox;
+                obj.MaximizeButton.Parent = obj.TitleBar;
             else
-                obj.MinimizeButton.Parent = obj.TitleBox;
+                obj.MinimizeButton.Parent = obj.TitleBar;
             end
 
             % Add dock or undock
             if isempty( obj.DockButton.Callback )
                 % OK
             elseif obj.Docked_
-                obj.UndockButton.Parent = obj.TitleBox;
+                obj.UndockButton.Parent = obj.TitleBar;
             else
-                obj.DockButton.Parent = obj.TitleBox;
+                obj.DockButton.Parent = obj.TitleBar;
             end
 
             % Add help
             if isempty( obj.HelpButton.Callback )
                 % OK
             else
-                obj.HelpButton.Parent = obj.TitleBox;
+                obj.HelpButton.Parent = obj.TitleBar;
             end
 
             % Add close
             if isempty( obj.CloseButton.Callback )
                 % OK
             else
-                obj.CloseButton.Parent = obj.TitleBox;
+                obj.CloseButton.Parent = obj.TitleBar;
             end
 
             % Set sizes
             if obj.TitleHeight_ > 0
-                obj.TitleBox.Widths(2:end) = obj.TitleHeight_ ...
-                    - 2 * obj.TitleBox.Padding;
+                obj.TitleBar.Widths(2:end) = obj.TitleHeight_ ...
+                    - 2 * obj.TitleBar.Padding;
             end
 
         end % rebutton
