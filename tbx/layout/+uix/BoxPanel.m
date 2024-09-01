@@ -218,7 +218,7 @@ classdef BoxPanel < uix.Panel
 
         function set.TitleColor( obj, value )
 
-            % Set
+            % Set background color of title bar objects
             obj.TitleBar.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
@@ -265,7 +265,7 @@ classdef BoxPanel < uix.Panel
 
             % Set callbacks
             obj.MinimizeButton.Callback = value;
-            obj.MaximizeButton.Callback = value;
+            obj.MaximizeButton.Callback = value; % and MaximizeFcn
 
             % Update buttons
             obj.rebutton()
@@ -282,7 +282,7 @@ classdef BoxPanel < uix.Panel
 
             % Set callbacks
             obj.MaximizeButton.Callback = value;
-            obj.MinimizeButton.Callback = value;
+            obj.MinimizeButton.Callback = value; % and MinimizeFcn
 
             % Update buttons
             obj.rebutton()
@@ -324,7 +324,7 @@ classdef BoxPanel < uix.Panel
 
             % Set callbacks
             obj.DockButton.Callback = value;
-            obj.UndockButton.Callback = value;
+            obj.UndockButton.Callback = value; % and UndockFcn
 
             % Update buttons
             obj.rebutton()
@@ -341,7 +341,7 @@ classdef BoxPanel < uix.Panel
 
             % Set callbacks
             obj.UndockButton.Callback = value;
-            obj.DockButton.Callback = value;
+            obj.DockButton.Callback = value; % and DockFcn
 
             % Update buttons
             obj.rebutton()
@@ -356,7 +356,7 @@ classdef BoxPanel < uix.Panel
 
         function set.HelpFcn( obj, value )
 
-            % Set
+            % Set callback
             obj.HelpButton.Callback = value;
 
             % Update buttons
@@ -372,7 +372,7 @@ classdef BoxPanel < uix.Panel
 
         function set.CloseRequestFcn( obj, value )
 
-            % Set
+            % Set callback
             obj.CloseButton.Callback = value;
 
             % Update buttons
@@ -752,10 +752,9 @@ classdef BoxPanel < uix.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                e = extent( obj.TitleText, 4 );
-                tH = e + 2 * obj.TitleBar.Padding;
+                tH = extent( obj.TitleText, 4 ); % required height
                 obj.TitleHeight_ = tH; % store
-                obj.TitleBar.Widths(2:end) = e;
+                obj.TitleBar.Widths(2:end) = tH; % square buttons
             end
             tY = 1 + bounds(4) - tH;
             p = obj.Padding_;
@@ -846,8 +845,7 @@ classdef BoxPanel < uix.Panel
 
             % Set sizes
             if obj.TitleHeight_ > 0
-                obj.TitleBar.Widths(2:end) = obj.TitleHeight_ ...
-                    - 2 * obj.TitleBar.Padding;
+                obj.TitleBar.Widths(2:end) = obj.TitleHeight_;
             end
 
         end % rebutton
