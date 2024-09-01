@@ -219,14 +219,20 @@ classdef BoxPanel < uix.Panel
         function set.TitleColor( obj, value )
 
             % Set background color of title bar objects
-            obj.TitleBar.BackgroundColor = value;
-            obj.TitleText.BackgroundColor = value;
-            obj.MinimizeButton.BackgroundColor = value;
-            obj.MaximizeButton.BackgroundColor = value;
-            obj.DockButton.BackgroundColor = value;
-            obj.UndockButton.BackgroundColor = value;
-            obj.HelpButton.BackgroundColor = value;
-            obj.CloseButton.BackgroundColor = value;
+            try
+                obj.TitleBar.BackgroundColor = value;
+                obj.TitleText.BackgroundColor = value;
+                obj.MinimizeButton.BackgroundColor = value;
+                obj.MaximizeButton.BackgroundColor = value;
+                obj.DockButton.BackgroundColor = value;
+                obj.UndockButton.BackgroundColor = value;
+                obj.HelpButton.BackgroundColor = value;
+                obj.CloseButton.BackgroundColor = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a color name, RGB triplet, or hex color code.', ...
+                    'TitleColor' ) )
+            end
 
         end % set.TitleColor
 
