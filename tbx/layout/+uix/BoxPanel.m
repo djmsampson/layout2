@@ -42,7 +42,7 @@ classdef BoxPanel < uix.Panel
         CloseButton % title button
         Minimized_ = false % backing for Minimized
         Docked_ = true % backing for Docked
-        FigureSelectionListener = event.proplistener.empty( [0 0] ) % listener
+        FigureSelectionListener % listener
     end
 
     properties( Constant, Access = private )
@@ -780,7 +780,7 @@ classdef BoxPanel < uix.Panel
 
             % Update listeners
             if isempty( newFigure )
-                figureSelectionListener = event.listener.empty( [0 0] );
+                figureSelectionListener = [];
             else
                 figureSelectionListener = event.proplistener( ...
                     newFigure, findprop( newFigure, 'CurrentObject' ), ...
