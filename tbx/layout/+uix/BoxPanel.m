@@ -245,12 +245,14 @@ classdef BoxPanel < uix.Panel
         function set.Minimized( obj, value )
 
             % Check
-            try
-                value = logical( value ); % convert
-                assert( isscalar( value ) )
-            catch
-                error( 'uix:InvalidPropertyValue', '%s', ...
-                    'Property ''Minimized'' must be true or false.' )
+            if isequal( value, true ) || isequal( value, 'on' )
+                value = true;
+            elseif isequal( value, false ) || isequal( value, 'off' )
+                value = false;
+            else
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be true or false.', ...
+                    'Minimized' ) )
             end
 
             % Set
@@ -316,12 +318,14 @@ classdef BoxPanel < uix.Panel
         function set.Docked( obj, value )
 
             % Check
-            try
-                value = logical( value ); % convert
-                assert( isscalar( value ) )
-            catch
-                error( 'uix:InvalidPropertyValue', '%s', ...
-                    'Property ''Docked'' must be true or false.' )
+            if isequal( value, true ) || isequal( value, 'on' )
+                value = true;
+            elseif isequal( value, false ) || isequal( value, 'off' )
+                value = false;
+            else
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be true or false.', ...
+                    'Docked' ) )
             end
 
             % Set
