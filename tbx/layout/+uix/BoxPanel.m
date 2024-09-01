@@ -34,12 +34,12 @@ classdef BoxPanel < uix.Panel
         Title_ = '' % cache of title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
-        MinimizeButton % title button
-        MaximizeButton % title button
-        DockButton % title button
-        UndockButton % title button
-        HelpButton % title button
-        CloseButton % title button
+        MinimizeButton % button
+        MaximizeButton % button
+        DockButton % button
+        UndockButton % button
+        HelpButton % button
+        CloseButton % button
         Minimized_ = false % backing for Minimized
         Docked_ = true % backing for Docked
         FigureSelectionListener % listener
@@ -51,12 +51,12 @@ classdef BoxPanel < uix.Panel
     end
 
     properties( Access = public, Dependent, AbortSet )
-        MinimizeTooltip % tooltip string
-        MaximizeTooltip % tooltip string
-        DockTooltip % tooltip string
-        UndockTooltip % tooltip string
-        HelpTooltip % tooltip string
-        CloseTooltip % tooltip string
+        MinimizeTooltip % tooltip
+        MaximizeTooltip % tooltip
+        DockTooltip % tooltip
+        UndockTooltip % tooltip
+        HelpTooltip % tooltip
+        CloseTooltip % tooltip
     end
 
     properties( Access = public, Dependent, AbortSet, Hidden )
@@ -800,7 +800,7 @@ classdef BoxPanel < uix.Panel
     methods( Access = private )
 
         function rebutton( obj )
-            %rebutton  Update title bar buttons
+            %rebutton  Update buttons
             %
             %  p.rebutton() adds used buttons and removes unused buttons.
 
