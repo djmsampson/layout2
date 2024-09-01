@@ -398,7 +398,12 @@ classdef BoxPanel < uix.Panel
 
         function set.MinimizeTooltip( obj, value )
 
-            obj.MinimizeButton.TooltipString = value;
+            try
+                obj.MinimizeButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.MinimizeTooltip
 
@@ -410,7 +415,12 @@ classdef BoxPanel < uix.Panel
 
         function set.MaximizeTooltip( obj, value )
 
-            obj.MaximizeButton.TooltipString = value;
+            try
+                obj.MaximizeButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.MaximizeTooltip
 
@@ -422,7 +432,12 @@ classdef BoxPanel < uix.Panel
 
         function set.UndockTooltip( obj, value )
 
-            obj.UndockButton.TooltipString = value;
+            try
+                obj.UndockButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.UndockTooltip
 
@@ -434,7 +449,12 @@ classdef BoxPanel < uix.Panel
 
         function set.DockTooltip( obj, value )
 
-            obj.DockButton.TooltipString = value;
+            try
+                obj.DockButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.DockTooltip
 
@@ -446,7 +466,12 @@ classdef BoxPanel < uix.Panel
 
         function set.HelpTooltip( obj, value )
 
-            obj.HelpButton.TooltipString = value;
+            try
+                obj.HelpButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.HelpTooltip
 
@@ -458,7 +483,12 @@ classdef BoxPanel < uix.Panel
 
         function set.CloseTooltip( obj, value )
 
-            obj.CloseButton.TooltipString = value;
+            try
+                obj.CloseButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.CloseTooltip
 
@@ -470,7 +500,12 @@ classdef BoxPanel < uix.Panel
 
         function set.MinimizeTooltipString( obj, value )
 
-            obj.MinimizeButton.TooltipString = value;
+            try
+                obj.MinimizeButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.MinimizeTooltipString
 
@@ -482,7 +517,12 @@ classdef BoxPanel < uix.Panel
 
         function set.MaximizeTooltipString( obj, value )
 
-            obj.MaximizeButton.TooltipString = value;
+            try
+                obj.MaximizeButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.MaximizeTooltipString
 
@@ -494,7 +534,12 @@ classdef BoxPanel < uix.Panel
 
         function set.UndockTooltipString( obj, value )
 
-            obj.UndockButton.TooltipString = value;
+            try
+                obj.UndockButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.UndockTooltipString
 
@@ -506,7 +551,12 @@ classdef BoxPanel < uix.Panel
 
         function set.DockTooltipString( obj, value )
 
-            obj.DockButton.TooltipString = value;
+            try
+                obj.DockButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.DockTooltipString
 
@@ -518,7 +568,12 @@ classdef BoxPanel < uix.Panel
 
         function set.HelpTooltipString( obj, value )
 
-            obj.HelpButton.TooltipString = value;
+            try
+                obj.HelpButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.HelpTooltipString
 
@@ -530,7 +585,12 @@ classdef BoxPanel < uix.Panel
 
         function set.CloseTooltipString( obj, value )
 
-            obj.CloseButton.TooltipString = value;
+            try
+                obj.CloseButton.TooltipString = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', '%s', ...
+                    'Value must be a character vector or a string scalar.' ) )
+            end
 
         end % set.CloseTooltipString
 
