@@ -264,8 +264,14 @@ classdef BoxPanel < uix.Panel
         function set.MinimizeFcn( obj, value )
 
             % Set callbacks
-            obj.MinimizeButton.Callback = value;
-            obj.MaximizeButton.Callback = value; % and MaximizeFcn
+            try
+                obj.MinimizeButton.Callback = value;
+                obj.MaximizeButton.Callback = value; % and MaximizeFcn
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'MinimizeFcn' ) )
+            end
 
             % Update buttons
             obj.rebutton()
@@ -281,8 +287,14 @@ classdef BoxPanel < uix.Panel
         function set.MaximizeFcn( obj, value )
 
             % Set callbacks
-            obj.MaximizeButton.Callback = value;
-            obj.MinimizeButton.Callback = value; % and MinimizeFcn
+            try
+                obj.MaximizeButton.Callback = value;
+                obj.MinimizeButton.Callback = value; % and MinimizeFcn
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'MaximizeFcn' ) )
+            end
 
             % Update buttons
             obj.rebutton()
@@ -323,8 +335,15 @@ classdef BoxPanel < uix.Panel
         function set.DockFcn( obj, value )
 
             % Set callbacks
-            obj.DockButton.Callback = value;
-            obj.UndockButton.Callback = value; % and UndockFcn
+            try
+                obj.DockButton.Callback = value;
+                obj.UndockButton.Callback = value; % and UndockFcn
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'DockFcn' ) )
+            end
+
 
             % Update buttons
             obj.rebutton()
@@ -340,8 +359,14 @@ classdef BoxPanel < uix.Panel
         function set.UndockFcn( obj, value )
 
             % Set callbacks
-            obj.UndockButton.Callback = value;
-            obj.DockButton.Callback = value; % and DockFcn
+            try
+                obj.UndockButton.Callback = value;
+                obj.DockButton.Callback = value; % and DockFcn
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'UndockFcn' ) )
+            end
 
             % Update buttons
             obj.rebutton()
@@ -357,7 +382,13 @@ classdef BoxPanel < uix.Panel
         function set.HelpFcn( obj, value )
 
             % Set callback
-            obj.HelpButton.Callback = value;
+            try
+                obj.HelpButton.Callback = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'HelpFcn' ) )
+            end
 
             % Update buttons
             obj.rebutton()
@@ -373,7 +404,13 @@ classdef BoxPanel < uix.Panel
         function set.CloseRequestFcn( obj, value )
 
             % Set callback
-            obj.CloseButton.Callback = value;
+            try
+                obj.CloseButton.Callback = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a function handle or cell array.', ...
+                    'CloseRequestFcn' ) )
+            end
 
             % Update buttons
             obj.rebutton()
