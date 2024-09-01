@@ -16,8 +16,10 @@ classdef BoxPanel < uix.Panel
         TitleColor % title background color [RGB]
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
+        MaximizeFcn % maximize callback
         Docked % docked [true|false]
         DockFcn % dock callback
+        UndockFcn % undock callback
         HelpFcn % help callback
         CloseRequestFcn % close request callback
     end
@@ -33,48 +35,46 @@ classdef BoxPanel < uix.Panel
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
         TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % title button
+        MaximizeButton % title button
         DockButton % title button
+        UndockButton % title button
         HelpButton % title button
         CloseButton % title button
-        Docked_ = true % backing for Docked
         Minimized_ = false % backing for Minimized
+        Docked_ = true % backing for Docked
         FigureSelectionListener = event.proplistener.empty( [0 0] ) % listener
     end
 
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
-        MaximizeIcon = char( 9662 ) % icon
-        MinimizeIcon = char( 9652 ) % icon
-        UndockIcon = char( 8599 ) % icon
-        DockIcon = char( 8600 ) % icon
-        HelpIcon = '?' % icon
-        CloseIcon = char( 215 ) % icon
     end
 
-    properties( Access = public, AbortSet )
-        MaximizeTooltip = 'Expand this panel' % tooltip string
-        MinimizeTooltip = 'Collapse this panel'% tooltip string
-        UndockTooltip = 'Undock this panel' % tooltip string
-        DockTooltip = 'Dock this panel' % tooltip string
-        HelpTooltip = 'Get help on this panel' % tooltip string
-        CloseTooltip = 'Close this panel' % tooltip string
+    properties( Access = public, Dependent, AbortSet )
+        MinimizeTooltip % tooltip string
+        MaximizeTooltip % tooltip string
+        DockTooltip % tooltip string
+        UndockTooltip % tooltip string
+        HelpTooltip % tooltip string
+        CloseTooltip % tooltip string
     end
 
     properties( Access = public, Dependent, AbortSet, Hidden )
-        MaximizeTooltipString % transitioned to MaximizeTooltip
         MinimizeTooltipString % transitioned to MinimizeTooltip
-        UndockTooltipString % transitioned to UndockTooltip
+        MaximizeTooltipString % transitioned to MaximizeTooltip
         DockTooltipString % transitioned to DockTooltip
+        UndockTooltipString % transitioned to UndockTooltip
         HelpTooltipString % transitioned to HelpTooltip
         CloseTooltipString % transitioned to CloseTooltip
     end
 
     events( Hidden, NotifyAccess = private )
-        CloseClicked
-        DockClicked
-        MinimizeClicked
-        HelpClicked
+        Minimizing
+        Maximizing
+        Docking
+        Undocking
+        Helping
+        Closing
     end
 
     methods
@@ -101,7 +101,8 @@ classdef BoxPanel < uix.Panel
                 'Style', 'text', 'String', obj.BlankTitle, ...
                 'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
-                'BackgroundColor', backgroundColor );
+                'BackgroundColor', backgroundColor, ...
+                'UserData', 0 );
 
             % Create buttons
             minimizeButton = uicontrol( 'Parent', [], ...
@@ -109,36 +110,52 @@ classdef BoxPanel < uix.Panel
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'on', 'FontWeight', 'bold', ...
-                'String', obj.MinimizeIcon, ...
-                'TooltipString', obj.MinimizeTooltip );
+                'String', char( 9652 ), ...
+                'TooltipString', 'Collapse this panel', 'UserData', 1 );
+            maximizeButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'Enable', 'on', 'FontWeight', 'bold', ...
+                'String', char( 9662 ), ...
+                'TooltipString', 'Expand this panel', 'UserData', 2 );
             dockButton = uicontrol( 'Parent', [], ...
                 'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'on', 'FontWeight', 'bold', ...
-                'String', obj.UndockIcon, ...
-                'TooltipString', obj.UndockTooltip );
+                'String', char( 8600 ), ...
+                'TooltipString', 'Dock this panel', 'UserData', 3 );
+            undockButton = uicontrol( 'Parent', [], ...
+                'Style', 'text', 'HorizontalAlignment', 'center', ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', backgroundColor, ...
+                'Enable', 'on', 'FontWeight', 'bold', ...
+                'String', char( 8599 ), ...
+                'TooltipString', 'Undock this panel', 'UserData', 4 );
             helpButton = uicontrol( 'Parent', [], ...
                 'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'on', 'FontWeight', 'bold', ...
-                'String', obj.HelpIcon, ...
-                'TooltipString', obj.HelpTooltip );
+                'String', '?', ...
+                'TooltipString', 'Get help on this panel', 'UserData', 5 );
             closeButton = uicontrol( 'Parent', [], ...
                 'Style', 'text', 'HorizontalAlignment', 'center', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', backgroundColor, ...
                 'Enable', 'on', 'FontWeight', 'bold', ...
-                'String', obj.CloseIcon, ...
-                'TooltipString', obj.CloseTooltip );
+                'String', char( 215 ), ...
+                'TooltipString', 'Close this panel', 'UserData', 6 );
 
             % Store properties
             obj.Title = obj.NullTitle;
             obj.TitleBox = titleBox;
             obj.TitleText = titleText;
             obj.MinimizeButton = minimizeButton;
+            obj.MaximizeButton = maximizeButton;
             obj.DockButton = dockButton;
+            obj.UndockButton = undockButton;
             obj.HelpButton = helpButton;
             obj.CloseButton = closeButton;
 
@@ -165,17 +182,18 @@ classdef BoxPanel < uix.Panel
                 @obj.onTitleReturned );
             addlistener( obj, 'Title', 'PostSet', ...
                 @obj.onTitleChanged );
-            addlistener( obj, 'CloseClicked', ...
+            addlistener( obj, 'Minimizing', ...
                 @obj.onButtonClicked );
-            addlistener( obj, 'DockClicked', ...
+            addlistener( obj, 'Maximizing', ...
                 @obj.onButtonClicked );
-            addlistener( obj, 'HelpClicked', ...
+            addlistener( obj, 'Docking', ...
                 @obj.onButtonClicked );
-            addlistener( obj, 'MinimizeClicked', ...
+            addlistener( obj, 'Undocking', ...
                 @obj.onButtonClicked );
-
-            % Draw buttons
-            obj.redrawButtons()
+            addlistener( obj, 'Helping', ...
+                @obj.onButtonClicked );
+            addlistener( obj, 'Closing', ...
+                @obj.onButtonClicked );
 
             % Set properties
             try
@@ -203,96 +221,13 @@ classdef BoxPanel < uix.Panel
             obj.TitleBox.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
+            obj.MaximizeButton.BackgroundColor = value;
             obj.DockButton.BackgroundColor = value;
+            obj.UndockButton.BackgroundColor = value;
             obj.HelpButton.BackgroundColor = value;
             obj.CloseButton.BackgroundColor = value;
 
         end % set.TitleColor
-
-        function value = get.CloseRequestFcn( obj )
-
-            value = obj.CloseButton.ButtonDownFcn;
-
-        end % get.CloseRequestFcn
-
-        function set.CloseRequestFcn( obj, value )
-
-            % Set
-            obj.CloseButton.ButtonDownFcn = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.CloseRequestFcn
-
-        function value = get.DockFcn( obj )
-
-            value = obj.DockButton.ButtonDownFcn;
-
-        end % get.DockFcn
-
-        function set.DockFcn( obj, value )
-
-            % Set
-            obj.DockButton.ButtonDownFcn = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.DockFcn
-
-        function value = get.HelpFcn( obj )
-
-            value = obj.HelpButton.ButtonDownFcn;
-
-        end % get.HelpFcn
-
-        function set.HelpFcn( obj, value )
-
-            % Set
-            obj.HelpButton.ButtonDownFcn = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.HelpFcn
-
-        function value = get.MinimizeFcn( obj )
-
-            value = obj.MinimizeButton.ButtonDownFcn;
-
-        end % get.MinimizeFcn
-
-        function set.MinimizeFcn( obj, value )
-
-            % Set
-            obj.MinimizeButton.ButtonDownFcn = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.MinimizeFcn
-
-        function value = get.Docked( obj )
-
-            value = obj.Docked_;
-
-        end % get.Docked
-
-        function set.Docked( obj, value )
-
-            % Check
-            assert( islogical( value ) && isscalar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Docked'' must be true or false.' )
-
-            % Set
-            obj.Docked_ = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.Docked
 
         function value = get.Minimized( obj )
 
@@ -303,17 +238,146 @@ classdef BoxPanel < uix.Panel
         function set.Minimized( obj, value )
 
             % Check
-            assert( islogical( value ) && isscalar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Minimized'' must be true or false.' )
+            try
+                value = logical( value ); % convert
+                assert( isscalar( value ) )
+            catch
+                error( 'uix:InvalidPropertyValue', '%s', ...
+                    'Property ''Minimized'' must be true or false.' )
+            end
 
             % Set
             obj.Minimized_ = value;
 
-            % Mark as dirty
-            obj.redrawButtons()
+            % Update buttons
+            obj.rebutton()
 
         end % set.Minimized
+
+        function value = get.MinimizeFcn( obj )
+
+            value = obj.MinimizeButton.Callback;
+
+        end % get.MinimizeFcn
+
+        function set.MinimizeFcn( obj, value )
+
+            % Set callbacks
+            obj.MinimizeButton.Callback = value;
+            obj.MaximizeButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.MinimizeFcn
+
+        function value = get.MaximizeFcn( obj )
+
+            value = obj.MaximizeButton.Callback;
+
+        end % get.MaximizeFcn
+
+        function set.MaximizeFcn( obj, value )
+
+            % Set callbacks
+            obj.MaximizeButton.Callback = value;
+            obj.MinimizeButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.MaximizeFcn
+
+        function value = get.Docked( obj )
+
+            value = obj.Docked_;
+
+        end % get.Docked
+
+        function set.Docked( obj, value )
+
+            % Check
+            try
+                value = logical( value ); % convert
+                assert( isscalar( value ) )
+            catch
+                error( 'uix:InvalidPropertyValue', '%s', ...
+                    'Property ''Docked'' must be true or false.' )
+            end
+
+            % Set
+            obj.Docked_ = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.Docked
+
+        function value = get.DockFcn( obj )
+
+            value = obj.DockButton.Callback;
+
+        end % get.DockFcn
+
+        function set.DockFcn( obj, value )
+
+            % Set callbacks
+            obj.DockButton.Callback = value;
+            obj.UndockButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.DockFcn
+
+        function value = get.UndockFcn( obj )
+
+            value = obj.UndockButton.Callback;
+
+        end % get.UndockFcn
+
+        function set.UndockFcn( obj, value )
+
+            % Set callbacks
+            obj.UndockButton.Callback = value;
+            obj.DockButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.UndockFcn
+
+        function value = get.HelpFcn( obj )
+
+            value = obj.HelpButton.Callback;
+
+        end % get.HelpFcn
+
+        function set.HelpFcn( obj, value )
+
+            % Set
+            obj.HelpButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.HelpFcn
+
+        function value = get.CloseRequestFcn( obj )
+
+            value = obj.CloseButton.Callback;
+
+        end % get.CloseRequestFcn
+
+        function set.CloseRequestFcn( obj, value )
+
+            % Set
+            obj.CloseButton.Callback = value;
+
+            % Update buttons
+            obj.rebutton()
+
+        end % set.CloseRequestFcn
 
         function value = get.TitleHeight( obj )
 
@@ -321,191 +385,149 @@ classdef BoxPanel < uix.Panel
 
         end % get.TitleHeight
 
-        function set.MaximizeTooltip( obj, value )
+        function value = get.MinimizeTooltip( obj )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'MaximizeTooltip' );
+            value = obj.MinimizeButton.TooltipString;
 
-            % Set
-            obj.MaximizeTooltip = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
-
-        end % set.MaximizeTooltip
+        end % get.MinimizeTooltip
 
         function set.MinimizeTooltip( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'MinimizeTooltip' );
-
-            % Set
-            obj.MinimizeTooltip = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.MinimizeButton.TooltipString = value;
 
         end % set.MinimizeTooltip
 
-        function set.DockTooltip( obj, value )
+        function value = get.MaximizeTooltip( obj )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'DockTooltip' );
+            value = obj.MaximizeButton.TooltipString;
 
-            % Set
-            obj.DockTooltip = value;
+        end % get.MaximizeTooltip
 
-            % Mark as dirty
-            obj.redrawButtons()
+        function set.MaximizeTooltip( obj, value )
 
-        end % set.DockTooltip
+            obj.MaximizeButton.TooltipString = value;
+
+        end % set.MaximizeTooltip
+
+        function value = get.UndockTooltip( obj )
+
+            value = obj.UndockButton.TooltipString;
+
+        end % get.UndockTooltip
 
         function set.UndockTooltip( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'UndockTooltip' );
-
-            % Set
-            obj.UndockTooltip = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.UndockButton.TooltipString = value;
 
         end % set.UndockTooltip
 
-        function set.CloseTooltip( obj, value )
+        function value = get.DockTooltip( obj )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'CloseTooltip' );
+            value = obj.DockButton.TooltipString;
 
-            % Set
-            obj.CloseTooltip = value;
+        end % get.DockTooltip
 
-            % Mark as dirty
-            obj.redrawButtons()
+        function set.DockTooltip( obj, value )
 
-        end % set.CloseTooltip
+            obj.DockButton.TooltipString = value;
+
+        end % set.DockTooltip
+
+        function value = get.HelpTooltip( obj )
+
+            value = obj.HelpButton.TooltipString;
+
+        end % get.HelpTooltip
 
         function set.HelpTooltip( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'HelpTooltip' );
-
-            % Set
-            obj.HelpTooltip = value;
-
-            % Mark as dirty
-            obj.redrawButtons()
+            obj.HelpButton.TooltipString = value;
 
         end % set.HelpTooltip
 
-        function value = get.MaximizeTooltipString( obj )
+        function value = get.CloseTooltip( obj )
 
-            value = obj.MaximizeTooltip;
+            value = obj.CloseButton.TooltipString;
 
-        end % get.MaximizeTooltipString
+        end % get.CloseTooltip
 
-        function set.MaximizeTooltipString( obj, value )
+        function set.CloseTooltip( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'MaximizeTooltipString' );
+            obj.CloseButton.TooltipString = value;
 
-            % Set
-            obj.MaximizeTooltip = value;
-
-        end % set.MaximizeTooltipString
+        end % set.CloseTooltip
 
         function value = get.MinimizeTooltipString( obj )
 
-            value = obj.MinimizeTooltip;
+            value = obj.MinimizeButton.TooltipString;
 
         end % get.MinimizeTooltipString
 
         function set.MinimizeTooltipString( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'MinimizeTooltipString' );
-
-            % Set
-            obj.MinimizeTooltip = value;
+            obj.MinimizeButton.TooltipString = value;
 
         end % set.MinimizeTooltipString
 
-        function value = get.DockTooltipString( obj )
+        function value = get.MaximizeTooltipString( obj )
 
-            value = obj.DockTooltip;
+            value = obj.MaximizeButton.TooltipString;
 
-        end % get.DockTooltip
+        end % get.MaximizeTooltipString
 
-        function set.DockTooltipString( obj, value )
+        function set.MaximizeTooltipString( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'DockTooltipString' );
+            obj.MaximizeButton.TooltipString = value;
 
-            % Set
-            obj.DockTooltip = value;
-
-        end % set.DockTooltipString
+        end % set.MaximizeTooltipString
 
         function value = get.UndockTooltipString( obj )
 
-            value = obj.UndockTooltip;
+            value = obj.UndockButton.TooltipString;
 
         end % get.UndockTooltipString
 
         function set.UndockTooltipString( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'UndockTooltipString' );
-
-            % Set
-            obj.UndockTooltip = value;
+            obj.UndockButton.TooltipString = value;
 
         end % set.UndockTooltipString
 
-        function value = get.CloseTooltipString( obj )
+        function value = get.DockTooltipString( obj )
 
-            value = obj.CloseTooltip;
+            value = obj.DockButton.TooltipString;
 
-        end % get.CloseTooltipString
+        end % get.DockTooltipString
 
-        function set.CloseTooltipString( obj, value )
+        function set.DockTooltipString( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'CloseTooltipString' );
+            obj.DockButton.TooltipString = value;
 
-            % Set
-            obj.CloseTooltip = value;
-
-        end % set.CloseTooltipString
+        end % set.DockTooltipString
 
         function value = get.HelpTooltipString( obj )
 
-            value = obj.HelpTooltip;
+            value = obj.HelpButton.TooltipString;
 
         end % get.HelpTooltipString
 
         function set.HelpTooltipString( obj, value )
 
-            % Check
-            value = validateScalarStringOrCharacterArray( value, ...
-                'HelpTooltipString' );
-
-            % Set
-            obj.HelpTooltip = value;
+            obj.HelpButton.TooltipString = value;
 
         end % set.HelpTooltipString
+
+        function value = get.CloseTooltipString( obj )
+
+            value = obj.CloseButton.TooltipString;
+
+        end % get.CloseTooltipString
+
+        function set.CloseTooltipString( obj, value )
+
+            obj.CloseButton.TooltipString = value;
+
+        end % set.CloseTooltipString
 
     end % accessors
 
@@ -552,10 +574,12 @@ classdef BoxPanel < uix.Panel
             % Set
             fontSize = obj.FontSize;
             obj.TitleText.FontSize = fontSize;
+            obj.MinimizeButton.FontSize = fontSize;
+            obj.MaximizeButton.FontSize = fontSize;
+            obj.DockButton.FontSize = fontSize;
+            obj.UndockButton.FontSize = fontSize;
             obj.HelpButton.FontSize = fontSize;
             obj.CloseButton.FontSize = fontSize;
-            obj.DockButton.FontSize = fontSize;
-            obj.MinimizeButton.FontSize = fontSize;
 
             % Mark as dirty
             obj.TitleHeight_ = -1;
@@ -588,7 +612,9 @@ classdef BoxPanel < uix.Panel
             foregroundColor = obj.ForegroundColor;
             obj.TitleText.ForegroundColor = foregroundColor;
             obj.MinimizeButton.ForegroundColor = foregroundColor;
+            obj.MaximizeButton.ForegroundColor = foregroundColor;
             obj.DockButton.ForegroundColor = foregroundColor;
+            obj.UndockButton.ForegroundColor = foregroundColor;
             obj.HelpButton.ForegroundColor = foregroundColor;
             obj.CloseButton.ForegroundColor = foregroundColor;
 
@@ -649,14 +675,18 @@ classdef BoxPanel < uix.Panel
                         % do nothing
                     else
                         switch eventData.AffectedObject.CurrentObject
-                            case obj.CloseButton
-                                notify( obj, "CloseClicked" )
-                            case obj.DockButton
-                                notify( obj, "DockClicked" )
-                            case obj.HelpButton
-                                notify( obj, "HelpClicked" )
                             case obj.MinimizeButton
-                                notify( obj, "MinimizeClicked" )
+                                notify( obj, "Minimizing" )
+                            case obj.MaximizeButton
+                                notify( obj, "Maximizing" )
+                            case obj.DockButton
+                                notify( obj, "Docking" )
+                            case obj.UndockButton
+                                notify( obj, "Undocking" )
+                            case obj.HelpButton
+                                notify( obj, "Helping" )
+                            case obj.CloseButton
+                                notify( obj, "Closing" )
                             otherwise
                                 % do nothing
                         end
@@ -672,14 +702,18 @@ classdef BoxPanel < uix.Panel
 
             % Retrieve callback corresponding to event type
             switch eventData.EventName
-                case 'CloseClicked'
-                    callback = obj.CloseRequestFcn;
-                case 'DockClicked'
-                    callback = obj.DockFcn;
-                case 'HelpClicked'
-                    callback = obj.HelpFcn;
-                case 'MinimizeClicked'
+                case 'Minimizing'
                     callback = obj.MinimizeFcn;
+                case 'Maximizing'
+                    callback = obj.MinimizeFcn;
+                case 'Docking'
+                    callback = obj.DockFcn;
+                case 'Undocking'
+                    callback = obj.UndockFcn;
+                case 'Helping'
+                    callback = obj.HelpFcn;
+                case 'Closing'
+                    callback = obj.CloseRequestFcn;
                 otherwise
                     return
             end
@@ -705,8 +739,6 @@ classdef BoxPanel < uix.Panel
             %redraw  Redraw
             %
             %  p.redraw() redraws the panel.
-            %
-            %  See also: redrawButtons
 
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
@@ -715,8 +747,10 @@ classdef BoxPanel < uix.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                tH = extent( obj.TitleText, 4 ) + 2 * obj.TitleBox.Padding;
+                e = extent( obj.TitleText, 4 );
+                tH = e + 2 * obj.TitleBox.Padding;
                 obj.TitleHeight_ = tH; % store
+                obj.TitleBox.Widths(2:end) = e;
             end
             tY = 1 + bounds(4) - tH;
             p = obj.Padding_;
@@ -756,78 +790,48 @@ classdef BoxPanel < uix.Panel
 
         end % reparent
 
+        function rebutton( obj )
+
+            obj.MinimizeButton.Parent = [];
+            obj.MaximizeButton.Parent = [];
+            obj.DockButton.Parent = [];
+            obj.UndockButton.Parent = [];
+            obj.HelpButton.Parent = [];
+            obj.CloseButton.Parent = [];
+
+            if isempty( obj.MinimizeButton.Callback )
+                % OK
+            elseif obj.Minimized_
+                obj.MaximizeButton.Parent = obj.TitleBox;
+            else
+                obj.MinimizeButton.Parent = obj.TitleBox;
+            end
+
+            if isempty( obj.DockButton.Callback )
+                % OK
+            elseif obj.Docked_
+                obj.UndockButton.Parent = obj.TitleBox;
+            else
+                obj.DockButton.Parent = obj.TitleBox;
+            end
+
+            if isempty( obj.HelpButton.Callback )
+                % OK
+            else
+                obj.HelpButton.Parent = obj.TitleBox;
+            end
+
+            if isempty( obj.CloseButton.Callback )
+                % OK
+            else
+                obj.CloseButton.Parent = obj.TitleBox;
+            end
+
+            obj.TitleBox.Widths(2:end) = obj.TitleHeight_;
+
+        end % rebutton
+
     end % template methods
-
-    methods( Access = private )
-
-        function redrawButtons( obj )
-            %redrawButtons  Redraw buttons
-            %
-            %  p.redrawButtons() redraws the titlebar buttons.
-            %
-            %  Buttons use unicode arrow symbols:
-            %  https://en.wikipedia.org/wiki/Arrow_%28symbol%29#Arrows_in_Unicode
-
-            % Retrieve button box and buttons
-            box = obj.TitleBox;
-            titleText = obj.TitleText;
-            minimizeButton = obj.MinimizeButton;
-            dockButton = obj.DockButton;
-            helpButton = obj.HelpButton;
-            closeButton = obj.CloseButton;
-
-            % Detach all buttons
-            titleText.Parent = [];
-            minimizeButton.Parent = [];
-            dockButton.Parent = [];
-            helpButton.Parent = [];
-            closeButton.Parent = [];
-
-            % Attach active buttons
-            titleText.Parent = box;
-            bW = obj.TitleHeight_ * 2/3; % button width
-            minimize = ~isempty( obj.MinimizeFcn );
-            if minimize
-                minimizeButton.Parent = box;
-                box.Widths(end) = bW;
-            end
-            dock = ~isempty( obj.DockFcn );
-            if dock
-                dockButton.Parent = box;
-                box.Widths(end) = bW;
-            end
-            help = ~isempty( obj.HelpFcn );
-            if help
-                helpButton.Parent = box;
-                helpButton.TooltipString = obj.HelpTooltip;
-                box.Widths(end) = bW;
-            end
-            close = ~isempty( obj.CloseRequestFcn );
-            if close
-                closeButton.Parent = box;
-                closeButton.TooltipString = obj.CloseTooltip;
-                box.Widths(end) = bW;
-            end
-
-            % Update icons
-            if obj.Minimized_
-                minimizeButton.String = char( 9662 );
-                minimizeButton.TooltipString = obj.MaximizeTooltip;
-            else
-                minimizeButton.String = char( 9652 );
-                minimizeButton.TooltipString = obj.MinimizeTooltip;
-            end
-            if obj.Docked_
-                dockButton.String = char( 8599 );
-                dockButton.TooltipString = obj.UndockTooltip;
-            else
-                dockButton.String = char( 8600 );
-                dockButton.TooltipString = obj.DockTooltip;
-            end
-
-        end % redrawButtons
-
-    end % helper methods
 
 end % classdef
 
@@ -873,23 +877,3 @@ if nargin > 1
 end
 
 end % extent
-
-function value = validateScalarStringOrCharacterArray( value, propertyName )
-%VALIDATESCALARSTRINGORCHARACTERARRAY Verify that the given value is a
-%scalar string or a character array.
-
-if isa( value, 'string' ) && isscalar( value ) && ismissing( value )
-    value = '';
-end % if
-
-try
-    value = char( value );
-    assert( ismatrix( value ) )
-catch
-    exc = MException( 'uix:InvalidPropertyValue', ['Property ''', ...
-        propertyName, ''' must be a scalar string or a ', ...
-        'character array.'] );
-    exc.throwAsCaller()
-end % try/catch
-
-end % validateScalarStringOrCharacterArray
