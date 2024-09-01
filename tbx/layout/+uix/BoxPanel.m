@@ -386,6 +386,10 @@ classdef BoxPanel < uix.Panel
 
         end % get.TitleHeight
 
+    end % accessors
+
+    methods
+
         function value = get.MinimizeTooltip( obj )
 
             value = obj.MinimizeButton.TooltipString;
@@ -457,10 +461,6 @@ classdef BoxPanel < uix.Panel
             obj.CloseButton.TooltipString = value;
 
         end % set.CloseTooltip
-
-    end % accessors
-
-    methods
 
         function value = get.MinimizeTooltipString( obj )
 
@@ -534,7 +534,7 @@ classdef BoxPanel < uix.Panel
 
         end % set.CloseTooltipString
 
-    end % legacy accessors
+    end % tooltip accessors
 
     methods( Access = private )
 
@@ -708,17 +708,17 @@ classdef BoxPanel < uix.Panel
             % Retrieve callback corresponding to event type
             switch eventData.EventName
                 case 'Minimizing'
-                    callback = obj.MinimizeFcn;
+                    callback = obj.MinimizeButton.Callback;
                 case 'Maximizing'
-                    callback = obj.MinimizeFcn;
+                    callback = obj.MaximizeButton.Callback;
                 case 'Docking'
-                    callback = obj.DockFcn;
+                    callback = obj.DockButton.Callback;
                 case 'Undocking'
-                    callback = obj.UndockFcn;
+                    callback = obj.UndockButton.Callback;
                 case 'Helping'
-                    callback = obj.HelpFcn;
+                    callback = obj.HelpButton.Callback;
                 case 'Closing'
-                    callback = obj.CloseRequestFcn;
+                    callback = obj.CloseRequestButton.Callback;
                 otherwise
                     return
             end
@@ -801,9 +801,10 @@ classdef BoxPanel < uix.Panel
         function rebutton( obj )
             %rebutton  Update buttons
             %
-            %  p.rebutton() adds used buttons and removes unused buttons.
+            %  p.rebutton() attaches used buttons and detaches unused
+            %  buttons.
 
-            % Remove all
+            % Detach all
             obj.MinimizeButton.Parent = [];
             obj.MaximizeButton.Parent = [];
             obj.DockButton.Parent = [];
@@ -811,7 +812,7 @@ classdef BoxPanel < uix.Panel
             obj.HelpButton.Parent = [];
             obj.CloseButton.Parent = [];
 
-            % Add maximize or minimize
+            % Attach maximize or minimize
             if isempty( obj.MinimizeButton.Callback )
                 % OK
             elseif obj.Minimized_
@@ -820,7 +821,7 @@ classdef BoxPanel < uix.Panel
                 obj.MinimizeButton.Parent = obj.TitleBar;
             end
 
-            % Add dock or undock
+            % Attach dock or undock
             if isempty( obj.DockButton.Callback )
                 % OK
             elseif obj.Docked_
@@ -829,14 +830,14 @@ classdef BoxPanel < uix.Panel
                 obj.DockButton.Parent = obj.TitleBar;
             end
 
-            % Add help
+            % Attach help
             if isempty( obj.HelpButton.Callback )
                 % OK
             else
                 obj.HelpButton.Parent = obj.TitleBar;
             end
 
-            % Add close
+            % Attach close
             if isempty( obj.CloseButton.Callback )
                 % OK
             else
