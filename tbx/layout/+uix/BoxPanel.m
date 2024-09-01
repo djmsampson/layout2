@@ -60,13 +60,13 @@ classdef BoxPanel < uix.Panel
     end
 
     properties( Access = public, Dependent, AbortSet, Hidden )
-        MinimizeTooltipString % transitioned to MinimizeTooltip
-        MaximizeTooltipString % transitioned to MaximizeTooltip
-        DockTooltipString % transitioned to DockTooltip
-        UndockTooltipString % transitioned to UndockTooltip
-        HelpTooltipString % transitioned to HelpTooltip
-        CloseTooltipString % transitioned to CloseTooltip
-    end
+        MinimizeTooltipString % now MinimizeTooltip
+        MaximizeTooltipString % now MaximizeTooltip
+        DockTooltipString % now DockTooltip
+        UndockTooltipString % now UndockTooltip
+        HelpTooltipString % now HelpTooltip
+        CloseTooltipString % now CloseTooltip
+    end % deprecated
 
     events( Hidden, NotifyAccess = private )
         Minimizing
@@ -457,6 +457,10 @@ classdef BoxPanel < uix.Panel
 
         end % set.CloseTooltip
 
+    end % accessors
+
+    methods
+
         function value = get.MinimizeTooltipString( obj )
 
             value = obj.MinimizeButton.TooltipString;
@@ -529,7 +533,7 @@ classdef BoxPanel < uix.Panel
 
         end % set.CloseTooltipString
 
-    end % accessors
+    end % legacy accessors
 
     methods( Access = private )
 
@@ -790,8 +794,16 @@ classdef BoxPanel < uix.Panel
 
         end % reparent
 
-        function rebutton( obj )
+    end % template methods
 
+    methods( Access = private )
+
+        function rebutton( obj )
+            %rebutton  Update titlebar buttons
+            %
+            %  p.rebutton() adds used buttons and removes unused buttons.
+
+            % Remove all
             obj.MinimizeButton.Parent = [];
             obj.MaximizeButton.Parent = [];
             obj.DockButton.Parent = [];
@@ -799,6 +811,7 @@ classdef BoxPanel < uix.Panel
             obj.HelpButton.Parent = [];
             obj.CloseButton.Parent = [];
 
+            % Add maximize or minimize
             if isempty( obj.MinimizeButton.Callback )
                 % OK
             elseif obj.Minimized_
@@ -807,6 +820,7 @@ classdef BoxPanel < uix.Panel
                 obj.MinimizeButton.Parent = obj.TitleBox;
             end
 
+            % Add dock or undock
             if isempty( obj.DockButton.Callback )
                 % OK
             elseif obj.Docked_
@@ -815,23 +829,29 @@ classdef BoxPanel < uix.Panel
                 obj.DockButton.Parent = obj.TitleBox;
             end
 
+            % Add help
             if isempty( obj.HelpButton.Callback )
                 % OK
             else
                 obj.HelpButton.Parent = obj.TitleBox;
             end
 
+            % Add close
             if isempty( obj.CloseButton.Callback )
                 % OK
             else
                 obj.CloseButton.Parent = obj.TitleBox;
             end
 
-            obj.TitleBox.Widths(2:end) = obj.TitleHeight_;
+            % Set sizes
+            if obj.TitleHeight_ > 0
+                obj.TitleBox.Widths(2:end) = obj.TitleHeight_ ...
+                    - 2 * obj.TitleBox.Padding;
+            end
 
         end % rebutton
 
-    end % template methods
+    end % helper methods
 
 end % classdef
 
