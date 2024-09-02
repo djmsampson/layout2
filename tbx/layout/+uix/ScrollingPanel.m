@@ -355,15 +355,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MouseWheelEnabled( obj, value )
 
             % Check
-            if isequal( value, 'on' ) || isequal( value, true )
+            if isequal( value, true )
                 value = 'on';
-            elseif isequal( value, 'off' ) || isequal( value, false )
+            elseif isequal( value, false )
                 value = 'off';
             else
-                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
-                    'MouseWheelEnabled', class( obj ), ...
-                    'Value must be ''on'' or ''off''.' ) )
+                try
+                    value = validatestring( value, {'on','off'} );
+                catch
+                    throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                        'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                        'MouseWheelEnabled', class( obj ), ...
+                        'Value must be ''on'' or ''off''.' ) )
+                end
             end
 
             % Set
@@ -378,15 +382,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Continuous( obj, value )
 
             % Check
-            if isequal( value, 'on' ) || isequal( value, true )
+            if isequal( value, true )
                 value = 'on';
-            elseif isequal( value, 'off' ) || isequal( value, false )
+            elseif isequal( value, false )
                 value = 'off';
             else
-                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
-                    'Continuous', class( obj ), ...
-                    'Value must be ''on'' or ''off''.' ) )
+                try
+                    value = validatestring( value, {'on','off'} );
+                catch
+                    throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                        'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                        'Continuous', class( obj ), ...
+                        'Value must be ''on'' or ''off''.' ) )
+                end
             end
 
             % Set
