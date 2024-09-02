@@ -162,7 +162,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','positive'} )
+                    {'scalar','finite','positive'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -218,7 +218,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','positive'} )
+                    {'scalar','finite','positive'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -246,7 +246,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','nonnegative'} )
+                    {'scalar','finite','nonnegative'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -274,7 +274,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','positive'} )
+                    {'scalar','finite','positive'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -302,7 +302,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','nonnegative'} )
+                    {'scalar','finite','nonnegative'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -330,7 +330,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value );
                 validateattributes( value, {'double'}, ...
-                    {'scalar','positive'} )
+                    {'scalar','finite','positive'} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -445,7 +445,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value(:) ); % convert
                 validateattributes( value, {'double'}, ...
-                    {'positive','numel',numel( obj.Contents_ )} )
+                    {'finite','positive','numel',numel( obj.Contents_ )} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -499,7 +499,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value(:) ); % convert
                 validateattributes( value, {'double'}, ...
-                    {'positive','numel',numel( obj.Contents_ )} )
+                    {'finite','positive','numel',numel( obj.Contents_ )} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -514,33 +514,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % set.MinimumWidths
 
-        function value = get.VerticalSteps( obj )
-
-            value = repmat( obj.VerticalStep, size( obj.Contents_ ) );
-
-        end % get.VerticalSteps
-
-        function set.VerticalSteps( obj, value ) % moved to VerticalStep
-
-            % Check
-            try
-                value = double( value(:) ); % convert
-                validateattributes( value, {'double'}, ...
-                    {'positive','numel',numel( obj.Contents_ )} )
-            catch
-                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
-                    'VerticalSteps', class( obj ), ...
-                    'Value must be a positive double vector, one element per child.' ) )
-            end
-
-            % Set
-            if ~isempty( value )
-                obj.VerticalStep = value(end); % top
-            end
-
-        end % set.VerticalSteps
-
         function value = get.VerticalOffsets( obj )
 
             value = repmat( obj.VerticalOffset, size( obj.Contents_ ) );
@@ -553,7 +526,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value(:) ); % convert
                 validateattributes( value, {'double'}, ...
-                    {'nonnegative','numel',numel( obj.Contents_ )} )
+                    {'finite','nonnegative','numel',numel( obj.Contents_ )} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -568,32 +541,32 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % set.VerticalOffsets
 
-        function value = get.HorizontalSteps( obj )
+        function value = get.VerticalSteps( obj )
 
-            value = repmat( obj.HorizontalStep, size( obj.Contents_ ) );
+            value = repmat( obj.VerticalStep, size( obj.Contents_ ) );
 
-        end % get.HorizontalSteps
+        end % get.VerticalSteps
 
-        function set.HorizontalSteps( obj, value ) % moved to HorizontalStep
+        function set.VerticalSteps( obj, value ) % moved to VerticalStep
 
             % Check
             try
                 value = double( value(:) ); % convert
                 validateattributes( value, {'double'}, ...
-                    {'positive','numel',numel( obj.Contents_ )} )
+                    {'finite','positive','numel',numel( obj.Contents_ )} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
-                    'HorizontalSteps', class( obj ), ...
+                    'VerticalSteps', class( obj ), ...
                     'Value must be a positive double vector, one element per child.' ) )
             end
 
             % Set
             if ~isempty( value )
-                obj.HorizontalStep = value(end); % top
+                obj.VerticalStep = value(end); % top
             end
 
-        end % set.HorizontalSteps
+        end % set.VerticalSteps
 
         function value = get.HorizontalOffsets( obj )
 
@@ -607,7 +580,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             try
                 value = double( value(:) ); % convert
                 validateattributes( value, {'double'}, ...
-                    {'nonnegative','numel',numel( obj.Contents_ )} )
+                    {'finite','nonnegative','numel',numel( obj.Contents_ )} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -621,6 +594,33 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             end
 
         end % set.HorizontalOffsets
+
+        function value = get.HorizontalSteps( obj )
+
+            value = repmat( obj.HorizontalStep, size( obj.Contents_ ) );
+
+        end % get.HorizontalSteps
+
+        function set.HorizontalSteps( obj, value ) % moved to HorizontalStep
+
+            % Check
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'finite','positive','numel',numel( obj.Contents_ )} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'HorizontalSteps', class( obj ), ...
+                    'Value must be a positive double vector, one element per child.' ) )
+            end
+
+            % Set
+            if ~isempty( value )
+                obj.HorizontalStep = value(end); % top
+            end
+
+        end % set.HorizontalSteps
 
         function value = get.Selection( obj )
 
