@@ -79,17 +79,19 @@ classdef Container < handle
 
         function set.Contents( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
-            [tf, indices] = ismember( value, obj.Contents_ );
-            assert( isequal( size( obj.Contents_ ), size( value ) ) && ...
-                numel( value ) == numel( unique( value ) ) && all( tf ), ...
-                'uix:InvalidOperation', ...
-                'Property ''Contents'' may only be set to a permutation of itself.' )
+            try
+                value = value(:); % reshape
+                assert( isequal( sort( value ), sort( obj.Contents_ ) ) )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Contents', class( obj ), ...
+                    'Value must be a permutation of itself.' ) )
+            end
 
             % Call template method
+            [~, indices] = ismember( value, obj.Contents_ );
             obj.reorder( indices )
 
             % Mark as dirty
@@ -106,11 +108,16 @@ classdef Container < handle
         function set.Padding( obj, value )
 
             % Check
-            assert( isa( value, 'double' ) && isscalar( value ) && ...
-                isreal( value ) && ~isinf( value ) && ...
-                ~isnan( value ) && value >= 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Padding'' must be a non-negative scalar.' )
+            try
+                value = double( value ); % convert
+                assert( isscalar( value ) && isreal( double ) && ...
+                    ~isinf( value ) && ~isnan( value ) && value >= 0 )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Padding', class( obj ), ...
+                    'Value must be a nonnegative scalar double.' ) )
+            end
 
             % Set
             obj.Padding_ = value;
