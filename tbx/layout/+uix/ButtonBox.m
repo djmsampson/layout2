@@ -30,9 +30,8 @@ classdef ButtonBox < uix.Box
             % Check
             try
                 value = double( value ); % convert
-                assert( isequal( size( value ), [1 2] ) && ...
-                    all( isreal( value ) ) && ~any( isinf( value ) ) && ...
-                    ~any( isnan( value ) ) && all( value > 0 ) )
+                validateattributes( value, {'double'}, ...
+                    {'size',[1 2],'>',0} )
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -58,8 +57,7 @@ classdef ButtonBox < uix.Box
 
             % Check
             try
-                value = char( value ); % convert
-                assert( ismember( value, {'left';'center';'right'} ) )
+                value = validatestring( value, {'left','right','center'} );
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
@@ -85,8 +83,7 @@ classdef ButtonBox < uix.Box
 
             % Check
             try
-                value = char( value ); % convert
-                assert( ismember( value, {'top';'middle';'bottom'} ) )
+                value = validatestring( value, {'top';'middle';'bottom'} );
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Error setting property ''%s'' of class ''%s''.\n%s', ...
