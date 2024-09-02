@@ -47,7 +47,7 @@ end
 
 
 % --- Executes just before guideApp is made visible.
-function guideApp_OpeningFcn(hObject, eventdata, handles, varargin)
+function guideApp_OpeningFcn(hObject, ~, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -62,20 +62,20 @@ guidata(hObject, handles);
 
 % Put a layout in the panel
 g = uix.GridFlex( 'Parent', handles.uipanel1, ...
-    'Units', 'Normalized', 'Position', [0 0 1 1], ...
+    'Units', 'normalized', 'Position', [0, 0, 1, 1], ...
     'Spacing', 5 );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 1' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 2' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 3' );
 uix.BoxPanel( 'Parent', g, 'Title', 'Panel 4' );
-g.Heights = [-1 -1];
+g.Heights = [-1, -1];
 
 % UIWAIT makes guideApp wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = guideApp_OutputFcn(hObject, eventdata, handles) 
+function varargout = guideApp_OutputFcn(~, ~, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -86,21 +86,21 @@ varargout{1} = handles.output;
 
 
 % --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
+function pushbutton1_Callback(~, ~, ~)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
+function pushbutton2_Callback(~, ~, ~)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)
+function pushbutton3_Callback(~, ~, ~)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)

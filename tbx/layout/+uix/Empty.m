@@ -16,7 +16,7 @@ function obj = Empty( varargin )
 %   >> uix.Empty( 'Parent', box )
 %   >> uicontrol( 'Parent', box, 'Background', 'b' )
 
-%  Copyright 2009-2020 The MathWorks, Inc.
+%  Copyright 2009-2024 The MathWorks, Inc.
 
 % Create uicontainer
 obj = matlab.ui.container.internal.UIContainer( 'Tag', 'empty', varargin{:} );
@@ -33,9 +33,23 @@ obj.ParentListener = event.proplistener( obj, ...
 p = addprop( obj, 'ParentColorListener' );
 p.Hidden = true;
 
-% Initialize color and listener
+% Create properties for FigureObserver and a corresponding listener
+p = addprop( obj, 'FigureObserver' );
+p.Hidden = true;
+obj.FigureObserver = uix.FigureObserver( obj );
+p = addprop( obj, 'FigureChangedListener' );
+p.Hidden = true;
+obj.FigureChangedListener = event.listener( obj.FigureObserver, ...
+    'FigureChanged', @(~, ~) onFigureChanged( obj ) );
+
+% Create property for ancestor theme listener
+p = addprop( obj, 'AncestorThemeListener' );
+p.Hidden = true;
+
+% Initialize color and listeners
 updateColor( obj )
 updateListener( obj )
+updateAncestorThemeListener( obj )
 
 end % uix.Empty
 
@@ -76,7 +90,7 @@ if isempty( parent ), return, end
 property = getColorProperty( parent );
 if ~isempty( property )
     color = parent.( property );
-    obj.BackgroundColor = color;
+    obj.BackgroundColor_I = color;
 end
 
 end % updateColor
@@ -99,3 +113,42 @@ else
 end % if
 
 end % updateListener
+
+function onFigureChanged( obj )
+%onFigureChanged Update the ThemeChanged listener and the color
+
+updateAncestorThemeListener( obj )
+updateColor( obj )
+
+end % onFigureChanged
+
+function updateAncestorThemeListener( obj )
+%updateAncestorThemeListener Create listener to figure ancestor theme
+%property
+
+f = ancestor( obj, 'figure' );
+if isempty( f )
+    obj.AncestorThemeListener = [];
+else
+    figureMetadata = ?matlab.ui.Figure;
+    figureEventNames = {figureMetadata.EventList.Name};
+    if isprop( f, 'Theme' ) && ismember( 'ThemeChanged', figureEventNames )
+        obj.AncestorThemeListener = event.listener( f, 'ThemeChanged', ...
+            @(~, ~) onThemeChanged( obj ) );
+    else
+        obj.AncestorThemeListener = [];
+    end % if
+end % if
+
+end % updateAncestorThemeListener
+
+function onThemeChanged( obj )
+%onThemeChanged Respond to the ThemeChanged event
+
+if strcmp( obj.BackgroundColorMode, 'manual' )
+    return
+else % 'auto'
+    updateColor( obj )
+end % if
+
+end % onThemeChanged

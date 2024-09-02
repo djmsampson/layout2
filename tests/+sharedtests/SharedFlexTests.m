@@ -430,7 +430,7 @@ classdef ( Abstract ) SharedFlexTests < sharedtests.SharedContainerTests
                 testCase, ConstructorName );
 
             % Move the mouse to the center of a divider.
-            testFig = ancestor( component, 'figure' );
+            testFig = ancestor( component, 'figure' );            
             figure( testFig ) % Focus the figure
             pause( 2 )
             figureOrigin = getFigureOrigin( testFig );

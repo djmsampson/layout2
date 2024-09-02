@@ -1,10 +1,8 @@
-classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
+classdef ( Abstract ) SharedContainerTests < sharedtests.SharedThemeTests
     %CONTAINERTESTS Tests common to all GUI Layout Toolbox containers,
     %across both the +uiextras and +uix packages.
 
-    properties ( TestParameter, Abstract )
-        % The constructor name, or class, of the component under test.
-        ConstructorName
+    properties ( TestParameter, Abstract )        
         % Name-value pair arguments to use when testing the component's
         % constructor and get/set methods.
         NameValuePairs
@@ -1262,8 +1260,8 @@ classdef ( Abstract ) SharedContainerTests < glttestutilities.TestInfrastructure
             testCase.verifyWarningFree( f, ['Setting the ''Parent''', ...
                 ' property of the ', ConstructorName, ' component ', ...
                 'to the same handle was not warning-free.'] )
-            
-        end % tSettingComponentParentToSameHandleIsWarningFree
+
+        end % tSettingComponentParentToSameHandleIsWarningFree        
 
     end % methods ( Test, Sealed )
 

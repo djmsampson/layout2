@@ -1,6 +1,7 @@
-classdef tEmpty < glttestutilities.TestInfrastructure
-    %TEMPTY Tests for uiextras.Empty and uix.Empty. Empty is not a
-    %container, so does not utilize the shared container tests.
+classdef tEmpty < sharedtests.SharedThemeTests
+    %TEMPTY Tests for uiextras.Empty and uix.Empty. Empty does not act as
+    %a container in the sense that it has no Contents or Children, so does
+    %not utilize the shared container tests.
 
     properties ( TestParameter )
         % The constructor name, or class, of the component under test.
@@ -27,7 +28,7 @@ classdef tEmpty < glttestutilities.TestInfrastructure
 
         function tAutoParentBehaviorIsCorrect( testCase, ConstructorName )
 
-            % This test only applies to uiextras.Empty.
+            % This test only applies to uiextras.Empty.            
             isuiextras = strcmp( ConstructorName, 'uiextras.Empty');
             testCase.assumeTrue( isuiextras, ...
                 ['Testing auto-parenting behavior applies to ', ...
@@ -181,6 +182,30 @@ classdef tEmpty < glttestutilities.TestInfrastructure
                 'grid layout (uigridlayout) was not warning-free.'] )
 
         end % tPlacingEmptyComponentInGridLayoutIsWarningFree
+
+        function tConstructionInGridLayoutMatchesBackgroundColor( ...
+                testCase, ConstructorName )
+
+            % Assume that we're in web graphics.
+            testCase.assumeGraphicsAreWebBased()
+
+            % Create a grid layout on the test figure.
+            expectedColor = [1, 0, 0];
+            testFig = testCase.ParentFixture.Parent;
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0, ...
+                'BackgroundColor', expectedColor );
+
+            % Add the empty component.
+            e = feval( ConstructorName, 'Parent', testGrid );
+            
+            % Check that the initial BackgroundColor matches.
+            actualColor = e.BackgroundColor;
+            testCase.verifyEqual( actualColor, expectedColor, ...
+                ['Placing a ', ConstructorName, ' component in a ', ...
+                'grid layout did not match the initial ', ...
+                '''BackgroundColor'' of the grid layout.'] )
+
+        end % tConstructionInGridLayoutMatchesBackgroundColor
 
     end % methods ( Test, Sealed )
 
