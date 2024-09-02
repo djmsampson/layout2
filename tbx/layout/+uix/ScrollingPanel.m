@@ -131,13 +131,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Height( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Height'' must be numeric, scalar, real and finite.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','finite','nonnan','real'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Height', class( obj ), ...
+                    'Value must be a double.' ) )
+            end
 
             % Set
-            obj.Height_ = double( value );
+            obj.Height_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -153,14 +159,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MinimumHeight( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
-                value > 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MinimumHeight'' must be numeric, scalar, real, finite and positive.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','positive'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'MinimumHeight', class( obj ), ...
+                    'Value must be a positive double.' ) )
+            end
 
             % Set
-            obj.MinimumHeight_ = double( value );
+            obj.MinimumHeight_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -176,13 +187,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Width( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''Width'' must be numeric, scalar, real and finite.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','finite','nonnan','real'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Width', class( obj ), ...
+                    'Value must be a double.' ) )
+            end
 
             % Set
-            obj.Width_ = double( value );
+            obj.Width_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -198,14 +215,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MinimumWidth( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
-                value > 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MinimumWidth'' must be numeric, scalar, real, finite and positive.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','positive'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'MinimumWidth', class( obj ), ...
+                    'Value must be a positive double.' ) )
+            end
 
             % Set
-            obj.MinimumWidth_ = double( value );
+            obj.MinimumWidth_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -221,13 +243,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.VerticalOffset( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''VerticalOffset'' must be numeric, scalar, real and finite.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','nonnegative'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'VerticalOffset', class( obj ), ...
+                    'Value must be a nonnegative double.' ) )
+            end
 
             % Set
-            obj.VerticalSlider.Value = double( -value );
+            obj.VerticalSlider.Value = -value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -243,14 +271,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.VerticalStep( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
-                value > 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''VerticalStep'' must be numeric, scalar, real, finite and positive.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','positive'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'VerticalStep', class( obj ), ...
+                    'Value must be a positive double.' ) )
+            end
 
             % Set
-            obj.VerticalStep_ = double( value );
+            obj.VerticalStep_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -266,13 +299,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.HorizontalOffset( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HorizontalOffset'' must be numeric, scalar, real and finite.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','nonnegative'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'HorizontalOffset', class( obj ), ...
+                    'Value must be a nonnegative double.' ) )
+            end
 
             % Set
-            obj.HorizontalSlider.Value = double( value );
+            obj.HorizontalSlider.Value = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -288,14 +327,19 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.HorizontalStep( obj, value )
 
             % Check
-            assert( isnumeric( value ) && isscalar( value ) && ...
-                isreal( value ) && ~isnan( value ) && ~isinf( value ) && ...
-                value > 0, ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HorizontalStep'' must be numeric, scalar, real, finite and positive.' )
+            try
+                value = double( value );
+                validateattributes( value, {'double'}, ...
+                    {'scalar','positive'} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'HorizontalStep', class( obj ), ...
+                    'Value must be a positive double.' ) )
+            end
 
             % Set
-            obj.HorizontalStep_ = double( value );
+            obj.HorizontalStep_ = value;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -311,12 +355,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MouseWheelEnabled( obj, value )
 
             % Check
-            try
-                value = char( value );
-                assert( ismember( value, {'on','off'} ) )
-            catch
-                error( 'uix:InvalidArgument', ...
-                    'Property ''MouseWheelEnabled'' must be ''on'' or ''off''.' )
+            if isequal( value, 'on' ) || isequal( value, true )
+                value = 'on';
+            elseif isequal( value, 'off' ) || isequal( value, false )
+                value = 'off';
+            else
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'MouseWheelEnabled', class( obj ), ...
+                    'Value must be ''on'' or ''off''.' ) )
             end
 
             % Set
@@ -331,12 +378,15 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Continuous( obj, value )
 
             % Check
-            try
-                value = char( value );
-                assert( ismember( value, {'on','off'} ) )
-            catch
-                error( 'uix:InvalidArgument', ...
-                    'Property ''Continuous'' must be ''on'' or ''off''.' )
+            if isequal( value, 'on' ) || isequal( value, true )
+                value = 'on';
+            elseif isequal( value, 'off' ) || isequal( value, false )
+                value = 'off';
+            else
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Continuous', class( obj ), ...
+                    'Value must be ''on'' or ''off''.' ) )
             end
 
             % Set
@@ -357,9 +407,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Heights( obj, value ) % moved to Height
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''Heights'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'finite','nonnan','real','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Heights', class( obj ), ...
+                    'Value must be a double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -377,9 +434,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MinimumHeights( obj, value ) % moved to MinimumHeight
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''MinimumHeights'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'positive','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Heights', class( obj ), ...
+                    'Value must be a positive double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -397,9 +461,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.Widths( obj, value ) % moved to Width
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''Widths'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'finite','nonnan','real','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Widths', class( obj ), ...
+                    'Value must be a double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -417,9 +488,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.MinimumWidths( obj, value ) % moved to MinimumWidth
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''MinimumWidths'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'positive','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'MinimumWidths', class( obj ), ...
+                    'Value must be a positive double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -437,9 +515,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.VerticalSteps( obj, value ) % moved to VerticalStep
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''VerticalSteps'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'positive','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'VerticalSteps', class( obj ), ...
+                    'Value must be a positive double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -457,9 +542,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.VerticalOffsets( obj, value ) % moved to VerticalOffset
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''VerticalOffsets'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'nonnegative','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'VerticalOffsets', class( obj ), ...
+                    'Value must be a nonnegative double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -477,9 +569,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.HorizontalSteps( obj, value ) % moved to HorizontalStep
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''HorizontalSteps'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'positive','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'HorizontalSteps', class( obj ), ...
+                    'Value must be a positive double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -497,9 +596,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function set.HorizontalOffsets( obj, value ) % moved to HorizontalOffset
 
             % Check
-            assert( numel( value ) == numel( obj.Contents_ ), ...
-                'uix:InvalidArgument', ...
-                'Property ''HorizontalOffsets'' must be an array, one per child.' )
+            try
+                value = double( value(:) ); % convert
+                validateattributes( value, {'double'}, ...
+                    {'nonnegative','size',[numel( obj.Contents_) 1]} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'HorizontalOffsets', class( obj ), ...
+                    'Value must be a nonnegative double vector, one element per child.' ) )
+            end
 
             % Set
             if ~isempty( value )
@@ -630,7 +736,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
             end
 
-            % Set scrollbar properties. Setting properties interrupts 
+            % Set scrollbar properties. Setting properties interrupts
             % continuous scrolling, so only proceed if the component is not
             % being scrolled.
             if strcmp( obj.Scrolling_, 'off' )
