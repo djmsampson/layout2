@@ -37,7 +37,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         TabGroup % tab group
     end
 
-    properties( Access = private )       
+    properties( Access = private )
         ShadowTabGroup % tab group
         BackgroundColorListener % listener
         SelectionChangedListener % listener        
@@ -82,7 +82,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
             % Create tab groups
             tabGroup = matlab.ui.container.TabGroup( ...
-                'Internal', true, 'Parent', obj, ...
+                'Internal', true, 'Parent', obj, 'Visible', 'off', ...
                 'SelectionChangedFcn', @obj.onTabSelected );
             if isprop( tabGroup, 'AutoResizeChildren' )
                 tabGroup.AutoResizeChildren = 'off';
@@ -494,8 +494,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             % Call superclass method
             addChild@uix.mixin.Container( obj, child )
 
-            % Create new tab
+            % Show tab group
             tabGroup = obj.TabGroup;
+            tabGroup.Visible = 'on';
+
+            % Create new tab
             shadowTabGroup = obj.ShadowTabGroup;
             tabs = tabGroup.Children;
             n = numel( tabs );

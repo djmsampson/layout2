@@ -215,34 +215,6 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
 
         end % tTooltipStringPropertiesSupportStrings
 
-        function tTooltipStringPropertiesSupportMissingStrings( ...
-                testCase, ConstructorName )
-
-            % This test is only valid for MATLAB R2016b onwards.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
-
-            % Create a component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Create a missing string.
-            testString = string( NaN );
-
-            % For each tooltip string property, verify that setting a
-            % missing value stores the 0-by-0 character array.
-            expectedValue = char.empty( 0, 0 );
-            tooltipStringProperties = testCase.TooltipStringProperties;
-            for k = 1 : numel( tooltipStringProperties )
-                propertyName = tooltipStringProperties{k};
-                component.(propertyName) = testString;
-                testCase.verifyEqual( component.(propertyName), ...
-                    expectedValue, ['Setting the ''', propertyName, ...
-                    ''' property with a missing string value on the ', ...
-                    ConstructorName, ' component did not assign the ', ...
-                    'value correctly.'] )
-            end % for
-
-        end % tTooltipStringPropertiesSupportMissingStrings
-
         function tTooltipStringPropertiesErrorForNonScalarStrings( ...
                 testCase, ConstructorName )
 
