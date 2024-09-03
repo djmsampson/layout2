@@ -133,8 +133,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                 obj.DummyControl.ForegroundColor = value; % RGB or special
                 value = obj.DummyControl.ForegroundColor; % RGB
             catch
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''ForegroundColor'' must be a colorspec.' )
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'ForegroundColor', class( obj ), ...
+                    'Value must be a color name, RGB triplet, or hex color code.' ) )
             end
 
             % Set
@@ -155,18 +157,24 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         function set.Selection( obj, newValue )
 
-            % Select
+            % Check
+            try
+                newValue = double( newValue ); % convert
+                validateattributes( newValue, {'double'}, ...
+                    {'scalar','integer','positive','<=',numel( obj.Contents_ )} )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'Selection', class( obj ), ...
+                    'Value must be an integer between 1 and the number of contents.' ) )
+            end
+
+            % Set
             oldValue = obj.Selection;
             tabGroup = obj.TabGroup;
             shadowTabGroup = obj.ShadowTabGroup;
-            try
-                assert( isscalar( newValue ) )
-                tabGroup.SelectedTab = tabGroup.Children(newValue);
-                shadowTabGroup.SelectedTab = shadowTabGroup.Children(newValue);
-            catch
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''Selection'' must be between 1 and the number of tabs.' )
-            end
+            tabGroup.SelectedTab = tabGroup.Children(newValue);
+            shadowTabGroup.SelectedTab = shadowTabGroup.Children(newValue);
 
             % Raise event
             notify( obj, 'SelectionChanged', ...
@@ -224,22 +232,16 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         function set.TabLocation( obj, value )
 
-            % Convert
-            try
-                value = char( value );
-            catch
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''TabLocation'' must be ''top'', ''bottom'', ''left'' or ''right''.' )
-            end
-
-            % Check
-            assert( ismember( value, {'top','bottom','left','right'} ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabLocation'' must be ''top'', ''bottom'', ''left'' or ''right''.' )
-
             % Set
-            obj.TabGroup.TabLocation = value;
-            obj.ShadowTabGroup.TabLocation = value;
+            try
+                obj.TabGroup.TabLocation = value;
+                obj.ShadowTabGroup.TabLocation = value;
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'TabLocation', class( obj ), ...
+                    'Value must be ''top'', ''bottom'', ''left'' or ''right''.' ) )
+            end
 
             % Mark as dirty
             obj.Dirty = true;
@@ -288,18 +290,21 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         function set.TabContextMenus( obj, value )
 
-            % Reshape
-            value = value(:);
-
             % Check
-            tabs = obj.TabGroup.Children;
-            assert( iscell( value ) && ...
-                numel( value ) == numel( tabs ) && ...
-                all( cellfun( @iscontextmenu, value(:) ) ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''TabContextMenus'' must be a cell array of context menus, one per tab.' )
+            try
+                value = value(:); % reshape
+                validateattributes( value, {'cell'}, ...
+                    {'numel',numel( obj.Contents_ )} )
+                assert( all( cellfun( @iscontextmenu, value(:) ) ) )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Error setting property ''%s'' of class ''%s''.\n%s', ...
+                    'TabContextMenus', class( obj ), ...
+                    'Value must be a vector of context menus, one per child.' ) )
+            end
 
             % Set
+            tabs = obj.TabGroup.Tabs;
             for ii = 1:numel( tabs )
                 tabs(ii).UIContextMenu = value{ii};
             end
