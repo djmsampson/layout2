@@ -28,7 +28,7 @@ jobs:
         platform: [ ubuntu-latest, windows-latest ]
                 
         # List of MATLAB releases over which to run the tests.        
-        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a ]
+        matlab-version: [ R2020b, R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a, R2024b ]
         
         # We don't define any startup options until we reach R2023b (handled separately below).
         matlab-startup-options: [ '' ]        
@@ -58,7 +58,15 @@ jobs:
 
           - platform: windows-latest
             matlab-version: R2024a
-            matlab-startup-options: -webui          
+            matlab-startup-options: -webui
+
+          - platform: ubuntu-latest
+            matlab-version: R2024b
+            matlab-startup-options: -webui
+
+          - platform: windows-latest
+            matlab-version: R2024b
+            matlab-startup-options: -webui            
     
     # Specify the platform that the job will run on.
     runs-on: ${{ matrix.platform }}
