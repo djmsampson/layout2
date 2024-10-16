@@ -95,11 +95,15 @@ classdef tGetPosition < glttestutilities.TestInfrastructure
             % Assume that the figure is non-empty.
             testCase.assumeGraphicsAreRooted()
 
-            % Create a figure with normalized units.
+            % Create a figure with normalized units and normal window 
+            % style (required from R2025a onwards).
             fig = testCase.ParentFixture.Parent;
-            fig.Units = 'normalized';
+            set( fig, 'Units', 'normalized', 'WindowStyle', 'normal' )
+            pause( 1 ) % Allow settling time
+            
             % Compute the figure's position in pixels.
             p = uix.getPosition( fig, 'pixels' );
+            
             % Compare this to the figure's actual position in pixels.
             fig.Units = 'pixels';
             testCase.verifyEqual( p, fig.Position, ...
