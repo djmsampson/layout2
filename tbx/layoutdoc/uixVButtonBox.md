@@ -13,17 +13,17 @@ Arrange buttons vertically in a single column
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background color. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`ButtonSize`** | The size used for the buttons or controls (all elements are given the same size). | `[width, height]` |
-| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself. | graphics vector |
-| **`HorizontalAlignment`** | The horizontal position of the buttons or controls. | `"left"` \| `"center"` \| `"right"` |
-| **`Padding`** | Space around contents, in pixels. | nonnegative scalar integer
-| **`Parent`** | Parent figure or container. | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]`  |
-| **`Spacing`** | Space between elements, in pixels. | nonnegative scalar |
-| **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| **`VerticalAlignment`** | The vertical position of the buttons or controls. | `"top"` \| `"middle"` \| `"bottom"` |
-| **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
+| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`ButtonSize`** | The size used for the buttons or controls (all elements are given the same size) | `[width, height]` |
+| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself | graphics vector |
+| **`HorizontalAlignment`** | The horizontal position of the buttons or controls | `"left"` \| `"center"` \| `"right"` |
+| **`Padding`** | Space around contents, in pixels | nonnegative scalar integer
+| **`Parent`** | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| **`Position`** | Position within parent figure or container, in **`Units`** | `[left, bottom, width, height]`  |
+| **`Spacing`** | Space between elements, in pixels | nonnegative scalar |
+| **`Units`** | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| **`VerticalAlignment`** | The vertical position of the buttons or controls | `"top"` \| `"middle"` \| `"bottom"` |
+| **`Visible`** | Visibility; default is `"on"` | `"on"` or `"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: **`ContextMenu`**
