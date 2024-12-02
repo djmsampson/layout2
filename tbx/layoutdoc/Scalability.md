@@ -1,4 +1,4 @@
-# Scalability
+# Scalability and Architecture
 
 As applications get bigger the code gets more complex. The simple application structure used here does not scale well to large applications. However, some small adjustments can make life much better.
 

@@ -1,4 +1,4 @@
-# `updateInterface`
+# **Updating the User Interface**
 
 The second function we will look at, `updateInterface`, uses the current selection together with the relevant content in the `data` structure to update the interface. The following steps are used in the update process.
 

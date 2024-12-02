@@ -1,4 +1,4 @@
-# `createInterface`
+# **Creating the User Interface**
 
 The interface creation is handled in the `createInterface` function. This has two distinct sections: menu building and control arrangement. The menus are created using the [**`uimenu`**](https://www.mathworks.com/help/matlab/ref/uimenu.html) function, so in what follows we'll focus on the control arrangement.
 
