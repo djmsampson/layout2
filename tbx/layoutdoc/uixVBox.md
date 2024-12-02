@@ -100,7 +100,7 @@ g = uigauge( gl );
 uitable( vbf, "Data", magic( 5 ) );
 ```
 
-## See also
+## Related Topics
 
 * :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row
 * :left_right_arrow: [**`uix.HBoxFlex`**](uixHBox.md): Arrange elements horizontally with draggable dividers

@@ -65,7 +65,7 @@ Change the selection.
 cp.Selection = 1;
 ```
 
-## See also
+## Related Topics
 
 * :page_facing_up: [**`uix.Panel`**](uixPanel.md): Arrange a single element inside a standard panel
 * :black_square_button: [**`uix.BoxPanel`**](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls

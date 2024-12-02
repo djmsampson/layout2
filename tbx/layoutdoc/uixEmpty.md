@@ -61,5 +61,5 @@ Note that the empty space has not updated its background color (see the limitati
 e.BackgroundColor = g.BackgroundColor;
 ```
 
-## See also
+## Related Topics
 * :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row

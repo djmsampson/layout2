@@ -99,7 +99,7 @@ k = uiknob( g );
 uilistbox( hbf );
 ```
 
-## See also
+## Related Topics
 
 * :arrow_down: [**`uix.VBox`**](uixVBox.md): Arrange elements vertically in a single column
 * :arrow_up_down: [**`uix.VBoxFlex`**](uixVBox.md): Arrange elements vertically with draggable dividers

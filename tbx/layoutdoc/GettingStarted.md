@@ -1,12 +1,9 @@
 
-# **Getting Started**
+# **Get Started with GUI Layout Toolbox**
 
-This chapter gives an overview of this toolbox, including its purpose, how to install it, and any known issues at the time of release.
+This section gives an overview of GUI Layout Toolbox, including its purpose, how to install it, a quick start example, and any known issues at the time of release.
 
-# Contents
+## Contents
 -  [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
 -  [Compatibility Considerations](CompatibilityConsiderations.md) 
 -  [Release Notes](ReleaseNotes.md)
--  [Installation](Installation.md)
--  [Support](Support.md)
--  [Acknowledgements](Acknowledgements.md)

@@ -1,11 +1,11 @@
 
 # **Colorbars and Legends**
 
-# **Overview**
+## **Overview**
 
 When using layouts to position axes that can have a colorbar or legend, it is very important to group the axes with its colorbar and legend by placing them insider a **`uicontainer`**. The following example illustrates this.
 
-# Example
+## Example
 
 The code for this example is available in `colorbarsAndLegends.m`.
 
@@ -34,7 +34,7 @@ axes1 = axes( 'Parent', uicontainer( 'Parent', vbox ) );
 axes2 = axes( 'Parent', uicontainer( 'Parent', vbox ) );
 ```
 
-# Add axes decorations
+## Add axes decorations
 
 Give the first axes a colorbar and the second axes a legend.
 
@@ -46,3 +46,9 @@ theta = 0:360;
 plot( axes2, theta, sind( theta ), theta, cosd( theta ), 'LineWidth', 2 )
 legend( axes2, 'sin', 'cos', 'Location', 'northwestoutside' )
 ```
+
+## Related Topics
+* [Flexible vertical boxes](uixVBox.md)
+* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [**`colorbar`**](https://www.mathworks.com/help/matlab/ref/colorbar.html)
+* [**`legend`**](https://www.mathworks.com/help/matlab/ref/legend.html)

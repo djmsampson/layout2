@@ -1,14 +1,14 @@
 
 # **Minimize and Maximize**
 
-# **Overview**
+## **Overview**
 
 When the **`MinimizeFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a minimize/maximize button (with symbol :arrow_up_small: or :arrow_down_small:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
 
 Since the behavior of the parent container is different in different use cases, it is up to the user to write some code to actually resize the panel. Note that minimizing a panel to its title bar only really makes sense inside a [**`uix.VBox`**](uixVBox.md) or [**`uix.VBoxFlex`**](uixVBox.md) layout.
 
-# Example
+## Example
 
 The following example shows how to add minimize/maximize functionality to a box containing panels. The code for this example is available in `minimizeExample.m`.
 
@@ -22,8 +22,8 @@ Run the example.
 minimizeExample
 ```
 
-# The `minimizeExample` function
-## Create the layout with three panels
+## The `minimizeExample` function
+### Create the layout with three panels
 
 Create a new figure window and add three panels.
 
@@ -57,7 +57,7 @@ uicontrol( 'Parent', boxPanels(3), 'Style', 'pushbutton', 'String', 'Button 3' )
 f.Position(3:4) = [figureWidth, sum( vbox.Heights )]; 
 ```
 
-## Add the minimize/maximize callback
+### Add the minimize/maximize callback
 
 We set each box panel to call the same minimize/maximize function. This function is nested inside the main function so that it has access to the main function's variables. A better approach for larger applications is to use classes, but a simpler approach using nested or local functions is fine for simpler applications.
 
@@ -97,3 +97,7 @@ boxPanels(3).MinimizeFcn = {@onMinimize, 3};
 
 end % minimizeExample 
 ```
+
+## Related Topics
+* [Vertical layouts](uixVBox.md)
+* [Box panels](uixBoxPanel.md)

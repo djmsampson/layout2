@@ -114,7 +114,7 @@ uislider( gl );
 set( grf, 'Widths', [-1, -1, -1], 'Heights', [-1, 100] )
 ```
 
-## See also
+## Related Topics
 
 * :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row
 * :arrow_down: [**`uix.VBox`**](uixVBox.md): Arrange elements vertically in a single column

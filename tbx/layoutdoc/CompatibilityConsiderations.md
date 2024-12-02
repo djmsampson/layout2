@@ -1,7 +1,7 @@
 
 # **Compatibility Considerations**
 
-# Web Graphics Support
+## Web Graphics Support
 
 In R2016a, MathWorks introduced JavaScript\-based MATLAB graphics (*web graphics*) alongside the earlier Java\-based system. Web graphics offers additional components and deployment technologies, and has been maturing ever since. The web graphics system is accessed by creating a figure using the [**`uifigure`**](https://www.mathworks.com/help/matlab/ref/uifigure.html) function rather than the [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html) function.
 
@@ -66,11 +66,11 @@ uibutton( cp, "Text", "Button 1" );
 uibutton( cp, "Text", "Button 2" );
 ```
 
-# **Minimum MATLAB Version**
+## **Minimum MATLAB Version**
 
 This is version 2 of GUI Layout Toolbox, designed to work with the new MATLAB graphics system that was introduced in R2014b. Version 1 works with MATLAB releases prior to R2014b that use the old graphics system.
 
-# Compatibility with Version 1
+## Compatibility with Version 1
 
 If you are upgrading from version 1, there are a number of compatibility considerations.
 

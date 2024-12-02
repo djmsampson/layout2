@@ -106,9 +106,8 @@ Add a listbox on the left. Note that we link the listbox callback to the tab sel
 
 ```matlab
 lb = uicontrol( 'Parent', p, ...
-    'Style', 'list', ...
-    'String', {'List Item 1', 'List Item 2', 'List Item 3'}, ...
-    'BackgroundColor', 'w', ...
+    'Style', 'listbox', ...
+    'String', {'List Item 1', 'List Item 2', 'List Item 3'}, ...    
     'Callback', @(s, ~) set( tp, 'Selection', s.Value ) );
 tp.SelectionChangedFcn = @(~, e) set( lb, 'Value', e.NewValue ); 
 ```
@@ -152,7 +151,7 @@ Run the example.
 tabPanelExample
 ```
 
-## See also
+## Related Topics
 * :page_facing_up: [**`uix.Panel`**](uixPanel.md): Arrange a single element inside a standard panel
 * :card_index: [**`uix.CardPanel`**](uixCardPanel.md): Show one element (card) from a list
 * :black_square_button: [**`uix.BoxPanel`**](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls

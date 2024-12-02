@@ -110,7 +110,7 @@ uibutton( vbb, "BackgroundColor", "g" );
 uibutton( vbb, "BackgroundColor", "b" );
 ```
 
-## See also
+## Related Topics
 * :page_facing_up: [**`uix.Panel`**](uixPanel.md): Arrange a single element inside a standard panel
 * :card_index: [**`uix.CardPanel`**](uixCardPanel.md): Show one element (card) from a list
 * :point_right: [**`uix.TabPanel`**](uixTabPanel.md): Arrange elements in a panel with tabs for selecting which element is visible

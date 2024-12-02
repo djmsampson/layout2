@@ -1,7 +1,7 @@
 
 # **Layout Basics**
 
-# Create a basic layout
+## Create a basic layout
 
 To see how layouts work, let's use the most basic layout, a horizontal box. We first create a figure window.
 
@@ -21,7 +21,7 @@ Nothing's changed! That's because the layout is for arranging other user interfa
 uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 1' )
 ```
 
-# Add a second control to the layout
+## Add a second control to the layout
 
 Add the second button.
 
@@ -29,7 +29,7 @@ Add the second button.
 uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 2' )
 ```
 
-# Add a third control to the layout
+## Add a third control to the layout
 
 Add the third button.
 
@@ -37,7 +37,7 @@ Add the third button.
 uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 3' )
 ```
 
-# Further layouts
+## Further layouts
 
 Other layouts work in exactly the same way, although visually the end result is quite different:
 
@@ -57,7 +57,7 @@ uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 2' )
 uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 3' )
 ```
 
-# Layouts in web graphics
+## Layouts in web graphics
 
 In web graphics, the example code for **`uix.VBox`** is as follows:
 
@@ -78,3 +78,13 @@ uibutton( "Parent", layout, "Text", "Button 1" );
 uibutton( "Parent", layout, "Text", "Button 2" );
 uibutton( "Parent", layout, "Text", "Button 3" );
 ```
+
+## Related Topics
+
+* [Horizontal layouts](uixHBox.md)
+* [Vertical layouts](uixVBox.md)
+* [Tab panels](uixTabPanel.md)
+* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+* [**`uifigure`**](https://www.mathworks.com/help/matlab/ref/uifigure.html)
+* [**`uibutton`**](https://www.mathworks.com/help/matlab/ref/uibutton.html)

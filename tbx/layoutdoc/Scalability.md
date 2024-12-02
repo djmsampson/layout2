@@ -6,3 +6,10 @@ As applications get bigger the code gets more complex. The simple application st
 * Use the [events system](https://www.mathworks.com/help/matlab/events-sending-and-responding-to-messages.html) to trigger updates to specific parts of the app in response to properties of the data object changing. This removes the need for a single large `updateInterface` function and reduces coupling between parts of the interface. For example, the `SelectedExample` property would have an associated event such that when it is changed by a callback (or from the command line) it notifies other interface components of the change. Each interface component (or group thereof) can listen for the events that affect it.
 
 Advice on how to build large-scale applications is beyond the scope of this document. If you need help in this area, please contact your MathWorks account manager who will be able to put you in touch with a technical specialist.
+
+## Related Topics
+*  [Application Structure](ApplicationStructure.md)
+*  [Creating the User Interface](CreateInterface.md) 
+*  [Updating the User Interface](UpdateInterface.md)
+*  [Responding to User Interaction](OnListSelection.md)
+*  [Launching the Application](RunningIt.md)
