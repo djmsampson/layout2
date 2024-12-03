@@ -1,4 +1,4 @@
-classdef ( Hidden, Sealed ) FigureObserver < handle
+classdef ( Sealed ) FigureObserver < handle
     %uix.FigureObserver  Figure observer
     %
     %  A figure observer raises an event FigureChanged when the figure
