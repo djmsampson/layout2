@@ -1,4 +1,4 @@
-# `updateInterface`
+# **Updating the User Interface**
 
 The second function we will look at, `updateInterface`, uses the current selection together with the relevant content in the `data` structure to update the interface. The following steps are used in the update process.
 
@@ -40,3 +40,10 @@ The complete source code for this application is available in `galleryBrowser.m`
 ```matlab
 edit galleryBrowser 
 ```
+
+## Related Topics
+* [Application Structure](ApplicationStructure.md)
+* [Creating the User Interface](CreateInterface.md) 
+* [Responding to User Interaction](OnListSelection.md)
+* [Launching the Application](RunningIt.md)
+* [Scalability and Architecture](Scalability.md)

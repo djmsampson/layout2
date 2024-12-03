@@ -14,14 +14,14 @@ Show one element (card) from a list
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background color. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself. | graphics vector | 
-| **`Padding`** | Space around contents, in pixels. | nonnegative scalar integer
-| **`Parent`** | Parent figure or container. | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]`  |
-| **`Selection`** | Index of the visible child. | nonnegative scalar integer |
-| **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
+| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself | graphics vector | 
+| **`Padding`** | Space around contents, in pixels | nonnegative scalar integer
+| **`Parent`** | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| **`Position`** | Position within parent figure or container, in **`Units`** | `[left, bottom, width, height]`  |
+| **`Selection`** | Index of the visible child | nonnegative scalar integer |
+| **`Units`** | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| **`Visible`** | Visibility; default is `"on"` | `"on"` or `"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: **`ContextMenu`**
@@ -65,7 +65,7 @@ Change the selection.
 cp.Selection = 1;
 ```
 
-## See also
+## Related Topics
 
 * :page_facing_up: [**`uix.Panel`**](uixPanel.md): Arrange a single element inside a standard panel
 * :black_square_button: [**`uix.BoxPanel`**](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls

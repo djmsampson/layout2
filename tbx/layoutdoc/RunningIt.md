@@ -1,4 +1,4 @@
-# Running it
+# **Launching the Application**
 
 When the main function is launched (`galleryBrowser`) it first creates the data, then the app, then updates the app using the data. At this point the function exits and control is returned to the command prompt. Note, however, that the app is still onscreen and will still respond to user interaction.
 
@@ -15,3 +15,10 @@ The complete source code for this application is available in `galleryBrowser.m`
 ```matlab
 edit galleryBrowser 
 ```
+
+## Related Topics
+*  [Application Structure](ApplicationStructure.md)
+*  [Creating the User Interface](CreateInterface.md) 
+*  [Updating the User Interface](UpdateInterface.md)
+*  [Responding to User Interaction](OnListSelection.md)
+*  [Scalability and Architecture](Scalability.md)

@@ -1,4 +1,4 @@
-# `createInterface`
+# **Creating the User Interface**
 
 The interface creation is handled in the `createInterface` function. This has two distinct sections: menu building and control arrangement. The menus are created using the [**`uimenu`**](https://www.mathworks.com/help/matlab/ref/uimenu.html) function, so in what follows we'll focus on the control arrangement.
 
@@ -28,9 +28,8 @@ Next, we create a vertical layout in the control panel containing the listbox an
  % Create the controls
 controlLayout = uix.VBox( 'Parent', controlPanel, ...
     'Padding', 3, 'Spacing', 3 );
-app.ListBox = uicontrol( 'Style', 'list', ...
-    'BackgroundColor', 'w', ...
-    'Parent', controlLayout, ...
+app.ListBox = uicontrol( 'Parent', controlLayout, ...
+    'Style', 'listbox', ...    
     'String', exampleList(:), ...
     'Value', 1, ...
     'Callback', @onListSelection );
@@ -59,3 +58,10 @@ The complete source code for this application is available in `galleryBrowser.m`
 ```matlab
 edit galleryBrowser 
 ```
+
+## Related Topics
+* [Application Structure](ApplicationStructure.md)
+* [Updating the User Interface](UpdateInterface.md)
+* [Responding to User Interaction](OnListSelection.md)
+* [Launching the Application](RunningIt.md)
+* [Scalability and Architecture](Scalability.md)

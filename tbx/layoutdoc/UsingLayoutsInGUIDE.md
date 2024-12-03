@@ -1,21 +1,21 @@
 
 # **Using Layouts in GUIDE**
 
-# **Overview**
+## **Overview**
 
 Whilst the layouts in this toolbox do not integrate into the MATLAB Graphical User Interface Design Environment ([**`GUIDE`**](https://www.mathworks.com/help/matlab/ref/guide.html)), it is possible to insert layouts into an app created with GUIDE using the process described below.
 
-# Important Note
+## Important Note
 
 In the R2019b release, MathWorks announced that **`GUIDE`** will be removed in a future release. For further information on this upcoming change, and migration strategies, see [**GUIDE Migration Strategies**](https://www.mathworks.com/help/matlab/creating_guis/differences-between-app-designer-and-guide.html).
 
-# Create the **`GUIDE`** app
+## Create the **`GUIDE`** app
 
 Create your **`GUIDE`** application as usual, placing a panel where you want to insert the layout. You can turn the panel border and title off if you do not want them.
 
 ![A new GUIDE app](Images/UsingLayoutsInGUIDE01.png "A new GUIDE app")
 
-# Insert the layout
+## Insert the layout
 
 Edit the **`OpeningFcn`** in the **`GUIDE`**\-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel with tag **`uipanel1`**.
 
@@ -46,10 +46,13 @@ Launch the app.
 guideApp
 ```
 
-# Source code
+## Source code
 
 The source code for this application is available in `guideApp.m`.
 
 ```matlab
 edit guideApp 
 ```
+
+## Related Topics
+* [GUIDE](https://www.mathworks.com/help/matlab/ref/guide.html)

@@ -14,3 +14,6 @@ folder =
     'C:\MATLAB\AddOns\Toolboxes\GUI Layout Toolbox\layout'
         
 ```
+
+## Related Topics
+* [Get Started with GUI Layout Toolbox](GettingStarted.md)

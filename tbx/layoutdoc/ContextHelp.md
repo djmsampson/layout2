@@ -1,11 +1,11 @@
 
 # **Context Help**
 
-# **Overview**
+## **Overview**
 
 When the **`HelpFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a help button (with symbol **`?`**) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
-# Example
+## Example
 
 In the following example, we define the **`HelpFcn`** to open the MATLAB documentation for each function. Clicking any of the **`?`** buttons will open the documentation at the corresponding function page. 
 
@@ -25,3 +25,7 @@ uix.BoxPanel( 'Parent', b, 'Title', 'sin', 'HelpFcn', @(s, e) doc( 'sin' ) );
 uix.BoxPanel( 'Parent', b, 'Title', 'cos', 'HelpFcn', @(s, e) doc( 'cos' ) );
 uix.BoxPanel( 'Parent', b, 'Title', 'tan', 'HelpFcn', @(s, e) doc( 'tan' ) );
 ```
+
+## Related Topics
+* [Box panels](uixBoxPanel.md)
+* [Horizontal layouts](uixHBox.md)

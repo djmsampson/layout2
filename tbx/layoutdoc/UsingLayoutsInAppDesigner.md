@@ -52,3 +52,6 @@ The source code for this application is available in `appDesignerApp.mlapp`.
 ```matlab
 edit appDesignerApp 
 ```
+
+## Related Topics
+* [App Designer](https://www.mathworks.com/help/matlab/ref/appdesigner.html)

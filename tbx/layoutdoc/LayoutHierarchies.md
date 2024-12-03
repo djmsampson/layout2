@@ -1,7 +1,7 @@
 
 # **Layout Hierarchies**
 
-# A simple layout hierarchy
+## A simple layout hierarchy
 
 Consider the following simple interface:
 
@@ -21,7 +21,7 @@ By placing the second layout (horizontal box) inside the first (vertical box), w
 
 Note that the buttons have remained with a fixed height after the window size has been increased, and the axes have resized to fill the remaining space.
 
-# Create the figure and the axes in a vertical layout
+## Create the figure and the axes in a vertical layout
 
 The example above can be created programmatically by closely following the text description. The example code is available in `layoutHierarchy.m`.
 
@@ -42,7 +42,7 @@ vb = uix.VBox( 'Parent', f );
 axes( 'Parent', vb )
 ```
 
-# Add the buttons to a horizontal layout inside the vertical layout
+## Add the buttons to a horizontal layout inside the vertical layout
 
 Create the second layout (the horizontal box). Inside this horizontal box we place the two buttons.
 
@@ -57,3 +57,11 @@ Set the sizes. We want the axes to resize dynamically as the figure window is re
 ```matlab
 vb.Heights = [-1, 35];
 ```
+
+## Related Topics
+
+* [Vertical layouts](uixVBox.md)
+* [Horizontal button boxes](uixHButtonBox.md)
+* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)

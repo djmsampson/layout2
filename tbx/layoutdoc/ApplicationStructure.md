@@ -1,7 +1,6 @@
-
 # **Application Structure**
 
-# Overview
+## Overview
 
 There are many ways to build graphical applications in MATLAB, but here we will take a very simple approach. If the application were to become larger and more complex, this approach would be changed to better mitigate the complexity. Some notes on this are contained at the [end of this section](Scalability.md).
 
@@ -46,10 +45,17 @@ Note that all of the work is done in nested functions. Most of these are callbac
 * **`updateInterface`**: update selectors etc in response to a change in the data
 * **`redrawExample`**: redraw the axes contents
 
-We will not dig into all the nested functions aand callbacks, but instead concentrate on the app creation (`createInterface`) and update (`updateInterface`).
+We will not dig into all the nested functions and callbacks, but instead concentrate on the app creation (`createInterface`) and update (`updateInterface`).
 
 The complete source code for this application is available in `galleryBrowser.m`.
 
 ```matlab
 edit galleryBrowser 
 ```
+
+## Related Topics
+* [Creating the User Interface](CreateInterface.md) 
+* [Updating the User Interface](UpdateInterface.md)
+* [Responding to User Interaction](OnListSelection.md)
+* [Launching the Application](RunningIt.md)
+* [Scalability and Architecture](Scalability.md)

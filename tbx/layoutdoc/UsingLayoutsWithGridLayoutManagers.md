@@ -108,3 +108,8 @@ ax = nexttile( tl );
 plot( ax, rand( 100, 1 ), "LineWidth", 2, "Color", "y" )
 title( ax, "D" )
 ```
+
+## Related Topics
+* [Flexible horizontal layouts](uixHBox.md)
+* [**`uigridlayout`**](https://www.mathworks.com/help/matlab/ref/uigridlayout.html)
+* [**`tiledlayout`**](https://www.mathworks.com/help/matlab/ref/tiledlayout.html)

@@ -2,7 +2,6 @@
 
 **Version 2.3.10**
 
-
 GUI Layout Toolbox is a layout manager for creating MATLAB graphical user interfaces that resize gracefully. The classes supplied can be used in combination to produce virtually any user interface layout.
 
 -  Arrange MATLAB user interface components horizontally, vertically, or in grids 
@@ -18,9 +17,13 @@ This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabce
 # Contents
 ||||
 | :-: | --- | --- |
-| :arrow_forward: | [Getting Started](GettingStarted.md) | Introductory notes and installation instructions |
-| :bulb: | [Examples](Examples.md) | A list of the examples that are provided in the documentation |
-| :book: | [User Guide](UserGuide.md) | Describes how to use these tools |
+| :arrow_forward: | [Get Started with GUI Layout Toolbox](GettingStarted.md) | Introductory notes and installation instructions |
+| | [Understanding Layouts](UnderstandingLayouts.md) | Describes the purpose and overall design of the layout tools |
+| | [Positioning Axes](PositioningAxes.md) | How to include axes, legends, and colorbars in layouts |
+| | [Controlling Visibility](ControllingVisibility.md) | Controlling visibility of components within layouts |
+| | [Working with Box Panels](WorkingWithBoxPanels.md) | Equipping panels with context help, minimize/maximize or undock/dock capability |
+| | [Layout Interoperability](LayoutInteroperability.md) | Using GUI Layout Toolbox layouts with MATLAB's layout managers, App Designer, and GUIDE |
+| | [Build a Complete Application](ACompleteExample.md) | Build a complete application using toolbox layouts |
 | :memo: | [Function Reference](FunctionReference.md) | A list of the available functions |
 
 ___

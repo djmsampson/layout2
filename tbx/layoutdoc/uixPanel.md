@@ -14,23 +14,23 @@ Arrange a single element inside a standard panel
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background color. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`BorderType`** | Type of border around the box panel area. | `"none"` \| `"etchedin"` \| `"etchedout"` \| `"beveledin"` \| `"beveledout"` \| `"line"` |
-| **`BorderWidth`** | Width of the box panel border. | nonnegative real scalar |
-| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself. | graphics vector |
-| **`FontAngle`** | Title font angle. | `"normal"` \| `"italic"` |
-| **`FontName`** | Title font name (e.g., `"Arial"`, `"Helvetica"`, etc). | `string` scalar |
-| **`FontSize`** | Title font size. | positive scalar integer |
-| **`FontUnits`** | Title font units. | `"inches"` \| `"centimeters"` \| `"normalized"` \| `"points"` \| `"pixels"` |
-| **`FontWeight`** | Title font weight. | `"normal"` \| `"bold"` |
-| **`ForegroundColor`** | Title font color and/or color of 2D border line. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`Padding`** | Space around contents, in pixels. | nonnegative scalar integer |
-| **`Parent`** | Parent figure or container. | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]` |
-| **`Title`** | Title string. | `string` scalar |
-| **`TitlePosition`** | Location of title text in relation to the panel. | `"lefttop"` \| `"centertop"` \| `"righttop"` \| `"leftbottom"` \| `"centerbottom"` \| `"rightbottom"` |
-| **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
+| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`BorderType`** | Type of border around the box panel area | `"none"` \| `"etchedin"` \| `"etchedout"` \| `"beveledin"` \| `"beveledout"` \| `"line"` |
+| **`BorderWidth`** | Width of the box panel border | nonnegative real scalar |
+| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself | graphics vector |
+| **`FontAngle`** | Title font angle | `"normal"` \| `"italic"` |
+| **`FontName`** | Title font name (e.g., `"Arial"`, `"Helvetica"`, etc) | `string` scalar |
+| **`FontSize`** | Title font size | positive scalar integer |
+| **`FontUnits`** | Title font units | `"inches"` \| `"centimeters"` \| `"normalized"` \| `"points"` \| `"pixels"` |
+| **`FontWeight`** | Title font weight | `"normal"` \| `"bold"` |
+| **`ForegroundColor`** | Title font color and/or color of 2D border line | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`Padding`** | Space around contents, in pixels | nonnegative scalar integer |
+| **`Parent`** | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| **`Position`** | Position within parent figure or container, in **`Units`** | `[left, bottom, width, height]` |
+| **`Title`** | Title string | `string` scalar |
+| **`TitlePosition`** | Location of title text in relation to the panel | `"lefttop"` \| `"centertop"` \| `"righttop"` \| `"leftbottom"` \| `"centerbottom"` \| `"rightbottom"` |
+| **`Units`** | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| **`Visible`** | Visibility; default is `"on"` | `"on"` or `"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: **`ContextMenu`**
@@ -124,13 +124,11 @@ Next, add a listbox on the left and a panel on the right. The listbox **`Callbac
 %% Add the listbox and panel.
 lb = uicontrol( 'Parent', hbf, ...
     'Style', 'listbox', ...
-    'String', colorNames, ...
-    'BackgroundColor', 'w', ...
+    'String', colorNames, ...    
     'Callback', @onColorSelected );
 c = uipanel( 'Parent', hbf, ...
     'BorderType', 'none', ...
-    'Title', ['Selected Color: ', colorNames{1}], ...
-    'ForegroundColor', 'k', ...
+    'Title', ['Selected Color: ', colorNames{1}], ...    
     'FontSize', 12, ...
     'BackgroundColor', colorValues(1, :) );
 
@@ -160,7 +158,7 @@ Run the example.
 callbackExample
 ```
 
-## See also
+## Related Topics
 * :card_index: [**`uix.CardPanel`**](uixCardPanel.md): Show one element (card) from a list
 * :black_square_button: [**`uix.BoxPanel`**](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls
 * :point_right: [**`uixTabPanel`**](uixTabPanel.md): Arrange elements in a panel with tabs for selecting which element is visible

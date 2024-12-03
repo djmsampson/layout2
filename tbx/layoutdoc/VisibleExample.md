@@ -1,11 +1,11 @@
 
 # **Visible Example**
 
-# **Overview**
+## **Overview**
 
 This example shows how the **`Visible`** property can be used to hide whole sections of an interface.
 
-# Example
+## Example
 
 The code for this example is available in `visibleExample.m`.
 
@@ -26,7 +26,7 @@ panel = uix.BoxPanel( 'Parent', f, ...
     'FontSize', 12 );
 ```
 
-# Put some buttons inside the panel
+## Put some buttons inside the panel
 
 First, create a vertical button box to hold the buttons.
 
@@ -47,15 +47,20 @@ uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 5', ...
 uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 6' )
 ```
 
-# Toggle the visibility of the box panel
+## Toggle the visibility of the box panel
 ```matlab
 panel.Visible = 'off';
 ```
 
-# Restore the box panel visibility.
+## Restore the box panel visibility.
 
 Note that the original **`Visible`** state of each button has been preserved.
 
 ```matlab
 panel.Visible = 'on';
 ```
+
+## Related Topics
+* [Box panels](uixBoxPanel.md)
+* [Vertical button boxes](uixVButtonBox.md)
+* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)

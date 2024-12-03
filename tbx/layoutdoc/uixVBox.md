@@ -15,16 +15,16 @@
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background color. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself. | graphics vector |
-| **`Heights`** | Height of the each of the rows. Nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing. | real double vector |
-| **`MinimumHeights`** | Minimum height of each of the rows, in pixels. | nonnegative double vector |
-| **`Padding`** | Space around contents, in pixels. | nonnegative scalar integer
-| **`Parent`** | Parent figure or container. | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| **`Position`** | Position within parent figure or container, in **`Units`**. | `[left, bottom, width, height]`  |
-| **`Spacing`** | Space between rows, in pixels. | nonnegative scalar |
-| **`Units`** | Position units; default is `"normalized"`. | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| **`Visible`** | Visibility; default is `"on"`. | `"on"` or `"off"` |
+| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself | graphics vector |
+| **`Heights`** | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| **`MinimumHeights`** | Minimum height of each of the rows, in pixels | nonnegative double vector |
+| **`Padding`** | Space around contents, in pixels | nonnegative scalar integer
+| **`Parent`** | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| **`Position`** | Position within parent figure or container, in **`Units`** | `[left, bottom, width, height]`  |
+| **`Spacing`** | Space between rows, in pixels | nonnegative scalar |
+| **`Units`** | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| **`Visible`** | Visibility; default is `"on"` | `"on"` or `"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: **`ContextMenu`**
@@ -36,7 +36,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 ### :warning: Deprecated
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| **`DividerMarkings`** (for **`uix.VBoxFlex`**) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect. This property toggled the markings on the draggable dividers. |
+| **`DividerMarkings`** (for **`uix.VBoxFlex`**) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 
@@ -100,7 +100,7 @@ g = uigauge( gl );
 uitable( vbf, "Data", magic( 5 ) );
 ```
 
-## See also
+## Related Topics
 
 * :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row
 * :left_right_arrow: [**`uix.HBoxFlex`**](uixHBox.md): Arrange elements horizontally with draggable dividers

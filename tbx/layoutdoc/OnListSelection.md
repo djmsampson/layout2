@@ -1,4 +1,4 @@
-# `onListSelection`
+# **Responding to User Interaction**
 
 Finally, let's have a look at how one of the callbacks (`onListSelection`) works. This is the function that is called when an item is selected in the listbox. The other callbacks follow the same pattern.
 
@@ -19,3 +19,10 @@ The complete source code for this application is available in `galleryBrowser.m`
 ```matlab
 edit galleryBrowser 
 ```
+
+## Related Topics
+* [Application Structure](ApplicationStructure.md)
+* [Creating the User Interface](CreateInterface.md) 
+* [Updating the User Interface](UpdateInterface.md)
+* [Launching the Application](RunningIt.md)
+* [Scalability and Architecture](Scalability.md)

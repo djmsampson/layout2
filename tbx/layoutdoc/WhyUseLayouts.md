@@ -1,11 +1,11 @@
 
 # **Why Use Layouts?**
 
-# Introduction
+## Introduction
 
 The overriding reason for using layouts or layout managers is to gain control of the resizing behavior of the interface without having to write a complex **`SizeChangedFcn`** callback on the app's main figure window or containers such as panels, tabs, etc. If you position user\-interface elements directly, i.e., by setting their **`Position`** property, then you have two choices about what happens when the figure window resizes.
 
-# Normalized units
+## Normalized units
 
 Using normalized units, the user\-interface components scale with the figure window. In the example below, we don't really want the buttons to grow, but everything will resize in proportion when the figure window is resized.
 
@@ -24,7 +24,7 @@ uicontrol( 'Parent', f, ...
     'String', 'Button 2' )
 ```
 
-# Resize the figure window
+## Resize the figure window
 
 After the figure window is resized, note that the buttons have grown proportionally.
 
@@ -32,7 +32,7 @@ After the figure window is resized, note that the buttons have grown proportiona
 f.Position(3:4) = 400;
 ```
 
-# Pixel units
+## Pixel units
 
 Using pixel units, the user\-interface components stay fixed and resizing the figure window creates empty space. In the example below, although the buttons will no longer grow in size as the figure window is enlarged, neither does the axes, which looks very odd.
 
@@ -51,7 +51,7 @@ uicontrol( 'Parent', f, ...
     'String', 'Button 2' )
 ```
 
-# Resize the figure window
+## Resize the figure window
 
 After the figure window is resized, note that there is empty space on the figure.
 
@@ -59,7 +59,7 @@ After the figure window is resized, note that there is empty space on the figure
 f.Position(3:4) = 400;
 ```
 
-# Using layouts
+## Using layouts
 
 Neither of these alternatives (purely normalized units or purely pixel units) is particularly useful for a serious user interface. Typically there are user\-interface components that should be fixed size: icons, buttons, selectors, etc; and others that should resize with the figure window: graphs, images, prose text, etc. To achieve this one needs to be able to specify which interface components should be fixed size, and which should be variable size. Over the last three decades, layouts have proved to be the method of choice for achieving this.
 
@@ -81,10 +81,18 @@ uicontrol( 'Parent', hbox, ...
 vbox.Heights = [-1, 35];
 ```
 
-# Resize the figure window
+## Resize the figure window
 
 Note that the buttons in the button box have remained with a fixed height, whereas the axes has grown to fill the available space.
 
 ```matlab
 f.Position(3:4) = 400;
 ```
+
+## Related Topics
+
+* [Vertical layouts](uixVBox.md)
+* [Horizontal button boxes](uixHButtonBox.md)
+* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
