@@ -821,17 +821,17 @@ classdef BoxPanel < uix.Panel
                     else
                         switch eventData.AffectedObject.CurrentObject
                             case obj.MinimizeButton
-                                notify( obj, "Minimizing" )
+                                notify( obj, 'Minimizing' )
                             case obj.MaximizeButton
-                                notify( obj, "Maximizing" )
+                                notify( obj, 'Maximizing' )
                             case obj.DockButton
-                                notify( obj, "Docking" )
+                                notify( obj, 'Docking' )
                             case obj.UndockButton
-                                notify( obj, "Undocking" )
+                                notify( obj, 'Undocking' )
                             case obj.HelpButton
-                                notify( obj, "Helping" )
+                                notify( obj, 'Helping' )
                             case obj.CloseButton
-                                notify( obj, "Closing" )
+                                notify( obj, 'Closing' )
                             otherwise
                                 % do nothing
                         end
