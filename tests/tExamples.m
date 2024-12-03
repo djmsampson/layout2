@@ -37,18 +37,25 @@ classdef tExamples < glttestutilities.TestInfrastructure
             functionList = cellstr( char( ...
                 ls( fullfile( examplesFolder, '*.m' ) ) ) );
             
-            % Add the App Designer example if are in R2022a or later (this
-            % example requires support for uix.BoxPanel).
-            if ~verLessThan( 'matlab', '9.12' ) %#ok<VERLESSMATLAB>
+            % Add the App Designer example if we are in R2022a or later 
+            % (this example requires support for uix.BoxPanel).
+            if ~verLessThan( 'matlab', '9.12' ) %#ok<*VERLESSMATLAB>
                 functionList = [functionList;
                     cellstr( ...
                     ls( fullfile( examplesFolder, '*.mlapp' ) ) )];
-            end % if
+            end % if            
 
             % Remove the extensions (.m, .mlapp).
             for k = 1 : numel( functionList )
-                [~, functionList{k}] = fileparts( functionList{k} );
+                [~, functionList{k}] = fileparts( functionList{k} );                
             end % for
+
+            % Remove the 'randomPlotter' quick start example if we are in
+            % R2020a or earlier.
+            if verLessThan( 'matlab', '9.9' ) % R2020b is 9.9
+                toRemove = strcmp( functionList, 'randomPlotter' );
+                functionList(toRemove) = [];
+            end % if
 
             % Verify that launching the examples are warning-free.
             for k = 1 : numel( functionList )
