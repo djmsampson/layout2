@@ -35,6 +35,12 @@ classdef tFigureObserver < glttestutilities.TestInfrastructure
                 ['The uix.FigureObserver constructor accepted a ', ...
                 'non-scalar input.'] )
 
+            % The case where the graphics object has no 'Parent' property.
+            f = @() uix.FigureObserver( gobjects( 1 ) );
+            testCase.verifyError( f, 'uix:ParentNotAProperty', ...
+                ['The uix.FigureObserver constructor accepted an ', ...
+                'object that does not have the ''Parent'' property.'] )
+
         end % tConstructorErrorsForInvalidInput
 
         function tConstructorAssignsFigureAncestor( testCase )

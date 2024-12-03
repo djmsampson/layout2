@@ -29,9 +29,16 @@ classdef ( Sealed ) FigureObserver < handle
             %  o = uix.FigureObserver(s) creates a figure observer for the
             %  subject s.
             
-            % Check
+            % Check type and size.
             validateattributes( subject, {'matlab.graphics.Graphics'}, ...
                 {'scalar'}, '', 'subject' )
+
+            % Check that the graphics object has the 'Parent' property.
+            % This excludes graphics placeholders, for example.
+            if ~isprop( subject, 'Parent' )
+                error( 'uix:ParentNotAProperty', ...
+                    'Expected subject to have the ''Parent'' property.' )
+            end % if
             
             % Store subject
             obj.Subject = subject;
