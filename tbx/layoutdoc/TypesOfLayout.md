@@ -1,11 +1,11 @@
 
-# **Layout Types**
+# Layout Types
 
 Layouts in GUI Layout Toolbox come in three forms:
 
--  **Panels**: show a single child element with some decoration. Other children of the layout are hidden from view. Available panels include [**`Panel`**](uixPanel.md), [**`CardPanel`**](uixCardPanel.md), [**`BoxPanel`**](uixBoxPanel.html), [**`TabPanel`**](uixTabPanel.md), and [**`ScrollingPanel`**](uixScrollingPanel.md). For **`CardPanel`** and **`TabPanel`**, the visible child can be switched.
--  **Boxes**: arrange children linearly in a single row or column. Available boxes include [**`HBox`**](uixHBox.md), [**`VBox`**](uixVBox.md), [**`HBoxFlex`**](uixHBox.md), [**`VBoxFlex`**](uixVBox.md), [**HButtonBox**](uixHButtonBox.md), and [**VButtonBox**](uixVButtonBox.md).
--  **Grids**: (also known as tables) arrange children in a two\-dimensional grid. Available grids include [**`Grid`**](uixGrid.md) and [**`GridFlex`**](uixGrid.md).
+- Panels: show a single child element with some decoration. Other children of the layout are hidden from view. Available panels include [`uix.Panel](uixPanel.md), [`uix.CardPanel`](uixCardPanel.md), [`uix.BoxPanel`](uixBoxPanel.html), [`uix.TabPanel`](uixTabPanel.md), and [`uix.ScrollingPanel`](uixScrollingPanel.md). For `uix.CardPanel` and `uix.TabPanel`, the visible child can be switched.
+- Boxes: arrange children linearly in a single row or column. Available boxes include [`uix.HBox`](uixHBox.md), [`uix.VBox`](uixVBox.md), [`uix.HBoxFlex`](uixHBox.md), [`uix.VBoxFlex`](uixVBox.md), [uix.HButtonBox](uixHButtonBox.md), and [uix.VButtonBox](uixVButtonBox.md).
+- Grids: (also known as tables) arrange children in a two\-dimensional grid. Available grids include [`uix.Grid`](uixGrid.md) and [`uix.GridFlex`](uixGrid.md).
 
 ## Related Topics
 * [Panels](Panels.md)

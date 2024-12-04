@@ -1,13 +1,13 @@
 # GUI Layout Toolbox
 
-* [GUI Layout](LandingPage.md)
+* [GUI Layout Toolbox](LandingPage.md)
     * [Get Started with GUI Layout Toolbox](GettingStarted.md)
         * [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
         * [Quick Start Example](QuickStartExample.md)
         * [Compatibility Considerations](CompatibilityConsiderations.md)
         * [Release Notes](ReleaseNotes.md)    
     * [Understanding Layouts](UnderstandingLayouts.md)
-        * [Why use Layouts?](WhyUseLayouts.md)
+        * [Why Use Layouts?](WhyUseLayouts.md)
         * [Layout Basics](LayoutBasics.md)
         * [Layout Types](TypesOfLayout.md)
         * [Sizes and Units](SizesAndUnits.md)
@@ -25,7 +25,7 @@
         * [Using Layouts with uigridlayout and tiledlayout](UsingLayoutsWithGridLayoutManagers.md)
         * [Using Layouts in App Designer](UsingLayoutsInAppDesigner.md)        * 
         * [Using Layouts in GUIDE](UsingLayoutsInGUIDE.md)
-    * [Build a Complete Application](ACompleteExample.md)
+    * [Building a Complete Application](ACompleteExample.md)
         * [Application Structure](ApplicationStructure.md)
         * [Creating the User Interface](CreateInterface.md)
         * [Updating the User Interface](UpdateInterface.md)
@@ -50,4 +50,3 @@
             * [uix.Empty](uixEmpty.md)
             * [uix.FigureObserver](uixFigureObserver.md)
             * [layoutRoot](layoutRoot.md)
-            

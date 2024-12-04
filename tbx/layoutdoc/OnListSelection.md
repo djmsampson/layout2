@@ -1,4 +1,4 @@
-# **Responding to User Interaction**
+# Responding to User Interaction
 
 Finally, let's have a look at how one of the callbacks (`onListSelection`) works. This is the function that is called when an item is selected in the listbox. The other callbacks follow the same pattern.
 

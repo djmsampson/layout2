@@ -11,7 +11,7 @@ These element arrangements are designed to match those found as standard in othe
 
 ## **Installation**
 
-GUI Layout Toolbox is provided as a MATLAB toolbox file (**`.mltbx`**).
+GUI Layout Toolbox is provided as a MATLAB toolbox file (`.mltbx`).
 
 For instructions on installing and uninstalling toolboxes, see [Get and Manage Add\-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in the MATLAB documentation.
 

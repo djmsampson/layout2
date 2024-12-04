@@ -1,4 +1,4 @@
-# **Controlling Visibility**
+# Controlling Visibility
 
 This example shows the effect of setting the `Visible` property on a layout object. The `Visible` property can be used to hide entire sections of a user interface or component. 
 

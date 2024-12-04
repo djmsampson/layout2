@@ -1,9 +1,9 @@
 
-# **Dock and Undock**
+# Dock and Undock
 
-## **Overview**
+## Overview
 
-When the **`DockFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a dock/undock button (with symbol :arrow_lower_right: or :arrow_upper_right:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
+When the `DockFcn` property of a [`uix.BoxPanel`](uixBoxPanel.md) object has been populated with a callback function, a dock/undock button (with symbol :arrow_lower_right: or :arrow_upper_right:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
 
 Since redocking the panel into its previous parent depends on the type of parent object, it is up to the developer to write some code to actually extract or insert the panel.
@@ -62,7 +62,7 @@ uicontrol( 'Parent', boxPanels(3), 'Style', 'pushbutton', ...
 We set each box panel to call the same dock/undock function. This function is nested inside the main function so that it has access to the main function's variables. A better approach for larger applications is to use classes, but a simpler approach using nested or local functions is fine for simpler applications.
 
 
-Note that as soon as we set the **`DockFcn`** property, the dock/undock button appears in the upper right of each panel's title bar. We use a cell array to pass an extra argument, the panel number, to the **`onDock`** callback function. This extra argument appears after the usual **`eventSource`** and **`eventData`** input arguments.
+Note that as soon as we set the `DockFcn` property, the dock/undock button appears in the upper right of each panel's title bar. We use a cell array to pass an extra argument, the panel number, to the `onDock` callback function. This extra argument appears after the usual `eventSource` and `eventData` input arguments.
 
 ```matlab
 % Connect the dock callback to each box panel.

@@ -1,4 +1,4 @@
-# :telescope: **`uix.FigureObserver`**
+# :telescope: uix.FigureObserver
 
 Raise an event when the figure ancestor of a subject changes
 

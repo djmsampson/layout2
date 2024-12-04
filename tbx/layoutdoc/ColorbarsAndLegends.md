@@ -1,9 +1,9 @@
 
-# **Colorbars and Legends**
+# Colorbars and Legends
 
-## **Overview**
+## Overview
 
-When using layouts to position axes that can have a colorbar or legend, it is very important to group the axes with its colorbar and legend by placing them insider a **`uicontainer`**. The following example illustrates this.
+When using layouts to position axes that can have a colorbar or legend, it is very important to group the axes with its colorbar and legend by placing them insider a `uicontainer`. The following example illustrates this.
 
 ## Example
 
@@ -22,7 +22,7 @@ f = figure( 'Name', 'Axes Legends and Colorbars', ...
 
 ## Create the layout
 
-The layout involves two axes side by side. Each axes is placed into a **`uicontainer`** so that the legend and colorbar and grouped together with the axes.
+The layout involves two axes side by side. Each axes is placed into a `uicontainer` so that the legend and colorbar and grouped together with the axes.
 
 ```matlab
 vbox = uix.VBoxFlex( 'Parent', f, 'Spacing', 3 );
@@ -45,6 +45,6 @@ legend( axes2, 'sin', 'cos', 'Location', 'northwestoutside' )
 
 ## Related Topics
 * [Flexible vertical boxes](uixVBox.md)
-* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
-* [**`colorbar`**](https://www.mathworks.com/help/matlab/ref/colorbar.html)
-* [**`legend`**](https://www.mathworks.com/help/matlab/ref/legend.html)
+* [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [`colorbar`](https://www.mathworks.com/help/matlab/ref/colorbar.html)
+* [`legend`](https://www.mathworks.com/help/matlab/ref/legend.html)

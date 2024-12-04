@@ -1,5 +1,5 @@
 
-# **Layout Basics**
+# Layout Basics
 
 ## Create a basic layout
 
@@ -9,7 +9,7 @@ To see how layouts work, let's use the most basic layout, a horizontal box. We f
 f = figure;
 ```
 
-Now let's create the horizontal layout and add it to the figure. Note that in common with other MATLAB graphics objects, one object is added to another by setting the **`Parent`** property \- this will automatically adjust the list of **`Children`** in the parent object. The job of a horizontal box layout is to arrange its contents in a horizontal line, setting the position of each element to best fill the space.
+Now let's create the horizontal layout and add it to the figure. Note that in common with other MATLAB graphics objects, one object is added to another by setting the `Parent` property \- this will automatically adjust the list of `Children` in the parent object. The job of a horizontal box layout is to arrange its contents in a horizontal line, setting the position of each element to best fill the space.
 
 ```matlab
 layout = uix.HBox( 'Parent', f );
@@ -59,7 +59,7 @@ uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 3' )
 
 ## Layouts in web graphics
 
-In web graphics, the example code for **`uix.VBox`** is as follows:
+In web graphics, the example code for `uix.VBox` is as follows:
 
 ```matlab
 f = uifigure( "AutoResizeChildren", "off" );
@@ -69,7 +69,7 @@ uibutton( "Parent", layout, "Text", "Button 2" );
 uibutton( "Parent", layout, "Text", "Button 3" );
 ```
 
-Similarly, for **`uix.TabPanel`** we have:
+Similarly, for `uix.TabPanel` we have:
 
 ```matlab
 f = uifigure( "AutoResizeChildren", "off" );
@@ -84,7 +84,7 @@ uibutton( "Parent", layout, "Text", "Button 3" );
 * [Horizontal layouts](uixHBox.md)
 * [Vertical layouts](uixVBox.md)
 * [Tab panels](uixTabPanel.md)
-* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
-* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
-* [**`uifigure`**](https://www.mathworks.com/help/matlab/ref/uifigure.html)
-* [**`uibutton`**](https://www.mathworks.com/help/matlab/ref/uibutton.html)
+* [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+* [`uifigure`](https://www.mathworks.com/help/matlab/ref/uifigure.html)
+* [`uibutton`](https://www.mathworks.com/help/matlab/ref/uibutton.html)

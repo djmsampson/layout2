@@ -1,7 +1,6 @@
+# Release Notes
 
-# **Release Notes**
-
-The GUI Layout Toolbox version numbers take the form **`major.minor.iter`**. The current version you have installed can be checked by typing [**`ver`**](https://www.mathworks.com/help/matlab/ref/ver.html) at the MATLAB Command prompt.
+The GUI Layout Toolbox version numbers take the form `major.minor.iter`. The current version you have installed can be checked by typing [`ver`](https://www.mathworks.com/help/matlab/ref/ver.html) at the MATLAB Command prompt.
 
 ```matlab
 ver( "layout" ) 
@@ -17,16 +16,16 @@ ver( "layout" )
 
 ## Version 2.3.7
 -  Released 31 May 2024 
--  Added web graphics support for **`uix.BoxPanel`** 
+-  Added web graphics support for `uix.BoxPanel` 
 
 ## Version 2.3.6
 -  Released 21 May 2023 
--  Refactored tests to support [**`uifigure`**](https://www.mathworks.com/help/matlab/ref/uifigure.html) 
+-  Refactored tests to support [`uifigure`](https://www.mathworks.com/help/matlab/ref/uifigure.html) 
 -  Added details of web graphics support 
 
-## **Version 2.3.5**
+## Version 2.3.5
 -  Released 29 October 2020 
--  Updated for compatibility with changes to [**`uipanel`**](https://www.mathworks.com/help/matlab/ref/uipanel.html) in R2020b 
+-  Updated for compatibility with changes to [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) in R2020b 
 -  Fixed G1959226: *Scrolling panel scrollbars and blanking plate do not match background color* 
 -  Fixed G1959228: *Scrolling panel sliders remain after child is deleted* 
 
@@ -44,15 +43,15 @@ ver( "layout" )
 -  Released 1 May 2018 
 -  Set tooltip strings for BoxPanel dock/undock, minimize/maximize, help and close buttons 
 -  Set default padding for flex containers to 5 so that dividers are visible 
--  Scroll **`uix.ScrollingPanel`** using mouse wheel for variable\-sized contents 
+-  Scroll `uix.ScrollingPanel` using mouse wheel for variable\-sized contents 
 -  Fixed G1358897: *BoxPanel title is truncated on Mac high DPI display* 
 -  Fixed G1695618: *Warning on mouse motion while deleting HBoxFlex, VBoxFlex or GridFlex* 
 
 ## Version 2.3.1
 -  Released 31 January 2017 
--  Specify minimum width and height of contents in **`uix.ScrollingPanel`** 
--  Update contents position while dragging **`uix.ScrollingPanel`** scrollbox 
--  Scroll **`uix.ScrollingPanel`** using mouse wheel 
+-  Specify minimum width and height of contents in `uix.ScrollingPanel` 
+-  Update contents position while dragging `uix.ScrollingPanel` scrollbox 
+-  Scroll `uix.ScrollingPanel` using mouse wheel 
 -  Updated toolbox logo 
 
 ## Version 2.3
@@ -76,13 +75,13 @@ ver( "layout" )
 ## Version 2.2
 -  Released 18 December 2015 
 -  Improved box panel title bar appearance 
--  Changed selection behavior of **`uix.TabGroup`** to match that of [**`uitabgroup`**](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) when the selected tab is removed 
+-  Changed selection behavior of `uix.TabGroup` to match that of [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) when the selected tab is removed 
 -  Fixed G1253937:  *uix.TabPanel/redrawTabs fails* (R2015b) 
 -  Fixed G1292238: *uix.BoxPanel/redrawBorders fails* (R2015b) 
 -  Fixed G1330841: *mouse\-over\-divider detection does not work for docked figures* (all) 
 -  Fixed G1332109: *uix.Empty background color does not match that of its Parent* (all) 
 -  Fixed G1334867:  *cannot add axes to container* (R2016a prerelease) 
--  Removed internal helper classes **`uix.AncestryObserver`**, **`uix.LocationObserver`**, **`uix.VisibilityObserver`** 
+-  Removed internal helper classes `uix.AncestryObserver`, `uix.LocationObserver`, `uix.VisibilityObserver` 
 
 ## Version 2.1.2
 -  Released 29 May 2015 
@@ -92,7 +91,7 @@ ver( "layout" )
 
 ## Version 2.1.1
 -  Released 15 May 2015 
--  Added context menus on **`uix.TabPanel`** tab labels (G1245669) 
+-  Added context menus on `uix.TabPanel` tab labels (G1245669) 
 -  Fixed G1164656: *cannot set relative tab widths* 
 -  Fixed G1019441: *property RowSizes of uiextras.GridFlex sets heights not widths* 
 -  Fixed G1165274: *missing properties RowSizes, MinimumRowSizes, ColumnSizes, MinimumColumnSizes of uiextras.Grid, uiextras.GridFlex* 

@@ -1,12 +1,12 @@
 
-# **Minimize and Maximize**
+# Minimize and Maximize
 
-## **Overview**
+## Overview
 
-When the **`MinimizeFcn`** property of a [**`uix.BoxPanel`**](uixBoxPanel.md) object has been populated with a callback function, a minimize/maximize button (with symbol :arrow_up_small: or :arrow_down_small:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
+When the `MinimizeFcn` property of a [`uix.BoxPanel`](uixBoxPanel.md) object has been populated with a callback function, a minimize/maximize button (with symbol :arrow_up_small: or :arrow_down_small:) is shown in the upper right of the panel's title bar. When the user clicks this button, the specified function is called.
 
 
-Since the behavior of the parent container is different in different use cases, it is up to the user to write some code to actually resize the panel. Note that minimizing a panel to its title bar only really makes sense inside a [**`uix.VBox`**](uixVBox.md) or [**`uix.VBoxFlex`**](uixVBox.md) layout.
+Since the behavior of the parent container is different in different use cases, it is up to the user to write some code to actually resize the panel. Note that minimizing a panel to its title bar only really makes sense inside a [`uix.VBox`](uixVBox.md) or [`uix.VBoxFlex`](uixVBox.md) layout.
 
 ## Example
 
@@ -56,7 +56,7 @@ f.Position(3:4) = [figureWidth, sum( vbox.Heights )];
 We set each box panel to call the same minimize/maximize function. This function is nested inside the main function so that it has access to the main function's variables. A better approach for larger applications is to use classes, but a simpler approach using nested or local functions is fine for simpler applications.
 
 
-Note that as soon as we set the **`MinimizeFcn`** property, the minimize/maximize button appears in the upper right of each panel's title bar. We use a cell array to pass an extra argument, the panel number, to the **`onMinimize`** callback function. This extra argument appears after the usual **`eventSource`** and **`eventData`** input arguments.
+Note that as soon as we set the `MinimizeFcn` property, the minimize/maximize button appears in the upper right of each panel's title bar. We use a cell array to pass an extra argument, the panel number, to the `onMinimize` callback function. This extra argument appears after the usual `eventSource` and `eventData` input arguments.
 
 ```matlab
 % Connect the minimize callback to each box panel.

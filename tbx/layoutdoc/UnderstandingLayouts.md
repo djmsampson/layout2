@@ -9,7 +9,7 @@ The best way to understand what layouts are and why they are a good user interfa
 
 ## Contents
 
--  [Why use Layouts?](WhyUseLayouts.md)
+-  [Why Use Layouts?](WhyUseLayouts.md)
 -  [Layout Basics](LayoutBasics.md)
 -  [Types of Layout](TypesOfLayout.md)
 -  [Sizes and Units](SizesAndUnits.md)
