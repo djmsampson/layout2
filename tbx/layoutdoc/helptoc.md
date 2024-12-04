@@ -3,6 +3,7 @@
 * [GUI Layout](LandingPage.md)
     * [Get Started with GUI Layout Toolbox](GettingStarted.md)
         * [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
+        * [Quick Start Example](QuickStartExample.md)
         * [Compatibility Considerations](CompatibilityConsiderations.md)
         * [Release Notes](ReleaseNotes.md)    
     * [Understanding Layouts](UnderstandingLayouts.md)
