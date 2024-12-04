@@ -9,10 +9,6 @@ When using layouts to position axes that can have a colorbar or legend, it is ve
 
 The code for this example is available in `colorbarsAndLegends.m`.
 
-```matlab
-edit colorbarsAndLegends 
-```
-
 ## Create a figure
 
 Create a new figure window and remove the toolbar and menus.

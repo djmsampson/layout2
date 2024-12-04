@@ -18,10 +18,6 @@ The default value for the **`PositionConstraint`** axes property is **`'outerpos
 
 The code for this example is available in `axesInsideLayouts.m`.
 
-```matlab
-edit axesInsideLayouts 
-```
-
 The following example illustrates the two usages.
 
 ## Create a figure

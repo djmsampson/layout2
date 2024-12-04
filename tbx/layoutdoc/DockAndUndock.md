@@ -10,13 +10,8 @@ Since redocking the panel into its previous parent depends on the type of parent
 
 ## Example
 
-The following example shows how to add dock/undock functionality to a box containing panels. The code for this example is available in `dockExample.m`.
+The following example shows how to add dock/undock functionality to a box containing panels.
 
-```matlab
-edit dockExample 
-```
-
-Run the example.
 ```matlab
 dockExample
 ```

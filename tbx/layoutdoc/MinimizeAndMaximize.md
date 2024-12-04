@@ -10,13 +10,7 @@ Since the behavior of the parent container is different in different use cases, 
 
 ## Example
 
-The following example shows how to add minimize/maximize functionality to a box containing panels. The code for this example is available in `minimizeExample.m`.
-
-```matlab
-edit minimizeExample 
-```
-
-Run the example.
+The following example shows how to add minimize/maximize functionality to a box containing panels.
 
 ```matlab
 minimizeExample
