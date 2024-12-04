@@ -1,7 +1,5 @@
 # :black_square_button: **`uix.BoxPanel`**
 
-![BoxPanel](Images/bigicon_BoxPanel.png "BoxPanel")
-
 Arrange a single element in a panel with boxed title and optional toolbar controls
 
 ## Syntax

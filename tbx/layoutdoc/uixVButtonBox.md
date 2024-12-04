@@ -1,7 +1,5 @@
 # :vertical_traffic_light: **`uix.VButtonBox`**
 
-[![VButtonBox](Images/bigIcon_VButtonBox.png "VButtonBox")](uixVButtonBox.md)
-
 Arrange buttons vertically in a single column
 
 ## Syntax

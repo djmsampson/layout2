@@ -1,7 +1,5 @@
 # :arrow_right: **`uix.HBox`**, :left_right_arrow: **`uix.HBoxFlex`**
 
-[![HBox](Images/bigIcon_HBox.png "HBox")](uixHBox.md)[![HBoxFlex](Images/bigIcon_HBoxFlex.png "HBoxFlex")](uixHBox.md)
-
 * **`uix.HBox`**: Arrange elements horizontally in a single row
 * **`uix.HBoxFlex`**: Arrange elements horizontally with draggable dividers
 

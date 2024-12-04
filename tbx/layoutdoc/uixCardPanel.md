@@ -1,7 +1,5 @@
 # :card_index: **`uix.CardPanel`**
 
-![CardPanel](Images/bigicon_CardPanel.png "CardPanel")
-
 Show one element (card) from a list
 
 ## Syntax

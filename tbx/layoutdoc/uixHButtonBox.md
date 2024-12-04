@@ -1,7 +1,5 @@
 # :traffic_light: **`uix.HButtonBox`**
 
-[![HButtonBox](Images/bigIcon_HButtonBox.png "HButtonBox")](uixHButtonBox.md)
-
 Arrange buttons horizontally in a single row
 
 ## Syntax

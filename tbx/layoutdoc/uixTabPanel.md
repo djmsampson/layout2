@@ -1,7 +1,5 @@
 # :point_right: **`uix.TabPanel`**
 
-![TabPanel](Images/bigicon_TabPanel.png "TabPanel")
-
 Arrange elements in a panel with tabs for selecting which element is visible
 
 ## Syntax

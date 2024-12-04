@@ -1,7 +1,5 @@
 # :symbols: **`uix.Grid`**, :arrow_up_down::left_right_arrow: **`uix.GridFlex`**
 
-[![Grid](Images/bigIcon_Grid.png "Grid")](uixGrid.md)[![GridFlex](Images/bigIcon_GridFlex.png "GridFlex")](uixGrid.md)
-
 * **`uix.Grid`**: Arrange elements in a two-dimensional grid
 * **`uix.GridFlex`**: Arrange elements in a two-dimensional grid with draggable dividers
 

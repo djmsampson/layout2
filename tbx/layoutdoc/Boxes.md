@@ -1,5 +1,4 @@
 # Boxes
-[![HBox](Images/bigIcon_HBox.png "HBox")](uixHBox.md)[![VBox](Images/bigIcon_VBox.png "VBox")](VBox.md)[![HBoxFlex](Images/bigIcon_HBoxFlex.png "HBoxFlex")](uixHBox.md)[![VBoxFlex](Images/bigIcon_VBoxFlex.png "VBoxFlex")](uixVBox.md)[![HButtonBox](Images/bigIcon_HButtonBox.png "HButtonBox")](uixHButtonBox.md)[![VButtonBox](Images/bigIcon_VButtonBox.png "VButtonBox")](uixVButtonBox.md)
 
 * :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row
 * :arrow_down: [**`uix.VBox`**](uixVBox.md): Arrange elements vertically in a single column

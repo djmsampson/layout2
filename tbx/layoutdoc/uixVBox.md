@@ -1,7 +1,5 @@
 # :arrow_down: **`uix.VBox`**, :arrow_up_down: **`uix.VBoxFlex`**
 
-[![VBox](Images/bigIcon_VBox.png "VBox")](uixVBox.md)[![VBoxFlex](Images/bigIcon_VBoxFlex.png "VBoxFlex")](uixVBox.md)
-
 * **`uix.VBox`**: Arrange elements vertically in a single row
 * **`uix.VBoxFlex`**: Arrange elements vertically with draggable dividers
 

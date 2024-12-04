@@ -1,7 +1,5 @@
 # :scroll: **`uix.ScrollingPanel`**
 
-![ScrollingPanel](Images/bigicon_ScrollingPanel.png "ScrollingPanel")
-
 Arrange a single element inside a scrollable panel
 
 ## Syntax

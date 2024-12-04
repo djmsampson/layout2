@@ -1,7 +1,5 @@
 # :page_facing_up: **`uix.Panel`**
 
-![Panel](Images/bigicon_Panel.png "Panel")
-
 Arrange a single element inside a standard panel
 
 ## Syntax
