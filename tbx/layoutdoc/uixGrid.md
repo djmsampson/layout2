@@ -21,7 +21,7 @@ To interleave empty space within the grid, use [**`uix.Empty`**](uixEmpty.md). R
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background colo. | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | **`Contents`** | Children, in order of addition to the layout, regardless of **`HandleVisibility`**; settable only to a permutation of itself | graphics vector |
 | **`Heights`** | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
 | **`MinimumHeights`** | Minimum height of each of the rows, in pixels | nonnegative double vector |

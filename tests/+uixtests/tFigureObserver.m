@@ -19,6 +19,28 @@ classdef tFigureObserver < glttestutilities.TestInfrastructure
 
         end % tConstructorReturnsScalarObject
 
+        function tConstructorErrorsForIncorrectNumInputs( testCase )
+
+            % No inputs.
+            f = @() uix.FigureObserver();
+            testCase.verifyError( f, ...
+                'MATLAB:narginchk:notEnoughInputs', ...
+                ['The uix.FigureObserver constructor accepted ', ...
+                'zero input arguments.'] )
+
+            % More than one input.
+            f = @() uix.FigureObserver( 0, 0 );
+            if verLessThan( 'matlab', '9.3' ) % R2017b
+                errorID = 'MATLAB:maxrhs';
+            else
+                errorID = 'MATLAB:TooManyInputs';
+            end % if
+            testCase.verifyError( f, errorID, ...                
+                ['The uix.FigureObserver constructor accepted ', ...
+                'more than one input argument.'] )
+
+        end % tConstructorErrorsForIncorrectNumInputs
+
         function tConstructorErrorsForInvalidInput( testCase )
 
             % The non-graphics case.
@@ -34,6 +56,12 @@ classdef tFigureObserver < glttestutilities.TestInfrastructure
             testCase.verifyError( f, 'MATLAB:expectedScalar', ...
                 ['The uix.FigureObserver constructor accepted a ', ...
                 'non-scalar input.'] )
+
+            % The case where the graphics object has no 'Parent' property.
+            f = @() uix.FigureObserver( gobjects( 1 ) );
+            testCase.verifyError( f, 'uix:ParentNotAProperty', ...
+                ['The uix.FigureObserver constructor accepted an ', ...
+                'object that does not have the ''Parent'' property.'] )
 
         end % tConstructorErrorsForInvalidInput
 

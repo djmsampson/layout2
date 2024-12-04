@@ -1,4 +1,4 @@
-classdef ( Hidden, Sealed ) FigureObserver < handle
+classdef ( Sealed ) FigureObserver < handle
     %uix.FigureObserver  Figure observer
     %
     %  A figure observer raises an event FigureChanged when the figure
@@ -29,9 +29,17 @@ classdef ( Hidden, Sealed ) FigureObserver < handle
             %  o = uix.FigureObserver(s) creates a figure observer for the
             %  subject s.
             
-            % Check
+            % Check type and size.
+            narginchk( 1, 1 )
             validateattributes( subject, {'matlab.graphics.Graphics'}, ...
                 {'scalar'}, '', 'subject' )
+
+            % Check that the graphics object has the 'Parent' property.
+            % This excludes graphics placeholders, for example.
+            if ~isprop( subject, 'Parent' )
+                error( 'uix:ParentNotAProperty', ...
+                    'Expected subject to have the ''Parent'' property.' )
+            end % if
             
             % Store subject
             obj.Subject = subject;

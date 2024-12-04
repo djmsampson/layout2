@@ -104,6 +104,13 @@
             {"name":"Visible", "kind":"namevalue", "type":["char", "string", "logical", "matlab.lang.OnOffSwitchState", "choices={'on', 'off'}"], "purpose":"Visible"}
         ]
     },
+    "uix.FigureObserver":
+    {
+        "inputs":
+        [
+            {"name":"subject", "kind":"required", "type":["matlab.graphics.Graphics", "scalar"],"purpose":"Graphics object whose figure ancestor is observed"}            
+        ]
+    },
     "uix.Grid":
     {
         "inputs":
