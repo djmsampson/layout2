@@ -141,7 +141,7 @@ Change the theme of the second figure.
 f2.Theme = "light"; 
 ```
 
-In each case we note that the label text responds dynamically to the theme changes.
+In each case we note that the label text responds dynamically.
 
 ## Related Topics
 
