@@ -57,6 +57,13 @@ classdef tExamples < glttestutilities.TestInfrastructure
                 functionList(toRemove) = [];
             end % if
 
+            % Remove the 'observerExample' example if we are in R2024b or
+            % earlier.
+            if verLessThan( 'matlab', '25.1' ) % R2025a is 25.1
+                toRemove = strcmp( functionList, 'observerExample' );
+                functionList(toRemove) = [];
+            end % if
+
             % Verify that launching the examples are warning-free.
             for k = 1 : numel( functionList )
                 currentExample = functionList{k};

@@ -30,6 +30,7 @@ classdef ( Sealed ) FigureObserver < handle
             %  subject s.
             
             % Check type and size.
+            narginchk( 1, 1 )
             validateattributes( subject, {'matlab.graphics.Graphics'}, ...
                 {'scalar'}, '', 'subject' )
 

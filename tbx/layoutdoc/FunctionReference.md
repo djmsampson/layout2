@@ -28,4 +28,5 @@
 ## Other Functions
 
 * :no_entry_sign: [**`uix.Empty`**](uixEmpty.md): Create an empty space
+* :telescope: [**`uix.FigureObserver`**](uixFigureObserver.md) Raise an event when the figure ancestor of a subject changes
 * :seedling: [**`layoutRoot`**](layoutRoot.md): Return the folder containing the GUI Layout Toolbox

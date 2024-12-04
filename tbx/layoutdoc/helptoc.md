@@ -48,5 +48,6 @@
             * [uix.Grid, uix.GridFlex](uixGrid.md)
         * [Other Functions](OtherFunctions.md)
             * [uix.Empty](uixEmpty.md)
+            * [uix.FigureObserver](uixFigureObserver.md)
             * [layoutRoot](layoutRoot.md)
             
