@@ -14,7 +14,7 @@ classdef tExamples < glttestutilities.TestInfrastructure
             testsFolder = fileparts( mfilename( 'fullpath' ) );
             projectFolder = fileparts( testsFolder );
             testCase.ExamplesFolder = fullfile( projectFolder, 'tbx', ...
-                'layoutdoc', 'Examples' );
+                'layoutdoc' );
 
             % Apply path fixtures for this folder.
             pathFixture = matlab.unittest.fixtures...
