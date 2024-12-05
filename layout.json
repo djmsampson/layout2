@@ -1,0 +1,13 @@
+{
+    "ToolboxName":"GUI Layout Toolbox",
+    "Identifier":"e5af5a78-4a80-11e4-9553-005056977bd0",
+    "Summary":"Layout manager for MATLAB graphical user interfaces",
+    "Description":"This toolbox provides tools to create sophisticated MATLAB graphical user interfaces that resize gracefully. The classes supplied can be used in combination to produce virtually any user interface layout. \n\n* Arrange MATLAB user interface components horizontally, vertically, or in grids\n* Mix fixed- and variable-size components\n* Resize components interactively by dragging dividers\n* Show and hide components using tabs and panels\n* Show part of a large component in a scrollable panel\n\n This toolbox was developed by David Sampson and Ben Tordoff from the [Consulting Services](http://www.mathworks.com/services/consulting/) group at MathWorks.\n\n This version is for MATLAB R2014b and later. For R2014a and earlier, see [version 1](http://www.mathworks.com/matlabcentral/fileexchange/27758-gui-layout-toolbox).",
+    "AuthorCompany":"MathWorks",
+    "AuthorName":"David Sampson",
+    "AuthorEmail":"dsampson@mathworks.com",
+    "ToolboxFolder":"./tbx",
+    "ToolboxMatlabPath": ["./tbx/layout", "./tbx/layoutdoc"],
+    "ToolboxImageFile":"./glt.png",
+    "MinimumMatlabRelease":"R2014b"
+}
