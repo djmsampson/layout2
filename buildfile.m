@@ -87,12 +87,13 @@ fprintf( "** Converted markdown files to HTML.\n\n" )
 
 % Control the default figure size and window style for generating doc
 % snapshots.
-style = get( 0, "defaultFigureWindowStyle" );
-position = get( 0, "defaultFigurePosition" );
-rootCleanup = onCleanup( @() set( 0, ...
+gr = groot();
+style = get( gr, "defaultFigureWindowStyle" );
+position = get( gr, "defaultFigurePosition" );
+rootCleanup = onCleanup( @() set( gr, ...
     "defaultFigureWindowStyle", style, ...
     "defaultFigurePosition", position ) );
-set( 0, "defaultFigureWindowStyle", "normal", ...
+set( gr, "defaultFigureWindowStyle", "normal", ...
     "defaultFigurePosition", [100, 100, 400, 300] )
 
 % Use Doc_er to evaluate and capture the code within the doc pages.
@@ -123,9 +124,8 @@ meta.ToolboxFolder = fullfile( projectRoot, meta.ToolboxFolder );
 meta.ToolboxImageFile = fullfile( projectRoot, meta.ToolboxImageFile );
 versionString = feval( @(s) s(1).Version, ver( toolboxShortName ) ); %#ok<FVAL>
 meta.ToolboxVersion = versionString;
-toolboxMLTBX = meta.ToolboxName + " " + versionString + ".mltbx";
-% toolboxMLTBX = fullfile( projectRoot, "releases", ...
-%     meta.ToolboxName + " " + versionString + ".mltbx" );
+toolboxMLTBX = fullfile( projectRoot, "releases", ...
+    meta.ToolboxName + " " + versionString + ".mltbx" );
 meta.OutputFile = toolboxMLTBX; 
 
 % Define the toolbox packaging options.
