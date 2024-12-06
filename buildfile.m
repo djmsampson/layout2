@@ -85,6 +85,16 @@ allMDFiles = fullfile( docFolder, "**", "*.md" );
 docerconvert( allMDFiles )
 fprintf( "** Converted markdown files to HTML.\n\n" )
 
+% Control the default figure size and window style for generating doc
+% snapshots.
+style = get( 0, "defaultFigureWindowStyle" );
+position = get( 0, "defaultFigurePosition" );
+rootCleanup = onCleanup( @() set( 0, ...
+    "defaultFigureWindowStyle", style, ...
+    "defaultFigurePosition", position ) );
+set( 0, "defaultFigureWindowStyle", "normal", ...
+    "defaultFigurePosition", [100, 100, 400, 300] )
+
 % Use Doc_er to evaluate and capture the code within the doc pages.
 allHTMLFiles = fullfile( docFolder, "**", "*.html" );
 docerrun( allHTMLFiles )

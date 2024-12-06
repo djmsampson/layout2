@@ -47,6 +47,8 @@ Unroot the axes.
 ax.Parent = [];
 ```
 
+We observe that the listener callback is executed.
+
 ### Create a figure observer for a box panel
 
 The following example shows how to respond to the `Theme` property of a box panel's figure ancestor. The source code for this example is available in `observerExample.m`.
@@ -76,7 +78,7 @@ Create a listener for the `FigureChanged` event.
 figureChangedListener = listener( fo, "FigureChanged", @onFigureChanged ); 
 ```
 
-Since we are in a function, ensure that the listener persists.
+Ensure that the listener persists.
 ```matlab
 setappdata( bp, "FigureChangedListener", figureChangedListener ) 
 ```

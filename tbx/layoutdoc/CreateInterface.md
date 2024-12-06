@@ -55,10 +55,6 @@ app.ViewAxes = axes( 'Parent', app.ViewContainer );
 
 The complete source code for this application is available in `galleryBrowser.m`.
 
-```matlab
-edit galleryBrowser 
-```
-
 ## Related Topics
 * [Application Structure](ApplicationStructure.md)
 * [Updating the User Interface](UpdateInterface.md)

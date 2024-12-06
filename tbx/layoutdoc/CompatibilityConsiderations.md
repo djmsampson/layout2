@@ -1,4 +1,3 @@
-
 # **Compatibility Considerations**
 
 ## Web Graphics Support
@@ -123,7 +122,6 @@ Version 2 contents companion properties are now of the same size as `Contents`, 
 ## Tab selection behavior
 
 In version 1, after adding a tab to a tab panel, the new tab is selected.
-
 
 In version 2, the original selection is preserved, except if the tab panel was empty, in which case the new tab is selected. This is consistent with the behavior of [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html).
 
