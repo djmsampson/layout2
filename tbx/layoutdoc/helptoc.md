@@ -21,9 +21,10 @@
         * [Context Help](ContextHelp.md)
         * [Minimize and Maximize](MinimizeAndMaximize.md)
         * [Dock and Undock](DockAndUndock.md)
+    * [Working with Scrolling Panels](WorkingWithScrollingPanels.md)
     * [Layout Interoperability](LayoutInteroperability.md)
         * [Using Layouts with uigridlayout and tiledlayout](UsingLayoutsWithGridLayoutManagers.md)
-        * [Using Layouts in App Designer](UsingLayoutsInAppDesigner.md)        * 
+        * [Using Layouts in App Designer](UsingLayoutsInAppDesigner.md) 
         * [Using Layouts in GUIDE](UsingLayoutsInGUIDE.md)
     * [Building a Complete Application](ACompleteExample.md)
         * [Application Structure](ApplicationStructure.md)

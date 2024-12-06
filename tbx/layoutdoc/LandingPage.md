@@ -20,6 +20,7 @@ This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabce
 - [Positioning Axes](PositioningAxes.md): How to include axes, legends, and colorbars in layouts
 - [Controlling Visibility](ControllingVisibility.md): Controlling visibility of components within layouts
 - [Working with Box Panels](WorkingWithBoxPanels.md): Equipping panels with context help, minimize/maximize or undock/dock capability
+- [Working with Scrolling Panels](WorkingWithScrollingPanels.md): Arranging a single element inside a panel with horizontal and vertical scrollbars
 - [Layout Interoperability](LayoutInteroperability.md): Using GUI Layout Toolbox layouts with MATLAB's layout managers, App Designer, and GUIDE
 - [Building a Complete Application](ACompleteExample.md): Build a complete application using toolbox layouts
 - [Function Reference](FunctionReference.md): A list of the available functions
