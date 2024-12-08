@@ -1,6 +1,6 @@
-# **Creating the User Interface**
+# Creating the User Interface
 
-The interface creation is handled in the `createInterface` function. This has two distinct sections: menu building and control arrangement. The menus are created using the [**`uimenu`**](https://www.mathworks.com/help/matlab/ref/uimenu.html) function, so in what follows we'll focus on the control arrangement.
+The interface creation is handled in the `createInterface` function. This has two distinct sections: menu building and control arrangement. The menus are created using the [`uimenu`](https://www.mathworks.com/help/matlab/ref/uimenu.html) function, so in what follows we'll focus on the control arrangement.
 
 The top-level layout is a horizontal box, placing the controls to the left of the main plot. We make the layout flexible by using the "flex" variant of `HBox`, and put a panel in each side of the layout. Note that setting the `HelpFcn` for the view panel adds a small `?` icon that we can use to open help or documentation for the current example. See the [`ContextHelp`](ContextHelp.md) example for more details.
 
@@ -54,10 +54,6 @@ app.ViewAxes = axes( 'Parent', app.ViewContainer );
 ![The axes in the view panel](Images/CreateInterface03.png "The axes in the view panel")
 
 The complete source code for this application is available in `galleryBrowser.m`.
-
-```matlab
-edit galleryBrowser 
-```
 
 ## Related Topics
 * [Application Structure](ApplicationStructure.md)

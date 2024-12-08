@@ -1,9 +1,8 @@
-
-# **Why Use Layouts?**
+# Why Use Layouts?
 
 ## Introduction
 
-The overriding reason for using layouts or layout managers is to gain control of the resizing behavior of the interface without having to write a complex **`SizeChangedFcn`** callback on the app's main figure window or containers such as panels, tabs, etc. If you position user\-interface elements directly, i.e., by setting their **`Position`** property, then you have two choices about what happens when the figure window resizes.
+The overriding reason for using layouts or layout managers is to gain control of the resizing behavior of the interface without having to write a complex `SizeChangedFcn` callback on the app's main figure window or containers such as panels, tabs, etc. If you position user\-interface elements directly, i.e., by setting their `Position` property, then you have two choices about what happens when the figure window resizes.
 
 ## Normalized units
 
@@ -93,6 +92,6 @@ f.Position(3:4) = 400;
 
 * [Vertical layouts](uixVBox.md)
 * [Horizontal button boxes](uixHButtonBox.md)
-* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
-* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
-* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+* [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)

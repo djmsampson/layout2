@@ -1,31 +1,31 @@
-# :no_entry_sign: **`uix.Empty`**
+# :no_entry_sign: uix.Empty
 
 Create an empty space
 
 ## Syntax
 
-* **`e = uix.Empty()`** creates a new, default, *unparented* empty space object that can be used in layouts to add gaps between other elements. The empty space is achieved using a container that monitors its parent's color and changes its own to match.
-* **`e = uix.Empty( n1, v1, n2, v2, ... )`** also sets one or more property values.
+* `e = uix.Empty()` creates a new, default, *unparented* empty space object that can be used in layouts to add gaps between other elements. The empty space is achieved using a container that monitors its parent's color and changes its own to match.
+* `e = uix.Empty( n1, v1, n2, v2, ... )` also sets one or more property values.
 
 ## Properties
 
 | Name | Description | Type |
 | --- | --- | --- |
-| **`BackgroundColor`** | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| **`Parent`** | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| **`Position`** | Position within parent figure or container, in **`Units`** | `[left, bottom, width, height]`  |
-| **`Units`** | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| **`Visible`** | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
+| `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
+| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
-* Interactivity: **`ContextMenu`**
-* Callbacks: **`SizeChangedFcn`**, **`ButtonDownFcn`**, **`CreateFcn`**, **`DeleteFcn`**
-* Callback execution control: **`Interruptible`**, **`BusyAction`**, **`BeingDeleted`**, **`HitTest`**
-* Parent/child: **`Children`**, **`HandleVisibility`**
-* Identifiers: **`Type`**, **`Tag`**, **`UserData`**
+* Interactivity: `ContextMenu`
+* Callbacks: `SizeChangedFcn`, `ButtonDownFcn`, `CreateFcn`, `DeleteFcn`
+* Callback execution control: `Interruptible`, `BusyAction`, `BeingDeleted`, `HitTest`
+* Parent/child: `Children`, `HandleVisibility`
+* Identifiers: `Type`, `Tag`, `UserData`
 
 ## Limitations
-* It is not possible to monitor the `Color` or `BackgroundColor` properties for every graphics object, since some objects have the `SetObservable` attribute of these properties set to `false`. In these cases, it is necessary to set the `BackgroundColor` of the empty space object directly. In particular, this applies to placing an empty space object in a [**`uigridlayout`**](https://www.mathworks.com/help/matlab/ref/uigridlayout.html) container. See the example below.
+* It is not possible to monitor the `Color` or `BackgroundColor` properties for every graphics object, since some objects have the `SetObservable` attribute of these properties set to `false`. In these cases, it is necessary to set the `BackgroundColor` of the empty space object directly. In particular, this applies to placing an empty space object in a [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html) container. See the example below.
 
 ## Examples
 
@@ -62,4 +62,4 @@ e.BackgroundColor = g.BackgroundColor;
 ```
 
 ## Related Topics
-* :arrow_right: [**`uix.HBox`**](uixHBox.md): Arrange elements horizontally in a single row
+* :arrow_right: [`uix.HBox`](uixHBox.md): Arrange elements horizontally in a single row

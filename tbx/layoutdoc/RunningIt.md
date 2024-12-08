@@ -1,4 +1,4 @@
-# **Launching the Application**
+# Launching the Application
 
 When the main function is launched (`galleryBrowser`) it first creates the data, then the app, then updates the app using the data. At this point the function exits and control is returned to the command prompt. Note, however, that the app is still onscreen and will still respond to user interaction.
 

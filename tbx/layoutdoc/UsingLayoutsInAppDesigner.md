@@ -20,7 +20,7 @@ Next, add the `StartupFcn` callback to the app. We'll name this callback `onStar
 
 ![Add the startup function callback](Images/UsingLayoutsInAppDesigner02.png "Add the startup function callback")
 
-Edit the `onStartup` callback in the App Designer-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel referenced by `app.Panel`. Note that this example code uses **`uix.BoxPanel`** in web graphics, which requires R2022a or later.
+Edit the `onStartup` callback in the App Designer-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel referenced by `app.Panel`. Note that this example code uses `uix.BoxPanel` in web graphics, which requires R2022a or later.
 
 ```matlab
 % Code that executes after component creation

@@ -1,5 +1,5 @@
 
-# **Layout Hierarchies**
+# Layout Hierarchies
 
 ## A simple layout hierarchy
 
@@ -62,6 +62,6 @@ vb.Heights = [-1, 35];
 
 * [Vertical layouts](uixVBox.md)
 * [Horizontal button boxes](uixHButtonBox.md)
-* [**`figure`**](https://www.mathworks.com/help/matlab/ref/figure.html)
-* [**`axes`**](https://www.mathworks.com/help/matlab/ref/axes.html)
-* [**`uicontrol`**](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+* [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html)
+* [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
+* [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
