@@ -6,6 +6,23 @@ The GUI Layout Toolbox version numbers take the form `major.minor.iter`. The cur
 ver( "layout" ) 
 ```
 
+## Version 2.4
+
+- Reimplemented uix.TabPanel using uitab, for standardized appearance and easier deployment
+- Added uix.TabPanel tab location options left and right; this is available through uitab
+- Removed font and some color properties from uix.TabPanel; these are not available in uitab
+- Show contents of selected but disabled tabs; this is more useful than the previous behavior
+- Removed folder Resources with tab images, and special MATLAB Compliler deployment instructions; these are no longer required
+- Reimplemented uix.BoxPanel titlebar buttons, for compatibility with web graphics
+- Honor padding in uix.ScrollingPanel
+- Fixed bugs in uix.ScrollingPanel
+- Removed property Selection from uix.Panel, uix.BoxPanel, uix.ScrollingPanel; these layouts now stack children; use uix.CardPanel to select one of several children
+- Changed uix.ScrollingPanel per-child properties Heights, MinimumHeights, Widths, MinimumWidths, VerticalSteps, VerticalOffsets, HorizontalSteps, HorizontalOffsets to - scalar properties Height, MinimumHeight, Width, MinimumWidth, VerticalStep, VerticalOffset, HorizontalStep, HorizontalOffset; this simplifies usability
+- Renamed uix.BoxPanel tooltip properties from ...TooltipString to ...Tooltip; previous property names are still supported
+- Removed decorations on draggable dividers, for compatibility with web graphics
+- Revamped documentation using Doc_er
+- Documented helper uix.FigureObserver for detecting figure ancestor changes
+
 ## Version 2.3.9
 - Released 5 July 2024
 - Reverted changes from version 2.3.8, as these introduced issues with the appearance of dividers and tabs
