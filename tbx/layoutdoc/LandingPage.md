@@ -10,7 +10,7 @@ GUI Layout Toolbox is a layout manager for creating MATLAB graphical user interf
 -  Show and hide components using tabs and panels 
 -  Show part of a large component in a scrollable panel 
 
-This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) and [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) from the [Consulting Services](https://www.mathworks.com/services/consulting.html) group at [MathWorks](https://www.mathworks.com/).
+This toolbox was created by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) and [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) from the [Consulting Services](https://www.mathworks.com/services/consulting.html) group at [MathWorks](https://www.mathworks.com/).
 
 ![GUI Layout Toolbox Logo](Images/glt.png "GUI Layout Toolbox Logo")
 
