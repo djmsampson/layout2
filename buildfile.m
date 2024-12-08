@@ -1,5 +1,5 @@
 function plan = buildfile()
-%BUILDFILE Build file for managing GUI Layout Toolbox packaging tasks.
+%buildfile  GUI Layout Toolbox buildfile
 
 % Copyright 2024 The MathWorks, Inc.
 
@@ -124,9 +124,9 @@ meta.ToolboxFolder = fullfile( projectRoot, meta.ToolboxFolder );
 meta.ToolboxImageFile = fullfile( projectRoot, meta.ToolboxImageFile );
 versionString = feval( @(s) s(1).Version, ver( toolboxShortName ) ); %#ok<FVAL>
 meta.ToolboxVersion = versionString;
-toolboxMLTBX = fullfile( projectRoot, "releases", ...
+mltbx = fullfile( projectRoot, "releases", ...
     meta.ToolboxName + " " + versionString + ".mltbx" );
-meta.OutputFile = toolboxMLTBX; 
+meta.OutputFile = mltbx; 
 
 % Define the toolbox packaging options.
 toolboxFolder = meta.ToolboxFolder;
@@ -142,5 +142,9 @@ opts.ToolboxFiles(markdownFilesIdx) = [];
 % Package the toolbox.
 matlab.addons.toolbox.packageToolbox( opts )
 fprintf( 1, "[+] %s\n", opts.OutputFile )
+
+% Add license.
+lic = fileread( fullfile( projectRoot, "LICENSE" ) );
+mlAddonSetLicense( char( opts.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
