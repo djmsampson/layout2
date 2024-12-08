@@ -21,7 +21,7 @@ ver( "layout" )
 - Changed `uix.ScrollingPanel` per-child properties `Heights`, `MinimumHeights`, `Widths`, `MinimumWidths`, `VerticalSteps`, `VerticalOffsets`, `HorizontalSteps`, `HorizontalOffsets` to scalar properties `Height`, `MinimumHeight`, `Width`, `MinimumWidth`, `VerticalStep`, `VerticalOffset`, `HorizontalStep`, `HorizontalOffset`; this simplifies usability
 - Renamed `uix.BoxPanel` tooltip properties from `...TooltipString` to `...Tooltip`; previous property names are still supported
 - Removed decorations on draggable dividers, for compatibility with web graphics
-- Migrated documentation to Doc_er
+- Migrated documentation to Doc_er :hatching_chick:
 - Documented helper `uix.FigureObserver` for detecting figure ancestor changes
 
 ## Version 2.3.9
