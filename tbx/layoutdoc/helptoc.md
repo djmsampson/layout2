@@ -51,3 +51,4 @@
             * [uix.Empty](uixEmpty.md)
             * [uix.FigureObserver](uixFigureObserver.md)
             * [layoutRoot](layoutRoot.md)
+    * [Licenses](license.md)
