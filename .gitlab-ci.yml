@@ -10,17 +10,14 @@ workflow:
       when: always
 
 stages:
-  - run-tests
+  - test
 
 variables:
   ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
   LOCATION: "UK"  
 
-run-tests:
-  stage: run-tests
-  parallel:
-    matrix:
-      - MATLAB_RELEASE: ["R2018b", "R2019a", "R2019b", "R2020a", "R2020b", "R2021a", "R2021b", "R2022a", "R2022b", "R2023a", "R2023b", "R2024a", "R2024b"]
+.gr-tests:
+  stage: test
   tags:
    - long-jobs
   script:    
@@ -32,11 +29,33 @@ run-tests:
     reports:
       junit: TestResults.xml
 
-run-tests-jsd: 
-  stage: run-tests
+latest-test:
+  extends: .gr-tests
   parallel:
     matrix:
-      - MATLAB_RELEASE: ["R2023b", "R2024a", "R2024b"]
+      - MATLAB_RELEASE: [R2024b]
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
+
+historic-tests:
+  extends: .gr-tests
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2018b", "R2019b", "R2020b", "R2021b", "R2022b", "R2023b", "R2024a", "R2024b"]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d.*/
+      when: always
+
+jsd-test:
+  stage: test
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2024b"]
   tags:
     - long-jobs
   script:    
