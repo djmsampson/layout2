@@ -3,6 +3,7 @@
 Arrange a single element in a panel with boxed title and optional toolbar controls
 
 ## Syntax
+
 * `bp = uix.BoxPanel()` creates a new, default, *unparented*, box-styled panel object with automatic management of the contained control or layout. The available properties are largely the same as the standard [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) object.
 
 * `bp = uix.BoxPanel( n1, v1, n2, v2, ... )` also sets one or more property values.
@@ -109,6 +110,7 @@ uibutton( vbb, "BackgroundColor", "b" );
 ```
 
 ## Related Topics
+
 * :page_facing_up: [`uix.Panel`](uixPanel.md): Arrange a single element inside a standard panel
 * :card_index: [`uix.CardPanel`](uixCardPanel.md): Show one element (card) from a list
 * :point_right: [`uix.TabPanel`](uixTabPanel.md): Arrange elements in a panel with tabs for selecting which element is visible

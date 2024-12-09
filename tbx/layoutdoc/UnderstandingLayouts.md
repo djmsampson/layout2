@@ -1,4 +1,3 @@
-
 # **Understanding Layouts**
 
 This section describes the purpose and overall design of the layout tools provided by the toolbox. It also contains several examples of creating user interfaces using layouts.
@@ -9,8 +8,8 @@ The best way to understand what layouts are and why they are a good user interfa
 
 ## Contents
 
--  [Why Use Layouts?](WhyUseLayouts.md)
--  [Layout Basics](LayoutBasics.md)
--  [Types of Layout](TypesOfLayout.md)
--  [Sizes and Units](SizesAndUnits.md)
--  [Layout Hierarchies](LayoutHierarchies.md)
+- [Why Use Layouts?](WhyUseLayouts.md)
+- [Layout Basics](LayoutBasics.md)
+- [Types of Layout](TypesOfLayout.md)
+- [Sizes and Units](SizesAndUnits.md)
+- [Layout Hierarchies](LayoutHierarchies.md)

@@ -5,7 +5,7 @@
 
 ## Syntax
 
-* `gr = uix.Grid()` or `grf = uix.GridFlex()` creates a new, default, *unparented* grid layout or flexible grid layout. The number of rows and columns to use is determined from the number of elements in the `Heights` and `Widths` properties, respectively. Child elements are arranged down column one first, then column two, and so on. If there are insufficient columns then a new one is added. The output is a new layout object that can be used as the parent for other user-interface components.
+* `gr = uix.Grid()` or `grf = uix.GridFlex()` creates a new, default, *unparented* grid layout or flexible grid layout. The number of rows and columns to use is determined from the number of elements in the `Heights` and `Widths` properties, respectively. Child elements are arranged down column one first, then column two, and so on. If there are insufficient columns then a new one is added. The output is a new layout object that can be used as the parent for other user interface components.
 * `gr = uix.Grid( n1, v1, n2, v2, ... )` or `grf = uix.GridFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
 * `uix.GridFlex` extends `uix.Grid`, adding draggable dividers between the rows and columns.
 
@@ -40,6 +40,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 * Identifiers: `Type`, `Tag`, `UserData`
 
 ### :warning: Deprecated
+
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | `DividerMarkings` (for `uix.GridFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |

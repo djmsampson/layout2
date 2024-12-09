@@ -5,7 +5,7 @@
 
 ## Syntax
 
-* `hb = uix.HBox()` or `hbf = uix.HBoxFlex()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user-interface components.
+* `hb = uix.HBox()` or `hbf = uix.HBoxFlex()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
 * `hb = uix.HBox( n1, v1, n2, v2, ... )` or `hbf = uix.HBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
 * `uix.HBoxFlex` extends `uix.HBox`, adding draggable dividers between the columns.
 
@@ -34,6 +34,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 * Identifiers: `Type`, `Tag`, `UserData`
 
 ### :warning: Deprecated
+
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | `DividerMarkings` (for `uix.HBoxFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |

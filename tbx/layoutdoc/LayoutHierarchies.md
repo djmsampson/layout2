@@ -1,4 +1,3 @@
-
 # Layout Hierarchies
 
 ## A simple layout hierarchy
@@ -52,7 +51,7 @@ uicontrol( 'Parent', hb, 'Style', 'pushbutton', 'String', 'Button 1' )
 uicontrol( 'Parent', hb, 'Style', 'pushbutton', 'String', 'Button 2' )
 ```
 
-Set the sizes. We want the axes to resize dynamically as the figure window is resized, so we set the first height to be \-1 (which means variable size with weight 1). We want the buttons to remain with a fixed height, so we set the second height to 35 (which means a fixed height of 35 pixels).
+Set the sizes. We want the axes to resize dynamically as the figure window is resized, so we set the first height to be -1 (which means variable size with weight 1). We want the buttons to remain with a fixed height, so we set the second height to 35 (which means a fixed height of 35 pixels).
 
 ```matlab
 vb.Heights = [-1, 35];

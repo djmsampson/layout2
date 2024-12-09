@@ -1,4 +1,3 @@
-
 # Using Layouts in GUIDE
 
 ## Overview
@@ -17,7 +16,7 @@ Create your `GUIDE` application as usual, placing a panel where you want to inse
 
 ## Insert the layout
 
-Edit the `OpeningFcn` in the `GUIDE`\-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel with tag `uipanel1`.
+Edit the `OpeningFcn` in the `GUIDE`-generated code and insert your layout into the panel, making it fill the space. In the example below, four box panels are inserted into a grid, which itself is placed inside the panel with tag `uipanel1`.
 
 ```matlab
 % --- Executes just before guideApp is made visible. 

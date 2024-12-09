@@ -42,6 +42,7 @@ edit galleryBrowser
 ```
 
 ## Related Topics
+
 * [Application Structure](ApplicationStructure.md)
 * [Creating the User Interface](CreateInterface.md) 
 * [Responding to User Interaction](OnListSelection.md)

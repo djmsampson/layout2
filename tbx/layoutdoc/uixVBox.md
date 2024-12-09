@@ -5,7 +5,7 @@
 
 ## Syntax
 
-* `vb = uix.VBox()` or `vbf = uix.VBoxFlex()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user-interface components.
+* `vb = uix.VBox()` or `vbf = uix.VBoxFlex()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
 * `vb = uix.VBox( n1, v1, n2, v2, ... )` or `vbf = uix.VBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
 * `uix.VBoxFlex` extends `uix.VBox`, adding draggable dividers between the rows.
 
@@ -32,6 +32,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 * Identifiers: `Type`, `Tag`, `UserData`
 
 ### :warning: Deprecated
+
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | `DividerMarkings` (for `uix.VBoxFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |

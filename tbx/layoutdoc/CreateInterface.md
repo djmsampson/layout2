@@ -56,6 +56,7 @@ app.ViewAxes = axes( 'Parent', app.ViewContainer );
 The complete source code for this application is available in `galleryBrowser.m`.
 
 ## Related Topics
+
 * [Application Structure](ApplicationStructure.md)
 * [Updating the User Interface](UpdateInterface.md)
 * [Responding to User Interaction](OnListSelection.md)

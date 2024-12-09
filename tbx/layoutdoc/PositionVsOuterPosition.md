@@ -1,4 +1,3 @@
-
 # `Position` vs. `OuterPosition`
 
 ## Introduction
@@ -26,4 +25,5 @@ title( ax, 'Position = [0, 0, 1, 1]' )
 ```
 
 ## Related Topics
+
 * [Control Axes Layout](https://www.mathworks.com/help/matlab/creating_plots/automatic-axes-resize.html)

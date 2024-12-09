@@ -40,11 +40,12 @@ uicontrol( 'Parent', box, 'Style', 'pushbutton', 'String', 'Button 6' )
 ```
 
 ## Toggle the visibility of the box panel
+
 ```matlab
 panel.Visible = 'off';
 ```
 
-## Restore the box panel visibility.
+## Restore the box panel visibility
 
 Note that the original `Visible` state of each button has been preserved.
 
@@ -53,6 +54,7 @@ panel.Visible = 'on';
 ```
 
 ## Related Topics
+
 * [Box panels](uixBoxPanel.md)
 * [Vertical button boxes](uixVButtonBox.md)
 * [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)

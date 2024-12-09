@@ -1,6 +1,7 @@
 # Using Layouts with `uigridlayout` and `tiledlayout`
 
 ## Overview
+
 The [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html) grid layout manager was introduced in the R2018b release. This layout manager is designed to position web graphics controls and graphics elements in a two-dimensional grid. Similarly, the [`tiledlayout`](https://www.mathworks.com/help/matlab/ref/tiledlayout.html) was introduced in the R2019b release. This layout is designed to arrange tiled axes in a two-dimensional grid, and is a replacement for the [`subplot`](https://www.mathworks.com/help/matlab/ref/subplot.html) function.
 
 Layouts in the GUI Layout Toolbox can be used in conjunction with `uigridlayout` and `tiledlayout` using the techniques described in the following examples.
@@ -10,6 +11,7 @@ Layouts in the GUI Layout Toolbox can be used in conjunction with `uigridlayout`
 The `uigridlayout` container manages the position and size of its child elements, so if a layout from GUI Layout Toolbox is placed in a `uigridlayout`, it will be automatically resized as needed. In turn, any child elements placed inside the GUI Layout Toolbox layout are resized according to the layout type.
 
 ### Example: create an instrumentation panel
+
 In this example, we'll create a simple instrumentation panel with two knobs, a gauge, and a vertical array with six buttons. We use a `uigridlayout` container to hold the knobs and the gauge, and place a [vertical button box](uixVButtonBox.md) in the container to hold the buttons.
 
 ```matlab
@@ -39,6 +41,7 @@ uibutton( vbb, "Text", "Button 6" );
 ```
 
 ## Using a `uigridlayout` container in a GUI Layout Toolbox layout
+
 Some web graphics controls have a fixed aspect ratio. For these controls, correct resizing means preserving the aspect ratio. This generally applies to instrumentation components such as knobs ([`uiknob`](https://www.mathworks.com/help/matlab/ref/uiknob.html)), gauges ([`uigauge`](https://www.mathworks.com/help/matlab/ref/uigauge.html)), lamps ([`uilamp`](https://www.mathworks.com/help/matlab/ref/uilamp.html)) and switches ([`uiswitch`](https://www.mathworks.com/help/matlab/ref/uiswitch.html)). Correctly resizing controls that have a fixed aspect ratio is one benefit of using a `uigridlayout` container.
 
 When a layout from the GUI Layout Toolbox is resized, it resizes its child elements by setting their `Position` property. In general, this will not preserve the aspect ratio of the child element, leading to unexpected resizing behavior for components with a fixed aspect ratio. We can work around this by first placing the component with a fixed aspect ratio inside a `uigridlayout`. 
@@ -76,6 +79,7 @@ grf.Widths = [-1, -1];
 ```
 
 ## Using tiled layouts with GUI Layout Toolbox layouts
+
 A `tiledlayout` can be placed directly in a GUI Layout Toolbox layout, but it is recommended to first place it in a `uipanel` or `uicontainer`. Since tiled layouts can only contain axes, it is not possible to place a GUI Layout Toolbox layout or any other component inside a tiled layout.
 
 ### Example: create a tiled chart layout and listbox in a [flexible horizontal box](uixHBox.md)
@@ -110,6 +114,7 @@ title( ax, "D" )
 ```
 
 ## Related Topics
+
 * [Flexible horizontal layouts](uixHBox.md)
 * [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html)
 * [`tiledlayout`](https://www.mathworks.com/help/matlab/ref/tiledlayout.html)

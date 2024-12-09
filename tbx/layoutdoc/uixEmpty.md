@@ -25,6 +25,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 * Identifiers: `Type`, `Tag`, `UserData`
 
 ## Limitations
+
 * It is not possible to monitor the `Color` or `BackgroundColor` properties for every graphics object, since some objects have the `SetObservable` attribute of these properties set to `false`. In these cases, it is necessary to set the `BackgroundColor` of the empty space object directly. In particular, this applies to placing an empty space object in a [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html) container. See the example below.
 
 ## Examples
@@ -62,4 +63,5 @@ e.BackgroundColor = g.BackgroundColor;
 ```
 
 ## Related Topics
+
 * :arrow_right: [`uix.HBox`](uixHBox.md): Arrange elements horizontally in a single row
