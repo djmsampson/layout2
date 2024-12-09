@@ -11,9 +11,9 @@ Many developers using GUI Layout Toolbox have requested web graphics support. Th
 From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022b, all types are supported, with improvements to come.
 
 ## Support
--  Simple box, grid, and card layouts are supported from R2020b. 
--  Flexible box and grid layouts are supported from R2022a, as are scrolling and tab layouts. 
--  Box panels are supported from R2022a. 
+- Simple box, grid, and card layouts are supported from R2020b. 
+- Flexible box and grid layouts are supported from R2022a, as are scrolling and tab layouts. 
+- Box panels are supported from R2022a. 
 
 In detail:
 

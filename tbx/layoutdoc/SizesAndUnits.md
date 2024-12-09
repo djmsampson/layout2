@@ -6,8 +6,8 @@ In the previous section we noted that when using layouts, you don't need to set 
 
 Each layout that arranges multiple items within its drawing area has a sizing property: for horizontal boxes this is `Widths`, and for vertical boxes this is `Heights`. For grids we have both `Widths` and `Heights` properties. These all obey the same convention:
 
--  Positive numbers indicate sizes in pixels (similar to *pixel* units). 
--  Negative numbers indicate a weighting for variable sizing (similar to *normalized* units). 
+- Positive numbers indicate sizes in pixels (similar to *pixel* units). 
+- Negative numbers indicate a weighting for variable sizing (similar to *normalized* units). 
 
 By default, all sizes are set to \-1 (variable size with unit weighting).
 

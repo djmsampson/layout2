@@ -2,10 +2,10 @@
 
 GUI Layout Toolbox provides a toolbox of MATLAB classes that allow for complex arrangement of graphical user interface elements within a figure window. The main capabilities provided are:
 
--  Automatic element arrangement horizontally, vertically, or in grids 
--  Ability to specify fixed sizes or resizing weights for each element 
--  Ability to nest layouts to produce virtually any element arrangement 
--  Divider bars for user\-resizing of elements 
+- Automatic element arrangement horizontally, vertically, or in grids 
+- Ability to specify fixed sizes or resizing weights for each element 
+- Ability to nest layouts to produce virtually any element arrangement 
+- Divider bars for user\-resizing of elements 
 
 These element arrangements are designed to match those found as standard in other user\-interface toolkits such as Java Swing, GTK, QT, etc.
 
@@ -19,9 +19,9 @@ For instructions on installing and uninstalling toolboxes, see [Get and Manage A
 
 This toolbox is not a MathWorks\-supported product. However, if you have problems, suggestions, or other comments, please contact the authors:
 
--  [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) (co-creator, maintainer)
--  [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) (co-creator, inactive)
--  [Ken Deeley](https://uk.mathworks.com/matlabcentral/profile/authors/2987674) (contributor)
+- [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) (co-creator, maintainer)
+- [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) (co-creator, inactive)
+- [Ken Deeley](https://uk.mathworks.com/matlabcentral/profile/authors/2987674) (contributor)
 
 If you like this toolbox, help others to find it by leaving a rating and comment on the [MATLAB Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox).
 
@@ -29,7 +29,7 @@ If you like this toolbox, help others to find it by leaving a rating and comment
 
 The authors wish to acknowledge the earlier contributions of the following MathWorks [consultants](https://www.mathworks.com/services/consulting.html) to this area:
 
--  Brad Phelan 
--  Malcolm Wood 
--  Richard Lang 
--  Paul Kerr\-Delworth
+- Brad Phelan 
+- Malcolm Wood 
+- Richard Lang 
+- Paul Kerr\-Delworth
