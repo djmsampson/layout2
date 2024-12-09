@@ -1,7 +1,9 @@
 # :seedling: layoutRoot
+
 Folder containing the GUI Layout Toolbox
 
 ## Syntax
+
 * `folder = layoutRoot()` returns the full path to the folder containing the GUI Layout Toolbox.
 
 ## Example
@@ -16,4 +18,5 @@ folder =
 ```
 
 ## Related Topics
+
 * [Get Started with GUI Layout Toolbox](GettingStarted.md)

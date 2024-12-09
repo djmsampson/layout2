@@ -26,5 +26,6 @@ uix.BoxPanel( 'Parent', b, 'Title', 'tan', 'HelpFcn', @(s, e) doc( 'tan' ) );
 ```
 
 ## Related Topics
+
 * [Box panels](uixBoxPanel.md)
 * [Horizontal layouts](uixHBox.md)

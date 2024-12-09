@@ -1,4 +1,4 @@
-# **GUI Layout Toolbox**
+# GUI Layout Toolbox
 
 **Version 2.3.10**
 
@@ -15,6 +15,7 @@ This toolbox was developed by [David Sampson](https://www.mathworks.com/matlabce
 ![GUI Layout Toolbox Logo](Images/glt.png "GUI Layout Toolbox Logo")
 
 ## Contents
+
 - [Get Started with GUI Layout Toolbox](GettingStarted.md): Introductory notes and installation instructions
 - [Understanding Layouts](UnderstandingLayouts.md): Describes the purpose and overall design of the layout tools
 - [Positioning Axes](PositioningAxes.md): How to include axes, legends, and colorbars in layouts

@@ -1,4 +1,3 @@
-
 # Dock and Undock
 
 ## Overview
@@ -27,6 +26,7 @@ Undocking the middle panel causes the other two to fill the vacated space. The u
 Redocking the panel would place it in its original position within the horizontal layout. Closing the main figure window causes all panels, docked or undocked, and their enclosing figure windows to be closed.
 
 ## The `dockExample` function
+
 ### Create the layout with three panels
 
 Create a new figure window and add three panels.
@@ -119,5 +119,6 @@ end % dockExample
 ```
 
 ## Related Topics
+
 * [Box panels](uixBoxPanel.md)
 * [Horizontal layouts](uixHBox.md)

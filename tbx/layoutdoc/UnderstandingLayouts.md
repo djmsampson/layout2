@@ -1,4 +1,3 @@
-
 # **Understanding Layouts**
 
 This section describes the purpose and overall design of the layout tools provided by the toolbox. It also contains several examples of creating user interfaces using layouts.

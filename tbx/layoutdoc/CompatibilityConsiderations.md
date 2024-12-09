@@ -1,4 +1,4 @@
-# **Compatibility Considerations**
+# Compatibility Considerations
 
 ## Web Graphics Support
 
@@ -17,7 +17,7 @@ From R2020b, GUI Layout Toolbox has partially supported web graphics. From R2022
 
 In detail:
 
-| **Layout** | **From** | **Comments** |
+| Layout | From | Comments |
 | :-- | :---: | :-- |
 | `uix.CardPanel` <br> `uix.HBox` <br> `uix.VBox` <br> `uix.HButtonBox` <br> `uix.VButtonBox` <br> `uix.Grid` <br> `uix.Empty` <br> `uix.TabPanel` <br> `uix.Panel` | R2020b | `uix.TabPanel` now uses a `uitab`-backed implementation.  |
 | `uix.HBoxFlex` <br> `uix.VBoxFlex` <br> `uix.GridFlex` <br> | R2021a | The draggable dividers in the flexible layouts now use a `uicontainer`-backed implementation, so rely on support for the `ButtonDownFcn` callback on a `uicontainer`. This was was added in R2021a. |
@@ -124,4 +124,3 @@ Version 2 contents companion properties are now of the same size as `Contents`, 
 In version 1, after adding a tab to a tab panel, the new tab is selected.
 
 In version 2, the original selection is preserved, except if the tab panel was empty, in which case the new tab is selected. This is consistent with the behavior of [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html).
-

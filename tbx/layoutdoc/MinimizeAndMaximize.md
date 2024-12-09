@@ -1,4 +1,3 @@
-
 # Minimize and Maximize
 
 ## Overview
@@ -17,6 +16,7 @@ minimizeExample
 ```
 
 ## The `minimizeExample` function
+
 ### Create the layout with three panels
 
 Create a new figure window and add three panels.
@@ -93,5 +93,6 @@ end % minimizeExample
 ```
 
 ## Related Topics
+
 * [Vertical layouts](uixVBox.md)
 * [Box panels](uixBoxPanel.md)

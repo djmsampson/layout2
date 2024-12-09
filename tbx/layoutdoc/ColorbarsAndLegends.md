@@ -1,4 +1,3 @@
-
 # Colorbars and Legends
 
 ## Overview
@@ -44,6 +43,7 @@ legend( axes2, 'sin', 'cos', 'Location', 'northwestoutside' )
 ```
 
 ## Related Topics
+
 * [Flexible vertical boxes](uixVBox.md)
 * [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
 * [`colorbar`](https://www.mathworks.com/help/matlab/ref/colorbar.html)

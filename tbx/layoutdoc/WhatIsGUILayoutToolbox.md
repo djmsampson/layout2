@@ -1,4 +1,4 @@
-# **What is GUI Layout Toolbox?**
+# What is GUI Layout Toolbox?
 
 GUI Layout Toolbox provides a toolbox of MATLAB classes that allow for complex arrangement of graphical user interface elements within a figure window. The main capabilities provided are:
 
@@ -9,13 +9,13 @@ GUI Layout Toolbox provides a toolbox of MATLAB classes that allow for complex a
 
 These element arrangements are designed to match those found as standard in other user\-interface toolkits such as Java Swing, GTK, QT, etc.
 
-## **Installation**
+## Installation
 
 GUI Layout Toolbox is provided as a MATLAB toolbox file (`.mltbx`).
 
 For instructions on installing and uninstalling toolboxes, see [Get and Manage Add\-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in the MATLAB documentation.
 
-## **Support**
+## Support
 
 This toolbox is not a MathWorks\-supported product. However, if you have problems, suggestions, or other comments, please contact the authors:
 
@@ -24,7 +24,7 @@ This toolbox is not a MathWorks\-supported product. However, if you have problem
 
 If you like this toolbox, help others to find it by leaving a rating and comment on the [MATLAB Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox).
 
-## **Acknowledgements**
+## Acknowledgements
 
 The authors wish to acknowledge the earlier contributions of the following MathWorks [consultants](https://www.mathworks.com/services/consulting.html) to this area:
 

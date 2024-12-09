@@ -17,6 +17,7 @@ edit galleryBrowser
 ```
 
 ## Related Topics
+
 *  [Application Structure](ApplicationStructure.md)
 *  [Creating the User Interface](CreateInterface.md) 
 *  [Updating the User Interface](UpdateInterface.md)

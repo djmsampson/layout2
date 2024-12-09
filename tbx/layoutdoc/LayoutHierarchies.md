@@ -1,4 +1,3 @@
-
 # Layout Hierarchies
 
 ## A simple layout hierarchy

@@ -8,6 +8,7 @@ As applications get bigger the code gets more complex. The simple application st
 Advice on how to build large-scale applications is beyond the scope of this document. If you need help in this area, please contact your MathWorks account manager who will be able to put you in touch with a technical specialist.
 
 ## Related Topics
+
 *  [Application Structure](ApplicationStructure.md)
 *  [Creating the User Interface](CreateInterface.md) 
 *  [Updating the User Interface](UpdateInterface.md)

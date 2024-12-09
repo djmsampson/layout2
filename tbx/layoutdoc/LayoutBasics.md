@@ -1,4 +1,3 @@
-
 # Layout Basics
 
 ## Create a basic layout

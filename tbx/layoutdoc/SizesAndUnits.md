@@ -1,4 +1,3 @@
-
 # Sizes and Units
 
 ## `Heights` and `Widths`
@@ -60,6 +59,7 @@ This ability to mix fixed and variable sized elements is crucial in interface de
 Many of the multi\-element layouts also provide a `MinimumWidths` or `MinimumHeights` property to prevent an element from becoming too small. This is measured in pixels, and defaults to one pixel. Take care to ensure that the available space is at least the sum of the minimum sizes, plus any padding or spacing.
 
 ## Related Topics
+
 * [Horizontal layouts](uixHBox.md)
 * [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html)
 * [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)

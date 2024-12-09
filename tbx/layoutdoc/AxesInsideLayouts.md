@@ -1,4 +1,3 @@
-
 # Axes inside Layouts
 
 ##  The `PositionConstraint` property of an axes 
@@ -9,7 +8,7 @@ Note that the `PositionConstraint` property of the axes is available from R2020a
 
 The default value for the `PositionConstraint` axes property is `'outerposition'`. The following table summarizes the differences between the `PositionConstraint` and `ActivePositionProperty` axes properties.
 
-| **Axes Property** | **Availability** | **Possible Values** | **Default Value** |
+| Axes Property | Availability | Possible Values | Default Value |
 | :-- | :-- | :-- | :-- |
 | `PositionConstraint` | R2020a onwards | `'outerposition', 'innerposition'` | `'outerposition'` |
 | `ActivePositionProperty` | all versions; discouraged from R2020a onwards | `'outerposition', 'position'` | `'outerposition'` |
@@ -67,6 +66,7 @@ set( axes2, 'XTickLabel', [], 'YTickLabel', [] )
 ```
 
 ## Related Topics
+
 * [Control Axes Layout](https://www.mathworks.com/help/matlab/creating_plots/automatic-axes-resize.html)
 * [Flexible horizontal boxes](uixHBox.md)
 * [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)

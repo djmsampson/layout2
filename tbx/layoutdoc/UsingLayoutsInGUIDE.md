@@ -1,4 +1,3 @@
-
 # Using Layouts in GUIDE
 
 ## Overview

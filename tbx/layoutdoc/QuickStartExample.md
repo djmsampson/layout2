@@ -1,4 +1,4 @@
-# **Quick Start Example**
+# Quick Start Example
 
 In this example we create a simple application to plot random data.
 

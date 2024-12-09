@@ -33,6 +33,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 * Identifiers: `Type`, `Tag`, `UserData`
 
 ### :warning: Deprecated
+
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | `FontAngle` | none | `"normal"` \| `"italic"` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
@@ -46,7 +47,8 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 ## Examples
 
-### Add three buttons to a tab panel 
+### Add three buttons to a tab panel
+
 ```matlab
 f = figure();
 tp = uix.TabPanel( 'Parent', f, 'Padding', 5 );
@@ -58,6 +60,7 @@ tp.Selection = 2;
 ```
 
 ### Add controls to a tab panel in web graphics
+
 ```matlab
 f = uifigure( "AutoResizeChildren", "off" );
 tp = uix.TabPanel( "Parent", f, "TabLocation", "left" );
@@ -73,6 +76,7 @@ tp.Selection = 3;
 ```
 
 ### Create a simple app with a tab panel and synchronized callbacks
+
 This example shows how to use tabs within a layout. It also shows how to use the `SelectionChangedFcn` callback property of the `uix.TabPanel` layout to update other user-interface elements when the visible tab is changed. The code for this example is available in `tabPanelExample.m`.
 
 ```matlab
@@ -150,6 +154,7 @@ tabPanelExample
 ```
 
 ## Related Topics
+
 * :page_facing_up: [`uix.Panel`](uixPanel.md): Arrange a single element inside a standard panel
 * :card_index: [`uix.CardPanel`](uixCardPanel.md): Show one element (card) from a list
 * :black_square_button: [`uix.BoxPanel`](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls
