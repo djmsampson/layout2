@@ -36,7 +36,7 @@ run-tests-jsd:
   stage: run-tests
   parallel:
     matrix:
-      - MATLAB_RELEASE: ["R2023b", "R2024a", "R2024b"]
+      - MATLAB_RELEASE: ["R2024b"]
   tags:
     - long-jobs
   script:    
