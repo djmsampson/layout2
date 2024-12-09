@@ -32,7 +32,7 @@ f = figure( 'Name', 'Axes Inside Layouts', ...
 
 ## Create the layout
 
-The layout involves two axes side by side. This is done using a flexible horizontal box. The left\-hand axes is left with the `PositionConstraint` property set to `'outerposition'`, but the right\-hand axes is switched to use `'innerposition'`.
+The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the `PositionConstraint` property set to `'outerposition'`, but the right-hand axes is switched to use `'innerposition'`.
 
 ```matlab
 hb = uix.HBoxFlex( 'Parent', f, 'Spacing', 3 );
@@ -50,7 +50,7 @@ hb.Widths = [-2, -1];
 
 ## Fill the axes
 
-Using the `OuterPosition` axes property (used by the left\-hand axes) is the normal mode, and looks good for virtually any plot type. Using the `Position` axes property is only really useful for 2D plots with the axes turned off, such as images.
+Using the `OuterPosition` axes property (used by the left-hand axes) is the normal mode, and looks good for virtually any plot type. Using the `Position` axes property is only really useful for 2D plots with the axes turned off, such as images.
 
 ```matlab
 x = membrane( 1, 15 );

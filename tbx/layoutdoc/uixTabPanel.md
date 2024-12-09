@@ -77,7 +77,7 @@ tp.Selection = 3;
 
 ### Create a simple app with a tab panel and synchronized callbacks
 
-This example shows how to use tabs within a layout. It also shows how to use the `SelectionChangedFcn` callback property of the `uix.TabPanel` layout to update other user-interface elements when the visible tab is changed. The code for this example is available in `tabPanelExample.m`.
+This example shows how to use tabs within a layout. It also shows how to use the `SelectionChangedFcn` callback property of the `uix.TabPanel` layout to update other user interface elements when the visible tab is changed. The code for this example is available in `tabPanelExample.m`.
 
 ```matlab
 edit tabPanelExample 

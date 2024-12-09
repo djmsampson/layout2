@@ -2,7 +2,7 @@
 
 ## Web Graphics Support
 
-In R2016a, MathWorks introduced JavaScript\-based MATLAB graphics (*web graphics*) alongside the earlier Java\-based system. Web graphics offers additional components and deployment technologies, and has been maturing ever since. The web graphics system is accessed by creating a figure using the [`uifigure`](https://www.mathworks.com/help/matlab/ref/uifigure.html) function rather than the [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html) function.
+In R2016a, MathWorks introduced JavaScript-based MATLAB graphics (*web graphics*) alongside the earlier Java-based system. Web graphics offers additional components and deployment technologies, and has been maturing ever since. The web graphics system is accessed by creating a figure using the [`uifigure`](https://www.mathworks.com/help/matlab/ref/uifigure.html) function rather than the [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html) function.
 
 
 Many developers using GUI Layout Toolbox have requested web graphics support. This actually depends mostly on feature completeness of the web graphics system itself, rather than changes to GUI Layout Toolbox.
@@ -75,7 +75,7 @@ If you are upgrading from version 1, there are a number of compatibility conside
 
 ## Namespace name
 
-Version 1 classes were contained in the namespace `uiextras`. Version 2 classes are contained in the namespace `uix`. In version 2, a namespace `uiextras` is included to provide support for legacy code. Classes in `uiextras` extend the corresponding classes in `uix`, and contain only compatibility\-related code.
+Version 1 classes were contained in the namespace `uiextras`. Version 2 classes are contained in the namespace `uix`. In version 2, a namespace `uiextras` is included to provide support for legacy code. Classes in `uiextras` extend the corresponding classes in `uix`, and contain only compatibility-related code.
 
 ## `Contents` property
 
@@ -85,7 +85,7 @@ The contents of version 1 objects were accessible via the property `Children`. T
 An upcoming release of version 1 will include support for code that references contents via `Contents`. That way, code modified to work in version 2 will also work in version 1.
 
 
-The background to this change is as follows. Version 1 classes were wrappers for built\-in graphics classes, and presented contents in layout order via the property `Children`. Version 2 objects extend built\-in graphics objects, and as such, inherit properties, methods, and events. One such property is `Children`, which is used to control the top\-to\-bottom stacking order. MATLAB stacking rules, e.g., controls are always on top of axes, mean that some reasonable layout orders may be invalid stacking orders, so a new property for layout order is required.
+The background to this change is as follows. Version 1 classes were wrappers for built-in graphics classes, and presented contents in layout order via the property `Children`. Version 2 objects extend built-in graphics objects, and as such, inherit properties, methods, and events. One such property is `Children`, which is used to control the top-to-bottom stacking order. MATLAB stacking rules, e.g., controls are always on top of axes, mean that some reasonable layout orders may be invalid stacking orders, so a new property for layout order is required.
 
 
 Another difference between `Children` and `Contents` relates to the `HandleVisibility` of the graphics objects placed in a layout. The `Children` property does not include graphics objects with `HandleVisibility` set to `'off'`. However, the `Contents` property includes all graphics objects placed in the layout, including those with `HandleVisibility` set to `'off'`. This difference ensures that users are able to specify the layout of all child elements placed in a layout.

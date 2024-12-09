@@ -65,7 +65,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Released 1 May 2018
 - Set tooltip strings for BoxPanel dock/undock, minimize/maximize, help and close buttons
 - Set default padding for flex containers to 5 so that dividers are visible
-- Scroll `uix.ScrollingPanel` using mouse wheel for variable\-sized contents
+- Scroll `uix.ScrollingPanel` using mouse wheel for variable-sized contents
 - Fixed G1358897: *BoxPanel title is truncated on Mac high DPI display*
 - Fixed G1695618: *Warning on mouse motion while deleting HBoxFlex, VBoxFlex or GridFlex*
 
@@ -105,7 +105,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Changed selection behavior of `uix.TabGroup` to match that of [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) when the selected tab is removed 
 - Fixed G1253937:  *uix.TabPanel/redrawTabs fails* (R2015b)
 - Fixed G1292238: *uix.BoxPanel/redrawBorders fails* (R2015b)
-- Fixed G1330841: *mouse\-over\-divider detection does not work for docked figures* (all)
+- Fixed G1330841: *mouse-over-divider detection does not work for docked figures* (all)
 - Fixed G1332109: *uix.Empty background color does not match that of its Parent* (all)
 - Fixed G1334867:  *cannot add axes to container* (R2016a prerelease)
 - Removed internal helper classes `uix.AncestryObserver`, `uix.LocationObserver`, `uix.VisibilityObserver`

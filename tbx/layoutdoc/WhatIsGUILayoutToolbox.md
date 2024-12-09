@@ -5,19 +5,19 @@ GUI Layout Toolbox provides a toolbox of MATLAB classes that allow for complex a
 - Automatic element arrangement horizontally, vertically, or in grids 
 - Ability to specify fixed sizes or resizing weights for each element 
 - Ability to nest layouts to produce virtually any element arrangement 
-- Divider bars for user\-resizing of elements 
+- Divider bars for user resizing of elements 
 
-These element arrangements are designed to match those found as standard in other user\-interface toolkits such as Java Swing, GTK, QT, etc.
+These element arrangements are designed to match those found as standard in other user interface toolkits such as Java Swing, GTK, QT, etc.
 
 ## Installation
 
 GUI Layout Toolbox is provided as a MATLAB toolbox file (`.mltbx`).
 
-For instructions on installing and uninstalling toolboxes, see [Get and Manage Add\-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in the MATLAB documentation.
+For instructions on installing and uninstalling toolboxes, see [Get and Manage Add-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in the MATLAB documentation.
 
 ## Support
 
-This toolbox is not a MathWorks\-supported product. However, if you have problems, suggestions, or other comments, please contact the authors:
+This toolbox is not a MathWorks-supported product. However, if you have problems, suggestions, or other comments, please contact the authors:
 
 - [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) (co-creator, maintainer)
 - [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) (co-creator, inactive)
@@ -32,4 +32,4 @@ The authors wish to acknowledge the earlier contributions of the following MathW
 - Brad Phelan 
 - Malcolm Wood 
 - Richard Lang 
-- Paul Kerr\-Delworth
+- Paul Kerr-Delworth

@@ -2,11 +2,11 @@
 
 ## Introduction
 
-The overriding reason for using layouts or layout managers is to gain control of the resizing behavior of the interface without having to write a complex `SizeChangedFcn` callback on the app's main figure window or containers such as panels, tabs, etc. If you position user\-interface elements directly, i.e., by setting their `Position` property, then you have two choices about what happens when the figure window resizes.
+The overriding reason for using layouts or layout managers is to gain control of the resizing behavior of the interface without having to write a complex `SizeChangedFcn` callback on the app's main figure window or containers such as panels, tabs, etc. If you position user interface elements directly, i.e., by setting their `Position` property, then you have two choices about what happens when the figure window resizes.
 
 ## Normalized units
 
-Using normalized units, the user\-interface components scale with the figure window. In the example below, we don't really want the buttons to grow, but everything will resize in proportion when the figure window is resized.
+Using normalized units, the user interface components scale with the figure window. In the example below, we don't really want the buttons to grow, but everything will resize in proportion when the figure window is resized.
 
 ```matlab
 f = figure( 'Position', 200 * ones( 1, 4 ) );
@@ -33,7 +33,7 @@ f.Position(3:4) = 400;
 
 ## Pixel units
 
-Using pixel units, the user\-interface components stay fixed and resizing the figure window creates empty space. In the example below, although the buttons will no longer grow in size as the figure window is enlarged, neither does the axes, which looks very odd.
+Using pixel units, the user interface components stay fixed and resizing the figure window creates empty space. In the example below, although the buttons will no longer grow in size as the figure window is enlarged, neither does the axes, which looks very odd.
 
 ```matlab
 f = figure( 'Position', 200 * ones( 1, 4 ) );
@@ -60,11 +60,11 @@ f.Position(3:4) = 400;
 
 ## Using layouts
 
-Neither of these alternatives (purely normalized units or purely pixel units) is particularly useful for a serious user interface. Typically there are user\-interface components that should be fixed size: icons, buttons, selectors, etc; and others that should resize with the figure window: graphs, images, prose text, etc. To achieve this one needs to be able to specify which interface components should be fixed size, and which should be variable size. Over the last three decades, layouts have proved to be the method of choice for achieving this.
+Neither of these alternatives (purely normalized units or purely pixel units) is particularly useful for a serious user interface. Typically there are user interface components that should be fixed size: icons, buttons, selectors, etc; and others that should resize with the figure window: graphs, images, prose text, etc. To achieve this one needs to be able to specify which interface components should be fixed size, and which should be variable size. Over the last three decades, layouts have proved to be the method of choice for achieving this.
 
 ## Example
 
-Using layouts, some user\-interface components scale with the figure window, whereas others stay fixed.
+Using layouts, some user interface components scale with the figure window, whereas others stay fixed.
 
 ```matlab
 f = figure( 'Position', 200 * ones( 1, 4 ) );
