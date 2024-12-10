@@ -19,10 +19,10 @@ To interleave empty space within the horizontal layout, use [`uix.Empty`](uixEmp
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `MinimumWidths` | Minimum width of each of the columns, in pixels | nonnegative double vector |
-| `Padding` | Space around contents, in pixels | nonnegative scalar integer
+| `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
-| `Spacing` | Space between columns, in pixels | nonnegative scalar |
+| `Spacing` | Space between columns, in pixels | nonnegative integer |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
 | `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
