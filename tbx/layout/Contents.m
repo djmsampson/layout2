@@ -1,9 +1,9 @@
 % GUI Layout Toolbox
-% Version 2.4 (R2024b) 08-Dec-2024
+% Version 2.4 (R2024b) 13-Dec-2024
 %
 % Panels
 %   uix.Panel          - arrange a single element inside a standard panel
-%   uix.CardPanel      - show one element from a list
+%   uix.CardPanel      - show one element from a stack
 %   uix.BoxPanel       - arrange a single element inside a panel with a boxed title
 %   uix.TabPanel       - arrange elements in a panel with tabs for selecting which is visible
 %   uix.ScrollingPanel - arrange a single element inside a scrollable panel
@@ -22,5 +22,6 @@
 %
 % Other
 %   uix.Empty          - create an empty space
+%   uix.FigureObserver - raise an event when the figure ancestor of a graphics object changes
 
 %  Copyright 2009-2024 The MathWorks, Inc.
