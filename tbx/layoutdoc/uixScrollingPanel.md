@@ -19,12 +19,12 @@ Arrange a single element inside a scrollable panel
 | `HorizontalStep` | Horizontal slider step, in pixels | positive scalar double |
 | `MinimumHeight` | Minimum height of the child, in pixels | positive scalar double |
 | `MinimumWidth` | Minimum width of the child, in pixels | positive scalar double |
-| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel (default: `"on"`) | `"on"` \| `"off"` |
+| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel (default: `"on"`) | `"on"` | `"off"` |
 | `Padding` | Space around contents, in pixels | nonnegative scalar integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]` |
 | `Title` | Title string | `string` scalar |
-| `TitlePosition` | Location of title text in relation to the panel | `"lefttop"` \| `"centertop"` \| `"righttop"` \| `"leftbottom"` \| `"centerbottom"` \| `"rightbottom"` |
+| `TitlePosition` | Location of title text in relation to the panel | `"lefttop"` | `"centertop"` | `"righttop"` | `"leftbottom"` | `"centerbottom"` | `"rightbottom"` |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | real scalar double |
 | `VerticalStep` | Vertical slider step, in pixels | positive scalar double |

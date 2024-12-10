@@ -13,7 +13,7 @@ Arrange a single element in a panel with title and controls
 | Name | Description | Type |
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| `BorderType` | Type of border around the box panel area | `"none"` \| `"etchedin"` \| `"etchedout"` \| `"beveledin"` \| `"beveledout"` \| `"line"` |
+| `BorderType` | Type of border around the box panel area | `"none"` | `"etchedin"` | `"etchedout"` | `"beveledin"` | `"beveledout"` | `"line"` |
 | `BorderWidth` | Width of the box panel border | nonnegative real scalar |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `CloseRequestFcn` | Function to call when the panel close icon is clicked; if this callback is empty, then no close icon is shown | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
@@ -21,11 +21,11 @@ Arrange a single element in a panel with title and controls
 | `Docked` | Whether the box panel is docked; see [Working with Box Panels](WorkingWithBoxPanels.md) for details | `logical` scalar |
 | `DockFcn` | Function to call when the panel is docked or undocked; if this callback is empty, then no dock button is shown; see [Working with Box Panels](WorkingWithBoxPanels.md) for details. | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
 | `DockTooltip` | Custom tooltip for the dock icon (when the box panel is undocked); if the `DockFcn` is empty, then no dock icon is shown | `string` scalar |
-| `FontAngle` | Title font angle | `"normal"` \| `"italic"` |
+| `FontAngle` | Title font angle | `"normal"` | `"italic"` |
 | `FontName` | Title font name (e.g., `"Arial"`, `"Helvetica"`, etc) | `string` scalar |
 | `FontSize` | Title font size | positive scalar integer |
-| `FontUnits` | Title font units | `"inches"` \| `"centimeters"` \| `"normalized"` \| `"points"` \| `"pixels"` |
-| `FontWeight` | Title font weight | `"normal"` \| `"bold"` |
+| `FontUnits` | Title font units | `"inches"` | `"centimeters"` | `"normalized"` | `"points"` | `"pixels"` |
+| `FontWeight` | Title font weight | `"normal"` | `"bold"` |
 | `ForegroundColor` | Title font color and/or color of 2D border line | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `HelpFcn` | Function to call when the help icon is clicked; if this callback is empty, then no help icon is shown; see [Working with Box Panels](WorkingWithBoxPanels.md) for details | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
 | `HelpTooltip` | Custom tooltip for help icon; if the `HelpFcn` is empty, then no help icon is shown | `string` scalar |
