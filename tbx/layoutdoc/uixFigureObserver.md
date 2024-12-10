@@ -1,6 +1,6 @@
 # :telescope: uix.FigureObserver
 
-Monitor figure ancestry
+Detect figure ancestry changes
 
 *This is a helper class to support developers using figure-level services such as mouse events.*
 
