@@ -37,7 +37,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `FontAngle` | none | `"normal"` | `"italic"` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
+| `FontAngle` | none | `"normal"`\|`"italic"` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
 | `FontName` | none | `string` (e.g., `"Arial"`, `"Helvetica"`, etc) | As above: now `MS Sans Serif` |
 | `FontSize` | none | positive integer | As above; not supportable in a `uitab`-backed implementation |
 | `FontUnits` | none | `"inches"` | `"centimeters"` | `"normalized"` | `"points"` | `"pixels"` | As above; not supportable in a `uitab`-backed implementation |
