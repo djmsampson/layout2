@@ -4,8 +4,9 @@ Arrange a single element inside a scrollable panel
 
 ## Syntax
 
-* `sp = uix.ScrollingPanel()` creates a new, default, *unparented* scrolling panel. A scrolling panel arranges a single element inside a panel and provide scrollbars if the panel is smaller than the element.
-* `sp = uix.ScrollingPanel( n1, v1, n2, v2, ... )` also sets one or more property values.
+`p = uix.ScrollingPanel()` creates a new, default, *unparented* scrolling panel. A scrolling panel arranges a single element inside a panel and provide scrollbars if the panel is smaller than the element.
+
+`p = uix.ScrollingPanel(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

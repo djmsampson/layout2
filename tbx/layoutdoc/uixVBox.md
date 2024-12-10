@@ -1,13 +1,14 @@
-# :arrow_down: uix.VBox, :arrow_up_down: uix.VBoxFlex
+# :arrow_down: uix.VBox, uix.VBoxFlex
 
-* `uix.VBox`: Arrange elements vertically in a single row
-* `uix.VBoxFlex`: Arrange elements vertically with draggable dividers
+Arrange elements vertically in a single row
 
 ## Syntax
 
-* `vb = uix.VBox()` or `vbf = uix.VBoxFlex()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
-* `vb = uix.VBox( n1, v1, n2, v2, ... )` or `vbf = uix.VBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
-* `uix.VBoxFlex` extends `uix.VBox`, adding draggable dividers between the rows.
+`b = uix.VBox()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
+
+`b = uix.VBox(n1,v1,n2,v2,...)` also sets one or more property values.
+
+`uix.VBoxFlex` extends `uix.VBox`, adding draggable dividers between the rows.
 
 ## Properties
 

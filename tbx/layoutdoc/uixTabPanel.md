@@ -1,11 +1,12 @@
 # :point_right: uix.TabPanel
 
-Arrange elements in a panel with tabs for selecting which element is visible
+Arrange elements in a tabbed panel
 
 ## Syntax
 
-* `tp = uix.TabPanel()` creates a new, default, *unparented* panel with tabs along one edge to allow selection between the different child elements contained in the panel.
-* `tp = uix.TabPanel( n1, v1, n2, v2, ... )` also sets one or more property values.
+`p = uix.TabPanel()` creates a new, default, *unparented* panel with tabs along one edge to allow selection between the different child elements contained in the panel.
+
+`p = uix.TabPanel(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

@@ -1,12 +1,12 @@
 # :card_index: uix.CardPanel
 
-Show one element (card) from a list
+Show one element from a stack
 
 ## Syntax
 
-* `cp = uix.CardPanel()` creates a new, default, *unparented*, card panel which allows selection between its different child objects. Changing the `Selection` property of the card panel makes the corresponding child element fill the space available in the card panel, and makes all the other children invisible. Card panels are commonly used for creating wizards or to allow switching between different views of a single dataset.
+`p = uix.CardPanel()` creates a new, default, *unparented*, card panel which allows selection between its different child objects. Changing the `Selection` property of the card panel makes the corresponding child element fill the space available in the card panel, and makes all the other children invisible. Card panels are commonly used for creating wizards or to allow switching between different views of a single dataset.
 
-* `cp = uix.CardPanel( n1, v1, n2, v2, ... )` also sets one or more property values.
+`p = uix.CardPanel(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

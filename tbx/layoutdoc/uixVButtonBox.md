@@ -4,8 +4,9 @@ Arrange buttons vertically in a single column
 
 ## Syntax
 
-* `vbb = uix.VButtonBox()` creates a new, default, *unparented* vertical button box. This is a type of [vertical layout](uixVBox.md) specialized for arranging a column of buttons, checkboxes, or similar graphical elements. All elements are given equal size and by default are centered in the drawing area. The justification can be changed as required.
-* `vbb = uix.VButtonBox( n1, v1, n2, v2, ... )` also sets one or more property values.
+`b = uix.VButtonBox()` creates a new, default, *unparented* vertical button box. This is a type of [vertical layout](uixVBox.md) specialized for arranging a column of buttons, checkboxes, or similar graphical elements. All elements are given equal size and by default are centered in the drawing area. The justification can be changed as required.
+
+`b = uix.VButtonBox(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

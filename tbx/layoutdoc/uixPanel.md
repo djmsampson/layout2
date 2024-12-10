@@ -4,9 +4,9 @@ Arrange a single element inside a standard panel
 
 ## Syntax
 
-* `p = uix.Panel()` creates a new, default, *unparented*, standard [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) object, with automatic management of the contained control or layout. The available properties are largely the same as the standard [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) object.
+`p = uix.Panel()` creates a new, default, *unparented*, standard [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) object, with automatic management of the contained control or layout. The available properties are largely the same as the standard [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html) object.
 
-* `p = uix.Panel( n1, v1, n2, v2, ... )` also sets one or more property values.
+`p = uix.Panel(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

@@ -4,8 +4,9 @@ Create an empty space
 
 ## Syntax
 
-* `e = uix.Empty()` creates a new, default, *unparented* empty space object that can be used in layouts to add gaps between other elements. The empty space is achieved using a container that monitors its parent's color and changes its own to match.
-* `e = uix.Empty( n1, v1, n2, v2, ... )` also sets one or more property values.
+`e = uix.Empty()` creates a new, default, *unparented* empty space object that can be used in layouts to add gaps between other elements. The empty space is achieved using a container that monitors its parent's color and changes its own to match.
+
+`e = uix.Empty(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

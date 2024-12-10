@@ -4,8 +4,9 @@ Arrange buttons horizontally in a single row
 
 ## Syntax
 
-* `hbb = uix.HButtonBox()` creates a new, default, *unparented* horizontal button box. This is a type of [horizontal layout](uixHBox.md) specialized for arranging a row of buttons, checkboxes, or similar graphical elements. All elements are given equal size and by default are centered in the drawing area. The justification can be changed as required.
-* `hbb = uix.HButtonBox( n1, v1, n2, v2, ... )` also sets one or more property values.
+`b = uix.HButtonBox()` creates a new, default, *unparented* horizontal button box. This is a type of [horizontal layout](uixHBox.md) specialized for arranging a row of buttons, checkboxes, or similar graphical elements. All elements are given equal size and by default are centered in the drawing area. The justification can be changed as required.
+
+`b = uix.HButtonBox(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 

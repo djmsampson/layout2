@@ -1,13 +1,14 @@
-# :arrow_right: uix.HBox, :left_right_arrow: uix.HBoxFlex
+# :arrow_right: uix.HBox, uix.HBoxFlex
 
-* `uix.HBox`: Arrange elements horizontally in a single row
-* `uix.HBoxFlex`: Arrange elements horizontally with draggable dividers
+Arrange elements horizontally in a single row
 
 ## Syntax
 
-* `hb = uix.HBox()` or `hbf = uix.HBoxFlex()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
-* `hb = uix.HBox( n1, v1, n2, v2, ... )` or `hbf = uix.HBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
-* `uix.HBoxFlex` extends `uix.HBox`, adding draggable dividers between the columns.
+`b = uix.HBox()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
+
+`b = uix.HBox(n1,v1,n2,v2,...)` also sets one or more property values.
+
+`uix.HBoxFlex` extends `uix.HBox`, adding draggable dividers between the columns.
 
 To interleave empty space within the horizontal layout, use [`uix.Empty`](uixEmpty.md). Column widths can be fixed or variable, and are equipped with minimum values. Variable-sized columns fill available container space, subject to minima, according to specified weights.
 
