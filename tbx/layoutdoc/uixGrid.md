@@ -22,7 +22,7 @@ To interleave empty space within the grid, use [`uix.Empty`](uixEmpty.md). Row h
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
-| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 | `MinimumHeights` | Minimum height of each of the rows, in pixels | nonnegative double vector |
 | `MinimumWidths` | Minimum width of each of the columns, in pixels | nonnegative double vector |
 | `Padding` | Space around contents, in pixels | nonnegative scalar integer
@@ -31,7 +31,7 @@ To interleave empty space within the grid, use [`uix.Empty`](uixEmpty.md). Row h
 | `Spacing` | Space between rows and columns, in pixels | nonnegative scalar |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
-| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`

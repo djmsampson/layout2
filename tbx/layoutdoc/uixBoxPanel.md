@@ -14,7 +14,7 @@ Arrange a single element in a panel with title and controls
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `BorderType` | Type of border around the box panel area | `"none"` | `"etchedin"` | `"etchedout"` | `"beveledin"` | `"beveledout"` | `"line"` |
-| `BorderWidth` | Width of the box panel border | nonnegative real scalar |
+| `BorderWidth` | Width of the box panel border | nonnegative scalar |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `CloseRequestFcn` | Function to call when the panel close icon is clicked; if this callback is empty, then no close icon is shown | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
 | `CloseTooltip` | Custom tooltip for the close icon; if the `CloseRequestFcn` is empty, then no close icon is shown | `string` scalar |

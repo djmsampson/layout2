@@ -14,7 +14,7 @@ Arrange a single element inside a standard panel
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `BorderType` | Type of border around the box panel area | `"none"` | `"etchedin"` | `"etchedout"` | `"beveledin"` | `"beveledout"` | `"line"` |
-| `BorderWidth` | Width of the box panel border | nonnegative real scalar |
+| `BorderWidth` | Width of the box panel border | nonnegative scalar |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `FontAngle` | Title font angle | `"normal"` | `"italic"` |
 | `FontName` | Title font name (e.g., `"Arial"`, `"Helvetica"`, etc) | `string` scalar |

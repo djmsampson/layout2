@@ -14,8 +14,8 @@ Arrange a single element inside a scrollable panel
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
-| `Height` | Child height; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | real scalar double |
-| `HorizontalOffset` | Horizontal offset of the child; the value is limited to between 0 and the difference between the width of the child and the width of the panel | real scalar double |
+| `Height` | Child height; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | scalar double |
+| `HorizontalOffset` | Horizontal offset of the child; the value is limited to between 0 and the difference between the width of the child and the width of the panel | scalar double |
 | `HorizontalStep` | Horizontal slider step, in pixels | positive scalar double |
 | `MinimumHeight` | Minimum height of the child, in pixels | positive scalar double |
 | `MinimumWidth` | Minimum width of the child, in pixels | positive scalar double |
@@ -26,10 +26,10 @@ Arrange a single element inside a scrollable panel
 | `Title` | Title string | `string` scalar |
 | `TitlePosition` | Location of title text in relation to the panel | `"lefttop"` | `"centertop"` | `"righttop"` | `"leftbottom"` | `"centerbottom"` | `"rightbottom"` |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | real scalar double |
+| `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | scalar double |
 | `VerticalStep` | Vertical slider step, in pixels | positive scalar double |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
-| `Width` | Child width; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | real scalar double |
+| `Width` | Child width; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | scalar double |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -43,9 +43,9 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
 | `Selection` | none | nonnegative scalar integer | No longer has any effect; in previous versions, the currently visible child was determined using this property |
-| `Heights` | `Height` | real double vector | Now a scalar value |
+| `Heights` | `Height` | double vector | Now a scalar value |
 | `MinimumHeights` | `MinimumHeight` | positive double vector | Now a scalar value |
-| `Widths` | `Width` | real double vector | Now a scalar value |
+| `Widths` | `Width` | double vector | Now a scalar value |
 | `MinimumWidths` | `MinimumWidth` | positive double vector | Now a scalar value |
 | `VerticalSteps` | `VerticalStep` | positive double vector | Now a scalar value |
 | `VerticalOffsets` | `VerticalOffset` | positive double vector | Now a scalar value |
