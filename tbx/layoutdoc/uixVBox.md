@@ -1,13 +1,14 @@
-# :arrow_down: uix.VBox, :arrow_up_down: uix.VBoxFlex
+# :arrow_down: uix.VBox, uix.VBoxFlex
 
-* `uix.VBox`: Arrange elements vertically in a single row
-* `uix.VBoxFlex`: Arrange elements vertically with draggable dividers
+Arrange elements vertically in a single row
 
 ## Syntax
 
-* `vb = uix.VBox()` or `vbf = uix.VBoxFlex()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
-* `vb = uix.VBox( n1, v1, n2, v2, ... )` or `vbf = uix.VBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
-* `uix.VBoxFlex` extends `uix.VBox`, adding draggable dividers between the rows.
+`b = uix.VBox()` creates a new, default, *unparented* vertical box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
+
+`b = uix.VBox(n1,v1,n2,v2,...)` also sets one or more property values.
+
+`uix.VBoxFlex` extends `uix.VBox`, adding draggable dividers between the rows.
 
 ## Properties
 
@@ -15,12 +16,12 @@
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
-| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 | `MinimumHeights` | Minimum height of each of the rows, in pixels | nonnegative double vector |
-| `Padding` | Space around contents, in pixels | nonnegative scalar integer
+| `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
-| `Spacing` | Space between rows, in pixels | nonnegative scalar |
+| `Spacing` | Space between rows, in pixels | nonnegative integer |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
 
@@ -35,7 +36,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.VBoxFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.VBoxFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 

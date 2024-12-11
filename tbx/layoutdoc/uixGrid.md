@@ -1,13 +1,14 @@
-# :symbols: uix.Grid, :arrow_up_down::left_right_arrow: uix.GridFlex
+# :symbols: uix.Grid, uix.GridFlex
 
-* `uix.Grid`: Arrange elements in a two-dimensional grid
-* `uix.GridFlex`: Arrange elements in a two-dimensional grid with draggable dividers
+Arrange elements in a two-dimensional grid
 
 ## Syntax
 
-* `gr = uix.Grid()` or `grf = uix.GridFlex()` creates a new, default, *unparented* grid layout or flexible grid layout. The number of rows and columns to use is determined from the number of elements in the `Heights` and `Widths` properties, respectively. Child elements are arranged down column one first, then column two, and so on. If there are insufficient columns then a new one is added. The output is a new layout object that can be used as the parent for other user interface components.
-* `gr = uix.Grid( n1, v1, n2, v2, ... )` or `grf = uix.GridFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
-* `uix.GridFlex` extends `uix.Grid`, adding draggable dividers between the rows and columns.
+`g = uix.Grid()` creates a new, default, *unparented* grid layout or flexible grid layout. The number of rows and columns to use is determined from the number of elements in the `Heights` and `Widths` properties, respectively. Child elements are arranged down column one first, then column two, and so on. If there are insufficient columns then a new one is added. The output is a new layout object that can be used as the parent for other user interface components.
+
+`g = uix.Grid(n1,v1,n2,v2,...)` also sets one or more property values.
+
+`uix.GridFlex` extends `uix.Grid`, adding draggable dividers between the rows and columns.
 
 In a grid, the number of rows and columns change dynamically with the number of elements:
 * Changing the number of rows may change the number of columns, and vice versa.
@@ -21,16 +22,16 @@ To interleave empty space within the grid, use [`uix.Empty`](uixEmpty.md). Row h
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
-| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Heights` | Height of the each of the rows; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 | `MinimumHeights` | Minimum height of each of the rows, in pixels | nonnegative double vector |
 | `MinimumWidths` | Minimum width of each of the columns, in pixels | nonnegative double vector |
-| `Padding` | Space around contents, in pixels | nonnegative scalar integer
+| `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
-| `Spacing` | Space between rows and columns, in pixels | nonnegative scalar |
+| `Spacing` | Space between rows and columns, in pixels | nonnegative integer |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
-| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -43,7 +44,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.GridFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.GridFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 

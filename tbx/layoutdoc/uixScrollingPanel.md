@@ -4,8 +4,9 @@ Arrange a single element inside a scrollable panel
 
 ## Syntax
 
-* `sp = uix.ScrollingPanel()` creates a new, default, *unparented* scrolling panel. A scrolling panel arranges a single element inside a panel and provide scrollbars if the panel is smaller than the element.
-* `sp = uix.ScrollingPanel( n1, v1, n2, v2, ... )` also sets one or more property values.
+`p = uix.ScrollingPanel()` creates a new, default, *unparented* scrolling panel. A scrolling panel arranges a single element inside a panel and provide scrollbars if the panel is smaller than the element.
+
+`p = uix.ScrollingPanel(n1,v1,n2,v2,...)` also sets one or more property values.
 
 ## Properties
 
@@ -13,22 +14,22 @@ Arrange a single element inside a scrollable panel
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
-| `Height` | Child height; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | real scalar double |
-| `HorizontalOffset` | Horizontal offset of the child; the value is limited to between 0 and the difference between the width of the child and the width of the panel | real scalar double |
-| `HorizontalStep` | Horizontal slider step, in pixels | positive scalar double |
-| `MinimumHeight` | Minimum height of the child, in pixels | positive scalar double |
-| `MinimumWidth` | Minimum width of the child, in pixels | positive scalar double |
-| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel (default: `"on"`) | `"on"` \| `"off"` |
-| `Padding` | Space around contents, in pixels | nonnegative scalar integer |
+| `Height` | Child height; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | double |
+| `HorizontalOffset` | Horizontal offset of the child; the value is limited to between 0 and the difference between the width of the child and the width of the panel | nonnegative double |
+| `HorizontalStep` | Horizontal slider step, in pixels | positive double |
+| `MinimumHeight` | Minimum height of the child, in pixels | positive double |
+| `MinimumWidth` | Minimum width of the child, in pixels | positive double |
+| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel (default: `"on"`) | `"on"` | `"off"` |
+| `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]` |
-| `Title` | Title string | `string` scalar |
-| `TitlePosition` | Location of title text in relation to the panel | `"lefttop"` \| `"centertop"` \| `"righttop"` \| `"leftbottom"` \| `"centerbottom"` \| `"rightbottom"` |
+| `Title` | Title string | `string` |
+| `TitlePosition` | Location of title text in relation to the panel | `"lefttop"` | `"centertop"` | `"righttop"` | `"leftbottom"` | `"centerbottom"` | `"rightbottom"` |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | real scalar double |
-| `VerticalStep` | Vertical slider step, in pixels | positive scalar double |
+| `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | nonnegative double |
+| `VerticalStep` | Vertical slider step, in pixels | positive double |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
-| `Width` | Child width; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | real scalar double |
+| `Width` | Child width; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | double |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -41,15 +42,15 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `Selection` | none | nonnegative scalar integer | No longer has any effect; in previous versions, the currently visible child was determined using this property |
-| `Heights` | `Height` | real double vector | Now a scalar value |
-| `MinimumHeights` | `MinimumHeight` | positive double vector | Now a scalar value |
-| `Widths` | `Width` | real double vector | Now a scalar value |
-| `MinimumWidths` | `MinimumWidth` | positive double vector | Now a scalar value |
-| `VerticalSteps` | `VerticalStep` | positive double vector | Now a scalar value |
-| `VerticalOffsets` | `VerticalOffset` | positive double vector | Now a scalar value |
-| `HorizontalSteps` | `HorizontalStep` | positive double vector | Now a scalar value |
-| `HorizontalOffsets` | `HorizontalOffset` | positive double vector | Now a scalar value |
+| `Selection` | none | nonnegative integer | No longer has any effect; in previous versions, the currently visible child was determined using this property |
+| `Heights` | `Height` | double vector | Now scalar |
+| `MinimumHeights` | `MinimumHeight` | positive double vector | Now scalar |
+| `Widths` | `Width` | double vector | Now scalar |
+| `MinimumWidths` | `MinimumWidth` | positive double vector | Now scalar |
+| `VerticalSteps` | `VerticalStep` | positive double vector | Now scalar |
+| `VerticalOffsets` | `VerticalOffset` | positive double vector | Now scalar |
+| `HorizontalSteps` | `HorizontalStep` | positive double vector | Now scalar |
+| `HorizontalOffsets` | `HorizontalOffset` | positive double vector | Now scalar |
 
 ## Examples
 

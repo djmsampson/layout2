@@ -1,13 +1,14 @@
-# :arrow_right: uix.HBox, :left_right_arrow: uix.HBoxFlex
+# :arrow_right: uix.HBox, uix.HBoxFlex
 
-* `uix.HBox`: Arrange elements horizontally in a single row
-* `uix.HBoxFlex`: Arrange elements horizontally with draggable dividers
+Arrange elements horizontally in a single row
 
 ## Syntax
 
-* `hb = uix.HBox()` or `hbf = uix.HBoxFlex()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
-* `hb = uix.HBox( n1, v1, n2, v2, ... )` or `hbf = uix.HBoxFlex( n1, v1, n2, v2, ... )` also sets one or more property values.
-* `uix.HBoxFlex` extends `uix.HBox`, adding draggable dividers between the columns.
+`b = uix.HBox()` creates a new, default, *unparented* horizontal box layout or flexible box layout. The output is a new layout object that can be used as the parent for other user interface components.
+
+`b = uix.HBox(n1,v1,n2,v2,...)` also sets one or more property values.
+
+`uix.HBoxFlex` extends `uix.HBox`, adding draggable dividers between the columns.
 
 To interleave empty space within the horizontal layout, use [`uix.Empty`](uixEmpty.md). Column widths can be fixed or variable, and are equipped with minimum values. Variable-sized columns fill available container space, subject to minima, according to specified weights.
 
@@ -18,13 +19,13 @@ To interleave empty space within the horizontal layout, use [`uix.Empty`](uixEmp
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `MinimumWidths` | Minimum width of each of the columns, in pixels | nonnegative double vector |
-| `Padding` | Space around contents, in pixels | nonnegative scalar integer
+| `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
-| `Spacing` | Space between columns, in pixels | nonnegative scalar |
+| `Spacing` | Space between columns, in pixels | nonnegative integer |
 | `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
-| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | real double vector |
+| `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -37,7 +38,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.HBoxFlex`) | none | `"on"` \| `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.HBoxFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 

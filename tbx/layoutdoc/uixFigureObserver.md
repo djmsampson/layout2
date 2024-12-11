@@ -1,27 +1,30 @@
 # :telescope: uix.FigureObserver
 
-Raise an event when the figure ancestor of a subject changes
+Raise an event when the figure ancestor of a graphics object changes
+
+*This is a helper class to support developers using figure-level services such as mouse events.*
 
 ## Syntax
 
-* `fo = uix.FigureObserver( subject )` creates a new observer for the figure ancestor of the given scalar graphics object `subject`. When the figure ancestor of the subject changes, the figure observer `fo` raises the event `FigureChanged`. This includes the case when the graphics object `subject` is unrooted, i.e., when its figure ancestor is empty.
+`o = uix.FigureObserver(s)` creates a new observer for the figure ancestor of the graphics object `s`.
 
 ## Properties
-
-Note that these properties are read-only. The `Subject` property is set on construction.
 
 | Name | Description | Type |
 | --- | --- | --- |
 | `Subject` | Graphics object whose figure ancestor is observed | Scalar graphics object; must have the `Parent` property |
 | `Figure` | Figure ancestor of the subject | Scalar `figure` object (class `matlab.ui.Figure`), or empty graphics placeholder (class `matlab.graphics.GraphicsPlaceholder`) |
 
+These properties are read-only.
+
 ## Events
-The `uix.FigureObserver` class provides the event `FigureChanged`. The data associated with this event is an object of type `uix.FigureData`. This event data object has two read-only properties:
 
-* `OldFigure`: a reference to the previous figure ancestor of the graphics subject,
-* `NewFigure`: a reference to the current figure ancestor of the graphics subject.
+A `FigureChanged` event is raised when a subject's figure ancestor changes. The associated event data is of type `uix.FigureData`, with properties:
 
-Note that either of these properties may be an empty graphics placeholder.
+* `OldFigure`: the previous figure ancestor of the subject
+* `NewFigure`: the current figure ancestor of the subject
+
+Either property may be an empty graphics placeholder, `[]`, indicating that the subject is *unrooted*, or disconnected from the root of the graphics tree. `OldFigure` is `[]` when the subject is transitioning from unrooted to rooted. `NewFigure` is `[]` when the subject transitions from rooted to unrooted.
 
 ## Examples
 
