@@ -15,9 +15,9 @@ GUI Layout Toolbox is provided as a MATLAB toolbox file (`.mltbx`).
 
 For instructions on installing and uninstalling toolboxes, see [Get and Manage Add-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in the MATLAB documentation.
 
-## Support
+## Authors
 
-This toolbox is not a MathWorks-supported product. However, if you have problems, suggestions, or other comments, please contact the authors:
+This toolbox was developed by:
 
 - [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) (co-creator, maintainer)
 - [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191) (co-creator, inactive)
