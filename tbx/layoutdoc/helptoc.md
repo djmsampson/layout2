@@ -49,7 +49,7 @@
         * [Other Functions](OtherFunctions.md)
             * [uix.Empty](uixEmpty.md)
             * [uix.FigureObserver](uixFigureObserver.md)
-    * [Licenses](license.md)
+    * [License](license.md)
 
 ___
 

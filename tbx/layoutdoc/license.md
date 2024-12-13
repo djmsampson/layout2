@@ -1,4 +1,4 @@
-# Licenses
+# License
 
 This software is licensed under a **BSD license**:
 
