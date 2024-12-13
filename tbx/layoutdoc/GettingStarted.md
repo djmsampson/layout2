@@ -6,7 +6,7 @@ This section gives an overview of GUI Layout Toolbox, including its purpose, how
 - [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
 - [Quick Start Example](QuickStartExample.md)
 - [Compatibility Considerations](CompatibilityConsiderations.md) 
-- [Release Notes](ReleaseNotes.md)
+- [Release Notes](changelog.md)
 
 ___
 

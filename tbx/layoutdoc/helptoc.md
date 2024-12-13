@@ -5,7 +5,7 @@
         * [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
         * [Quick Start Example](QuickStartExample.md)
         * [Compatibility Considerations](CompatibilityConsiderations.md)
-        * [Release Notes](ReleaseNotes.md)    
+        * [Release Notes](changelog.md)    
     * [Understanding Layouts](UnderstandingLayouts.md)
         * [Why Use Layouts?](WhyUseLayouts.md)
         * [Layout Basics](LayoutBasics.md)
