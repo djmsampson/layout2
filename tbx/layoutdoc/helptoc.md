@@ -1,7 +1,7 @@
 # GUI Layout Toolbox
 
 * [GUI Layout Toolbox](index.md)
-    * [Get Started with GUI Layout Toolbox](GettingStarted.md)
+    * [Getting Started](GettingStarted.md)
         * [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
         * [Quick Start Example](QuickStartExample.md)
         * [Compatibility Considerations](CompatibilityConsiderations.md)
