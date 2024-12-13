@@ -1,6 +1,6 @@
 # Compatibility Considerations
 
-## MATLAB Version Support
+## MATLAB&reg; Version Support
 
 This is version 2 of GUI Layout Toolbox, which works with MATLAB versions from R2014b.  Version 1 supports MATLAB versions prior to R2014b.
 

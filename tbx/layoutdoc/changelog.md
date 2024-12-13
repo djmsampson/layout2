@@ -9,7 +9,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Added `uix.TabPanel` tab location options `left` and `right`; this is available through `uitab`
 - Removed font and some color properties from `uix.TabPanel`; these are not available in `uitab`
 - Show contents of selected but disabled tabs; this is more useful than the previous behavior
-- Removed folder `Resources` with tab images, and special MATLAB Compliler deployment instructions; these are no longer required
+- Removed folder `Resources` with tab images, and special MATLAB Compiler deployment instructions; these are no longer required
 - Reimplemented `uix.BoxPanel` titlebar buttons, for compatibility with web graphics
 - Honor padding in `uix.ScrollingPanel`
 - Fixed bugs in `uix.ScrollingPanel`

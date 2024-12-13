@@ -1,6 +1,6 @@
 # What is GUI Layout Toolbox?
 
-GUI Layout Toolbox provides a toolbox of MATLAB classes that allow for complex arrangement of graphical user interface elements within a figure window. The main capabilities provided are:
+GUI Layout Toolbox provides a toolbox of MATLAB&reg; classes that allow for complex arrangement of graphical user interface elements within a figure window. The main capabilities provided are:
 
 - Automatic element arrangement horizontally, vertically, or in grids 
 - Ability to specify fixed sizes or resizing weights for each element 

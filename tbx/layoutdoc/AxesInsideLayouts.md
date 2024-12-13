@@ -4,7 +4,7 @@
 
 When including axes in layouts, the axes' size and location is set automatically by the layout, not directly by the user. Whether the axes' `Position/InnerPosition` or `OuterPosition` property is used to set the size and location is determined by the `PositionConstraint` property of the axes.
 
-Note that the `PositionConstraint` property of the axes is available from R2020a. In MATLAB versions prior to R2020a, the corresponding property was named `ActivePositionProperty`. In the following discussion we will refer to the `PositionConstraint` property assuming that we are working in R2020a or later, but the same remarks apply to the `ActivePositionProperty` property of the axes in releases prior to R2020a.
+Note that the `PositionConstraint` property of the axes is available from R2020a. In MATLAB&reg; versions prior to R2020a, the corresponding property was named `ActivePositionProperty`. In the following discussion we will refer to the `PositionConstraint` property assuming that we are working in R2020a or later, but the same remarks apply to the `ActivePositionProperty` property of the axes in releases prior to R2020a.
 
 The default value for the `PositionConstraint` axes property is `'outerposition'`. The following table summarizes the differences between the `PositionConstraint` and `ActivePositionProperty` axes properties.
 

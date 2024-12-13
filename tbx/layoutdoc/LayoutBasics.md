@@ -8,7 +8,7 @@ To see how layouts work, let's use the most basic layout, a horizontal box. We f
 f = figure;
 ```
 
-Now let's create the horizontal layout and add it to the figure. Note that in common with other MATLAB graphics objects, one object is added to another by setting the `Parent` property -- this will automatically adjust the list of `Children` in the parent object. The job of a horizontal box layout is to arrange its contents in a horizontal line, setting the position of each element to best fill the space.
+Now let's create the horizontal layout and add it to the figure. Note that in common with other MATLAB&reg; graphics objects, one object is added to another by setting the `Parent` property -- this will automatically adjust the list of `Children` in the parent object. The job of a horizontal box layout is to arrange its contents in a horizontal line, setting the position of each element to best fill the space.
 
 ```matlab
 layout = uix.HBox( 'Parent', f );

@@ -1,6 +1,6 @@
 # Layout Interoperability
 
-Layouts in GUI Layout Toolbox are compatible with other layouts and environments provided by MATLAB. This section describes how to integrate GUI Layout Toolbox layouts with MATLAB's layout managers and with apps developed using App Designer or GUIDE.
+Layouts in GUI Layout Toolbox are compatible with other layouts and environments provided by MATLAB&reg;. This section describes how to integrate GUI Layout Toolbox layouts with MATLAB&reg;'s layout managers and with apps developed using App Designer or GUIDE.
 
 ## Contents
 

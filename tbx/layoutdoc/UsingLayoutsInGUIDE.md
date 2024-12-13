@@ -2,7 +2,7 @@
 
 ## Overview
 
-Whilst the layouts in this toolbox do not integrate into the MATLAB Graphical User Interface Design Environment ([`GUIDE`](https://www.mathworks.com/help/matlab/ref/guide.html)), it is possible to insert layouts into an app created with GUIDE using the process described below.
+Whilst the layouts in this toolbox do not integrate into the MATLAB&reg; Graphical User Interface Design Environment ([`GUIDE`](https://www.mathworks.com/help/matlab/ref/guide.html)), it is possible to insert layouts into an app created with GUIDE using the process described below.
 
 ## Important Note
 

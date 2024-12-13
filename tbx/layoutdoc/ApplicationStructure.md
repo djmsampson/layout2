@@ -2,7 +2,7 @@
 
 ## Overview
 
-There are many ways to build graphical applications in MATLAB, but here we will take a very simple approach. If the application were to become larger and more complex, this approach would be changed to better mitigate the complexity. Some notes on this are contained at the [end of this section](Scalability.md).
+There are many ways to build graphical applications in MATLAB&reg;, but here we will take a very simple approach. If the application were to become larger and more complex, this approach would be changed to better mitigate the complexity. Some notes on this are contained at the [end of this section](Scalability.md).
 
 ## Application structure
 
