@@ -1,6 +1,6 @@
 # Compatibility Considerations
 
-## MATLAB Version Support
+## MATLAB&reg; Version Support
 
 This is version 2 of GUI Layout Toolbox, which works with MATLAB versions from R2014b.  Version 1 supports MATLAB versions prior to R2014b.
 
@@ -119,3 +119,7 @@ p = uix.Panel( "Parent", f, "Position", [0 0 0.5 0.5], "Position", [0 0 1 1] );
 ```
 
 This bug was fixed in R2023a.  It recurred in R2023b for *all* GUI Layout Toolbox layouts.  It was fixed in R2024a for all layouts *except* `uix.Panel` and `uix.BoxPanel`.  It was fixed completely in R2024b.
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

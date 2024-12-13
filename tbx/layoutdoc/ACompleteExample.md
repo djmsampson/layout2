@@ -13,3 +13,7 @@ galleryBrowser
 - [Responding to User Interaction](OnListSelection.md)
 - [Launching the Application](RunningIt.md)
 - [Scalability and Architecture](Scalability.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

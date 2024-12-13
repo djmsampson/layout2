@@ -27,3 +27,7 @@ title( ax, 'Position = [0, 0, 1, 1]' )
 ## Related Topics
 
 * [Control Axes Layout](https://www.mathworks.com/help/matlab/creating_plots/automatic-axes-resize.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

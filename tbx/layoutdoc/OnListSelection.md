@@ -27,3 +27,7 @@ edit galleryBrowser
 * [Updating the User Interface](UpdateInterface.md)
 * [Launching the Application](RunningIt.md)
 * [Scalability and Architecture](Scalability.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

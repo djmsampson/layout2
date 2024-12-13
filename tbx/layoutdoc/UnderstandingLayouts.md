@@ -13,3 +13,7 @@ The best way to understand what layouts are and why they are a good user interfa
 - [Types of Layout](TypesOfLayout.md)
 - [Sizes and Units](SizesAndUnits.md)
 - [Layout Hierarchies](LayoutHierarchies.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

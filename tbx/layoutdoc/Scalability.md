@@ -14,3 +14,7 @@ Advice on how to build large-scale applications is beyond the scope of this docu
 *  [Updating the User Interface](UpdateInterface.md)
 *  [Responding to User Interaction](OnListSelection.md)
 *  [Launching the Application](RunningIt.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

@@ -56,3 +56,7 @@ edit appDesignerApp
 ## Related Topics
 
 * [App Designer](https://www.mathworks.com/help/matlab/ref/appdesigner.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

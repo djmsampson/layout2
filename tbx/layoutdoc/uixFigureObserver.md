@@ -1,6 +1,6 @@
 # :telescope: uix.FigureObserver
 
-Raise an event when the figure ancestor of a graphics object changes
+Detect when the figure ancestor of a graphics object changes
 
 *This is a helper class to support developers using figure-level services such as mouse events.*
 
@@ -152,3 +152,7 @@ In each case we note that the label text responds dynamically.
 
 * :black_square_button: [`uix.BoxPanel`](uixBoxPanel.md): Arrange a single element in a panel with boxed title and optional toolbar controls
 * [`uilabel`](https://www.mathworks.com/help/matlab/ref/uilabel.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

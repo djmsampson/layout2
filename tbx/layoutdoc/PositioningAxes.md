@@ -7,3 +7,7 @@ In contrast to most user interface control objects, such as buttons or dropdown 
 - [`Position` vs. `OuterPosition`](PositionVsOuterPosition.md)
 - [Axes inside Layouts](AxesInsideLayouts.md)
 - [Colorbars and Legends](ColorbarsAndLegends.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

@@ -2,7 +2,7 @@
 
 **Version 2.4**
 
-GUI Layout Toolbox is a layout manager for creating MATLAB graphical user interfaces that resize gracefully. The classes supplied can be used in combination to produce virtually any user interface layout.
+GUI Layout Toolbox is a layout manager for creating MATLAB&reg; graphical user interfaces that resize gracefully. The classes supplied can be used in combination to produce virtually any user interface layout.
 
 With GUI Layout Toolbox, you can:
 - Arrange MATLAB user interface components horizontally, vertically, or in grids
@@ -27,8 +27,8 @@ This toolbox was created by [David Sampson](https://www.mathworks.com/matlabcent
 - [Working with Scrolling Panels](WorkingWithScrollingPanels.md): Arranging a single element inside a panel with horizontal and vertical scrollbars
 - [Layout Interoperability](LayoutInteroperability.md): Using GUI Layout Toolbox layouts with MATLAB's layout managers, App Designer, and GUIDE
 - [Building a Complete Application](ACompleteExample.md): Build a complete application using toolbox layouts
-- [Function Reference](FunctionReference.md): A list of the available functions
+- [Reference](reference.md): A list of all classes and functions
 
 ___
 
-:copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

@@ -122,3 +122,7 @@ end % dockExample
 
 * [Box panels](uixBoxPanel.md)
 * [Horizontal layouts](uixHBox.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

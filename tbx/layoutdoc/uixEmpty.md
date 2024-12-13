@@ -66,3 +66,7 @@ e.BackgroundColor = g.BackgroundColor;
 ## Related Topics
 
 * :arrow_right: [`uix.HBox`](uixHBox.md): Arrange elements horizontally in a single row
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

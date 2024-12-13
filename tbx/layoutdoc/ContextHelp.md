@@ -6,7 +6,7 @@ When the `HelpFcn` property of a [`uix.BoxPanel`](uixBoxPanel.md) object has bee
 
 ## Example
 
-In the following example, we define the `HelpFcn` to open the MATLAB documentation for each function. Clicking any of the `?` buttons will open the documentation at the corresponding function page. 
+In the following example, we define the `HelpFcn` to open the MATLAB&reg; documentation for each function. Clicking any of the `?` buttons will open the documentation at the corresponding function page. 
 
 
 Recall that a callback function always accepts two compulsory input arguments: the *source* of the event that triggered the callback (`s`), and the data associated with the event (`e`). If we use an anonymous function to specify the callback function, it will have the following general form.
@@ -29,3 +29,7 @@ uix.BoxPanel( 'Parent', b, 'Title', 'tan', 'HelpFcn', @(s, e) doc( 'tan' ) );
 
 * [Box panels](uixBoxPanel.md)
 * [Horizontal layouts](uixHBox.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

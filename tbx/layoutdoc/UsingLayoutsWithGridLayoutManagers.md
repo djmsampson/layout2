@@ -118,3 +118,7 @@ title( ax, "D" )
 * [Flexible horizontal layouts](uixHBox.md)
 * [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html)
 * [`tiledlayout`](https://www.mathworks.com/help/matlab/ref/tiledlayout.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024
