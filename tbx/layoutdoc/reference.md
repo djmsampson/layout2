@@ -1,4 +1,4 @@
-# Function Reference
+# Reference
 
 ## Panels
 
@@ -16,10 +16,10 @@
 * :vertical_traffic_light: [`uix.VButtonBox`](uixVButtonBox.md): Arrange buttons vertically in a single column
 * :symbols: [`uix.Grid`, `uix.GridFlex`](uixGrid.md): Arrange elements in a two-dimensional grid
 
-## Other Functions
+## Other Classes
 
 * :no_entry_sign: [`uix.Empty`](uixEmpty.md): Create an empty space
-* :telescope: [`uix.FigureObserver`](uixFigureObserver.md) Raise an event when the figure ancestor of a subject changes
+* :telescope: [`uix.FigureObserver`](uixFigureObserver.md) Detect when the figure ancestor of a subject changes
 
 ___
 

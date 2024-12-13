@@ -1,6 +1,6 @@
 # :telescope: uix.FigureObserver
 
-Raise an event when the figure ancestor of a graphics object changes
+Detect when the figure ancestor of a graphics object changes
 
 *This is a helper class to support developers using figure-level services such as mouse events.*
 
