@@ -1,74 +1,29 @@
-# Contributing to GUI Layout Toolbox
-We want to make contributing to this project as easy and transparent as possible, whether it's:
+# Contributing
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+>_If you believe you have discovered a security vulnerability, please **do not** open an issue or make a pull request.  Follow the instructions in the [SECURITY.MD](SECURITY.MD) file in this repository._
 
-## We support MATLAB releases
-From a single codebase, we support:
+Thank you for your interest in contributing to a MathWorks repository!  We encourage contributions large and small to this repository.  
 
-- MATLAB releases R2014b to the present
-- Containers
-  - in figures
-  - unparented
-  - (soon) in uifigures
+**Contributions do not have to be code!** If you see a way to explain things more clearly or a great example of how to use something, please contribute it (or a link to your content).  We welcome issues even if you don't code the solution.  We also welcome pull requests to resolve issues that we haven't gotten to yet!
 
-## We develop with GitLab
-We use GitLab to host code, to track issues and feature requests, and to accept pull requests.
+## How to contribute
 
-Please ensure that you set your Git `user.name` and `user.email` before committing changes.
+* **Open an issue:** Start by [creating an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue) in the repository that you're interested in.  That will start a conversation with the maintainer.  When you are creating a bug report, please include as many details as possible.  Please remember that other people do not have your background or understanding of the issue; make sure you are clear and complete in your description.
+* **Work in your own public fork:** If you choose to make a contribution, you should [fork the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo).  This creates an editable copy on GitHub where you can write, test, and refine your changes.  We suggest that you keep your changes small and focused on the issue you submitted.
+* **Sign a Contributor License Agreement (CLA):** We require that all outside contributors sign a [CLA](https://en.wikipedia.org/wiki/Contributor_License_Agreement) before we can accept your contribution.  When you create a pull request (see below), we'll reach out to you if you do not already have one on file.  Essentially, the CLA gives us permission to publish your contribution as part of the repository.
+* **Make a pull request:** "[Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)" is a confusing term, but it means exactly what it says:  You're requesting that the maintainers of the repository pull your changes in.  If you don't have a CLA on file, we'll reach out to you.  Your contribution will be reviewed, and we may ask you to revise your pull request based on our feedback.  Once everyone is satisfied, we'll merge your pull request into the repository.
 
-## Code Changes Happen Through Pull Requests
-Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
+## Guidelines
 
-1. Fork the repo and create your branch from `master`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes, across releases.
-5. Issue that pull request!
+We support:
 
-## Report bugs using GitLab's issues
-We use GitLab issues to track public bugs. Report a bug by opening a new issue.
+* Use with `figure` with MATLAB&reg;R2014b and later
+* Use with `uifigure` with MATLAB&reg; R2022a and later
 
-## Write bug reports with detail, background, and sample code
-**Great Bug Reports** tend to have:
+We don't have best practices for writing MATLAB&reg; code, but we do have some recommendations:
 
-- A quick summary and/or background
-- Steps to reproduce
-  - Be specific!
-  - Give sample code if you can
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
+* You should not have any warnings or errors in the [code analyzer report](http://www.mathworks.com/help/matlab/matlab_prog/matlab-code-analyzer-report.html)
+* [Loren Shure's blog](https://blogs.mathworks.com/loren) has [great advice on improving your MATLAB code](https://blogs.mathworks.com/loren/category/best-practice/)
+* We adhere to the [CommonMark](https://commonmark.org/) specification where it does not conflict with GitHub rendering.  If you edit your Markdown in Visual Studio Code or a similar editor, it uses [markdownlint](https://github.com/DavidAnson/markdownlint) to highlight issues in your Markdown.
 
-We *love* thorough bug reports.
-
-## Managing issues
-We use GitLab [standard labels](https://gitlab.com/gitlab-org/gitlab/-/issues/17563), with additions:
-
-- Type
-  - bug (qualifier: confirmed)
-  - enhancement (qualifiers: suggestion, discussion)
-  - documentation
-  - test
-  - maintenance
-  - support
-  - meta
-- Priority
-  - critical
-  - sooner
-  - later
-  - someday
-  - never
-- Severity (for bugs)
-  - critical (also a priority)
-  - normal
-  - low
-- Stage
-  - doing
-
-## Use a consistent coding style
-Please use the established coding style.
+**Again, thanks for contributing, and we look forward to your issues and pull requests!**
