@@ -58,3 +58,7 @@ panel.Visible = 'on';
 * [Box panels](uixBoxPanel.md)
 * [Vertical button boxes](uixVButtonBox.md)
 * [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

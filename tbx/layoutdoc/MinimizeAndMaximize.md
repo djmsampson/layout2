@@ -96,3 +96,7 @@ end % minimizeExample
 
 * [Vertical layouts](uixVBox.md)
 * [Box panels](uixBoxPanel.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

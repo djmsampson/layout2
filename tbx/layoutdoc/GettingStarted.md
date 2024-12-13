@@ -7,3 +7,7 @@ This section gives an overview of GUI Layout Toolbox, including its purpose, how
 - [Quick Start Example](QuickStartExample.md)
 - [Compatibility Considerations](CompatibilityConsiderations.md) 
 - [Release Notes](ReleaseNotes.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

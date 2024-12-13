@@ -7,3 +7,7 @@ The [`uix.BoxPanel`](uixBoxPanel.md) class provides some extra buttons and callb
 - [Context Help](ContextHelp.md)
 - [Minimize and Maximize](MinimizeAndMaximize.md)
 - [Dock and Undock](DockAndUndock.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

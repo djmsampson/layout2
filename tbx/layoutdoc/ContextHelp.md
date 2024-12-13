@@ -29,3 +29,7 @@ uix.BoxPanel( 'Parent', b, 'Title', 'tan', 'HelpFcn', @(s, e) doc( 'tan' ) );
 
 * [Box panels](uixBoxPanel.md)
 * [Horizontal layouts](uixHBox.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

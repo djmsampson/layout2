@@ -132,3 +132,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Released 2 October 2014
 - Initial version for MATLAB R2014b
 - Versions 2.0.x were for prerelease testing
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

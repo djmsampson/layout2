@@ -55,3 +55,7 @@ edit guideApp
 
 ## Related Topics
 * [GUIDE](https://www.mathworks.com/help/matlab/ref/guide.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

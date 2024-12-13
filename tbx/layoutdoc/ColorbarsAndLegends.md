@@ -48,3 +48,7 @@ legend( axes2, 'sin', 'cos', 'Location', 'northwestoutside' )
 * [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
 * [`colorbar`](https://www.mathworks.com/help/matlab/ref/colorbar.html)
 * [`legend`](https://www.mathworks.com/help/matlab/ref/legend.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

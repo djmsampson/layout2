@@ -63,3 +63,7 @@ Many of the multi-element layouts also provide a `MinimumWidths` or `MinimumHeig
 * [Horizontal layouts](uixHBox.md)
 * [`figure`](https://www.mathworks.com/help/matlab/ref/figure.html)
 * [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

@@ -33,3 +33,7 @@ The authors wish to acknowledge the earlier contributions of the following MathW
 - Malcolm Wood 
 - Richard Lang 
 - Paul Kerr-Delworth
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

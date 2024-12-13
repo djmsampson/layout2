@@ -87,3 +87,7 @@ uibutton( "Parent", layout, "Text", "Button 3" );
 * [`uicontrol`](https://www.mathworks.com/help/matlab/ref/uicontrol.html)
 * [`uifigure`](https://www.mathworks.com/help/matlab/ref/uifigure.html)
 * [`uibutton`](https://www.mathworks.com/help/matlab/ref/uibutton.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

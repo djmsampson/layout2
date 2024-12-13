@@ -70,3 +70,7 @@ set( axes2, 'XTickLabel', [], 'YTickLabel', [] )
 * [Control Axes Layout](https://www.mathworks.com/help/matlab/creating_plots/automatic-axes-resize.html)
 * [Flexible horizontal boxes](uixHBox.md)
 * [`axes`](https://www.mathworks.com/help/matlab/ref/axes.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

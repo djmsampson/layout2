@@ -108,3 +108,7 @@ In web graphics, standard panels created using the `uipanel` function can be scr
 * [`scroll`](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.tree.scroll.html)
 * [`uipanel`](https://www.mathworks.com/help/matlab/ref/uipanel.html)
 * [`uigridlayout`](https://www.mathworks.com/help/matlab/ref/uigridlayout.html)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

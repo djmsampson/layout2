@@ -11,3 +11,7 @@ Layouts in GUI Layout Toolbox come in three forms:
 * [Panels](Panels.md)
 * [Boxes](Boxes.md)
 * [Grids](Grids.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

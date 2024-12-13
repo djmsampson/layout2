@@ -7,3 +7,7 @@ Layouts in GUI Layout Toolbox are compatible with other layouts and environments
 - [Using Layouts with uigridlayout and tiledlayout](UsingLayoutsWithGridLayoutManagers.md)
 - [Using Layouts in App Designer](UsingLayoutsInAppDesigner.md)
 - [Using Layouts in GUIDE](UsingLayoutsInGUIDE.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

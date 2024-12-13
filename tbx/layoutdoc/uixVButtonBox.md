@@ -61,3 +61,7 @@ uibutton( vbb, "BackgroundColor", "g" );
 * :left_right_arrow: [`uix.HBoxFlex`](uixHBox.md): Arrange elements horizontally with draggable dividers
 * :arrow_up_down: [`uix.VBoxFlex`](uixVBox.md): Arrange elements vertically with draggable dividers
 * :traffic_light: [`uix.HButtonBox`](uixHButtonBox.md): Arrange buttons horizontally in a single row
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

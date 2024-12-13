@@ -23,3 +23,7 @@ edit galleryBrowser
 *  [Updating the User Interface](UpdateInterface.md)
 *  [Responding to User Interaction](OnListSelection.md)
 *  [Scalability and Architecture](Scalability.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

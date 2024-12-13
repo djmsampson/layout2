@@ -20,3 +20,7 @@ folder =
 ## Related Topics
 
 * [Get Started with GUI Layout Toolbox](GettingStarted.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024

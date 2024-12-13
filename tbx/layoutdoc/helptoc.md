@@ -1,6 +1,6 @@
 # GUI Layout Toolbox
 
-* [GUI Layout Toolbox](LandingPage.md)
+* [GUI Layout Toolbox](index.md)
     * [Get Started with GUI Layout Toolbox](GettingStarted.md)
         * [What is GUI Layout Toolbox?](WhatIsGUILayoutToolbox.md)
         * [Quick Start Example](QuickStartExample.md)
@@ -52,3 +52,7 @@
             * [uix.FigureObserver](uixFigureObserver.md)
             * [layoutRoot](layoutRoot.md)
     * [Licenses](license.md)
+
+___
+
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024
