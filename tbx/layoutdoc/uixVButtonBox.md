@@ -20,9 +20,9 @@ Arrange buttons vertically in a single column
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
 | `Spacing` | Space between elements, in pixels | nonnegative integer |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `VerticalAlignment` | The vertical position of the buttons or controls | `"top"` | `"middle"` | `"bottom"` |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `"normalized"` | `"normalized"`,`"pixels"`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `VerticalAlignment` | The vertical position of the buttons or controls | `"top"`\|`"middle"`\|`"bottom"` |
+| `Visible` | Visibility; default is `"on"` | `"on"`\|`"off"` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
