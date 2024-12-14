@@ -29,8 +29,8 @@ To interleave empty space within the grid, use [`uix.Empty`](uixEmpty.md). Row h
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
 | `Spacing` | Space between rows and columns, in pixels | nonnegative integer |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`,`"pixels"`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"`\|`"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`,`'pixels'`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'`\|`'off'` |
 | `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
@@ -44,7 +44,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.GridFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.GridFlex`) | none | `'on'` | `'off'` | Now `'off'`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 
