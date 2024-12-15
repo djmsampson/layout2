@@ -10,7 +10,7 @@ Arrange a single element inside a scrollable panel
 
 ## Properties
 
-| Name | Description | Type / Values |
+| Name | Description | Type |
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
@@ -19,14 +19,14 @@ Arrange a single element inside a scrollable panel
 | `HorizontalStep` | Horizontal slider step, in pixels | positive double |
 | `MinimumHeight` | Minimum height of the child, in pixels | positive double |
 | `MinimumWidth` | Minimum width of the child, in pixels | positive double |
-| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel | **`'on'`**\|`'off'` |
+| `MouseWheelEnabled` | Indicates whether the scrolling panels responds to user interaction with the mouse wheel (default: `'on'`) | `'on'`\|`'off'` |
 | `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position `[left bottom width height]` within parent figure or container, in `Units` | double vector |
-| `Units` | Position units | **`'normalized'`**,`'pixels'`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`,`'pixels'`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `VerticalOffset` | Vertical offset of the child; the value is limited to between 0 and the difference between the height of the child and the height of the panel | nonnegative double |
 | `VerticalStep` | Vertical slider step, in pixels | positive double |
-| `Visible` | Visibility | **`'on'`**\|`'off'` |
+| `Visible` | Visibility; default is `'on'` | `'on'`\|`'off'` |
 | `Width` | Child width; a positive value indicates a fixed size in pixels, whereas a negative value indicates a relative weight for resizing | double |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
