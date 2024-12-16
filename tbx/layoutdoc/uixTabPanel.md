@@ -10,21 +10,21 @@ Arrange elements in a tabbed panel
 
 ## Properties
 
-| Name | Description | Type |
+| Name | Description | Type / Values |
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
+| `Contents` | Children, in tab order, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
 | `ForegroundColor` | Tab title font color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| `Padding` | Space around contents, in pixels | nonnegative integer |
-| `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
-| `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]` |
-| `Selection` | Index of the visible tab (and child) | nonnegative integer |
-| `SelectionChangedFcn` | Function to call when the selected tab is changed; the event data supplied with this callback has properties `OldValue` and `NewValue` giving the indices of the previously selected and newly selected tabs | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
-| `TabContextMenus` | The context menus (or `[]`) for each tab | `cell` array of context menus or empty values (`[]`) |
-| `TabEnables` | A list of the enabled state of each tab (default is all `'on'`) | `cell` array of `'on'`\|`'off'` |
-| `TabTitles` | A list of the tab titles with one element per tab | `cell` array of character vectors, or `string` array |
-| `Units` | Position units; default is `'normalized'` | `'normalized'`,`'pixels'`,[etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `'on'` | `'on'`\|`'off'` |
+| `Padding` | Space around content, in pixels | nonnegative double |
+| `Parent` | Parent figure or container | [figure, panel, etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel.html?#mw_8db64fed-c01a-48e8-8182-edc1cbc2ac86) |
+| `Position` | Position `[left bottom width height]` within parent figure or container, in `Units` | double 1x4 |
+| `Selection` | Index of the visible tab (and child); between 1 and the number of tabs | nonnegative integer |
+| `SelectionChangedFcn` | Function to call when the selected tab is changed; the event data has properties `OldValue` and `NewValue` denoting the old and new `Selection` | [function handle](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
+| `TabContextMenus` | Context menus (or [placeholders](https://www.mathworks.com/help/matlab/ref/matlab.graphics.graphicsplaceholder-class.html)) for each tab | { context menus } |
+| `TabEnables` | Enabled state for each tab | { **`'on'`**\|`'off'` } |
+| `TabTitles` | Title for each tab | { strings } |
+| `Units` | Position units | [**`'normalized'`**\|`'pixels'`\|etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel.html?#bub8wap-1_sep_mw_fcd6f5ca-13f2-41e8-9760-965b092c4093) |
+| `Visible` | Visibility | **`'on'`**\|`'off'` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
