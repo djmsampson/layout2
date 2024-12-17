@@ -29,8 +29,8 @@ To interleave empty space within the grid, use [`uix.Empty`](uixEmpty.md). Row h
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
 | `Spacing` | Space between rows and columns, in pixels | nonnegative integer |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
 | `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
@@ -44,7 +44,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.GridFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.GridFlex`) | none | `'on'` | `'off'` | Now `'off'`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 
@@ -83,10 +83,10 @@ set( grf, 'Widths', [-1, -1, -1], 'Heights', [-1, 25] )
 ### Create a 2-by-2 grid in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-gr = uix.Grid( "Parent", f, "Spacing", 10 );
-uibutton( gr, "BackgroundColor", "m" );
-uibutton( gr, "BackgroundColor", "c" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+gr = uix.Grid( 'Parent', f, 'Spacing', 10 );
+uibutton( gr, 'BackgroundColor', 'm' );
+uibutton( gr, 'BackgroundColor', 'c' );
 uilistbox( gr );
 uidropdown( gr );
 gr.Heights = [-1, -1];
@@ -95,20 +95,20 @@ gr.Heights = [-1, -1];
 ### Add axes and controls to a flexible layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-grf = uix.GridFlex( "Parent", f, "Spacing", 5, "Padding", 5 );
-ax = axes( "Parent", uicontainer( grf ), "PositionConstraint", "innerposition", "NextPlot", "add" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+grf = uix.GridFlex( 'Parent', f, 'Spacing', 5, 'Padding', 5 );
+ax = axes( 'Parent', uicontainer( grf ), 'PositionConstraint', 'innerposition', 'NextPlot', 'add' );
 plot( ax, randn( 100, 1 ), 'LineWidth', 2 )
-uibutton( grf, "BackgroundColor", "m" );
-ax = axes( "Parent", uicontainer( grf ), "PositionConstraint", "innerposition", "NextPlot", "add" );
+uibutton( grf, 'BackgroundColor', 'm' );
+ax = axes( 'Parent', uicontainer( grf ), 'PositionConstraint', 'innerposition', 'NextPlot', 'add' );
 plot( ax, cumsum( randn( 100, 1 ) ), 'LineWidth', 2 )
-p = uipanel( "Parent", grf, "BorderType", "none" );
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 gl = uigridlayout( p, [1, 1] );
 uiknob( gl );
-ax = axes( "Parent", uicontainer( grf ), "PositionConstraint", "innerposition", "NextPlot", "add" );
+ax = axes( 'Parent', uicontainer( grf ), 'PositionConstraint', 'innerposition', 'NextPlot', 'add' );
 surf( ax, peaks() )
-shading( ax, "interp" )
-p = uipanel( "Parent", grf, "BorderType", "none" );
+shading( ax, 'interp' )
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 gl = uigridlayout( p, [1, 1] );
 uislider( gl );
 set( grf, 'Widths', [-1, -1, -1], 'Heights', [-1, 100] )

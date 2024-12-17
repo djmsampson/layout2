@@ -20,24 +20,24 @@ f = uifigure();
 g = uigridlayout( f, [3, 2] );
 
 % Add the instrumentation
-k1 = uiknob( g, "Value", 50 ); % Row 1, column 1
-ga = uigauge( g, "Value", 75 );
+k1 = uiknob( g, 'Value', 50 ); % Row 1, column 1
+ga = uigauge( g, 'Value', 75 );
 ga.Layout.Row = 2;
 ga.Layout.Column = 1; % Row 2, column 1
-k2 = uiknob( g, "Value", 30 );
+k2 = uiknob( g, 'Value', 30 );
 k2.Layout.Row = 3;
 k2.Layout.Column = 1; % Row 3, column 1
 
 % Add a vertical button box and populate it with buttons
-vbb = uix.VButtonBox( "Parent", g, "Spacing", 10, "ButtonSize", [130, 25] );
+vbb = uix.VButtonBox( 'Parent', g, 'Spacing', 10, 'ButtonSize', [130, 25] );
 vbb.Layout.Row = [1, 3];
 vbb.Layout.Column = 2; % Rows 1-3, column 2
-uibutton( vbb, "Text", "Button 1" );
-uibutton( vbb, "Text", "Button 2" );
-uibutton( vbb, "Text", "Button 3" );
-uibutton( vbb, "Text", "Button 4" );
-uibutton( vbb, "Text", "Button 5" );
-uibutton( vbb, "Text", "Button 6" );
+uibutton( vbb, 'Text', 'Button 1' );
+uibutton( vbb, 'Text', 'Button 2' );
+uibutton( vbb, 'Text', 'Button 3' );
+uibutton( vbb, 'Text', 'Button 4' );
+uibutton( vbb, 'Text', 'Button 5' );
+uibutton( vbb, 'Text', 'Button 6' );
 ```
 
 ## Using a `uigridlayout` container in a GUI Layout Toolbox layout
@@ -54,23 +54,23 @@ To resolve this issue, when using a `uigridlayout` container in a GUI Layout Too
 
 ```matlab
 % Create the figure and flexible grid
-f = uifigure( "AutoResizeChildren", "off" );
-grf = uix.GridFlex( "Parent", f );
+f = uifigure( 'AutoResizeChildren', 'off' );
+grf = uix.GridFlex( 'Parent', f );
 
 % Add instrumentation controls
-p = uipanel( "Parent", grf, "BorderType", "none" );
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 g = uigridlayout( p, [1, 1] );
-uiknob( g, "Value", 50 );
+uiknob( g, 'Value', 50 );
 
-p = uipanel( "Parent", grf, "BorderType", "none" );
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 g = uigridlayout( p, [1, 1] );
-uigauge( g, "Value", 75 );
+uigauge( g, 'Value', 75 );
 
-p = uipanel( "Parent", grf, "BorderType", "none" );
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 g = uigridlayout( p, [1, 1] );
-uilamp( g, "Color", "g" );
+uilamp( g, 'Color', 'g' );
 
-p = uipanel( "Parent", grf, "BorderType", "none" );
+p = uipanel( 'Parent', grf, 'BorderType', 'none' );
 g = uigridlayout( p, [1, 1] );
 uiswitch( g );
 
@@ -86,31 +86,31 @@ A `tiledlayout` can be placed directly in a GUI Layout Toolbox layout, but it is
 
 ```matlab
 % Create container graphics
-f = uifigure( "AutoResizeChildren", "off" );
-hbf = uix.HBoxFlex( "Parent", f, "Padding", 5 );
+f = uifigure( 'AutoResizeChildren', 'off' );
+hbf = uix.HBoxFlex( 'Parent', f, 'Padding', 5 );
 c = uicontainer( hbf );
-tl = tiledlayout( c, "flow" );
+tl = tiledlayout( c, 'flow' );
 
 % Add the list box
-uilistbox( hbf, "Items", ["A", "B", "C", "D"] );
+uilistbox( hbf, 'Items', {'A', 'B', 'C', 'D'} );
 hbf.Widths = [-1, 50];
 
 % Add the axes tiles and plot random data
 ax = nexttile( tl );
-plot( ax, rand( 100, 1 ), "LineWidth", 2, "Color", "r" )
-title( ax, "A" )
+plot( ax, rand( 100, 1 ), 'LineWidth', 2, 'Color', 'r' )
+title( ax, 'A' )
 
 ax = nexttile( tl );
-plot( ax, rand( 100, 1 ), "LineWidth", 2, "Color", "g" )
-title( ax, "B" )
+plot( ax, rand( 100, 1 ), 'LineWidth', 2, 'Color', 'g' )
+title( ax, 'B' )
 
 ax = nexttile( tl );
-plot( ax, rand( 100, 1 ), "LineWidth", 2, "Color", "b" )
-title( ax, "C" )
+plot( ax, rand( 100, 1 ), 'LineWidth', 2, 'Color', 'b' )
+title( ax, 'C' )
 
 ax = nexttile( tl );
-plot( ax, rand( 100, 1 ), "LineWidth", 2, "Color", "y" )
-title( ax, "D" )
+plot( ax, rand( 100, 1 ), 'LineWidth', 2, 'Color', 'y' )
+title( ax, 'D' )
 ```
 
 ## Related Topics

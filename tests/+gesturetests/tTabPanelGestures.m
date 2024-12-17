@@ -186,7 +186,7 @@ classdef tTabPanelGestures < matlab.uitest.TestCase & ...
             % Create a tab panel in a grid layout. This is to work around
             % some sizing/positioning bugs in releases R2023a-R2023b.
             testFig = testCase.ParentFixture.Parent;
-            testGrid = uigridlayout( testFig, [1, 1], "Padding", 0 );
+            testGrid = uigridlayout( testFig, [1, 1], 'Padding', 0 );
             tabPanel = feval( ConstructorName, 'Parent', testGrid );
             testCase.addTeardown( @() delete( testGrid ) )
             testCase.addTeardown( @() delete( tabPanel ) )

@@ -181,8 +181,7 @@ end % if
 
     function onListSelection( src, ~ )
 
-        % User selected an example from the list - update "data" and
-        % refresh
+        % User selected an example from the list - update data and refresh
         data.SelectedExample = get( src, 'Value' );
         updateInterface()
         redrawExample()
