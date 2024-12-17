@@ -86,27 +86,27 @@ To use GUI Layout Toolbox with JavaScript graphics, the `AutoResizeChildren` pro
 For example, to create a flexible grid in a `uifigure`:
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-g = uix.GridFlex( "Parent", f, "Padding", 5 );
-uilistbox( g, "Items", ["Red", "Green", "Blue"] );
-uibutton( g, "Text", "Button", "BackgroundColor", "m" );
-uitable( g, "Data", magic(3) );
-uilabel( g, "Text", "Label", "HorizontalAlignment", "center" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+g = uix.GridFlex( 'Parent', f, 'Padding', 5 );
+uilistbox( g, 'Items', {'Red', 'Green', 'Blue'} );
+uibutton( g, 'Text', 'Button', 'BackgroundColor', 'm' );
+uitable( g, 'Data', magic(3) );
+uilabel( g, 'Text', 'Label', 'HorizontalAlignment', 'center' );
 g.Widths = [-1, -1];
 ```
 
 To create a card panel in a `uipanel`:
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-p = uipanel( "Parent", f, ...
-    "Title", "Card Panel", ...
-    "Units", "normalized", ...
-    "Position", [0.25, 0.25, 0.50, 0.50], ...
-    "AutoResizeChildren", "off" );
-cp = uix.CardPanel( "Parent", p, "Padding", 5 );
-uibutton( cp, "Text", "Button 1" );
-uibutton( cp, "Text", "Button 2" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+p = uipanel( 'Parent', f, ...
+    'Title', 'Card Panel', ...
+    'Units', 'normalized', ...
+    'Position', [0.25, 0.25, 0.50, 0.50], ...
+    'AutoResizeChildren', 'off' );
+cp = uix.CardPanel( 'Parent', p, 'Padding', 5 );
+uibutton( cp, 'Text', 'Button 1' );
+uibutton( cp, 'Text', 'Button 2' );
 ```
 
 ### :warning: Known Issues
@@ -114,8 +114,8 @@ uibutton( cp, "Text", "Button 2" );
 In R2022b, a MATLAB bug exists whereby the default `Position` of `[0 0 1 1]` is not honored during construction of `uix.Panel` and `uix.BoxPanel` objects.  Instead, the layouts are drawn incorrectly in the default `uipanel` position, until the `Position` is changed.  To work around this bug, set `Position` to a different value before the required value:
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-p = uix.Panel( "Parent", f, "Position", [0 0 0.5 0.5], "Position", [0 0 1 1] ); 
+f = uifigure( 'AutoResizeChildren', 'off' );
+p = uix.Panel( 'Parent', f, 'Position', [0 0 0.5 0.5], 'Position', [0 0 1 1] ); 
 ```
 
 This bug was fixed in R2023a.  It recurred in R2023b for *all* GUI Layout Toolbox layouts.  It was fixed in R2024a for all layouts *except* `uix.Panel` and `uix.BoxPanel`.  It was fixed completely in R2024b.

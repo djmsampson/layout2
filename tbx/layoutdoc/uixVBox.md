@@ -22,8 +22,8 @@ Arrange elements vertically in a single row
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
 | `Spacing` | Space between rows, in pixels | nonnegative integer |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -36,7 +36,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.VBoxFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.VBoxFlex`) | none | `'on'` | `'off'` | Now `'off'`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 
@@ -79,12 +79,12 @@ hb.Widths = [60, -1];
 ### Create a flexible vertical layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
+f = uifigure( 'AutoResizeChildren', 'off' );
 f.Position(3:4) = [400, 200];
-vbf = uix.VBoxFlex( "Parent", f );
-uibutton( vbf, "BackgroundColor", "r" );
-uibutton( vbf, "BackgroundColor", "g" );
-uibutton( vbf, "BackgroundColor", "b" );
+vbf = uix.VBoxFlex( 'Parent', f );
+uibutton( vbf, 'BackgroundColor', 'r' );
+uibutton( vbf, 'BackgroundColor', 'g' );
+uibutton( vbf, 'BackgroundColor', 'b' );
 uidropdown( vbf );
 vbf.Heights = [25, 25, 25, 25];
 ```
@@ -92,12 +92,12 @@ vbf.Heights = [25, 25, 25, 25];
 ### Add a gauge and table to a flexible vertical layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-vbf = uix.VBoxFlex( "Parent", f );
-p = uipanel( "Parent", vbf, "BorderType", "none" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+vbf = uix.VBoxFlex( 'Parent', f );
+p = uipanel( 'Parent', vbf, 'BorderType', 'none' );
 gl = uigridlayout( p, [1, 1] );
 g = uigauge( gl );
-uitable( vbf, "Data", magic( 5 ) );
+uitable( vbf, 'Data', magic( 5 ) );
 ```
 
 ## Related Topics

@@ -61,21 +61,21 @@ uicontrol( 'Parent', layout, 'Style', 'pushbutton', 'String', 'Button 3' )
 In web graphics, the example code for `uix.VBox` is as follows:
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-layout = uix.VBox( "Parent", f );
-uibutton( "Parent", layout, "Text", "Button 1" );
-uibutton( "Parent", layout, "Text", "Button 2" );
-uibutton( "Parent", layout, "Text", "Button 3" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+layout = uix.VBox( 'Parent', f );
+uibutton( 'Parent', layout, 'Text', 'Button 1' );
+uibutton( 'Parent', layout, 'Text', 'Button 2' );
+uibutton( 'Parent', layout, 'Text', 'Button 3' );
 ```
 
 Similarly, for `uix.TabPanel` we have:
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-layout = uix.TabPanel( "Parent", f );
-uibutton( "Parent", layout, "Text", "Button 1" );
-uibutton( "Parent", layout, "Text", "Button 2" );
-uibutton( "Parent", layout, "Text", "Button 3" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+layout = uix.TabPanel( 'Parent', f );
+uibutton( 'Parent', layout, 'Text', 'Button 1' );
+uibutton( 'Parent', layout, 'Text', 'Button 2' );
+uibutton( 'Parent', layout, 'Text', 'Button 3' );
 ```
 
 ## Related Topics

@@ -15,8 +15,8 @@ Create an empty space
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -44,17 +44,17 @@ uicontrol( 'Parent', hb, 'Style', 'pushbutton', 'BackgroundColor', 'g' )
 ### Create an empty space in a grid layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-g = uigridlayout( f, [1, 3], "BackgroundColor", "m" );
-uibutton( g, "BackgroundColor", "r" );
-e = uix.Empty( "Parent", g );
-uibutton( g, "BackgroundColor", "g" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+g = uigridlayout( f, [1, 3], 'BackgroundColor', 'm' );
+uibutton( g, 'BackgroundColor', 'r' );
+e = uix.Empty( 'Parent', g );
+uibutton( g, 'BackgroundColor', 'g' );
 ```
 
 Note that the empty space has the correct background color. Change the background color of the grid layout.
 
 ```matlab
-g.BackgroundColor = "y";
+g.BackgroundColor = 'y';
 ```
 
 Note that the empty space has not updated its background color (see the limitation above). Update the background color manually.

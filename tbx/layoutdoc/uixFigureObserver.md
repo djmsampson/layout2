@@ -42,7 +42,7 @@ fo = uix.FigureObserver( ax );
 
 Create a listener for the event `FigureChanged`.
 ```matlab
-li = listener( fo, "FigureChanged", @( ~, ~ ) disp( "Figure ancestor changed!" ) );
+li = listener( fo, 'FigureChanged', @( ~, ~ ) disp( 'Figure ancestor changed!' ) );
 ```
 
 Unroot the axes.
@@ -58,17 +58,17 @@ The following example shows how to respond to the `Theme` property of a box pane
 
 Create an unrooted box panel.
 ```matlab
-bp = uix.BoxPanel( "Parent", [], ...
-    "Units", "normalized", ...
-    "Position", [0.25, 0.25, 0.50, 0.50], ...
-    "DeleteFcn", @onBoxPanelDeleted ); 
+bp = uix.BoxPanel( 'Parent', [], ...
+    'Units', 'normalized', ...
+    'Position', [0.25, 0.25, 0.50, 0.50], ...
+    'DeleteFcn', @onBoxPanelDeleted ); 
 ```
 
 Add a label.
 ```matlab
-lb = uilabel( "Parent", bp, ...
-    "HorizontalAlignment", "center", ...
-    "Text", "" ); 
+lb = uilabel( 'Parent', bp, ...
+    'HorizontalAlignment', 'center', ...
+    'Text', '' ); 
 ```
 
 Create a figure observer for the box panel.
@@ -78,12 +78,12 @@ fo = uix.FigureObserver( bp );
 
 Create a listener for the `FigureChanged` event.
 ```matlab
-figureChangedListener = listener( fo, "FigureChanged", @onFigureChanged ); 
+figureChangedListener = listener( fo, 'FigureChanged', @onFigureChanged ); 
 ```
 
 Ensure that the listener persists.
 ```matlab
-setappdata( bp, "FigureChangedListener", figureChangedListener ) 
+setappdata( bp, 'FigureChangedListener', figureChangedListener ) 
 ```
 
 Initialize a listener for the figure ancestor `ThemeChanged` event.
@@ -99,8 +99,8 @@ function onFigureChanged( ~, e )
     newFigure = e.NewFigure;
     if ~isempty( newFigure )
         themeChangedListener = listener( newFigure, ...
-        "ThemeChanged", @onThemeChanged );
-        setappdata( bp, "ThemeChangedListener", themeChangedListener )
+        'ThemeChanged', @onThemeChanged );
+        setappdata( bp, 'ThemeChangedListener', themeChangedListener )
         onThemeChanged( newFigure )
     end % if
 
@@ -114,7 +114,7 @@ function onThemeChanged( s, ~ )
     if ~isempty( s.Theme )
         lb.Text = s.Theme.Name;
     else
-        lb.Text = "No theme detected.";
+        lb.Text = 'No theme detected.';
     end % if
 
 end % onThemeChanged 
@@ -122,8 +122,8 @@ end % onThemeChanged
 
 Next, create two figures with different themes.
 ```matlab
-f1 = uifigure( "AutoResizeChildren", "off", "Theme", "light" );
-f2 = uifigure( "AutoResizeChildren", "off", "Theme", "dark" ); 
+f1 = uifigure( 'AutoResizeChildren', 'off', 'Theme', 'light' );
+f2 = uifigure( 'AutoResizeChildren', 'off', 'Theme', 'dark' ); 
 ```
 
 Call the `observerExample` function to create the box panel.
@@ -143,7 +143,7 @@ bp.Parent = f2;
 
 Change the theme of the second figure.
 ```matlab
-f2.Theme = "light"; 
+f2.Theme = 'light'; 
 ```
 
 In each case we note that the label text responds dynamically.

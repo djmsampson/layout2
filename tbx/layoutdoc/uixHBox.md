@@ -23,8 +23,8 @@ To interleave empty space within the horizontal layout, use [`uix.Empty`](uixEmp
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]`  |
 | `Spacing` | Space between columns, in pixels | nonnegative integer |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
 | `Widths` | Width of the each of the columns; nonnegative entries indicate fixed sizes in pixels, and negative values indicate relative weights for resizing | double vector |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
@@ -38,7 +38,7 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `DividerMarkings` (for `uix.HBoxFlex`) | none | `"on"` | `"off"` | Now `"off"`; no longer has any effect; this property toggled the markings on the draggable dividers |
+| `DividerMarkings` (for `uix.HBoxFlex`) | none | `'on'` | `'off'` | Now `'off'`; no longer has any effect; this property toggled the markings on the draggable dividers |
 
 ## Examples
 
@@ -80,20 +80,20 @@ vb.Heights = [60, -1];
 ### Create a flexible horizontal layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-hbf = uix.HBoxFlex( "Parent", f );
-uibutton( hbf, "BackgroundColor", "m" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+hbf = uix.HBoxFlex( 'Parent', f );
+uibutton( hbf, 'BackgroundColor', 'm' );
 uilistbox( hbf );
-uitable( hbf, "Data", magic( 3 ) );
+uitable( hbf, 'Data', magic( 3 ) );
 hbf.Widths = [60, -1, -1];
 ```
 
 ### Add a knob and listbox to a flexible horizontal layout in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-hbf = uix.HBoxFlex( "Parent", f );
-p = uipanel( "Parent", hbf, "BorderType", "none" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+hbf = uix.HBoxFlex( 'Parent', f );
+p = uipanel( 'Parent', hbf, 'BorderType', 'none' );
 g = uigridlayout( p, [1, 1] );
 k = uiknob( g );
 uilistbox( hbf );

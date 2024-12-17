@@ -16,8 +16,8 @@ classdef ParentFixture < matlab.unittest.fixtures.Fixture
 
         function setup( fixture )
             %SETUP Set up the fixture. Either create a new Java figure, a
-            %new web figure with its "AutoResizeChildren" property set to
-            %"off", an empty figure, or an unrooted panel.
+            %new web figure with its 'AutoResizeChildren' property set to
+            %'off', an empty figure, or an unrooted panel.
 
             switch fixture.Type
                 case 'legacy'

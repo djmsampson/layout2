@@ -21,10 +21,10 @@ Arrange elements in a tabbed panel
 | `Selection` | Index of the visible tab (and child) | nonnegative integer |
 | `SelectionChangedFcn` | Function to call when the selected tab is changed; the event data supplied with this callback has properties `OldValue` and `NewValue` giving the indices of the previously selected and newly selected tabs | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
 | `TabContextMenus` | The context menus (or `[]`) for each tab | `cell` array of context menus or empty values (`[]`) |
-| `TabEnables` | A list of the enabled state of each tab (default is all `"on"`) | `cell` array of `'on'` | `'off'` or string array of `"on"` | `"off"` |
+| `TabEnables` | A list of the enabled state of each tab (default is all `'on'`) | `cell` array of `'on'` | `'off'` or string array of `"on"` | `"off"` |
 | `TabTitles` | A list of the tab titles with one element per tab | `cell` array of character vectors, or `string` array |
-| `Units` | Position units; default is `"normalized"` | `"normalized"`, `"pixels"`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
-| `Visible` | Visibility; default is `"on"` | `"on"` or `"off"` |
+| `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
+| `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
 
 plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
@@ -37,11 +37,11 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 
 | Name | Alternative | Type | Notes |
 | --- | --- | --- | --- |
-| `FontAngle` | none | `"normal"`\|`"italic"` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
-| `FontName` | none | `string` (e.g., `"Arial"`, `"Helvetica"`, etc) | As above: now `MS Sans Serif` |
+| `FontAngle` | none | `'normal'`\|`'italic'` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
+| `FontName` | none | `string` (e.g., `'Arial'`, `'Helvetica'`, etc) | As above: now `MS Sans Serif` |
 | `FontSize` | none | positive integer | As above; not supportable in a `uitab`-backed implementation |
-| `FontUnits` | none | `"inches"` | `"centimeters"` | `"normalized"` | `"points"` | `"pixels"` | As above; not supportable in a `uitab`-backed implementation |
-| `FontWeight` | none | `"normal"` | `"bold"` | As above; not supportable in a `uitab`-backed implementation |
+| `FontUnits` | none | `'inches'` | `'centimeters'` | `'normalized'` | `'points'` | `'pixels'` | As above; not supportable in a `uitab`-backed implementation |
+| `FontWeight` | none | `'normal'` | `'bold'` | As above; not supportable in a `uitab`-backed implementation |
 | `HighlightColor` | none | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | As above; not a property of `uitabgroup` |
 | `ShadowColor` | none | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | As above; not a property of `uitabgroup` |
 | `TabWidth` | none | positive integer | As above; not a property of `uitabgroup` or `uitab` |
@@ -63,11 +63,11 @@ tp.Selection = 2;
 ### Add controls to a tab panel in web graphics
 
 ```matlab
-f = uifigure( "AutoResizeChildren", "off" );
-tp = uix.TabPanel( "Parent", f, "TabLocation", "left" );
-uibutton( tp, "BackgroundColor", "m" );
+f = uifigure( 'AutoResizeChildren', 'off' );
+tp = uix.TabPanel( 'Parent', f, 'TabLocation', 'left' );
+uibutton( tp, 'BackgroundColor', 'm' );
 uilistbox( tp );
-uitable( tp, "Data", magic( 5 ) );
+uitable( tp, 'Data', magic( 5 ) );
 ```
 
 Disable the second tab. Select the third.
