@@ -40,8 +40,8 @@ plus other [container properties](https://www.mathworks.com/help/matlab/ref/matl
 | `FontAngle` | none | `'normal'`\|`'italic'` | Now `normal`, as per `uitab`; decorative properties of the tab titles no longer have any effect; this is due to a change in the underlying implementation, which now uses [`uitabgroup`](https://www.mathworks.com/help/matlab/ref/uitabgroup.html) and [`uitab`](https://www.mathworks.com/help/matlab/ref/uitab.html) to create the tab group and tabs |
 | `FontName` | none | `string` (e.g., `'Arial'`, `'Helvetica'`, etc) | As above: now `MS Sans Serif` |
 | `FontSize` | none | positive integer | As above; not supportable in a `uitab`-backed implementation |
-| `FontUnits` | none | `'inches'` | `'centimeters'` | `'normalized'` | `'points'` | `'pixels'` | As above; not supportable in a `uitab`-backed implementation |
-| `FontWeight` | none | `'normal'` | `'bold'` | As above; not supportable in a `uitab`-backed implementation |
+| `FontUnits` | none | `'inches'` \| `'centimeters'` \| `'normalized'` \| `'points'` \| `'pixels'` | As above; not supportable in a `uitab`-backed implementation |
+| `FontWeight` | none | `'normal'` \| `'bold'` | As above; not supportable in a `uitab`-backed implementation |
 | `HighlightColor` | none | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | As above; not a property of `uitabgroup` |
 | `ShadowColor` | none | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | As above; not a property of `uitabgroup` |
 | `TabWidth` | none | positive integer | As above; not a property of `uitabgroup` or `uitab` |
