@@ -10,8 +10,8 @@ The default value for the `PositionConstraint` axes property is `'outerposition'
 
 | Axes Property | Availability | Possible Values | Default Value |
 | :-- | :-- | :-- | :-- |
-| `PositionConstraint` | R2020a onwards | `'outerposition', 'innerposition'` | `'outerposition'` |
-| `ActivePositionProperty` | all versions; discouraged from R2020a onwards | `'outerposition', 'position'` | `'outerposition'` |
+| `PositionConstraint` | R2020a onwards | `'outerposition' \| 'innerposition'` | `'outerposition'` |
+| `ActivePositionProperty` | all versions; discouraged from R2020a onwards | `'outerposition' \| 'position'` | `'outerposition'` |
 
 ## Example
 
