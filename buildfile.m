@@ -122,8 +122,8 @@ o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
 o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
 
 % Remove documentation source
-md = endsWith( o.ToolboxFiles, ".md" );
-o.ToolboxFiles(md) = [];
+tf = endsWith( o.ToolboxFiles, ".md" );
+o.ToolboxFiles(tf) = [];
 
 % Package
 matlab.addons.toolbox.packageToolbox( o )
