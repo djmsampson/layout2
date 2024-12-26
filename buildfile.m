@@ -6,6 +6,9 @@ function plan = buildfile()
 % Define the build plan.
 plan = buildplan( localfunctions() );
 
+% Add standard tasks
+plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
+
 % Add a test task to run the unit tests for the project. Generate and save
 % a coverage report. This build task is optional.
 projectRoot = plan.RootFolder;
@@ -18,13 +21,13 @@ plan("test") = matlab.buildtool.tasks.TestTask( testFolder, ...
     "CodeCoverageResults", "reports/Coverage.html", ...
     "OutputDetail", "none" );
 
-% Set the package toolbox task to run by default.
-plan.DefaultTasks = "package";
+% Set up task inputs and dependencies
+plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "layoutdoc" );
+plan( "doc" ).Dependencies = "check";
+plan( "package" ).Dependencies = "doc";
 
-% Define the task dependencies and inputs.
-plan("doc").Dependencies = "check";
-plan("doc").Inputs = fullfile( projectRoot, "tbx", "layoutdoc" );
-plan("package").Dependencies = "doc";
+% Set default task
+plan.DefaultTasks = "package";
 
 end % buildfile
 
