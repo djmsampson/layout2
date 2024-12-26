@@ -1,7 +1,7 @@
 function plan = buildfile()
 %buildfile  GUI Layout Toolbox buildfile
 
-% Copyright 2024 The MathWorks, Inc.
+%  Copyright 2024 The MathWorks, Inc.
 
 % Define the build plan.
 plan = buildplan( localfunctions() );
@@ -28,40 +28,28 @@ plan("package").Dependencies = "doc";
 
 end % buildfile
 
-function checkTask( context )
-% Check the source code and project for any issues.
+function checkTask( c )
+% Identify code and project issues
 
-% Set the project root as the folder in which to check for any static code
-% issues.
-projectRoot = context.Plan.RootFolder;
-codeIssuesTask = matlab.buildtool.tasks.CodeIssuesTask( projectRoot, ...
-     "IncludeSubfolders", true, ...
-     "Configuration", "factory", ...
-     "Description", ...
-     "Assert that there are no code issues in the project.", ...
-     "WarningThreshold", 0 );
-codeIssuesTask.analyze( context )
+% Check code
+t = matlab.buildtool.tasks.CodeIssuesTask( c.Plan.RootFolder, ...
+    "Configuration", "factory", ...
+    "IncludeSubfolders", true, ...
+    "WarningThreshold", 0 );
+t.analyze( c )
+fprintf( 1, "** Code checks passed\n" )
 
-% Update the project dependencies.
-prj = currentProject();
-prj.updateDependencies()
-
-% Run the checks.
-checkResults = table( prj.runChecks() );
-
-% Log any failed checks.
-passed = checkResults.Passed;
-notPassed = ~passed;
-if any( notPassed )
-    disp( checkResults(notPassed, :) )
+% Check project
+p = currentProject();
+p.updateDependencies()
+t = table( p.runChecks() );
+ok = t.Passed;
+if any( ~ok )
+    disp( t(~ok,:) )
+    error( "build:Project", "Project check(s) failed." )
 else
-    fprintf( "** All project checks passed.\n\n" )    
-end % if
-
-% Check that all checks have passed.
-assert( all( passed ), "buildfile:ProjectIssue", ...
-    "At least one project check has failed. " + ...
-    "Resolve the failures shown above to continue." )
+    fprintf( 1, "** Project checks passed\n" )
+end
 
 end % checkTask
 
@@ -107,44 +95,42 @@ fprintf( "** Created the index and search database files.\n\n" )
 
 end % docTask
 
-function packageTask( context )
+function packageTask( c )
 % Package the GUI Layout Toolbox.
 
-% Toolbox short name.
-toolboxShortName = "layout";
+% Toolbox short name
+n = "layout";
 
-% Project root directory.
-projectRoot = context.Plan.RootFolder;
+% Environment
+d = c.Plan.RootFolder;
 
-% Import and tweak the toolbox metadata.
-toolboxJSON = fullfile( projectRoot, toolboxShortName + ".json" );
-meta = jsondecode( fileread( toolboxJSON ) );
-meta.ToolboxMatlabPath = fullfile( projectRoot, meta.ToolboxMatlabPath );
-meta.ToolboxFolder = fullfile( projectRoot, meta.ToolboxFolder );
-meta.ToolboxImageFile = fullfile( projectRoot, meta.ToolboxImageFile );
-versionString = feval( @(s) s(1).Version, ver( toolboxShortName ) ); %#ok<FVAL>
-meta.ToolboxVersion = versionString;
-mltbx = fullfile( projectRoot, "releases", ...
-    meta.ToolboxName + " " + versionString + ".mltbx" );
-meta.OutputFile = mltbx; 
+% Load and tweak metadata
+s = jsondecode( fileread( fullfile( d, n + ".json" ) ) );
+s.ToolboxMatlabPath = fullfile( d, s.ToolboxMatlabPath );
+s.ToolboxFolder = fullfile( d, s.ToolboxFolder );
+s.ToolboxImageFile = fullfile( d, s.ToolboxImageFile );
+v = feval( @(s) s(1).Version, ver( n ) ); %#ok<FVAL>
+s.ToolboxVersion = v;
+s.OutputFile = fullfile( d, "releases", s.ToolboxName + " " + v + ".mltbx" );
 
-% Define the toolbox packaging options.
-toolboxFolder = meta.ToolboxFolder;
-toolboxID = meta.Identifier;
-meta = rmfield( meta, ["Identifier", "ToolboxFolder"] );
-opts = matlab.addons.toolbox.ToolboxOptions( ...
-    toolboxFolder, toolboxID, meta );
+% Create options object
+f = s.ToolboxFolder;
+id = s.Identifier;
+s = rmfield( s, ["Identifier", "ToolboxFolder"] ); % mandatory
+pv = [fieldnames( s ), struct2cell( s )]'; % optional
+o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
+o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
 
-% Remove the markdown (.md) files.
-markdownFilesIdx = endsWith( opts.ToolboxFiles, ".md" );
-opts.ToolboxFiles(markdownFilesIdx) = [];
+% Remove documentation source
+md = endsWith( o.ToolboxFiles, ".md" );
+o.ToolboxFiles(md) = [];
 
-% Package the toolbox.
-matlab.addons.toolbox.packageToolbox( opts )
-fprintf( 1, "[+] %s\n", opts.OutputFile )
+% Package
+matlab.addons.toolbox.packageToolbox( o )
+fprintf( 1, "[+] %s\n", o.OutputFile )
 
-% Add license.
-lic = fileread( fullfile( projectRoot, "LICENSE" ) );
-mlAddonSetLicense( char( opts.OutputFile ), struct( "type", 'BSD', "text", lic ) );
+% Add license
+lic = fileread( fullfile( d, "LICENSE" ) );
+mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
