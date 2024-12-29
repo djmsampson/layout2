@@ -68,10 +68,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
         FigureListener % listener
     end
 
-    properties( Constant, Access = private )
-        Margin = checkBoxLabelOffset() % checkbox size
-    end
-
     methods
 
         function obj = Text( varargin )
@@ -505,7 +501,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             s = obj.Screen;
             bo = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', c ); % bounds
-            m = obj.Margin;
+            m = 0;
             e = obj.Extent;
             switch b.HorizontalAlignment
                 case 'left'
@@ -533,21 +529,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
     end % helpers
 
 end % classdef
-
-function o = checkBoxLabelOffset()
-%checkBoxLabelOffset  Horizontal offset to checkbox label
-
-if ismac
-    o = 20;
-else
-    if verLessThan( 'MATLAB', '8.6' ) % R2015b
-        o = 18;
-    else
-        o = 16;
-    end
-end
-
-end % checkBoxLabelOffset
 
 function e = extent( fs, s )
 %extent  Extent fallback for web graphics with large fonts
