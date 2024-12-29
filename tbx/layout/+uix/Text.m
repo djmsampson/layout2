@@ -494,17 +494,16 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             b = obj.Label;
             bo = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', c ); % bounds
-            m = 0;
             e = obj.Extent;
             switch b.HorizontalAlignment
                 case 'left'
-                    x = 1 - m;
+                    x = 1;
                 case 'center'
-                    x = 1 + bo(3)/2 - e(3)/2 - m;
+                    x = 1 + bo(3)/2 - e(3)/2;
                 case 'right'
-                    x = 1 + bo(3) - e(3) - m;
+                    x = 1 + bo(3) - e(3);
             end
-            w = e(3) + m;
+            w = e(3);
             switch obj.VerticalAlignment_
                 case 'top'
                     y = 1 + bo(4) - e(4);
