@@ -1,6 +1,8 @@
 classdef ( Hidden ) Text < matlab.mixin.SetGet
     %uix.Text  Text control
     %
+    %  This class will be removed in a future release.
+    %
     %  t = uix.Text(p1,v1,p2,v2,...) constructs a text control and sets
     %  parameter p1 to value v1, etc.
     %
