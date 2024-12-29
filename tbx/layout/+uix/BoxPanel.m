@@ -245,7 +245,7 @@ classdef BoxPanel < uix.Panel
 
         function set.TitleColorMode( obj, value )
 
-            % Check            
+            % Check
             if ~ismember( value, {'auto', 'manual'} )
                 error( 'uix:InvalidProperty', ...
                     ['''TitleColorMode'' must be either ''auto'' ', ...
@@ -892,7 +892,8 @@ classdef BoxPanel < uix.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                tH = extent( obj.TitleText, 4 ); % required height
+                tE = uix.extent( obj.TitleText ); % extent
+                tH = tE(4); % required height
                 obj.TitleHeight_ = tH; % store
                 obj.TitleBar.Widths(2:end) = tH; % square buttons
             end
@@ -1015,7 +1016,7 @@ classdef BoxPanel < uix.Panel
             obj.DockButton.BackgroundColor = newColor;
             obj.UndockButton.BackgroundColor = newColor;
             obj.HelpButton.BackgroundColor = newColor;
-            obj.CloseButton.BackgroundColor = newColor;            
+            obj.CloseButton.BackgroundColor = newColor;
 
         end % paintTitle
 
@@ -1034,34 +1035,3 @@ for ii = 1:numel( s )
 end
 
 end % isjsdrawing
-
-function e = extent( c, i )
-%extent  Extent of uicontrol
-%
-%   e = extent(c) returns the extent of the uicontrol c.
-%
-%   e = extent(c,i) returns the ith element(s) of the extent.
-%
-%   For Java graphics, this function simply returns the Extent property.
-%   For JavaScript graphics, the Extent property is unreliable for large
-%   font sizes, and this function is more accurate.
-
-% Get nominal extent
-e = c.Extent;
-
-% Correct height for web graphics
-f = ancestor( c, 'figure' );
-if ~isempty( f ) && isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I )
-    df = figure( 'Visible', 'off' ); % dummy *Java* figure
-    dc = uicontrol( 'Parent', df, 'Style', 'text', ...
-        'FontSize', c.FontSize, 'String', c.String ); % dummy text
-    e(4) = dc.Extent(4); % use Java height
-    delete( df ) % clean up
-end
-
-% Return
-if nargin > 1
-    e = e(i);
-end
-
-end % extent
