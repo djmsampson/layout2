@@ -12,7 +12,7 @@ e = c.Extent;
 
 % Correct height for web graphics
 f = ancestor( c, 'figure' );
-if ~isempty( f ) && verLessThan( 'MATLAB', '25.1' ) && ...
+if ~isempty( f ) && e(4) > 40 && verLessThan( 'MATLAB', '25.1' ) && ...
         isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I ) %#ok<VERLESSMATLAB>
     df = figure( 'Visible', 'off' ); % dummy *Java* figure
     dc = copyobj( c, df ); % dummy control
