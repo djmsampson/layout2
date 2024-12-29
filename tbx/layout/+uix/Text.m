@@ -177,13 +177,8 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.Extent( obj )
 
-            % Get text extent
-            value = obj.Label.Extent;
-
-            % Correct for large fonts, g3328399
-            if obj.FontSize > 28 && ~isempty( ancestor( obj.Container, 'figure' ) )
-                value = extent( obj.FontSize, obj.Label.String );
-            end
+            % Delegate
+            value = uix.BoxPanel.extent( obj.Label );
 
         end % get.Extent
 
@@ -522,14 +517,3 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
     end % helpers
 
 end % classdef
-
-function e = extent( fs, s )
-%extent  Extent fallback for web graphics with large fonts
-
-f = figure( 'Visible', 'off' ); % create invisible *Java* figure
-c = uicontrol( 'Parent', f, 'Style', 'text', 'Units', 'pixels', ...
-    'Position', [20 20 1000 200], 'FontSize', fs, 'String', s ); % text
-e = c.Extent; % Java extents are correct and similar to JavaScript
-delete( f ) % clean up
-
-end % extent
