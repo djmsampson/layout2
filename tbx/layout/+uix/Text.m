@@ -61,7 +61,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
     properties( Access = private )
         Container % container
         Checkbox % checkbox, used for label
-        Screen % text, used for covering checkbox
         VerticalAlignment_ = 'top' % backing for VerticalAlignment
         Dirty = false % flag
         FigureObserver % observer
@@ -86,9 +85,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
                 'Style', 'checkbox', 'Units', 'pixels', ...
                 'HorizontalAlignment', 'center', ...
                 'Enable', 'inactive' );
-            screen = uicontrol( 'Parent', container, ...
-                'HandleVisibility', 'off', ...
-                'Style', 'text', 'Units', 'pixels' );
 
             % Create observers and listeners
             figureObserver = uix.FigureObserver( container );
@@ -98,7 +94,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             % Store properties
             obj.Container = container;
             obj.Checkbox = checkbox;
-            obj.Screen = screen;
             obj.FigureObserver = figureObserver;
             obj.FigureListener = figureListener;
 
@@ -133,7 +128,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
             obj.Container.BackgroundColor = value;
             obj.Checkbox.BackgroundColor = value;
-            obj.Screen.BackgroundColor = value;
 
         end % set.BackgroundColor
 
@@ -498,7 +492,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
             c = obj.Container;
             b = obj.Checkbox;
-            s = obj.Screen;
             bo = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', c ); % bounds
             m = 0;
@@ -522,7 +515,6 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             end
             h = e(4);
             b.Position = [x y w h];
-            s.Position = [x y m h];
 
         end % redraw
 
