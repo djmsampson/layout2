@@ -60,7 +60,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
     properties( Access = private )
         Container % container
-        Label % checkbox, used for label
+        Label % label
         VerticalAlignment_ = 'top' % backing for VerticalAlignment
         Dirty = false % flag
         FigureObserver % observer
@@ -80,7 +80,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
                 'Units', get( 0, 'DefaultUicontrolUnits' ), ...
                 'Position', get( 0, 'DefaultUicontrolPosition' ), ...
                 'SizeChangedFcn', @obj.onResized );
-            checkbox = uicontrol( 'Parent', container, ...
+            label = uicontrol( 'Parent', container, ...
                 'HandleVisibility', 'off', ...
                 'Style', 'text', 'Units', 'pixels', ...
                 'HorizontalAlignment', 'center', ...
@@ -93,7 +93,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
             % Store properties
             obj.Container = container;
-            obj.Label = checkbox;
+            obj.Label = label;
             obj.FigureObserver = figureObserver;
             obj.FigureListener = figureListener;
 
@@ -175,7 +175,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.Extent( obj )
 
-            % Get checkbox text extent
+            % Get text extent
             value = obj.Label.Extent;
 
             % Correct for large fonts, g3328399
