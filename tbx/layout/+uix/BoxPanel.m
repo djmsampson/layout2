@@ -1024,7 +1024,7 @@ classdef BoxPanel < uix.Panel
 
     methods ( Static, Hidden )
 
-        function e = extent( c, i )
+        function e = extent( c )
             %extent  Extent of uicontrol
             %
             %   e = uix.BoxPanel.extent(c) returns the extent of the
