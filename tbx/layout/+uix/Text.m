@@ -60,7 +60,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
     properties( Access = private )
         Container % container
-        Checkbox % checkbox, used for label
+        Label % checkbox, used for label
         VerticalAlignment_ = 'top' % backing for VerticalAlignment
         Dirty = false % flag
         FigureObserver % observer
@@ -82,7 +82,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
                 'SizeChangedFcn', @obj.onResized );
             checkbox = uicontrol( 'Parent', container, ...
                 'HandleVisibility', 'off', ...
-                'Style', 'checkbox', 'Units', 'pixels', ...
+                'Style', 'text', 'Units', 'pixels', ...
                 'HorizontalAlignment', 'center', ...
                 'Enable', 'inactive' );
 
@@ -93,7 +93,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
             % Store properties
             obj.Container = container;
-            obj.Checkbox = checkbox;
+            obj.Label = checkbox;
             obj.FigureObserver = figureObserver;
             obj.FigureListener = figureListener;
 
@@ -120,81 +120,81 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.BackgroundColor( obj )
 
-            value = obj.Checkbox.BackgroundColor;
+            value = obj.Label.BackgroundColor;
 
         end % get.BackgroundColor
 
         function set.BackgroundColor( obj, value )
 
             obj.Container.BackgroundColor = value;
-            obj.Checkbox.BackgroundColor = value;
+            obj.Label.BackgroundColor = value;
 
         end % set.BackgroundColor
 
         function value = get.BeingDeleted( obj )
 
-            value = obj.Checkbox.BeingDeleted;
+            value = obj.Label.BeingDeleted;
 
         end % get.BeingDeleted
 
         function value = get.Callback( obj )
 
-            value = obj.Checkbox.Callback;
+            value = obj.Label.Callback;
 
         end % get.Callback
 
         function set.Callback( obj, value )
 
-            obj.Checkbox.Callback = value;
+            obj.Label.Callback = value;
 
         end % set.Callback
 
         function value = get.DeleteFcn( obj )
 
-            value = obj.Checkbox.DeleteFcn;
+            value = obj.Label.DeleteFcn;
 
         end % get.DeleteFcn
 
         function set.DeleteFcn( obj, value )
 
-            obj.Checkbox.DeleteFcn = value;
+            obj.Label.DeleteFcn = value;
 
         end % set.DeleteFcn
 
         function value = get.Enable( obj )
 
-            value = obj.Checkbox.Enable;
+            value = obj.Label.Enable;
 
         end % get.Enable
 
         function set.Enable( obj, value )
 
-            obj.Checkbox.Enable = value;
+            obj.Label.Enable = value;
 
         end % set.Enable
 
         function value = get.Extent( obj )
 
             % Get checkbox text extent
-            value = obj.Checkbox.Extent;
+            value = obj.Label.Extent;
 
             % Correct for large fonts, g3328399
             if obj.FontSize > 28 && ~isempty( ancestor( obj.Container, 'figure' ) )
-                value = extent( obj.FontSize, obj.Checkbox.String );
+                value = extent( obj.FontSize, obj.Label.String );
             end
 
         end % get.Extent
 
         function value = get.FontAngle( obj )
 
-            value = obj.Checkbox.FontAngle;
+            value = obj.Label.FontAngle;
 
         end % get.FontAngle
 
         function set.FontAngle( obj, value )
 
             % Set
-            obj.Checkbox.FontAngle = value;
+            obj.Label.FontAngle = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -203,14 +203,14 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.FontName( obj )
 
-            value = obj.Checkbox.FontName;
+            value = obj.Label.FontName;
 
         end % get.FontName
 
         function set.FontName( obj, value )
 
             % Set
-            obj.Checkbox.FontName = value;
+            obj.Label.FontName = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -219,14 +219,14 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.FontSize( obj )
 
-            value = obj.Checkbox.FontSize;
+            value = obj.Label.FontSize;
 
         end % get.FontSize
 
         function set.FontSize( obj, value )
 
             % Set
-            obj.Checkbox.FontSize = value;
+            obj.Label.FontSize = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -235,26 +235,26 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.FontUnits( obj )
 
-            value = obj.Checkbox.FontUnits;
+            value = obj.Label.FontUnits;
 
         end % get.FontUnits
 
         function set.FontUnits( obj, value )
 
-            obj.Checkbox.FontUnits = value;
+            obj.Label.FontUnits = value;
 
         end % set.FontUnits
 
         function value = get.FontWeight( obj )
 
-            value = obj.Checkbox.FontWeight;
+            value = obj.Label.FontWeight;
 
         end % get.FontWeight
 
         function set.FontWeight( obj, value )
 
             % Set
-            obj.Checkbox.FontWeight = value;
+            obj.Label.FontWeight = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -263,13 +263,13 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.ForegroundColor( obj )
 
-            value = obj.Checkbox.ForegroundColor;
+            value = obj.Label.ForegroundColor;
 
         end % get.ForegroundColor
 
         function set.ForegroundColor( obj, value )
 
-            obj.Checkbox.ForegroundColor = value;
+            obj.Label.ForegroundColor = value;
 
         end % set.ForegroundColor
 
@@ -287,14 +287,14 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.HorizontalAlignment( obj )
 
-            value = obj.Checkbox.HorizontalAlignment;
+            value = obj.Label.HorizontalAlignment;
 
         end % get.HorizontalAlignment
 
         function set.HorizontalAlignment( obj, value )
 
             % Set
-            obj.Checkbox.HorizontalAlignment = value;
+            obj.Label.HorizontalAlignment = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -327,14 +327,14 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.String( obj )
 
-            value = obj.Checkbox.String;
+            value = obj.Label.String;
 
         end % get.String
 
         function set.String( obj, value )
 
             % Set
-            obj.Checkbox.String = value;
+            obj.Label.String = value;
 
             % Mark as dirty
             obj.setDirty()
@@ -343,43 +343,43 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.Tag( obj )
 
-            value = obj.Checkbox.Tag;
+            value = obj.Label.Tag;
 
         end % get.Tag
 
         function set.Tag( obj, value )
 
-            obj.Checkbox.Tag = value;
+            obj.Label.Tag = value;
 
         end % set.Tag
 
         function value = get.TooltipString( obj )
 
-            value = obj.Checkbox.TooltipString;
+            value = obj.Label.TooltipString;
 
         end % get.TooltipString
 
         function set.TooltipString( obj, value )
 
-            obj.Checkbox.TooltipString = value;
+            obj.Label.TooltipString = value;
 
         end % set.TooltipString
 
         function value = get.Type( obj )
 
-            value = obj.Checkbox.Type;
+            value = obj.Label.Type;
 
         end % get.Type
 
         function value = get.UIContextMenu( obj )
 
-            value = obj.Checkbox.UIContextMenu;
+            value = obj.Label.UIContextMenu;
 
         end % get.UIContextMenu
 
         function set.UIContextMenu( obj, value )
 
-            obj.Checkbox.UIContextMenu = value;
+            obj.Label.UIContextMenu = value;
 
         end % set.UIContextMenu
 
@@ -397,13 +397,13 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.UserData( obj )
 
-            value = obj.Checkbox.UserData;
+            value = obj.Label.UserData;
 
         end % get.UserData
 
         function set.UserData( obj, value )
 
-            obj.Checkbox.UserData = value;
+            obj.Label.UserData = value;
 
         end % set.UserData
 
@@ -491,7 +491,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
             %  directly.
 
             c = obj.Container;
-            b = obj.Checkbox;
+            b = obj.Label;
             bo = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', c ); % bounds
             m = 0;
@@ -526,7 +526,7 @@ function e = extent( fs, s )
 %extent  Extent fallback for web graphics with large fonts
 
 f = figure( 'Visible', 'off' ); % create invisible *Java* figure
-c = uicontrol( 'Parent', f, 'Style', 'checkbox', 'Units', 'pixels', ...
+c = uicontrol( 'Parent', f, 'Style', 'text', 'Units', 'pixels', ...
     'Position', [20 20 1000 200], 'FontSize', fs, 'String', s ); % text
 e = c.Extent; % Java extents are correct and similar to JavaScript
 delete( f ) % clean up
