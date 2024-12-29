@@ -178,7 +178,7 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
         function value = get.Extent( obj )
 
             % Delegate
-            value = uix.BoxPanel.extent( obj.Label );
+            value = uix.extent( obj.Label );
 
         end % get.Extent
 

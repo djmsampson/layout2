@@ -892,7 +892,7 @@ classdef BoxPanel < uix.Panel
             tW = max( bounds(3), 1 );
             tH = obj.TitleHeight_; % title height
             if tH == -1 % cache stale, refresh
-                tE = uix.BoxPanel.extent( obj.TitleText ); % extent
+                tE = uix.extent( obj.TitleText ); % extent
                 tH = tE(4); % required height
                 obj.TitleHeight_ = tH; % store
                 obj.TitleBar.Widths(2:end) = tH; % square buttons
@@ -1021,36 +1021,6 @@ classdef BoxPanel < uix.Panel
         end % paintTitle
 
     end % helper methods
-
-    methods ( Static, Hidden )
-
-        function e = extent( c )
-            %extent  Extent of uicontrol
-            %
-            %   e = uix.BoxPanel.extent(c) returns the extent of the
-            %   uicontrol c.
-            %
-            %   For Java graphics, this function simply returns the Extent
-            %   property. For JavaScript graphics, the Extent property is
-            %   unreliable for large font sizes, and this function is more
-            %   accurate.
-
-            % Get nominal extent
-            e = c.Extent;
-
-            % Correct height for web graphics
-            f = ancestor( c, 'figure' );
-            if ~isempty( f ) && isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I )
-                df = figure( 'Visible', 'off' ); % dummy *Java* figure
-                dc = uicontrol( 'Parent', df, 'Style', 'text', ...
-                    'FontSize', c.FontSize, 'String', c.String ); % dummy text
-                e(4) = dc.Extent(4); % use Java height
-                delete( df ) % clean up
-            end
-
-        end % extent
-
-    end % helpers
 
 end % classdef
 
