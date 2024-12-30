@@ -5,14 +5,13 @@ classdef Container < matlab.ui.container.internal.UIContainer
 
     %  Copyright 2009-2020 The MathWorks, Inc.
 
-    methods ( Access = protected, Static )
+    methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
-            map = struct( ...
-                'BackgroundColor', '--mw-backgroundColor-primary' );
+            map = struct();
+            map.BackgroundColor = '--mw-backgroundColor-primary';
 
         end % getThemeMap
 

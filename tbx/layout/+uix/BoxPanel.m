@@ -944,8 +944,7 @@ classdef BoxPanel < uix.Panel
     methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
             map = getThemeMap@uix.Panel();
             map.TitleColor = '--mw-backgroundColor-panelHeader';

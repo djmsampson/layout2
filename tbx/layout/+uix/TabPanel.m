@@ -596,8 +596,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
             map = getThemeMap@uix.Container();
             map.ForegroundColor = '--mw-color-primary';
