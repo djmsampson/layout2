@@ -229,7 +229,7 @@ classdef BoxPanel < uix.Panel
                 obj.TitleColorMode = 'manual'; % flip
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Property ''TitleColor'' must be a colorspec.' )
+                    'Property ''TitleColor'' must be a colorspec.' ) )
             end
 
         end % set.TitleColor
@@ -243,7 +243,7 @@ classdef BoxPanel < uix.Panel
                 obj.TitleColor_I = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Property ''TitleColor_I'' must be a colorspec.' )
+                    'Property ''TitleColor_I'' must be a colorspec.' ) )
             end
 
         end % set.TitleColor_I
