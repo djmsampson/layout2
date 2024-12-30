@@ -17,6 +17,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Changed `uix.ScrollingPanel` per-child properties `Heights`, `MinimumHeights`, `Widths`, `MinimumWidths`, `VerticalSteps`, `VerticalOffsets`, `HorizontalSteps`, `HorizontalOffsets` to scalar properties `Height`, `MinimumHeight`, `Width`, `MinimumWidth`, `VerticalStep`, `VerticalOffset`, `HorizontalStep`, `HorizontalOffset`; this simplifies usability
 - Renamed `uix.BoxPanel` tooltip properties from `...TooltipString` to `...Tooltip`; previous property names are still supported
 - Removed decorations on draggable dividers, for compatibility with web graphics
+- Added support for figure themes :test_tube:
 - Migrated documentation to Doc_er :hatching_chick:
 - Documented helper `uix.FigureObserver` for detecting figure ancestor changes
 
