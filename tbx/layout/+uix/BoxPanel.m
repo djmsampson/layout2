@@ -239,7 +239,7 @@ classdef BoxPanel < uix.Panel
             try
                 obj.DummyControl.ForegroundColor = value; % colorspec
                 value = obj.DummyControl.ForegroundColor; % rgb
-                redrawTitle( obj ) % apply
+                obj.redrawTitle() % apply
                 obj.TitleColor_I = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
