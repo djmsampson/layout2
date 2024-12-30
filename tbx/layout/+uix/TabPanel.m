@@ -29,8 +29,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     end
 
     properties( Access = public, Hidden )
-        ForegroundColor_I = get( 0, 'DefaultUicontrolForegroundColor' ) % Backing for ForegroundColor
-        ForegroundColorMode = 'auto' % ForegroundColor mode ('auto' | 'manual')
+        ForegroundColor_I = get( 0, 'DefaultUitabForegroundColor' ) % backing for ForegroundColor
+        ForegroundColorMode = 'auto' % ForegroundColor mode [auto|manual]
     end
 
     properties ( GetAccess = ?matlab.unittest.TestCase, SetAccess = private )
