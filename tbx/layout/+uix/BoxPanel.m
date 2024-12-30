@@ -48,6 +48,7 @@ classdef BoxPanel < uix.Panel
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
+        DummyControl = matlab.ui.control.UIControl() % dummy uicontrol
     end
 
     properties( Access = public, Dependent, AbortSet )
@@ -223,49 +224,40 @@ classdef BoxPanel < uix.Panel
 
         function set.TitleColor( obj, value )
 
-            % Apply
             try
-                obj.TitleColor_I = value;
+                obj.TitleColor_I = value; % delegate
+                obj.TitleColorMode = 'manual'; % flip
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Value of ''%s'' must be a color name, RGB triplet, or hex color code.', ...
-                    'TitleColor' ) )
+                    'Property ''TitleColor'' must be a colorspec.' )
             end
-
-            % Flip mode
-            obj.TitleColorMode = 'manual';
 
         end % set.TitleColor
 
         function set.TitleColor_I( obj, value )
 
-            % Apply
             try
-                obj.retitle()
+                obj.DummyControl.ForegroundColor = value; % colorspec
+                value = obj.DummyControl.ForegroundColor; % rgb
+                redrawTitle( obj ) % apply
+                obj.TitleColor_I = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Value of ''%s'' must be a color name, RGB triplet, or hex color code.', ...
-                    'TitleColor_I' ) )
+                    'Property ''TitleColor_I'' must be a colorspec.' )
             end
-
-            % Set
-            obj.TitleColor_I = value;
 
         end % set.TitleColor_I
 
         function set.TitleColorMode( obj, value )
 
-            % Convert and check
             try
-                value = char( value );
-                assert( ismember( value, {'auto','manual'} ) )
+                value = char( value ); % convert
+                assert( ismember( value, {'auto','manual'} ) ) % compare
+                obj.TitleColorMode = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Property ''TitleColorMode'' must be ''auto'' or ''manual''.' ) )
             end
-
-            % Set
-            obj.TitleColorMode = value;
 
         end % set.TitleColorMode
 
@@ -292,7 +284,7 @@ classdef BoxPanel < uix.Panel
             obj.Minimized_ = value;
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.Minimized
 
@@ -315,7 +307,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.MinimizeFcn
 
@@ -338,7 +330,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.MaximizeFcn
 
@@ -365,7 +357,7 @@ classdef BoxPanel < uix.Panel
             obj.Docked_ = value;
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.Docked
 
@@ -389,7 +381,7 @@ classdef BoxPanel < uix.Panel
 
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.DockFcn
 
@@ -412,7 +404,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.UndockFcn
 
@@ -434,7 +426,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.HelpFcn
 
@@ -456,7 +448,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.CloseRequestFcn
 
@@ -964,10 +956,10 @@ classdef BoxPanel < uix.Panel
 
     methods( Access = private )
 
-        function rebutton( obj )
-            %rebutton  Update buttons
+        function redrawButtons( obj )
+            %redrawButtons  Update buttons
             %
-            %  p.rebutton() attaches used buttons and detaches unused
+            %  p.redrawButtons() attaches used buttons and detaches unused
             %  buttons.
 
             % Detach all
@@ -1015,10 +1007,10 @@ classdef BoxPanel < uix.Panel
                 obj.TitleBar.Widths(2:end) = obj.TitleHeight_;
             end
 
-        end % rebutton
+        end % redrawButtons
 
-        function retitle( obj )
-            %retitle  Update title bar
+        function redrawTitle( obj )
+            %redrawTitle  Redraw title bar
 
             color = obj.TitleColor_I;
             obj.TitleBar.BackgroundColor = color;
@@ -1030,7 +1022,7 @@ classdef BoxPanel < uix.Panel
             obj.HelpButton.BackgroundColor = color;
             obj.CloseButton.BackgroundColor = color;
 
-        end % retitle
+        end % redrawTitle
 
     end % helper methods
 
