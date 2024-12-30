@@ -66,8 +66,8 @@ docerdelete( docFolder )
 fprintf( "** Deleted the old documentation files.\n\n" )
 
 % Use Doc_er to convert the markdown (.md) files to HTML.
-allMDFiles = fullfile( docFolder, "**", "*.md" );
-docerconvert( allMDFiles )
+md = fullfile( docFolder, "**", "*.md" );
+docerconvert( md, "Theme", "light" )
 fprintf( "** Converted markdown files to HTML.\n\n" )
 
 % Control the default figure size and window style for generating doc
@@ -82,8 +82,8 @@ set( gr, "defaultFigureWindowStyle", "normal", ...
     "defaultFigurePosition", [100, 100, 400, 300] )
 
 % Use Doc_er to evaluate and capture the code within the doc pages.
-allHTMLFiles = fullfile( docFolder, "**", "*.html" );
-docerrun( allHTMLFiles )
+html = fullfile( docFolder, "**", "*.html" );
+docerrun( html )
 fprintf( "** Evaluated and captured documentation example code.\n\n" )
 
 % Use Doc_er to create the documentation index files and search database.
