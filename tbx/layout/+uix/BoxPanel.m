@@ -69,8 +69,8 @@ classdef BoxPanel < uix.Panel
     end % deprecated
 
     properties( Access = public, Hidden )
-        TitleColor_I = [0, 0.251, 0.451] % Backing for TitleColor
-        TitleColorMode = 'auto' % TitleColor mode ('auto' | 'manual')
+        TitleColor_I = [0 0.251 0.451] % backing for TitleColor
+        TitleColorMode = 'auto' % TitleColor mode [auto|manual]
     end
 
     events( Hidden, NotifyAccess = private )
@@ -223,10 +223,8 @@ classdef BoxPanel < uix.Panel
 
         function set.TitleColor( obj, value )
 
-            % Set background color of title bar objects
+            % Apply
             try
-                % Update internal properties
-                obj.TitleColorMode = 'manual';
                 obj.TitleColor_I = value;
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
@@ -234,26 +232,40 @@ classdef BoxPanel < uix.Panel
                     'TitleColor' ) )
             end
 
+            % Flip mode
+            obj.TitleColorMode = 'manual';
+
         end % set.TitleColor
 
         function set.TitleColor_I( obj, value )
 
+            % Apply
+            try
+                obj.retitle()
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Value of ''%s'' must be a color name, RGB triplet, or hex color code.', ...
+                    'TitleColor_I' ) )
+            end
+
+            % Set
             obj.TitleColor_I = value;
-            obj.paintTitle()
 
         end % set.TitleColor_I
 
         function set.TitleColorMode( obj, value )
 
-            % Check
-            if ~ismember( value, {'auto', 'manual'} )
-                error( 'uix:InvalidProperty', ...
-                    ['''TitleColorMode'' must be either ''auto'' ', ...
-                    'or ''manual''.'] )
-            end % if
+            % Convert and check
+            try
+                value = char( value );
+                assert( ismember( value, {'auto','manual'} ) )
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''TitleColorMode'' must be ''auto'' or ''manual''.' ) )
+            end
 
             % Set
-            obj.TitleColorMode = char( value );
+            obj.TitleColorMode = value;
 
         end % set.TitleColorMode
 
@@ -1005,20 +1017,20 @@ classdef BoxPanel < uix.Panel
 
         end % rebutton
 
-        function paintTitle( obj )
-            %PAINTTITLE Color the title bar and controls.
+        function retitle( obj )
+            %retitle  Update title bar
 
-            newColor = obj.TitleColor_I;
-            obj.TitleBar.BackgroundColor = newColor;
-            obj.TitleText.BackgroundColor = newColor;
-            obj.MinimizeButton.BackgroundColor = newColor;
-            obj.MaximizeButton.BackgroundColor = newColor;
-            obj.DockButton.BackgroundColor = newColor;
-            obj.UndockButton.BackgroundColor = newColor;
-            obj.HelpButton.BackgroundColor = newColor;
-            obj.CloseButton.BackgroundColor = newColor;
+            color = obj.TitleColor_I;
+            obj.TitleBar.BackgroundColor = color;
+            obj.TitleText.BackgroundColor = color;
+            obj.MinimizeButton.BackgroundColor = color;
+            obj.MaximizeButton.BackgroundColor = color;
+            obj.DockButton.BackgroundColor = color;
+            obj.UndockButton.BackgroundColor = color;
+            obj.HelpButton.BackgroundColor = color;
+            obj.CloseButton.BackgroundColor = color;
 
-        end % paintTitle
+        end % retitle
 
     end % helper methods
 
