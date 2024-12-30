@@ -29,8 +29,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     end
 
     properties( Access = public, Hidden )
-        ForegroundColor_I = get( 0, 'DefaultUicontrolForegroundColor' ) % Backing for ForegroundColor
-        ForegroundColorMode = 'auto' % ForegroundColor mode ('auto' | 'manual')
+        ForegroundColor_I = get( 0, 'DefaultUitabForegroundColor' ) % backing for ForegroundColor
+        ForegroundColorMode = 'auto' % ForegroundColor mode [auto|manual]
     end
 
     properties ( GetAccess = ?matlab.unittest.TestCase, SetAccess = private )
@@ -40,7 +40,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     properties( Access = private )
         ShadowTabGroup % tab group
         BackgroundColorListener % listener
-        SelectionChangedListener % listener        
+        SelectionChangedListener % listener
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
 
@@ -132,46 +132,42 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
         function set.ForegroundColor( obj, value )
 
-            % Check
             try
-                obj.DummyControl.ForegroundColor = value; % RGB or special
-                value = obj.DummyControl.ForegroundColor; % RGB
+                obj.ForegroundColor_I = value; % delegate
+                obj.ForegroundColorMode = 'manual'; % flip
             catch
-                error( 'uix:InvalidPropertyValue', ...
-                    'Property ''ForegroundColor'' must be a colorspec.' )
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''ForegroundColor'' must be a colorspec.' ) )
             end
-
-            % Set
-            obj.ForegroundColorMode = 'manual';
-            obj.ForegroundColor_I = value;            
 
         end % set.ForegroundColor
 
         function set.ForegroundColor_I( obj, value )
 
-            % Store internal value
-            obj.ForegroundColor_I = value;
-
-            % Redraw tabs
-            obj.redrawTabs()
+            try
+                obj.DummyControl.ForegroundColor = value; % colorspec
+                value = obj.DummyControl.ForegroundColor; % rgb
+                obj.redrawTabs() % apply
+                obj.ForegroundColor_I = value; % store
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''TitleColor_I'' must be a colorspec.' ) )
+            end
 
         end % set.ForegroundColor_I
 
         function set.ForegroundColorMode( obj, value )
 
-            % Check
             try
-                assert( ismember( value, {'auto', 'manual'} ), ...
-                    'uix:InvalidProperty', ['''ForegroundColorMode''', ...
-                    ' must be either ''auto'' or ''manual''.'] )
-            catch e
-                e.throw()
-            end % if
+                value = char( value ); % convert
+                assert( ismember( value, {'auto','manual'} ) ) % compare
+                obj.ForegroundColorMode = value; % store
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''ForegroundColorMode'' must be ''auto'' or ''manual''.' ) )
+            end
 
-            % Set
-            obj.ForegroundColorMode = char( value );
-
-        end % set.ForegroundColorMode        
+        end % set.ForegroundColorMode
 
         function value = get.Selection( obj )
 
@@ -600,8 +596,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
     methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
             map = getThemeMap@uix.Container();
             map.ForegroundColor = '--mw-color-primary';

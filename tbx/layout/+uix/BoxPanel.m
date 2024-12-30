@@ -48,6 +48,7 @@ classdef BoxPanel < uix.Panel
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
+        DummyControl = matlab.ui.control.UIControl() % dummy uicontrol
     end
 
     properties( Access = public, Dependent, AbortSet )
@@ -69,8 +70,8 @@ classdef BoxPanel < uix.Panel
     end % deprecated
 
     properties( Access = public, Hidden )
-        TitleColor_I = [0, 0.251, 0.451] % Backing for TitleColor
-        TitleColorMode = 'auto' % TitleColor mode ('auto' | 'manual')
+        TitleColor_I = [0 0.251 0.451] % backing for TitleColor
+        TitleColorMode = 'auto' % TitleColor mode [auto|manual]
     end
 
     events( Hidden, NotifyAccess = private )
@@ -223,37 +224,40 @@ classdef BoxPanel < uix.Panel
 
         function set.TitleColor( obj, value )
 
-            % Set background color of title bar objects
             try
-                % Update internal properties
-                obj.TitleColorMode = 'manual';
-                obj.TitleColor_I = value;
+                obj.TitleColor_I = value; % delegate
+                obj.TitleColorMode = 'manual'; % flip
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Value of ''%s'' must be a color name, RGB triplet, or hex color code.', ...
-                    'TitleColor' ) )
+                    'Property ''TitleColor'' must be a colorspec.' ) )
             end
 
         end % set.TitleColor
 
         function set.TitleColor_I( obj, value )
 
-            obj.TitleColor_I = value;
-            obj.paintTitle()
+            try
+                obj.DummyControl.ForegroundColor = value; % colorspec
+                value = obj.DummyControl.ForegroundColor; % rgb
+                obj.redrawTitle() % apply
+                obj.TitleColor_I = value; % store
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''TitleColor_I'' must be a colorspec.' ) )
+            end
 
         end % set.TitleColor_I
 
         function set.TitleColorMode( obj, value )
 
-            % Check
-            if ~ismember( value, {'auto', 'manual'} )
-                error( 'uix:InvalidProperty', ...
-                    ['''TitleColorMode'' must be either ''auto'' ', ...
-                    'or ''manual''.'] )
-            end % if
-
-            % Set
-            obj.TitleColorMode = char( value );
+            try
+                value = char( value ); % convert
+                assert( ismember( value, {'auto','manual'} ) ) % compare
+                obj.TitleColorMode = value; % store
+            catch
+                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
+                    'Property ''TitleColorMode'' must be ''auto'' or ''manual''.' ) )
+            end
 
         end % set.TitleColorMode
 
@@ -280,7 +284,7 @@ classdef BoxPanel < uix.Panel
             obj.Minimized_ = value;
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.Minimized
 
@@ -303,7 +307,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.MinimizeFcn
 
@@ -326,7 +330,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.MaximizeFcn
 
@@ -353,7 +357,7 @@ classdef BoxPanel < uix.Panel
             obj.Docked_ = value;
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.Docked
 
@@ -377,7 +381,7 @@ classdef BoxPanel < uix.Panel
 
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.DockFcn
 
@@ -400,7 +404,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.UndockFcn
 
@@ -422,7 +426,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.HelpFcn
 
@@ -444,7 +448,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Update buttons
-            obj.rebutton()
+            obj.redrawButtons()
 
         end % set.CloseRequestFcn
 
@@ -940,8 +944,7 @@ classdef BoxPanel < uix.Panel
     methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
             map = getThemeMap@uix.Panel();
             map.TitleColor = '--mw-backgroundColor-panelHeader';
@@ -952,10 +955,10 @@ classdef BoxPanel < uix.Panel
 
     methods( Access = private )
 
-        function rebutton( obj )
-            %rebutton  Update buttons
+        function redrawButtons( obj )
+            %redrawButtons  Update buttons
             %
-            %  p.rebutton() attaches used buttons and detaches unused
+            %  p.redrawButtons() attaches used buttons and detaches unused
             %  buttons.
 
             % Detach all
@@ -1003,22 +1006,22 @@ classdef BoxPanel < uix.Panel
                 obj.TitleBar.Widths(2:end) = obj.TitleHeight_;
             end
 
-        end % rebutton
+        end % redrawButtons
 
-        function paintTitle( obj )
-            %PAINTTITLE Color the title bar and controls.
+        function redrawTitle( obj )
+            %redrawTitle  Redraw title bar
 
-            newColor = obj.TitleColor_I;
-            obj.TitleBar.BackgroundColor = newColor;
-            obj.TitleText.BackgroundColor = newColor;
-            obj.MinimizeButton.BackgroundColor = newColor;
-            obj.MaximizeButton.BackgroundColor = newColor;
-            obj.DockButton.BackgroundColor = newColor;
-            obj.UndockButton.BackgroundColor = newColor;
-            obj.HelpButton.BackgroundColor = newColor;
-            obj.CloseButton.BackgroundColor = newColor;
+            color = obj.TitleColor_I;
+            obj.TitleBar.BackgroundColor = color;
+            obj.TitleText.BackgroundColor = color;
+            obj.MinimizeButton.BackgroundColor = color;
+            obj.MaximizeButton.BackgroundColor = color;
+            obj.DockButton.BackgroundColor = color;
+            obj.UndockButton.BackgroundColor = color;
+            obj.HelpButton.BackgroundColor = color;
+            obj.CloseButton.BackgroundColor = color;
 
-        end % paintTitle
+        end % redrawTitle
 
     end % helper methods
 

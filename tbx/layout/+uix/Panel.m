@@ -78,13 +78,12 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Container
     methods( Access = protected, Static )
 
         function map = getThemeMap()
-            %GETTHEMEMAP This method returns a struct describing the
-            %relationship between class properties and theme attributes.
+            %getThemeMap  Map class properties to theme attributes
 
-            map = struct( ...
-                'BackgroundColor', '--mw-backgroundColor-primary', ...
-                'HighlightColor', '--mw-borderColor-primary', ...
-                'ForegroundColor', '--mw-color-primary' );
+            map = struct();
+            map.BackgroundColor = '--mw-backgroundColor-primary';
+            map.HighlightColor = '--mw-borderColor-primary';
+            map.ForegroundColor = '--mw-color-primary';
 
         end % getThemeMap
 
