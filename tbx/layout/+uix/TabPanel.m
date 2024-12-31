@@ -28,7 +28,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
         SelectionChangedFcn = '' % selection change callback
     end
 
-    properties( Access = public, Hidden )
+    properties( Access = public, AbortSet, Hidden )
         ForegroundColor_I = get( 0, 'DefaultUitabForegroundColor' ) % backing for ForegroundColor
         ForegroundColorMode = 'auto' % ForegroundColor mode [auto|manual]
     end
@@ -605,10 +605,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %redrawTabs  Redraw tabs
 
             enableColor = obj.ForegroundColor_I;
-            if mean( enableColor ) < 0.5
-                disableColor = enableColor + 2/3 * ([1 1 1] - enableColor);
-            else
-                disableColor = enableColor - 2/3 * (enableColor - [0 0 0]);
+            if mean( enableColor ) > 0.5 % light
+                disableColor = 1/3 * enableColor;
+            else % dark
+                disableColor = 2/3 + 1/3 * enableColor;
             end
             tf = strcmp( obj.TabEnables_, 'on' );
             tabs = obj.TabGroup.Children;
