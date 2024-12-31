@@ -39,7 +39,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
 
     properties( Access = private )
         ShadowTabGroup % tab group
-        BackgroundColorListener % listener
         SelectionChangedListener % listener
         TabEnables_ = cell( 0, 1 ) % backing for TabEnables
     end
@@ -100,14 +99,10 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             obj.ShadowTabGroup = shadowTabGroup;
 
             % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
-                @obj.onBackgroundColorChanged );
             selectionChangedListener = event.listener( obj, ...
                 'SelectionChanged', @obj.onSelectionChanged );
 
             % Store listeners
-            obj.BackgroundColorListener = backgroundColorListener;
             obj.SelectionChangedListener = selectionChangedListener;
 
             % Set properties
@@ -147,11 +142,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             try
                 obj.DummyControl.ForegroundColor = value; % colorspec
                 value = obj.DummyControl.ForegroundColor; % rgb
-                obj.redrawTabs() % apply
                 obj.ForegroundColor_I = value; % store
+                obj.redrawTabs() % apply
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Property ''TitleColor_I'' must be a colorspec.' ) )
+                    'Property ''ForegroundColor_I'' must be a colorspec.' ) )
             end
 
         end % set.ForegroundColor_I
@@ -500,8 +495,7 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             n = numel( tabs );
             tab = uitab( 'Parent', tabGroup, ...
                 'Title', sprintf( 'Tab %d', n+1 ), ...
-                'ForegroundColor', obj.ForegroundColor, ...
-                'BackgroundColor', obj.BackgroundColor ); %#ok<NASGU>
+                'ForegroundColor', obj.ForegroundColor ); %#ok<NASGU>
             shadowTab = uitab( 'Parent', shadowTabGroup, ...
                 'Title', sprintf( 'Tab %d', n+1 ) );
             if isprop( shadowTab, 'AutoResizeChildren' )
@@ -611,7 +605,11 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             %redrawTabs  Redraw tabs
 
             enableColor = obj.ForegroundColor_I;
-            disableColor = enableColor + 0.75 * ([1 1 1] - enableColor);
+            if mean( enableColor ) < 0.5
+                disableColor = enableColor + 2/3 * ([1 1 1] - enableColor);
+            else
+                disableColor = enableColor - 2/3 * (enableColor - [0 0 0]);
+            end
             tf = strcmp( obj.TabEnables_, 'on' );
             tabs = obj.TabGroup.Children;
             set( tabs(tf), 'ForegroundColor', enableColor )
@@ -661,17 +659,6 @@ classdef TabPanel < uix.Container & uix.mixin.Container
             end
 
         end % onTabSelected
-
-        function onBackgroundColorChanged( obj, ~, ~ )
-            %onBackgroundColorChanged  Event handler for background color
-            %
-            %  onBackgroundColorChanged synchronizes the background color
-            %  of each tab with that of the panel.
-
-            % Set all tab background colors
-            set( obj.TabGroup.Children, 'BackgroundColor', obj.BackgroundColor )
-
-        end % onBackgroundColorChanged
 
         function onSelectionChanged( obj, source, eventData )
             %onSelectionChanged  Event handler for selection
