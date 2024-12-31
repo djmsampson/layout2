@@ -4,7 +4,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 
 ## Version 2.4
 
-- Released 30 December 2024
+- Released 31 December 2024
 - Reimplemented `uix.TabPanel` using `uitab`, for standardized appearance and easier deployment
 - Added `uix.TabPanel` tab location options `left` and `right`; this is available through `uitab`
 - Removed font and some color properties from `uix.TabPanel`; these are not available in `uitab`
