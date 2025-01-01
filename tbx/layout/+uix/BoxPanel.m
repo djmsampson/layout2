@@ -94,7 +94,7 @@ classdef BoxPanel < uix.Panel
             %  v1, etc.
 
             % Define default colors
-            foregroundColor = get( 0, "DefaultUipanelForegroundColor" );
+            foregroundColor = get( 0, 'DefaultUipanelForegroundColor' );
             backgroundColor = obj.TitleColor_I;
 
             % Create title bar
