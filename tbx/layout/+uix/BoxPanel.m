@@ -94,11 +94,8 @@ classdef BoxPanel < uix.Panel
             %  v1, etc.
 
             % Define default colors
-            foregroundColor = [1 1 1];
+            foregroundColor = get( 0, "DefaultUipanelForegroundColor" );
             backgroundColor = obj.TitleColor_I;
-
-            % Set default colors
-            obj.ForegroundColor = foregroundColor;
 
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
@@ -239,12 +236,13 @@ classdef BoxPanel < uix.Panel
             try
                 obj.DummyControl.ForegroundColor = value; % colorspec
                 value = obj.DummyControl.ForegroundColor; % rgb
-                obj.redrawTitle() % apply
                 obj.TitleColor_I = value; % store
+                obj.redrawTitle() % apply
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Property ''TitleColor_I'' must be a colorspec.' ) )
             end
+            obj.TitleText.ForegroundColor = obj.ForegroundColor;
 
         end % set.TitleColor_I
 
@@ -947,7 +945,8 @@ classdef BoxPanel < uix.Panel
             %getThemeMap  Map class properties to theme attributes
 
             map = getThemeMap@uix.Panel();
-            map.TitleColor = '--mw-backgroundColor-panelHeader';
+            map.ForegroundColor = '--mw-color-primary';
+            map.TitleColor = '--mw-backgroundColor-chatBubble';
 
         end % getThemeMap
 
