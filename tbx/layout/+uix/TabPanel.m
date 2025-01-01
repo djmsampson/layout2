@@ -469,7 +469,8 @@ classdef TabPanel < uix.Container & uix.mixin.Container
                     gp = sb + (tb(3)+m) * [1 0 -1 0];
                     cp = tb + [m m 0 0] + pa * [1 1 -2 -2];
             end
-            gp = max( gp, [1 1 0 0] ); % maintain floors while tab is resizing
+            gp = max( gp, [1 1 0 0] ); % floor
+            cp = max( cp, [1 1 0 0] ); % floor
 
             % Redraw tab group and contents
             uix.setPosition( g, gp, 'pixels' );
