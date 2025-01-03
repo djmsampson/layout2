@@ -51,7 +51,6 @@ classdef BoxPanel < uix.Panel
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
         BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
-        DummyControl = matlab.ui.control.UIControl() % dummy uicontrol
     end
 
     properties( Access = public, Dependent, AbortSet )
