@@ -73,10 +73,13 @@ classdef BoxPanel < uix.Panel
 
     properties( Access = public, Dependent, Hidden )
         TitleColor_I % backing for TitleColor
-        TitleColorMode % title color mode [auto|manual]
-        FourgroundColor
-        FourgroundColor_I
-        FourgroundColorMode
+        FourgroundColor % ForegroundColor companion
+        FourgroundColor_I % backing for FourgroundColor
+        FourgroundColorMode % FourgroundColor mode [auto|manual]
+    end
+
+    properties( Access = public, Dependent, Hidden )
+        TitleColorMode % TitleColor mode [auto|manual]
     end
 
     events( Hidden, NotifyAccess = private )
@@ -281,18 +284,12 @@ classdef BoxPanel < uix.Panel
 
         end % set.TitleColor_I
 
-        function value = get.TitleColorMode( obj )
-
-            value = obj.TitleColorMode_;
-
-        end % get.TitleColorMode
-
         function set.TitleColorMode( obj, value )
 
             try
                 value = char( value ); % convert
                 assert( ismember( value, {'auto','manual'} ) ) % compare
-                obj.TitleColorMode_ = value; % store
+                obj.TitleColorMode = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Property ''TitleColorMode'' must be ''auto'' or ''manual''.' ) )
