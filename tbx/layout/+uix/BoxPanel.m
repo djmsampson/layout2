@@ -31,8 +31,11 @@ classdef BoxPanel < uix.Panel
     properties( Access = private )
         TitleBar % title bar
         TitleText % title text
+        TitlePanel % title panel
+        ShadowPanel % shadow panel
+        ShadowContent % shadow content
+        Title_ = get( 0, 'DefaultUipanelTitle' ) % backing for Title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
-        TitleHeight_ = -1 % cache of title text height (-1 denotes stale cache)
         MinimizeButton % button
         MaximizeButton % button
         DockButton % button
@@ -42,8 +45,6 @@ classdef BoxPanel < uix.Panel
         Minimized_ = false % backing for Minimized
         Docked_ = true % backing for Docked
         FigureSelectionListener % listener
-        ShadowPanel = gobjects( 0 )
-        ShadowText = gobjects( 0 )
     end
 
     properties( Constant, Access = private )
@@ -101,13 +102,25 @@ classdef BoxPanel < uix.Panel
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', titleColor );
-
-            % Create title text
-            titleText = uicontrol( 'Parent', titleBar, ...
+            titleText = uicontrol( 'Parent', [], ...
                 'Style', 'text', 'String', obj.BlankTitle, ...
                 'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
-                'BackgroundColor', titleColor );
+                'BackgroundColor', titleColor ); % for Java
+            titlePanel = uipanel( 'Parent', [], ...
+                'BorderType', 'none', ...
+                'ForegroundColor', foregroundColor, ...
+                'BackgroundColor', titleColor ); % for JavaScript
+
+            % Create shadow
+            shadowPanel = uipanel( 'Internal', true, ...
+                'Parent', obj, 'Visible', 'on', ...
+                'Units', 'normalized', 'Position', [-2 0 1 1], ...
+                'BorderType', 'none' ); % same size, off screen
+            shadowContent = uicontainer( 'Internal', true, ...
+                'Parent', shadowPanel, 'Visible', 'on', ...
+                'Units', 'normalized', 'Position', [0 0 1 1], ...
+                'SizeChangedFcn', @obj.onInnerSizeChanged ); % fill panel
 
             % Create buttons
             minimizeButton = uicontrol( 'Parent', [], ...
@@ -153,29 +166,19 @@ classdef BoxPanel < uix.Panel
                 'String', char( 215 ), ...
                 'TooltipString', 'Close this panel' );
 
-            % Create shadows
-            shadowPanel = uipanel( 'Internal', true, ...
-                'Parent', obj, 'Visible', 'on' );
-            shadowContent = uicontainer( 'Internal', true, ...
-                'Parent', shadowPanel, 'Visible', 'on', ...
-                'Units', 'normalized', 'Position', [0 0 1 1], ...
-                'SizeChangedFcn', @obj.onInnerSizeChanged ); %#ok<NASGU>
-            shadowText = uicontrol( 'Internal', true, ...
-                'Parent', obj, 'Visible', 'off', ...
-                'Style', 'text' );
-
             % Store properties
             obj.Title = obj.NullTitle;
             obj.TitleBar = titleBar;
             obj.TitleText = titleText;
+            obj.TitlePanel = titlePanel;
+            obj.ShadowPanel = shadowPanel;
+            obj.ShadowContent = shadowContent;
             obj.MinimizeButton = minimizeButton;
             obj.MaximizeButton = maximizeButton;
             obj.DockButton = dockButton;
             obj.UndockButton = undockButton;
             obj.HelpButton = helpButton;
             obj.CloseButton = closeButton;
-            obj.ShadowPanel = shadowPanel;
-            obj.ShadowText = shadowText;
 
             % Create listeners
             addlistener( obj, 'BorderWidth', 'PostSet', ...
@@ -212,8 +215,6 @@ classdef BoxPanel < uix.Panel
                 @obj.onButtonClicked );
             addlistener( obj, 'Closing', ...
                 @obj.onButtonClicked );
-            addlistener( obj, 'SizeChanged', ...
-                @obj.onOuterSizeChanged );
 
             % Set properties
             try
@@ -392,7 +393,6 @@ classdef BoxPanel < uix.Panel
                     'DockFcn' ) )
             end
 
-
             % Update buttons
             obj.redrawButtons()
 
@@ -468,17 +468,19 @@ classdef BoxPanel < uix.Panel
         function value = get.TitleHeight( obj )
 
             f = ancestor( obj, 'figure' );
-            if isprop( f, 'JavaFrame_I' ) && ~isempty( f.JavaFrame_I ) % Java
-                value = obj.ShadowText.Extent(4); % text extent
-                fprintf( 1, "[Ja] Panel height = %f px\n", value );
+            if isempty( f )
+                value = NaN; % unreachable
+            elseif isprop( f, 'JavaFrame_I' ) && ~isempty( f.JavaFrame_I ) % Java
+                t = obj.TitleText;
+                e = hgconvertunits( f, t.Extent, t.Units, 'pixels', t.Parent );
+                value = e(4); % text extent
+                fprintf( 1, "[Ja] Panel height = %f px\n", value ); % TODO remove
             else % Javascript
                 s = obj.ShadowPanel;
-                o = s.OuterPosition;
-                i = s.InnerPosition;
-                value = o(4) - i(4) - 3/2 * ( o(3) - i(3) ); % panel title height
-                % value = obj.ShadowText.Extent(4);
-                % value = value * 1.07; % adjust
-                fprintf( 1, "[JS] Panel height = %f px\n", value );
+                op = hgconvertunits( f, s.OuterPosition, s.Units, 'pixels', s.Parent );
+                ip = hgconvertunits( f, s.InnerPosition, s.Units, 'pixels', s.Parent );
+                value = op(4) - ip(4) - op(3) + ip(3);
+                fprintf( 1, "[JS] Panel height = %f px\n", value ); % TODO remove
             end
 
         end % get.TitleHeight
@@ -710,9 +712,6 @@ classdef BoxPanel < uix.Panel
         function onBorderWidthChanged( obj, ~, ~ )
             %onBorderWidthChanged  Event handler for BorderWidth changes
 
-            % Shadow
-            obj.ShadowPanel.BorderWidth = obj.BorderWidth;
-
             % Mark as dirty
             obj.Dirty = true;
 
@@ -720,9 +719,6 @@ classdef BoxPanel < uix.Panel
 
         function onBorderTypeChanged( obj, ~, ~ )
             %onBorderTypeChanged  Event handler for BorderType changes
-
-            % Shadow
-            obj.ShadowPanel.BorderType = obj.BorderType;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -735,10 +731,8 @@ classdef BoxPanel < uix.Panel
             % Set
             fontAngle = obj.FontAngle;
             obj.TitleText.FontAngle = fontAngle;
-
-            % Shadow
+            obj.TitlePanel.FontAngle = fontAngle;
             obj.ShadowPanel.FontAngle = fontAngle;
-            obj.ShadowText.FontAngle = fontAngle;
 
         end % onFontAngleChanged
 
@@ -748,10 +742,8 @@ classdef BoxPanel < uix.Panel
             % Set
             fontName = obj.FontName;
             obj.TitleText.FontName = fontName;
-
-            % Shadow
+            obj.TitlePanel.FontName = fontName;
             obj.ShadowPanel.FontName = fontName;
-            obj.ShadowText.FontName = fontName;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -764,16 +756,14 @@ classdef BoxPanel < uix.Panel
             % Set
             fontSize = obj.FontSize;
             obj.TitleText.FontSize = fontSize;
+            obj.TitlePanel.FontSize = fontSize;
+            obj.ShadowPanel.FontSize = fontSize;
             obj.MinimizeButton.FontSize = fontSize;
             obj.MaximizeButton.FontSize = fontSize;
             obj.DockButton.FontSize = fontSize;
             obj.UndockButton.FontSize = fontSize;
             obj.HelpButton.FontSize = fontSize;
             obj.CloseButton.FontSize = fontSize;
-
-            % Shadow
-            obj.ShadowPanel.FontSize = fontSize;
-            obj.ShadowText.FontSize = fontSize;
 
             % Mark as dirty
             obj.Dirty = true;
@@ -786,14 +776,12 @@ classdef BoxPanel < uix.Panel
             % Set
             fontUnits = obj.FontUnits;
             obj.TitleText.FontUnits = fontUnits;
+            obj.TitlePanel.FontUnits = fontUnits;
+            obj.ShadowPanel.FontUnits = fontUnits;
             obj.HelpButton.FontUnits = fontUnits;
             obj.CloseButton.FontUnits = fontUnits;
             obj.DockButton.FontUnits = fontUnits;
             obj.MinimizeButton.FontUnits = fontUnits;
-
-            % Shadow
-            obj.ShadowPanel.FontUnits = fontUnits;
-            obj.ShadowText.FontUnits = fontUnits;
 
         end % onFontUnitsChanged
 
@@ -803,16 +791,15 @@ classdef BoxPanel < uix.Panel
             % Set
             fontWeight = obj.FontWeight;
             obj.TitleText.FontWeight = fontWeight;
-
-            % Shadow
+            obj.TitlePanel.FontWeight = fontWeight;
             obj.ShadowPanel.FontWeight = fontWeight;
-            obj.ShadowText.FontWeight = fontWeight;
 
         end % onFontWeightChanged
 
         function onForegroundColorChanged( obj, ~, ~ )
             %onForegroundColorChanged  Event handler for ForegroundColor changes
 
+            % Set
             foregroundColor = obj.ForegroundColor;
             obj.TitleText.ForegroundColor = foregroundColor;
             obj.MinimizeButton.ForegroundColor = foregroundColor;
@@ -829,8 +816,7 @@ classdef BoxPanel < uix.Panel
 
             if strcmp( obj.TitleAccess, 'public' ) && isjsdrawing() == false
                 obj.TitleAccess = 'private'; % start
-                n = numel( obj.BlankTitle );
-                obj.Title = obj.ShadowPanel.Title(n+1:end);
+                obj.Title = obj.Title_;
             end
 
         end % onTitleReturning
@@ -852,15 +838,16 @@ classdef BoxPanel < uix.Panel
 
                 % Set
                 obj.TitleAccess = 'private'; % start
-                title = [obj.BlankTitle obj.Title];
-                obj.TitleText.String = title;
+                title = obj.Title; % get
+                obj.TitleText.String = title; % TODO pad
+                obj.TitlePanel.Title = title;
                 obj.ShadowPanel.Title = title;
-                obj.ShadowText.String = title;
+                obj.Title_ = title; % store
                 obj.Title = obj.NullTitle; % unset Title
                 obj.TitleAccess = 'public'; % finish
 
                 % Mark as dirty
-                obj.Dirty = true;
+                obj.Dirty = true; % TODO remove
 
             end
 
@@ -932,20 +919,6 @@ classdef BoxPanel < uix.Panel
 
         end % onButtonClicked
 
-        function onOuterSizeChanged( obj, ~, ~ )
-
-            disp OuterSizeChanged
-
-            % Resize shadows
-            ob = hgconvertunits( ancestor( obj, 'figure' ), ...
-                obj.Position, obj.Units, 'pixels', obj.Parent );
-            uix.setPosition( obj.ShadowPanel, ...
-                [1 1 ob(3:4)] + [-2*ob(3:4) 0 0], 'pixels' )
-            uix.setPosition( obj.ShadowText, ...
-                [1 1 ob(3:4)] + [2*ob(3:4) 0 0], 'pixels' )
-
-        end % onOuterSizeChanged
-
         function onInnerSizeChanged( obj, ~, ~ )
 
             disp InnerSizeChanged
@@ -995,6 +968,26 @@ classdef BoxPanel < uix.Panel
             %
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
+
+            % Update title text
+            oldType = figuretype( oldFigure );
+            newType = figuretype( newFigure );
+            if ~strcmp( oldType, newType )
+                switch oldType
+                    case 'java'
+                        obj.TitleText.Parent = [];
+                    case 'js'
+                        obj.TitlePanel.Parent = [];
+                end
+                switch newType
+                    case 'java'
+                        obj.TitleText.Parent = obj.TitleBar;
+                        obj.redrawButtons()
+                    case 'js'
+                        obj.TitlePanel.Parent = obj.TitleBar;
+                        obj.redrawButtons()
+                end
+            end
 
             % Update listeners
             if isempty( newFigure )
@@ -1109,3 +1102,17 @@ for ii = 1:numel( s )
 end
 
 end % isjsdrawing
+
+function t = figuretype( o )
+%figuretype  Figure type -- 'java', 'js', or 'none'
+
+f = ancestor( o, 'figure' );
+if isempty( f )
+    t = 'none';
+elseif isprop( f, 'JavaFrame_I' ) && ~isempty( f.JavaFrame_I )
+    t = 'java';
+else
+    t = 'js';
+end
+
+end % figuretype
