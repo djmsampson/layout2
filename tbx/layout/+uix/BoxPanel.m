@@ -915,9 +915,6 @@ classdef BoxPanel < uix.Panel
                 obj.Title = obj.NullTitle; % unset Title
                 obj.TitleAccess = 'public'; % finish
 
-                % Mark as dirty
-                obj.Dirty = true; % TODO remove
-
             end
 
         end % onTitleChanged
