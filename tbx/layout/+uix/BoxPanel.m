@@ -72,9 +72,9 @@ classdef BoxPanel < uix.Panel
 
     properties( Access = public, Dependent, Hidden )
         TitleColor_I % backing for TitleColor
-        FourgroundColor % ForegroundColor companion
-        FourgroundColor_I % backing for FourgroundColor
-        FourgroundColorMode % FourgroundColor mode [auto|manual]
+        TitleForegroundColor % ForegroundColor companion
+        TitleForegroundColor_I % backing for TitleForegroundColor
+        TitleForegroundColorMode % TitleForegroundColor mode [auto|manual]
     end
 
     properties( Access = public, Hidden )
@@ -294,27 +294,27 @@ classdef BoxPanel < uix.Panel
 
         end % set.TitleColorMode
 
-        function value = get.FourgroundColor( obj )
+        function value = get.TitleForegroundColor( obj )
 
-            value = obj.FourgroundColor_I; % delegate
+            value = obj.TitleForegroundColor_I; % delegate
 
-        end % get.FourgroundColor
+        end % get.TitleForegroundColor
 
-        function set.FourgroundColor( obj, value )
+        function set.TitleForegroundColor( obj, value )
 
-            obj.FourgroundColor_I = value; % apply
-            obj.FourgroundColorMode = 'manual'; % flip mode
+            obj.TitleForegroundColor_I = value; % apply
+            obj.TitleForegroundColorMode = 'manual'; % flip mode
             obj.ForegroundColorMode = 'manual'; % mirror mode
 
-        end % set.FourgroundColor
+        end % set.TitleForegroundColor
 
-        function value = get.FourgroundColor_I( obj )
+        function value = get.TitleForegroundColor_I( obj )
 
             value = obj.TitleText.ForegroundColor; % get underlying
 
-        end % get.FourgroundColor_I
+        end % get.TitleForegroundColor_I
 
-        function set.FourgroundColor_I( obj, value )
+        function set.TitleForegroundColor_I( obj, value )
 
             % Set underlying
             obj.TitleText.ForegroundColor = value;
@@ -329,19 +329,19 @@ classdef BoxPanel < uix.Panel
             % Mirror
             obj.ForegroundColor_I = value;
 
-        end % set.FourgroundColor_I
+        end % set.TitleForegroundColor_I
 
-        function value = get.FourgroundColorMode( obj )
+        function value = get.TitleForegroundColorMode( obj )
 
             value = obj.ForegroundColorMode; % delegate
 
-        end % get.FourgroundColorMode
+        end % get.TitleForegroundColorMode
 
-        function set.FourgroundColorMode( obj, value )
+        function set.TitleForegroundColorMode( obj, value )
 
             obj.ForegroundColorMode = value; % delegate
 
-        end % set.FourgroundColorMode
+        end % set.TitleForegroundColorMode
 
         function value = get.Minimized( obj )
 
@@ -550,8 +550,8 @@ classdef BoxPanel < uix.Panel
                         'pixels', s.Parent );
                     ip = hgconvertunits( f, s.InnerPosition, s.Units, ...
                         'pixels', s.Parent );
-                    value = op(4) - ip(4);
-                    value = max( value, 0 );
+                    value = op(4) - ip(4); % total minus content
+                    value = max( value, 0 ); % floor
             end
 
         end % get.TitleHeight
@@ -870,7 +870,7 @@ classdef BoxPanel < uix.Panel
         function onForegroundColorChanged( obj, ~, ~ )
             %onForegroundColorChanged  Event handler for ForegroundColor changes
 
-            obj.FourgroundColor = obj.ForegroundColor;
+            obj.TitleForegroundColor = obj.ForegroundColor;
 
         end % onForegroundColorChanged
 
@@ -1080,7 +1080,7 @@ classdef BoxPanel < uix.Panel
 
             map = getThemeMap@uix.Panel();
             map.ForegroundColor = '--mw-color-primary';
-            map.FourgroundColor = '--mw-color-primary';
+            map.TitleForegroundColor = '--mw-color-primary';
             map.TitleColor = '--mw-backgroundColor-chatBubble';
 
         end % getThemeMap
