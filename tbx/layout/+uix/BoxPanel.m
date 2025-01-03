@@ -108,7 +108,8 @@ classdef BoxPanel < uix.Panel
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', titleColor ); % for Java
             titlePanel = uipanel( 'Parent', [], ...
-                'BorderType', 'none', ...
+                'BorderType', 'none', 'BorderWidth', 0, ...
+                'Title', obj.BlankTitle, ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', titleColor ); % for JavaScript
 
@@ -116,10 +117,13 @@ classdef BoxPanel < uix.Panel
             shadowPanel = uipanel( 'Internal', true, ...
                 'Parent', obj, 'Visible', 'on', ...
                 'Units', 'normalized', 'Position', [-2 0 1 1], ...
-                'BorderType', 'none' ); % same size, off screen
+                'BackgroundColor', 'b', ... % debug
+                'BorderType', 'none', 'BorderWidth', 0, ...
+                'Title', obj.BlankTitle ); % same size, off screen
             shadowContent = uicontainer( 'Internal', true, ...
                 'Parent', shadowPanel, 'Visible', 'on', ...
                 'Units', 'normalized', 'Position', [0 0 1 1], ...
+                'BackgroundColor', 'c', ... % debug
                 'SizeChangedFcn', @obj.onInnerSizeChanged ); % fill panel
 
             % Create buttons
@@ -480,6 +484,7 @@ classdef BoxPanel < uix.Panel
                 op = hgconvertunits( f, s.OuterPosition, s.Units, 'pixels', s.Parent );
                 ip = hgconvertunits( f, s.InnerPosition, s.Units, 'pixels', s.Parent );
                 value = op(4) - ip(4) - op(3) + ip(3);
+                value = max( value, 0 );
                 fprintf( 1, "[JS] Panel height = %f px\n", value ); % TODO remove
             end
 
@@ -839,9 +844,15 @@ classdef BoxPanel < uix.Panel
                 % Set
                 obj.TitleAccess = 'private'; % start
                 title = obj.Title; % get
-                obj.TitleText.String = title; % TODO pad
-                obj.TitlePanel.Title = title;
-                obj.ShadowPanel.Title = title;
+                if isempty( title )
+                    obj.TitleText.String = obj.BlankTitle;
+                    obj.TitlePanel.Title = obj.BlankTitle;
+                    obj.ShadowPanel.Title = obj.BlankTitle;
+                else
+                    obj.TitleText.String = title;
+                    obj.TitlePanel.Title = title;
+                    obj.ShadowPanel.Title = title;
+                end
                 obj.Title_ = title; % store
                 obj.Title = obj.NullTitle; % unset Title
                 obj.TitleAccess = 'public'; % finish
@@ -920,8 +931,6 @@ classdef BoxPanel < uix.Panel
         end % onButtonClicked
 
         function onInnerSizeChanged( obj, ~, ~ )
-
-            disp InnerSizeChanged
 
             % Mark as dirty
             obj.Dirty = true;
