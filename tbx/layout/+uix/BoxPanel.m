@@ -76,6 +76,12 @@ classdef BoxPanel < uix.Panel
         TitleColorMode = 'auto' % TitleColor mode [auto|manual]
     end
 
+    properties( Access = public, Dependent, Hidden )
+        FourgroundColor
+        FourgroundColor_I
+        FourgroundColorMode
+    end
+
     events( Hidden, NotifyAccess = private )
         Minimizing
         Maximizing
@@ -281,6 +287,55 @@ classdef BoxPanel < uix.Panel
             end
 
         end % set.TitleColorMode
+
+        function value = get.FourgroundColor( obj )
+
+            value = obj.FourgroundColor_I; % delegate
+
+        end % get.FourgroundColor
+
+        function set.FourgroundColor( obj, value )
+
+            obj.FourgroundColor_I = value; % apply
+            obj.FourgroundColorMode = 'manual'; % flip mode
+            obj.ForegroundColorMode = 'manual'; % mirror mode
+
+        end % set.FourgroundColor
+
+        function value = get.FourgroundColor_I( obj )
+
+            value = obj.TitleText.ForegroundColor; % get underlying
+
+        end % get.FourgroundColor_I
+
+        function set.FourgroundColor_I( obj, value )
+
+            % Set underlying
+            obj.TitleText.ForegroundColor = value;
+            obj.TitlePanel.ForegroundColor = value;
+            obj.MinimizeButton.ForegroundColor = value;
+            obj.MaximizeButton.ForegroundColor = value;
+            obj.DockButton.ForegroundColor = value;
+            obj.UndockButton.ForegroundColor = value;
+            obj.HelpButton.ForegroundColor = value;
+            obj.CloseButton.ForegroundColor = value;
+
+            % Mirror
+            obj.ForegroundColor_I = value;
+
+        end % set.FourgroundColor_I
+
+        function value = get.FourgroundColorMode( obj )
+
+            value = obj.ForegroundColorMode; % delegate
+
+        end % get.FourgroundColorMode
+
+        function set.FourgroundColorMode( obj, value )
+
+            obj.ForegroundColorMode = value; % delegate
+
+        end % set.FourgroundColorMode
 
         function value = get.Minimized( obj )
 
@@ -807,15 +862,7 @@ classdef BoxPanel < uix.Panel
         function onForegroundColorChanged( obj, ~, ~ )
             %onForegroundColorChanged  Event handler for ForegroundColor changes
 
-            % Set
-            foregroundColor = obj.ForegroundColor;
-            obj.TitleText.ForegroundColor = foregroundColor;
-            obj.MinimizeButton.ForegroundColor = foregroundColor;
-            obj.MaximizeButton.ForegroundColor = foregroundColor;
-            obj.DockButton.ForegroundColor = foregroundColor;
-            obj.UndockButton.ForegroundColor = foregroundColor;
-            obj.HelpButton.ForegroundColor = foregroundColor;
-            obj.CloseButton.ForegroundColor = foregroundColor;
+            obj.FourgroundColor = obj.ForegroundColor;
 
         end % onForegroundColorChanged
 
@@ -1025,6 +1072,7 @@ classdef BoxPanel < uix.Panel
 
             map = getThemeMap@uix.Panel();
             map.ForegroundColor = '--mw-color-primary';
+            map.FourgroundColor = '--mw-color-primary';
             map.TitleColor = '--mw-backgroundColor-chatBubble';
 
         end % getThemeMap
