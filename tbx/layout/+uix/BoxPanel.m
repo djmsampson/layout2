@@ -264,8 +264,6 @@ classdef BoxPanel < uix.Panel
 
             disp get.TitleColor_I
 
-            value = obj.TitleBar.BackgroundColor;
-
         end % get.TitleColor_I
 
         function set.TitleColor_I( obj, value )
@@ -538,20 +536,22 @@ classdef BoxPanel < uix.Panel
         function value = get.TitleHeight( obj )
 
             f = ancestor( obj, 'figure' );
-            if isempty( f )
-                value = NaN; % unreachable
-            elseif isprop( f, 'JavaFrame_I' ) && ~isempty( f.JavaFrame_I ) % Java
-                t = obj.TitleText;
-                e = hgconvertunits( f, t.Extent, t.Units, 'pixels', t.Parent );
-                value = e(4); % text extent
-                fprintf( 1, "[Ja] Panel height = %f px\n", value ); % TODO remove
-            else % Javascript
-                s = obj.ShadowPanel;
-                op = hgconvertunits( f, s.OuterPosition, s.Units, 'pixels', s.Parent );
-                ip = hgconvertunits( f, s.InnerPosition, s.Units, 'pixels', s.Parent );
-                value = op(4) - ip(4) - op(3) + ip(3);
-                value = max( value, 0 );
-                fprintf( 1, "[JS] Panel height = %f px\n", value ); % TODO remove
+            switch figuretype( obj )
+                case 'none'
+                    value = NaN; % unreachable
+                case 'java'
+                    t = obj.TitleText;
+                    e = hgconvertunits( f, t.Extent, t.Units, ...
+                        'pixels', t.Parent );
+                    value = e(4); % text extent
+                case 'js'
+                    s = obj.ShadowPanel;
+                    op = hgconvertunits( f, s.OuterPosition, s.Units, ...
+                        'pixels', s.Parent );
+                    ip = hgconvertunits( f, s.InnerPosition, s.Units, ...
+                        'pixels', s.Parent );
+                    value = op(4) - ip(4);
+                    value = max( value, 0 );
             end
 
         end % get.TitleHeight
