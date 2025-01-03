@@ -36,6 +36,7 @@ classdef BoxPanel < uix.Panel
         ShadowContent % shadow content
         Title_ = get( 0, 'DefaultUipanelTitle' ) % backing for Title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
+        TitleColorMode_ = 'auto' % backing for TitleColorMode
         MinimizeButton % button
         MaximizeButton % button
         DockButton % button
@@ -71,12 +72,9 @@ classdef BoxPanel < uix.Panel
         CloseTooltipString % now CloseTooltip
     end % deprecated
 
-    properties( Access = public, Hidden )
-        TitleColor_I = [0 0.251 0.451] % backing for TitleColor
-        TitleColorMode = 'auto' % TitleColor mode [auto|manual]
-    end
-
     properties( Access = public, Dependent, Hidden )
+        TitleColor_I % backing for TitleColor
+        TitleColorMode % title color mode [auto|manual]
         FourgroundColor
         FourgroundColor_I
         FourgroundColorMode
@@ -102,8 +100,8 @@ classdef BoxPanel < uix.Panel
             %  v1, etc.
 
             % Define default colors
-            foregroundColor = obj.ForegroundColor;
-            titleColor = obj.TitleColor;
+            foregroundColor = [0 1 0];
+            titleColor = [1 0 0];
 
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
@@ -123,7 +121,7 @@ classdef BoxPanel < uix.Panel
             shadowPanel = uipanel( 'Internal', true, ...
                 'Parent', obj, 'Visible', 'on', ...
                 'Units', 'normalized', 'Position', [-2 0 1 1], ...
-                'BackgroundColor', 'b', ... % debug
+                'BackgroundColor', 'b', ... % for debugging
                 'BorderType', 'none', 'BorderWidth', 0, ...
                 'Title', obj.BlankTitle ); % same size, off screen
             if isprop( shadowPanel, 'AutoResizeChildren' )
@@ -132,7 +130,7 @@ classdef BoxPanel < uix.Panel
             shadowContent = uicontainer( 'Internal', true, ...
                 'Parent', shadowPanel, 'Visible', 'on', ...
                 'Units', 'normalized', 'Position', [0 0 1 1], ...
-                'BackgroundColor', 'c', ... % debug
+                'BackgroundColor', 'c', ... % for debugging
                 'SizeChangedFcn', @obj.onInnerSizeChanged ); % fill panel
 
             % Create buttons
@@ -261,26 +259,41 @@ classdef BoxPanel < uix.Panel
 
         end % set.TitleColor
 
+        function value = get.TitleColor_I( obj )
+
+            disp get.TitleColor_I
+
+            value = obj.TitleBar.BackgroundColor;
+
+        end % get.TitleColor_I
+
         function set.TitleColor_I( obj, value )
 
-            try
-                obj.DummyControl.ForegroundColor = value; % colorspec
-                value = obj.DummyControl.ForegroundColor; % rgb
-                obj.TitleColor_I = value; % store
-                obj.redrawTitle() % apply
-            catch
-                throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
-                    'Property ''TitleColor_I'' must be a colorspec.' ) )
-            end
+            % Set underlying
+            obj.TitleBar.BackgroundColor = value;
+            obj.TitleText.BackgroundColor = value;
+            obj.TitlePanel.BackgroundColor = value;
+            obj.MinimizeButton.BackgroundColor = value;
+            obj.MaximizeButton.BackgroundColor = value;
+            obj.DockButton.BackgroundColor = value;
+            obj.UndockButton.BackgroundColor = value;
+            obj.HelpButton.BackgroundColor = value;
+            obj.CloseButton.BackgroundColor = value;
 
         end % set.TitleColor_I
+
+        function value = get.TitleColorMode( obj )
+
+            value = obj.TitleColorMode_;
+
+        end % get.TitleColorMode
 
         function set.TitleColorMode( obj, value )
 
             try
                 value = char( value ); % convert
                 assert( ismember( value, {'auto','manual'} ) ) % compare
-                obj.TitleColorMode = value; % store
+                obj.TitleColorMode_ = value; % store
             catch
                 throwAsCaller( MException( 'uix:InvalidPropertyValue', ...
                     'Property ''TitleColorMode'' must be ''auto'' or ''manual''.' ) )
@@ -1131,21 +1144,6 @@ classdef BoxPanel < uix.Panel
             obj.TitleBar.Widths(2:end) = obj.TitleBar.Position(4);
 
         end % redrawButtons
-
-        function redrawTitle( obj )
-            %redrawTitle  Redraw title bar
-
-            titleColor = obj.TitleColor_I;
-            obj.TitleBar.BackgroundColor = titleColor;
-            obj.TitleText.BackgroundColor = titleColor;
-            obj.MinimizeButton.BackgroundColor = titleColor;
-            obj.MaximizeButton.BackgroundColor = titleColor;
-            obj.DockButton.BackgroundColor = titleColor;
-            obj.UndockButton.BackgroundColor = titleColor;
-            obj.HelpButton.BackgroundColor = titleColor;
-            obj.CloseButton.BackgroundColor = titleColor;
-
-        end % redrawTitle
 
     end % helper methods
 
