@@ -101,8 +101,8 @@ classdef BoxPanel < uix.Panel
             %  v1, etc.
 
             % Define default colors
-            foregroundColor = [0 1 0];
-            titleColor = [1 0 0];
+            foregroundColor = [0.1294 0.1294 0.1294]; % --mw-color-primary
+            titleColor = [0.8706 0.9373 1.0000]; % --mw-backgroundColor-chatBubble
 
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
@@ -262,7 +262,7 @@ classdef BoxPanel < uix.Panel
 
         function value = get.TitleColor_I( obj )
 
-            disp get.TitleColor_I
+            value = obj.TitleBar.BackgroundColor;
 
         end % get.TitleColor_I
 
