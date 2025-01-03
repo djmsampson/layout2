@@ -36,7 +36,6 @@ classdef BoxPanel < uix.Panel
         ShadowContent % shadow content
         Title_ = get( 0, 'DefaultUipanelTitle' ) % backing for Title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
-        TitleColorMode_ = 'auto' % backing for TitleColorMode
         MinimizeButton % button
         MaximizeButton % button
         DockButton % button
@@ -78,7 +77,7 @@ classdef BoxPanel < uix.Panel
         FourgroundColorMode % FourgroundColor mode [auto|manual]
     end
 
-    properties( Access = public, Dependent, Hidden )
+    properties( Access = public, Hidden )
         TitleColorMode % TitleColor mode [auto|manual]
     end
 
