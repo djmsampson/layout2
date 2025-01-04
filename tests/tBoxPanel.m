@@ -148,6 +148,9 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
         function tGettingTitleHeightReturnsFeasibleValue( ...
                 testCase, ConstructorName )
 
+            % Assume that the graphics are rooted.
+            testCase.assumeGraphicsAreRooted()
+
             % Create a component.
             component = testCase.constructComponent( ConstructorName );
 
@@ -274,7 +277,7 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
             f = @() set( component, 'Minimized', true );
             testCase.verifyWarningFree( f, ['Minimizing the ', ...
                 ConstructorName, ' component was not warning-free.'] )
-            
+
         end % tMinimizingBoxPanelIsWarningFree
 
     end % methods ( Test, Sealed )
