@@ -107,12 +107,14 @@ classdef BoxPanel < uix.Panel
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', titleColor );
-            titleText = uicontrol( 'Parent', [], ...
+            titleText = uicontrol( 'Internal', true, ...
+                'Parent', titleBar, 'Visible', 'off', ...
                 'Style', 'text', 'String', obj.BlankTitle, ...
                 'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', titleColor ); % for Java
-            titlePanel = uipanel( 'Parent', [], ...
+            titlePanel = uipanel( 'Internal', true, ...
+                'Parent', titleBar, 'Visible', 'off', ...
                 'BorderType', 'none', 'BorderWidth', 0, ...
                 'Title', obj.BlankTitle, ...
                 'ForegroundColor', foregroundColor, ...
@@ -551,7 +553,7 @@ classdef BoxPanel < uix.Panel
                     ip = hgconvertunits( f, s.InnerPosition, s.Units, ...
                         'pixels', s.Parent );
                     value = op(4) - ip(4); % total minus content
-                    value = max( value, 0 ); % floor
+                    value = max( value, 0 ); % nonnegative
             end
 
         end % get.TitleHeight
@@ -1005,13 +1007,16 @@ classdef BoxPanel < uix.Panel
             iB = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
             tX = 1;
-            tW = max( iB(3), 1 );
+            tW = iB(3);
+            tW = max( tW, 0 ); % nonnegative
             tH = obj.TitleHeight;
             tY = 1 + iB(4) - tH;
             p = obj.Padding_;
             cX = 1 + p;
-            cW = max( iB(3) - 2 * p, 1 );
-            cH = max( iB(4) - tH - 2 * p, 1 );
+            cW = iB(3) - 2 * p;
+            cW = max( cW, 0 ); % nonnegative
+            cH = iB(4) - tH - 2 * p;
+            cH = max( cH, 0 ); % nonnegative
             cY = tY - p - cH;
 
             % Redraw title bar
@@ -1039,16 +1044,20 @@ classdef BoxPanel < uix.Panel
             if ~strcmp( oldType, newType )
                 switch oldType
                     case 'java'
-                        obj.TitleText.Parent = [];
+                        set( obj.TitleText, 'Internal', true, ...
+                            'Visible', 'off' ) % hide
                     case 'js'
-                        obj.TitlePanel.Parent = [];
+                        set( obj.TitlePanel, 'Internal', true, ...
+                            'Visible', 'off' ) % hide
                 end
                 switch newType
                     case 'java'
-                        obj.TitleText.Parent = obj.TitleBar;
+                        set( obj.TitleText, 'Internal', false, ...
+                            'Visible', 'on' ) % show
                         obj.redrawButtons()
                     case 'js'
-                        obj.TitlePanel.Parent = obj.TitleBar;
+                        set( obj.TitlePanel, 'Internal', false, ...
+                            'Visible', 'on' ) % show
                         obj.redrawButtons()
                 end
             end
