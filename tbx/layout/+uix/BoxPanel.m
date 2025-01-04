@@ -135,6 +135,7 @@ classdef BoxPanel < uix.Panel
                 'Units', 'normalized', 'Position', [0 0 1 1], ...
                 'BackgroundColor', 'c', ... % for debugging
                 'SizeChangedFcn', @obj.onInnerSizeChanged ); % fill panel
+            set( shadowContent, 'Position', [0 0 0 0], 'Position', [0 0 1 1] ) % jiggle
 
             % Create buttons
             minimizeButton = uicontrol( 'Parent', [], ...
