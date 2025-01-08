@@ -24,10 +24,6 @@ classdef BoxPanel < uix.Panel
         CloseRequestFcn % close request callback
     end
 
-    properties( Dependent, SetAccess = private )
-        TitleHeight % title panel height [pixels]
-    end
-
     properties( Access = private )
         TitleBar % title bar
         TitleText % title text
@@ -503,15 +499,6 @@ classdef BoxPanel < uix.Panel
             obj.redrawButtons()
 
         end % set.CloseRequestFcn
-
-        function value = get.TitleHeight( obj )
-
-            f = ancestor( obj, 'figure' );
-            t = obj.TitleText;
-            e = hgconvertunits( f, t.Extent, t.Units, 'pixels', t.Parent );
-            value = e(4);
-
-        end % get.TitleHeight
 
     end % accessors
 
