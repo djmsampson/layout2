@@ -31,10 +31,6 @@ classdef BoxPanel < uix.Panel
     properties( Access = private )
         TitleBar % title bar
         TitleText % title text
-        TitlePanel % title panel
-        ShadowPanel % shadow panel
-        ShadowContent % shadow content
-        Title_ = get( 0, 'DefaultUipanelTitle' ) % backing for Title
         TitleAccess = 'public' % 'private' when getting or setting Title, 'public' otherwise
         MinimizeButton % button
         MaximizeButton % button
@@ -49,7 +45,6 @@ classdef BoxPanel < uix.Panel
 
     properties( Constant, Access = private )
         NullTitle = char.empty( [2 0] ) % an obscure empty string, the actual panel Title
-        BlankTitle = ' ' % a non-empty blank string, the empty uicontrol String
     end
 
     properties( Access = public, Dependent, AbortSet )
@@ -107,35 +102,10 @@ classdef BoxPanel < uix.Panel
             % Create title bar
             titleBar = uix.HBox( 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'BackgroundColor', titleColor );
-            titleText = uicontrol( 'Internal', true, ...
-                'Parent', titleBar, 'Visible', 'off', ...
-                'Style', 'text', 'String', obj.BlankTitle, ...
-                'HorizontalAlignment', 'left', ...
+            titleText = uicontrol( 'Parent', titleBar, ...
+                'Style', 'text', 'HorizontalAlignment', 'left', ...
                 'ForegroundColor', foregroundColor, ...
                 'BackgroundColor', titleColor ); % for Java
-            titlePanel = uipanel( 'Internal', true, ...
-                'Parent', titleBar, 'Visible', 'off', ...
-                'BorderType', 'none', 'BorderWidth', 0, ...
-                'Title', obj.BlankTitle, ...
-                'ForegroundColor', foregroundColor, ...
-                'BackgroundColor', titleColor ); % for JavaScript
-
-            % Create shadow
-            shadowPanel = uipanel( 'Internal', true, ...
-                'Parent', obj, 'Visible', 'on', ...
-                'Units', 'normalized', 'Position', [-2 0 1 1], ...
-                'BackgroundColor', 'b', ... % for debugging
-                'BorderType', 'none', 'BorderWidth', 0, ...
-                'Title', obj.BlankTitle ); % same size, off screen
-            if isprop( shadowPanel, 'AutoResizeChildren' )
-                shadowPanel.AutoResizeChildren = 'off';
-            end
-            shadowContent = uicontainer( 'Internal', true, ...
-                'Parent', shadowPanel, 'Visible', 'on', ...
-                'Units', 'normalized', 'Position', [0 0 1 1], ...
-                'BackgroundColor', 'c', ... % for debugging
-                'SizeChangedFcn', @obj.onInnerSizeChanged ); % fill panel
-            set( shadowContent, 'Position', [0 0 0 0], 'Position', [0 0 1 1] ) % jiggle
 
             % Create buttons
             minimizeButton = uicontrol( 'Parent', [], ...
@@ -185,9 +155,6 @@ classdef BoxPanel < uix.Panel
             obj.Title = obj.NullTitle;
             obj.TitleBar = titleBar;
             obj.TitleText = titleText;
-            obj.TitlePanel = titlePanel;
-            obj.ShadowPanel = shadowPanel;
-            obj.ShadowContent = shadowContent;
             obj.MinimizeButton = minimizeButton;
             obj.MaximizeButton = maximizeButton;
             obj.DockButton = dockButton;
@@ -274,7 +241,6 @@ classdef BoxPanel < uix.Panel
             % Set underlying
             obj.TitleBar.BackgroundColor = value;
             obj.TitleText.BackgroundColor = value;
-            obj.TitlePanel.BackgroundColor = value;
             obj.MinimizeButton.BackgroundColor = value;
             obj.MaximizeButton.BackgroundColor = value;
             obj.DockButton.BackgroundColor = value;
@@ -321,7 +287,6 @@ classdef BoxPanel < uix.Panel
 
             % Set underlying
             obj.TitleText.ForegroundColor = value;
-            obj.TitlePanel.ForegroundColor = value;
             obj.MinimizeButton.ForegroundColor = value;
             obj.MaximizeButton.ForegroundColor = value;
             obj.DockButton.ForegroundColor = value;
@@ -539,23 +504,9 @@ classdef BoxPanel < uix.Panel
         function value = get.TitleHeight( obj )
 
             f = ancestor( obj, 'figure' );
-            switch figuretype( obj )
-                case 'none'
-                    value = NaN; % unreachable
-                case 'java'
-                    t = obj.TitleText;
-                    e = hgconvertunits( f, t.Extent, t.Units, ...
-                        'pixels', t.Parent );
-                    value = e(4); % text extent
-                case 'js'
-                    s = obj.ShadowPanel;
-                    op = hgconvertunits( f, s.OuterPosition, s.Units, ...
-                        'pixels', s.Parent );
-                    ip = hgconvertunits( f, s.InnerPosition, s.Units, ...
-                        'pixels', s.Parent );
-                    value = op(4) - ip(4); % total minus content
-                    value = max( value, 0 ); % nonnegative
-            end
+            t = obj.TitleText;
+            e = hgconvertunits( f, t.Extent, t.Units, 'pixels', t.Parent );
+            value = e(4);
 
         end % get.TitleHeight
 
@@ -803,10 +754,7 @@ classdef BoxPanel < uix.Panel
             %onFontAngleChanged  Event handler for FontAngle changes
 
             % Set
-            fontAngle = obj.FontAngle;
-            obj.TitleText.FontAngle = fontAngle;
-            obj.TitlePanel.FontAngle = fontAngle;
-            obj.ShadowPanel.FontAngle = fontAngle;
+            obj.TitleText.FontAngle = obj.FontAngle;
 
         end % onFontAngleChanged
 
@@ -814,13 +762,7 @@ classdef BoxPanel < uix.Panel
             %onFontNameChanged  Event handler for FontName changes
 
             % Set
-            fontName = obj.FontName;
-            obj.TitleText.FontName = fontName;
-            obj.TitlePanel.FontName = fontName;
-            obj.ShadowPanel.FontName = fontName;
-
-            % Mark as dirty
-            obj.Dirty = true;
+            obj.TitleText.FontName = obj.FontName;
 
         end % onFontNameChanged
 
@@ -830,8 +772,6 @@ classdef BoxPanel < uix.Panel
             % Set
             fontSize = obj.FontSize;
             obj.TitleText.FontSize = fontSize;
-            obj.TitlePanel.FontSize = fontSize;
-            obj.ShadowPanel.FontSize = fontSize;
             obj.MinimizeButton.FontSize = fontSize;
             obj.MaximizeButton.FontSize = fontSize;
             obj.DockButton.FontSize = fontSize;
@@ -850,8 +790,6 @@ classdef BoxPanel < uix.Panel
             % Set
             fontUnits = obj.FontUnits;
             obj.TitleText.FontUnits = fontUnits;
-            obj.TitlePanel.FontUnits = fontUnits;
-            obj.ShadowPanel.FontUnits = fontUnits;
             obj.HelpButton.FontUnits = fontUnits;
             obj.CloseButton.FontUnits = fontUnits;
             obj.DockButton.FontUnits = fontUnits;
@@ -863,10 +801,7 @@ classdef BoxPanel < uix.Panel
             %onFontWeightChanged  Event handler for FontWeight changes
 
             % Set
-            fontWeight = obj.FontWeight;
-            obj.TitleText.FontWeight = fontWeight;
-            obj.TitlePanel.FontWeight = fontWeight;
-            obj.ShadowPanel.FontWeight = fontWeight;
+            obj.TitleText.FontWeight = obj.FontWeight;
 
         end % onFontWeightChanged
 
@@ -882,7 +817,7 @@ classdef BoxPanel < uix.Panel
 
             if strcmp( obj.TitleAccess, 'public' ) && isjsdrawing() == false
                 obj.TitleAccess = 'private'; % start
-                obj.Title = obj.Title_;
+                obj.Title = obj.TitleText.String; % transfer
             end
 
         end % onTitleReturning
@@ -891,7 +826,7 @@ classdef BoxPanel < uix.Panel
             %onTitleReturned  Event handler for Title changes
 
             if isjsdrawing() == false
-                obj.Title = obj.NullTitle; % unset Title
+                obj.Title = obj.NullTitle; % unset
             end
             obj.TitleAccess = 'public'; % finish
 
@@ -904,18 +839,8 @@ classdef BoxPanel < uix.Panel
 
                 % Set
                 obj.TitleAccess = 'private'; % start
-                title = obj.Title; % get
-                if isempty( title )
-                    obj.TitleText.String = obj.BlankTitle;
-                    obj.TitlePanel.Title = obj.BlankTitle;
-                    obj.ShadowPanel.Title = obj.BlankTitle;
-                else
-                    obj.TitleText.String = title;
-                    obj.TitlePanel.Title = title;
-                    obj.ShadowPanel.Title = title;
-                end
-                obj.Title_ = title; % store
-                obj.Title = obj.NullTitle; % unset Title
+                obj.TitleText.String = obj.Title; % transfer
+                obj.Title = obj.NullTitle; % unset
                 obj.TitleAccess = 'public'; % finish
 
             end
@@ -988,13 +913,6 @@ classdef BoxPanel < uix.Panel
 
         end % onButtonClicked
 
-        function onInnerSizeChanged( obj, ~, ~ )
-
-            % Mark as dirty
-            obj.Dirty = true;
-
-        end % onInnerSizeChanged
-
     end % event handlers
 
     methods( Access = protected )
@@ -1010,8 +928,9 @@ classdef BoxPanel < uix.Panel
             tX = 1;
             tW = iB(3);
             tW = max( tW, 0 ); % nonnegative
-            tH = obj.TitleHeight;
-            tY = 1 + iB(4) - tH;
+            [tT, tB] = extent( obj );
+            tH = tB;
+            tY = iB(4) - tB + tT - 1;
             p = obj.Padding_;
             cX = 1 + p;
             cW = iB(3) - 2 * p;
@@ -1038,30 +957,6 @@ classdef BoxPanel < uix.Panel
             %
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
-
-            % Update title text
-            oldType = figuretype( oldFigure );
-            newType = figuretype( newFigure );
-            if ~strcmp( oldType, newType )
-                switch oldType
-                    case 'java'
-                        set( obj.TitleText, 'Internal', true, ...
-                            'Visible', 'off' ) % hide
-                    case 'js'
-                        set( obj.TitlePanel, 'Internal', true, ...
-                            'Visible', 'off' ) % hide
-                end
-                switch newType
-                    case 'java'
-                        set( obj.TitleText, 'Internal', false, ...
-                            'Visible', 'on' ) % show
-                        obj.redrawButtons()
-                    case 'js'
-                        set( obj.TitlePanel, 'Internal', false, ...
-                            'Visible', 'on' ) % show
-                        obj.redrawButtons()
-                end
-            end
 
             % Update listeners
             if isempty( newFigure )
@@ -1163,16 +1058,22 @@ end
 
 end % isjsdrawing
 
-function t = figuretype( o )
-%figuretype  Figure type -- 'java', 'js', or 'none'
+function [t, b] = extent( obj )
 
-f = ancestor( o, 'figure' );
-if isempty( f )
-    t = 'none';
-elseif isprop( f, 'JavaFrame_I' ) && ~isempty( f.JavaFrame_I )
-    t = 'java';
+jt = [1,1,2,4,5,6,7,8,8,9,10,11,12,13,14,13,14,15,16,17,18,18,19,20,21,22,23,24,24,25,26,27,28,28,29,30,31,32,32,33,34,35,36,36,37,38,39,40,41,41,42,43,44,45,45,46,47,48,49,50,50,51,52,53,54,55,56,57,58,59,60,60,61,62,63,64,64,65,66,67,68,68,69,70,71,72,73,73,74,75,76,77,77,78,79,80,81,82,82,83,84,85,86,86,87,88,89,90,91,91,92,93,94,95,95,96,97,98,99,99,100,101,102,103,104,104,105,107,108,109,109,110,111,112,113,114,114,115,116,117,118,118,119,120,121,122,123,123,124,125,126,127,127,128,129,130,131,131,132,133,134,135,136,136,137,138,139,140,140,141,142,143,144,145,145,146,147,148,149,149,150,151,152,153,154,154,155,156,157,159,159,160,161,162,163,163,164,165,166,167]/2.25;
+jb = [1,7,10,14,18,22,25,29,32,36,40,43,47,50,54,58,61,65,68,72,76,80,84,87,91,95,98,102,105,109,112,116,120,124,128,131,135,138,142,146,149,153,157,160,164,167,171,175,178,182,186,189,193,197,200,204,207,211,215,218,222,226,229,233,236,241,245,248,252,256,259,263,267,270,274,277,281,285,288,292,296,299,303,306,310,314,317,321,325,328,332,336,339,343,346,350,354,357,361,365,368,372,375,379,383,386,390,394,397,401,405,408,412,415,419,423,426,430,434,437,441,444,448,452,455,459,463,467,471,475,478,482,485,489,493,496,500,504,507,511,514,518,522,525,529,533,536,540,544,547,551,554,558,562,565,569,573,576,580,583,587,591,594,598,602,605,609,613,616,620,623,627,631,634,638,642,645,649,652,656,660,663,667,671,674,678,682,685,689,693,697,701,704,708,712,715,719,722,726,730]/2.25;
+
+wt=[1,1,1,1,2,4,5,7,8,8,8,9,12,11,12,14,14,15,17,16,19,21,22,21,22,25,25,26,27,29,29,31,30,33,35,34,35,36,37,39,39,40,42,43,43,43,44,48,47,48,49,50,51,53,53,55,56,55,57,57,60,60,61,63,63,64,66,67,68,70,68,70,71,72,74,74,75,77,76,80,81,79,83,82,84,85,85,87,88,89,91,90,91,94,93,97,96,96,98,99,99,102,103,104,103,104,108,107,108,109,110,112,113,114,115,116,118,117,118,119,120,121,123,124,126,126,127,127,130,131,130,131,133,134,135,137,137,138,138,141,141,143,142,144,145,146,148,148,150,151,152,152,154,153,155,156,158,159,159,159,162,163,163,165,165,166,167,169,170,170,172,173,173,174,176,176,179,179,180,180,182,183,184,186,187,186,187,190,190,191,191,193,194,196,197,198,199,200,199,201]/2.25;
+wb=[1,5,8,11,15,20,24,29,31,36,38,41,47,50,54,59,62,66,70,72,78,82,86,88,92,98,100,104,107,112,116,120,122,127,132,134,137,142,145,150,154,158,163,166,170,172,176,183,184,188,192,196,200,204,208,213,216,218,223,226,232,235,238,243,246,250,255,258,262,267,268,273,276,280,285,288,292,297,298,305,308,310,317,318,323,327,330,335,338,342,347,348,353,359,360,367,368,372,377,380,383,389,392,397,398,402,409,411,415,419,423,427,431,434,439,443,447,448,452,457,460,464,468,472,477,480,484,487,492,496,499,502,507,510,514,519,522,526,529,534,537,542,544,549,552,556,561,564,569,572,576,579,584,586,591,594,599,602,606,609,614,618,621,626,629,632,636,641,644,648,653,656,659,662,668,671,676,679,683,686,691,694,698,703,706,709,713,718,721,724,728,733,736,741,745,748,753,757,758,763]/2.25;
+
+f = ancestor( obj, 'figure' );
+s = min( obj.FontSize, 200 );
+if isempty( f ) || ~isprop( f, 'JavaFrame_I' ) || ~isempty( f.JavaFrame_I )
+    t = jt(s);
+    b = jb(s);
 else
-    t = 'js';
+    t = wt(s);
+    b = wb(s);
 end
 
-end % figuretype
+end % extent
