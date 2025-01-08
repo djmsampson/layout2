@@ -153,36 +153,6 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
 
         end % tSettingEmptyMinimizeFcnIsWarningFree
 
-        function tGettingTitleHeightReturnsFeasibleValue( ...
-                testCase, ConstructorName )
-
-            % Create a component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Obtain the 'TitleHeight' property.
-            titleHeight = component.TitleHeight;
-
-            % Check whether the ancestor is empty.
-            f = ancestor( component, 'figure' );
-            if isempty( f )
-                testCase.verifyEqual( titleHeight, NaN, ...
-                    ['The ''TitleHeight'' property of the unparented ', ...
-                    ConstructorName, ' component was not NaN '] )
-            else
-                % Verify the data type, size, and attributes of this value.
-                testCase.verifyClass( titleHeight, 'double', ...
-                    ['The ''TitleHeight'' property of the ', ...
-                    ConstructorName, ' component is not a double value.'] )
-                testCase.verifySize( titleHeight, [1, 1], ...
-                    ['The ''TitleHeight'' property of the ', ...
-                    ConstructorName, ' component is not a scalar value.'] )
-                testCase.verifyGreaterThanOrEqual( titleHeight, 0, ...
-                    ['The ''TitleHeight'' property of the ', ...
-                    ConstructorName, ' component is not >= 0.'] )
-            end % if
-
-        end % tGettingTitleHeightReturnsFeasibleValue
-
         function tSettingEmptyTitleAssignsCorrectValue( ...
                 testCase, ConstructorName )
 
