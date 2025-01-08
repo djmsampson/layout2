@@ -162,6 +162,9 @@ classdef BoxPanel < uix.Panel
             obj.HelpButton = helpButton;
             obj.CloseButton = closeButton;
 
+            % Synchronize ForegroundColor without flipping mode
+            obj.ForegroundColor_I = foregroundColor;
+
             % Create listeners
             addlistener( obj, 'BorderWidth', 'PostSet', ...
                 @obj.onBorderWidthChanged );
