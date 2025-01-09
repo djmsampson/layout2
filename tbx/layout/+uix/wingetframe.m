@@ -1,4 +1,4 @@
-function [cdata, varargout] = wingetframe( f, d )
+function [cdata, scale] = wingetframe( f, d )
 %wingetframe  Capture figure at native resolution
 %
 %  cdata = wingetframe(f) captures a screenshot of the figure f at native
@@ -15,10 +15,14 @@ end
 % Set figure window style to always on top, temporarily
 assert( f.WindowStyle ~= "docked", "uix:InvalidOperation", ...
     mfilename + " is not supported for docked figures." )
-style = f.WindowStyle;
-f.WindowStyle = "alwaysontop";
+if ~isprop( f, "JavaFrame_I" ) || isempty( f.JavaFrame_I ) % only web graphics
+    style = f.WindowStyle;
+    f.WindowStyle = "alwaysontop";
+    styleUp = onCleanup( @()set( f, "WindowStyle", style ) );
+end
+
+% Pause
 pause( d )
-styleUp = onCleanup( @()set( f, "WindowStyle", style ) );
 
 % On which screen is the figure?
 root = groot();
@@ -43,9 +47,9 @@ NET.addAssembly( "System.Windows.Forms" );
 oScreen = System.Windows.Forms.Screen.AllScreens(iScreen);
 scale = double( oScreen.Bounds.Width ) / pScreen(3);
 left = ( pFigure(1) - pScreen(1) ) * scale ...
-    + double( oScreen.Bounds.Left ) + 1;
+    + double( oScreen.Bounds.Left );
 top = ( pScreen(4) - pScreen(2) + 1 - pFigure(2) - pFigure(4) + 1 ) ...
-    * scale + double( oScreen.Bounds.Top ) - 1;
+    * scale + double( oScreen.Bounds.Top );
 width = pFigure(3) * scale;
 height = pFigure(4) * scale;
 
@@ -57,6 +61,6 @@ bitmap = System.Drawing.Bitmap( width, height );
 graphic = System.Drawing.Graphics.FromImage( bitmap );
 graphic.CopyFromScreen( left, top, 0, 0, bitmap.Size );
 bitmap.Save( filename );
-[cdata, varargout{1:nargout}] = imread( filename );
+cdata = imread( filename );
 
 end % wingetframe
