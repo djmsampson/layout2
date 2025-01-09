@@ -921,6 +921,7 @@ classdef BoxPanel < uix.Panel
             tW = iB(3); % full width
             [tA, tD] = fontmetrics( obj ); % ascent and descent
             tP = 0.1 * ( tD - tA ); % padding
+            tP = min( tP, tA ); % not more than ascent
             tH = tD + tP;
             tY = 1 + iB(4) - tD + tA - 2 * tP;
 
