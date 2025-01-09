@@ -1033,7 +1033,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Set sizes
-            obj.TitleBar.Widths(2:end) = obj.TitleBar.Position(4) * 0.5;
+            obj.TitleBar.Widths(2:end) = obj.TitleBar.Position(4);
 
         end % redrawButtons
 
