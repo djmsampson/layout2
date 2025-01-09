@@ -921,8 +921,8 @@ classdef BoxPanel < uix.Panel
             tW = iB(3); % full width
             [tA, tD] = fontmetrics( obj ); % ascent and descent
             tP = 0.1 * ( tD - tA ); % padding
-            tH = tD;
-            tY = 1 + iB(4) - tD + tA - tP;
+            tH = tD + tP;
+            tY = 1 + iB(4) - tD + tA - 2 * tP;
 
             % Compute contents position
             cP = obj.Padding_;
@@ -1032,7 +1032,7 @@ classdef BoxPanel < uix.Panel
             end
 
             % Set sizes
-            obj.TitleBar.Widths(2:end) = obj.TitleBar.Position(4);
+            obj.TitleBar.Widths(2:end) = obj.TitleBar.Position(4) * 0.5;
 
         end % redrawButtons
 
