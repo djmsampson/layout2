@@ -917,17 +917,19 @@ classdef BoxPanel < uix.Panel
                 [0 0 1 1], 'normalized', 'pixels', obj );
             tX = 1;
             tW = iB(3);
-            tW = max( tW, 0 ); % nonnegative
             [tA, tD] = fontmetrics( obj );
             tH = tD;
-            tY = iB(4) - tD + tA - 1;
-            p = obj.Padding_;
-            cX = 1 + p;
-            cW = iB(3) - 2 * p;
+            tY = 1 + iB(4) - tD + tA;
+            cP = obj.Padding_;
+            cX = 1 + cP;
+            cW = iB(3) - 2 * cP;
             cW = max( cW, 0 ); % nonnegative
-            cH = iB(4) - tH - 2 * p;
+            cH = iB(4) - tD + tA - 2 * cP;
             cH = max( cH, 0 ); % nonnegative
-            cY = tY - p - cH;
+            cY = 1 + iB(4) - tD + tA - cH - cP;
+            % iB
+            % [tX tY tW tH]
+            % [cX cY cW cH]
 
             % Redraw title bar
             titleBar = obj.TitleBar;
