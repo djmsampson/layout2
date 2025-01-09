@@ -912,24 +912,26 @@ classdef BoxPanel < uix.Panel
             %
             %  p.redraw() redraws the panel.
 
-            % Compute positions
+            % Compute available space
             iB = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            tX = 1;
-            tW = iB(3);
-            [tA, tD] = fontmetrics( obj );
+
+            % Compute title bar position
+            tX = 1; % full width
+            tW = iB(3); % full width
+            [tA, tD] = fontmetrics( obj ); % ascent and descent
+            tP = 0.1 * ( tD - tA ); % padding
             tH = tD;
-            tY = 1 + iB(4) - tD + tA;
+            tY = 1 + iB(4) - tD + tA - tP;
+
+            % Compute contents position
             cP = obj.Padding_;
             cX = 1 + cP;
             cW = iB(3) - 2 * cP;
             cW = max( cW, 0 ); % nonnegative
-            cH = iB(4) - tD + tA - 2 * cP;
+            cH = iB(4) - tD + tA - 2 * tP - 2 * cP;
             cH = max( cH, 0 ); % nonnegative
-            cY = 1 + iB(4) - tD + tA - cH - cP;
-            % iB
-            % [tX tY tW tH]
-            % [cX cY cW cH]
+            cY = 1 + iB(4) - tD + tA - 2 * tP - cH - cP;
 
             % Redraw title bar
             titleBar = obj.TitleBar;
