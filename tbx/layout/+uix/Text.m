@@ -177,8 +177,21 @@ classdef ( Hidden ) Text < matlab.mixin.SetGet
 
         function value = get.Extent( obj )
 
-            % Delegate
-            value = uix.extent( obj.Label );
+            % Get nominal extent
+            c = obj.Label;
+            value = c.Extent;
+
+            % For JavaScript graphics, the Extent property is unreliable
+            % for large font sizes, so getting the Extent of equivalent
+            % Java graphics is more accurate
+            f = ancestor( c, 'figure' );
+            if ~isempty( f ) && value(4) > 40 && verLessThan( 'MATLAB', '25.1' ) && ...
+                    isprop( f, 'JavaFrame_I' ) && isempty( f.JavaFrame_I ) %#ok<VERLESSMATLAB>
+                df = figure( 'Visible', 'off' ); % dummy *Java* figure
+                dc = copyobj( c, df ); % dummy control
+                value(4) = dc.Extent(4); % use Java height
+                delete( df ) % clean up
+            end
 
         end % get.Extent
 

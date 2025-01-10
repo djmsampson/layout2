@@ -91,6 +91,10 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
         function tPassingShadowColorToConstructorIsCorrect( ...
                 testCase, ConstructorName )
 
+            % Filter this test from R2025a onwards, since setting the 
+            % 'ShadowColor' property issues a warning.
+            testCase.assumeMATLABVersionIsBefore( 'R2025a' )
+
             % Assume that the component is not in a web figure.
             testCase.assumeGraphicsAreNotWebBased()
 
@@ -110,6 +114,10 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
 
         function tGettingAndSettingShadowColorWorksCorrectly( ...
                 testCase, ConstructorName )
+
+            % Filter this test from R2025a onwards, since setting the 
+            % 'ShadowColor' property issues a warning.
+            testCase.assumeMATLABVersionIsBefore( 'R2025a' )
 
             % Assume that the component is not in a web figure.
             testCase.assumeGraphicsAreNotWebBased()
@@ -144,28 +152,6 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
                 ConstructorName, ' component was not warning-free.'] )
 
         end % tSettingEmptyMinimizeFcnIsWarningFree
-
-        function tGettingTitleHeightReturnsFeasibleValue( ...
-                testCase, ConstructorName )
-
-            % Create a component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Obtain the 'TitleHeight' property.
-            titleHeight = component.TitleHeight;
-
-            % Verify the data type, size, and attributes of this value.
-            testCase.verifyClass( titleHeight, 'double', ...
-                ['The ''TitleHeight'' property of the ', ...
-                ConstructorName, ' component is not a double value.'] )
-            testCase.verifySize( titleHeight, [1, 1], ...
-                ['The ''TitleHeight'' property of the ', ...
-                ConstructorName, ' component is not a scalar value.'] )
-            testCase.verifyGreaterThanOrEqual( titleHeight, 0, ...
-                ['The ''TitleHeight'' property of the ', ...
-                ConstructorName, ' component is not >= 0.'] )
-
-        end % tGettingTitleHeightReturnsFeasibleValue
 
         function tSettingEmptyTitleAssignsCorrectValue( ...
                 testCase, ConstructorName )
@@ -276,6 +262,45 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
                 ConstructorName, ' component was not warning-free.'] )
             
         end % tMinimizingBoxPanelIsWarningFree
+
+        function tForegroundColorIsDarkGrayBeforeR2025a( testCase, ...
+                ConstructorName )
+
+            % Filter this test from R2025a onwards.
+            testCase.assumeMATLABVersionIsBefore( 'R2025a' )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the 'ForegroundColor' property is dark gray.
+            darkGray = [0.1294, 0.1294, 0.1294];
+            testCase.verifyEqual( component.ForegroundColor, ...
+                darkGray, ['The ''ForegroundColor'' property of ', ...
+                'the ', ConstructorName, ' component was not ', ...
+                'the default dark gray after construction.'], ...
+                'AbsTol', 1e-4 )
+
+        end % tForegroundColorIsDarkGrayBeforeR2025a
+
+         function tTitleColorIsLightBlueBeforeR2025a( testCase, ...
+                ConstructorName )
+
+            % Filter this test from R2025a onwards.
+            testCase.assumeMATLABVersionIsBefore( 'R2025a' )
+
+            % Construct the component.
+            component = testCase.constructComponent( ConstructorName );
+
+            % Verify that the 'TitleColor' property is light mode 
+            % "chat bubble" (a light blue).
+            lightModeChatBubble = [0.8706, 0.9373, 1];
+            testCase.verifyEqual( component.TitleColor, ...
+                lightModeChatBubble, ['The ''TitleColor'' property ', ...
+                'of the ', ConstructorName, ' component was not ', ...
+                'the default light blue after construction.'], ...
+                'AbsTol', 1e-4 )
+
+        end % tTitleColorIsLightBlueBeforeR2025a
 
     end % methods ( Test, Sealed )
 

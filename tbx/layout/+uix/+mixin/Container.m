@@ -282,7 +282,7 @@ classdef Container < handle
             %  false otherwise.  To be drawable, a container must be
             %  rooted.
 
-            tf = ~isempty( obj.FigureObserver.Figure );
+            tf = ~isempty( ancestor( obj, 'figure' ) );
 
         end % isDrawable
 

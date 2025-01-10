@@ -10,4 +10,4 @@ This section gives an overview of GUI Layout Toolbox, including its purpose, how
 
 ___
 
-[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2025

@@ -161,13 +161,37 @@ classdef ( Abstract ) TestInfrastructure < matlab.unittest.TestCase
                         'Unsupported version string %s.', versionString )
             end % switch/case
 
-            % Enforce that a minimum MATLAB version is required.
+            % Ensure that we have the given minimum MATLAB version.
             testCase.assumeFalse( ...
                 verLessThan( 'matlab', versionNumber ), ...
                 ['This test is not applicable prior to MATLAB ', ...
                 versionString, '.'] )
 
         end % assumeMATLABVersionIsAtLeast
+
+        function assumeMATLABVersionIsBefore( testCase, versionString )
+            %ASSUMEMATLABVERSIONISBEFORE Assume that the MATLAB version is
+            %earlier than the version specified by versionString. This
+            %assumption is used in different locations across the test
+            %suite.
+
+            % Determine the version number corresponding to the version
+            % specified.
+            switch versionString
+                case 'R2014b'
+                    versionNumber = '8.4';
+                case 'R2025a'
+                    versionNumber = '25.1';
+            end % switch/case
+
+            % Ensure that we are in a MATLAB version prior to the given
+            % version.
+            testCase.assumeTrue( ...
+                verLessThan( 'matlab', versionNumber ), ...
+                ['This test is not applicable after MATLAB ', ...
+                versionString, '.'] )            
+
+        end % assumeMATLABVersionIsBefore
 
         function assumeGraphicsAreRooted( testCase )
 

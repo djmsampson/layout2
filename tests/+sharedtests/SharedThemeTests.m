@@ -196,7 +196,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tPanelRespectsModeAfterSettingForegroundColor
 
         function tBoxPanelForegroundColorIgnoresThemeChanges( testCase, ...
-                ConstructorName )
+                ConstructorName )            
 
             % This test only applies to box panels.
             testCase.assumeComponentIsABoxPanel( ConstructorName )
@@ -205,34 +205,35 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
             [component, testFig] = testCase.prepareComponent( ...
                 ConstructorName );
 
-            % Verify that ForegroundColorMode is 'manual' on construction.
+            % Verify that ForegroundColorMode is 'auto' on construction.
             testCase.verifyEqual( component.ForegroundColorMode, ...
-                'manual', ['The ''ForegroundColorMode'' property ', ...
+                'auto', ['The ''ForegroundColorMode'' property ', ...
                 'of the ', ConstructorName, ' component was not ', ...
-                'set to ''manual'' on construction.'] )
+                'set to ''auto'' on construction.'] )
 
-            % Verify that the ForegroundColor is white.
-            white = [1, 1, 1];
+            % Verify that the ForegroundColor is as expected.
+            darkGray = [0.1294, 0.1294, 0.1294];
             testCase.verifyEqual( component.ForegroundColor, ...
-                white, ['The ''ForegroundColor'' property of ', ...
+                darkGray, ['The ''ForegroundColor'' property of ', ...
                 'the ', ConstructorName, ' component was not set', ...
-                ' to white ([1, 1, 1]) on construction.'] )
+                ' to dark gray on construction.'], 'AbsTol', 1e-4 )
 
             % Change the theme.
             testFig.Theme = 'dark';
 
-            % Verify that the ForegroundColor is still white.
+            % Verify that the ForegroundColor changed.
             diagnostic = @( from , to ) ['The ''ForegroundColor'' ', ...
                 'property of the ', ConstructorName, ' component did ', ...
-                'not remain white after changing the theme from ', ...
+                'not change after changing the theme from ', ...
                 from, ' to ', to];
-            testCase.verifyEqual( component.ForegroundColor, white, ...
-                diagnostic( 'light', 'dark' ) )
+            lightGray = [0.851, 0.851, 0.851];
+            testCase.verifyEqual( component.ForegroundColor, lightGray, ...
+                diagnostic( 'light', 'dark' ), 'AbsTol', 1e-4 )
 
             % Repeat the test in reverse.
             testFig.Theme = 'light';
-            testCase.verifyEqual( component.ForegroundColor, white, ...
-                diagnostic( 'dark', 'light' ) )
+            testCase.verifyEqual( component.ForegroundColor, darkGray, ...
+                diagnostic( 'dark', 'light' ), 'AbsTol', 1e-4 )
 
         end % tBoxPanelForegroundColorIgnoresThemeChanges
 
@@ -249,10 +250,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tBoxPanelTitleColorRespondsToThemeChanges
 
         function tBoxPanelTitleColorIgnoresThemeIfSetManually( ...
-                testCase, ConstructorName )
-
-            % Assume we're in R2025a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+                testCase, ConstructorName )            
 
             % This test is only for box panels.
             testCase.assumeComponentIsABoxPanel( ConstructorName )
@@ -264,10 +262,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tBoxPanelTitleColorIgnoresThemeIfSetManually
 
         function tBoxPanelRespectsTitleColorMode( testCase, ...
-                ConstructorName )
-
-            % Assume we're in R2025a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+                ConstructorName )            
 
             % This test is only for box panels.
             testCase.assumeComponentIsABoxPanel( ConstructorName )
@@ -303,10 +298,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tTabPanelForegroundColorRespondsToThemeChanges
 
         function tTabPanelForegroundColorIgnoresThemeIfSetManually( ...
-                testCase, ConstructorName )
-
-            % Assume we're in R2025a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+                testCase, ConstructorName )            
 
             % This test is only for tab panels.
             testCase.assumeComponentIsATabPanel( ConstructorName )
@@ -318,10 +310,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         end % tTabPanelForegroundColorIgnoresThemeIfSetManually
 
         function tTabPanelRespectsForegroundColorMode( testCase, ...
-                ConstructorName )
-
-            % Assume we're in R2025a or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
+                ConstructorName )            
 
             % This test is only for tab panels.
             testCase.assumeComponentIsATabPanel( ConstructorName )
@@ -377,7 +366,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
             else
                 testCase.verifyEqual( darkThemeColorProperty, ...
                     lightThemeColorProperty, diagnostic( colorProperty, ...
-                    'changed', 'light', 'dark' ) )
+                    'changed', 'light', 'dark' ), 'AbsTol', 1e-4 )
             end % if
 
             % Now change from dark theme to light theme.
@@ -394,7 +383,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
             else
                 testCase.verifyEqual( lightThemeColorProperty, ...
                     darkThemeColorProperty, diagnostic( colorProperty, ...
-                    'changed', 'dark', 'light' ) )
+                    'changed', 'dark', 'light' ), 'AbsTol', 1e-4 )
             end % if
 
         end % tColorPropertyRespondsToThemeChanges
@@ -418,12 +407,12 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 ' of the ', ConstructorName, ' component ', ...
                 'unexpectedly changed when the theme was changed.'];
             testCase.verifyEqual( component.(colorProperty), ...
-                actualColor, diagnostic )
+                actualColor, diagnostic, 'AbsTol', 1e-4 )
 
             % Repeat the test, going from dark to light theme.
             testFig.Theme = 'light';
             testCase.verifyEqual( component.(colorProperty), ...
-                actualColor, diagnostic )
+                actualColor, diagnostic, 'AbsTol', 1e-4 )
 
         end % tColorPropertyIgnoresThemeChangesIfSetManually
 
@@ -449,12 +438,12 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                 'to ''manual'' and changing the theme did not ', ...
                 'preserve the ''', colorProperty, ''' of the component.'];
             testCase.verifyEqual( component.(colorProperty), color, ...
-                diagnostic )
+                diagnostic, 'AbsTol', 1e-4 )
 
             % Change the theme and repeat the test.
             testFig.Theme = 'light';
             testCase.verifyEqual( component.(colorProperty), color, ...
-                diagnostic )
+                diagnostic, 'AbsTol', 1e-4 )
 
             % Set the color property mode to 'auto'.
             component.(colorPropertyMode) = 'auto';
@@ -463,7 +452,8 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
             testCase.verifyEqual( component.(colorProperty), color, ...
                 ['The ''', colorProperty, ''' of the ', ...
                 ConstructorName, ' component changed after ''', ...
-                colorPropertyMode, ''' was set to ''auto''.'] )
+                colorPropertyMode, ''' was set to ''auto''.'], ...
+                'AbsTol', 1e-4 )
 
             % Change the theme.
             testFig.Theme = 'dark';
@@ -481,7 +471,7 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                     diagnostic( 'did not change' ) )
             else
                 testCase.verifyEqual( darkThemeColor, color, ...
-                    diagnostic( 'changed' ) )
+                    diagnostic( 'changed' ), 'AbsTol', 1e-4 )
             end % if
 
             % Change the theme and repeat the test.
@@ -492,7 +482,8 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                     darkThemeColor, diagnostic( 'did not change' ) )
             else
                 testCase.verifyEqual( component.(colorProperty), ...
-                    darkThemeColor, diagnostic( 'changed' ) )
+                    darkThemeColor, diagnostic( 'changed' ), ...
+                    'AbsTol', 1e-4 )
             end % if
 
         end % tComponentRespectsColorPropertyMode
@@ -540,7 +531,8 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
                     diagnostic( 'did not change' ) )
             else
                 testCase.verifyEqual( darkThemeColorProperty, ...
-                    lightThemeColorProperty, diagnostic( 'changed' ) )
+                    lightThemeColorProperty, diagnostic( 'changed' ), ...
+                    'AbsTol', 1e-4 )
             end % if  
 
         end % tComponentRespectsModeAfterSettingColorProperty
@@ -548,13 +540,11 @@ classdef SharedThemeTests < glttestutilities.TestInfrastructure
         function [component, testFig] = prepareComponent( testCase, ...
                 ConstructorName )
 
-            % Assume that we're not running in CI, that we have the new 
-            % desktop environment enabled, and that we're in R2024a 
+            % Assume that we're not running in CI, and that we're in R2025a 
             % onwards. Assume that the component parent is either a figure
             % or a uifigure.
-            testCase.assumeNotRunningOnCI()
-            testCase.assumeJavaScriptDesktop()
-            testCase.assumeMATLABVersionIsAtLeast( 'R2024a' )
+            testCase.assumeNotRunningOnCI()            
+            testCase.assumeMATLABVersionIsAtLeast( 'R2025a' )
             testCase.assumeGraphicsAreRooted()
 
             % Construct a component.
