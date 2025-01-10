@@ -111,4 +111,4 @@ In web graphics, standard panels created using the `uipanel` function can be scr
 
 ___
 
-[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2024
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2009-2025
