@@ -6,18 +6,20 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 
 - Released 13 January 2025
 - Reimplemented `uix.TabPanel` using `uitab`, for standardized appearance and easier deployment
-- Added `uix.TabPanel` tab location options `left` and `right`; this is available through `uitab`
-- Removed font and some color properties from `uix.TabPanel`; these are not available in `uitab`
-- Show contents of selected but disabled tabs; this is more useful than the previous behavior
-- Removed folder `Resources` with tab images, and special MATLAB Compiler deployment instructions; these are no longer required
-- Reimplemented `uix.BoxPanel` titlebar buttons, for compatibility with web graphics
-- Honor padding in `uix.ScrollingPanel`
-- Fixed bugs in `uix.ScrollingPanel`
+   - Added tab location options `left` and `right`; this is available through `uitab`
+   - Removed font and some color properties; these are not available in `uitab`
+   - Show contents of selected but disabled tabs; this is more useful than the previous behavior
+   - Removed folder `Resources` with tab images, and special MATLAB Compiler deployment instructions; these are no longer required
+- Reimplemented `uix.BoxPanel` titlebar, for compatibility with web graphics
+   - Renamed tooltip properties from `...TooltipString` to `...Tooltip`; previous property names are still supported
+- Improved `uix.ScrollingPanel`
+   - Honor `Padding`
+   - Changed `uix.ScrollingPanel` per-child properties `Heights`, `MinimumHeights`, `Widths`, `MinimumWidths`, `VerticalSteps`, `VerticalOffsets`, `HorizontalSteps`, `HorizontalOffsets` to scalar properties `Height`, `MinimumHeight`, `Width`, `MinimumWidth`, `VerticalStep`, `VerticalOffset`, `HorizontalStep`, `HorizontalOffset`; this simplifies usability
+   - Fixed G1959226 *Scrolling panel blanking plate does not match background color*
+   - Fixed G1959228 *Sliders remain after scrolling panel child is deleted*
 - Removed property `Selection` from `uix.Panel`, `uix.BoxPanel`, `uix.ScrollingPanel`; these layouts now stack children; use `uix.CardPanel` to select one of several children
-- Changed `uix.ScrollingPanel` per-child properties `Heights`, `MinimumHeights`, `Widths`, `MinimumWidths`, `VerticalSteps`, `VerticalOffsets`, `HorizontalSteps`, `HorizontalOffsets` to scalar properties `Height`, `MinimumHeight`, `Width`, `MinimumWidth`, `VerticalStep`, `VerticalOffset`, `HorizontalStep`, `HorizontalOffset`; this simplifies usability
-- Renamed `uix.BoxPanel` tooltip properties from `...TooltipString` to `...Tooltip`; previous property names are still supported
 - Removed decorations on draggable dividers, for compatibility with web graphics
-- Added support for figure themes :test_tube:
+- Added support for figure themes, from R2025a
 - Migrated documentation to Doc_er :hatching_chick:
 - Documented helper `uix.FigureObserver` for detecting figure ancestor changes
 
