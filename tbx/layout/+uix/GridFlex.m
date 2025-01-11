@@ -359,7 +359,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
 
-            % Update listeners
+            % Update mouse listeners
             if isempty( newFigure )
                 mousePressListener = event.listener.empty( [0 0] );
                 mouseReleaseListener = event.listener.empty( [0 0] );
@@ -372,6 +372,11 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                 mouseMotionListener = event.listener( newFigure, ...
                     'WindowMouseMotion', @obj.onMouseMotion );
             end
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
+            obj.MouseMotionListener = mouseMotionListener;
+
+            % Update theme listener
             if isempty( newFigure ) || ~any( strcmp( ...
                     {metaclass( newFigure ).EventList.Name}, 'ThemeChanged' ) )
                 themeListener = event.listener.empty( [0 0] );
@@ -379,10 +384,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                 themeListener = event.listener( newFigure, ...
                     'ThemeChanged', @obj.onThemeChanged );
             end
-
-            obj.MousePressListener = mousePressListener;
-            obj.MouseReleaseListener = mouseReleaseListener;
-            obj.MouseMotionListener = mouseMotionListener;
             obj.ThemeListener = themeListener;
 
             % Call superclass method

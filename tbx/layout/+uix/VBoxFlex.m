@@ -8,23 +8,24 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
     %  resize contents by dragging the dividers.
     %
     %  See also: uix.HBoxFlex, uix.GridFlex, uix.VBox, uix.VButtonBox
-    
-    %  Copyright 2009-2024 The MathWorks, Inc.
-    
+
+    %  Copyright 2009-2025 The MathWorks, Inc.
+
     properties( Access = private )
         RowDividers = uix.Divider.empty( [0 1] ) % row dividers
         FrontDivider % front divider
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
+        ThemeListener = event.listener.empty( [0 0] ) % theme listener
         ActiveDivider = 0 % active divider index
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
         BackgroundColorListener % background color listener
     end
-    
+
     methods
-        
+
         function obj = VBoxFlex( varargin )
             %uix.VBoxFlex  Flexible vertical box constructor
             %
@@ -32,7 +33,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             %
             %  b = uix.VBoxFlex(p1,v1,p2,v2,...) sets parameter p1 to value
             %  v1, etc.
-            
+
             % Create front divider
             frontDivider = uix.Divider( 'Parent', obj, 'Visible', 'off' );
 
@@ -49,10 +50,10 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
 
             % Store listeners
             obj.BackgroundColorListener = backgroundColorListener;
-            
+
             % Set Spacing property to 5 (may be overwritten by uix.set)
             obj.Spacing = 5;
-            
+
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -60,30 +61,30 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 delete( obj )
                 e.throwAsCaller()
             end
-            
+
         end % constructor
-        
+
     end % structors
-    
+
     methods( Access = protected )
-        
+
         function onMousePress( obj, source, eventData )
             %onMousePress  Handler for WindowMousePress events
-            
+
             % Check whether mouse is over a divider
             loc = find( obj.RowDividers.isMouseOver( eventData ) );
             if isempty( loc ), return, end
-            
+
             % Capture state at button down
             divider = obj.RowDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
             root = groot();
             obj.MousePressLocation = root.PointerLocation;
-            
+
             % Make sure the pointer is appropriate
             obj.updateMousePointer( source, eventData );
-            
+
             % Activate divider
             frontDivider = obj.FrontDivider;
             frontDivider.Position = divider.Position;
@@ -91,12 +92,12 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             frontDivider.Parent = [];
             frontDivider.Parent = obj;
             frontDivider.Visible = 'on';
-            
+
         end % onMousePress
-        
+
         function onMouseRelease( obj, ~, ~ )
             %onMousePress  Handler for WindowMouseRelease events
-            
+
             % Compute new positions
             loc = obj.ActiveDivider;
             if loc > 0
@@ -134,24 +135,24 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             else
                 return
             end
-            
+
             % Deactivate divider
             obj.FrontDivider.Visible = 'off';
             divider.Visible = 'on';
-            
+
             % Reset state at button down
             obj.ActiveDivider = 0;
             obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-            
+
             % Mark as dirty
             obj.Dirty = true;
-            
+
         end % onMouseRelease
-        
+
         function onMouseMotion( obj, source, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
-            
+
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
                 obj.updateMousePointer( source, eventData );
@@ -175,28 +176,28 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 obj.FrontDivider.Position = ...
                     obj.ActiveDividerPosition + [0 delta 0 0];
             end
-            
+
         end % onMouseMotion
-        
+
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
 
             obj.updateBackgroundColor()
-            
+
         end % onBackgroundColorChanged
-        
+
     end % event handlers
-    
+
     methods( Access = protected )
-        
+
         function redraw( obj )
             %redraw  Redraw contents
             %
             %  c.redraw() redraws the container c.
-            
+
             % Call superclass method
             redraw@uix.VBox( obj )
-            
+
             % Create or destroy row dividers
             q = numel( obj.RowDividers ); % current number of dividers
             r = max( [numel( obj.Heights_ )-1 0] ); % required number of dividers
@@ -215,17 +216,17 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                     obj.unsetPointer()
                 end
             end
-            
+
             % Compute container bounds
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
-            
+
             % Retrieve size properties
             heights = obj.Heights_;
             minimumHeights = obj.MinimumHeights_;
             padding = obj.Padding_;
             spacing = obj.Spacing_;
-            
+
             % Compute row divider positions
             xRowPositions = [padding + 1, max( bounds(3) - 2 * padding, 1 )];
             xRowPositions = repmat( xRowPositions, [r 1] );
@@ -235,21 +236,21 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 spacing * transpose( 1:r ) + 1, repmat( spacing, [r 1] )];
             rowPositions = [xRowPositions(:,1), yRowPositions(:,1), ...
                 xRowPositions(:,2), yRowPositions(:,2)];
-            
+
             % Position row dividers
             for ii = 1:r
                 obj.RowDividers(ii).Position = rowPositions(ii,:);
             end
-            
+
         end % redraw
-        
+
         function reparent( obj, oldFigure, newFigure )
             %reparent  Reparent container
             %
             %  c.reparent(a,b) reparents the container c from the figure a
             %  to the figure b.
-            
-            % Update listeners
+
+            % Update mouse listeners
             if isempty( newFigure )
                 mousePressListener = event.listener.empty( [0 0] );
                 mouseReleaseListener = event.listener.empty( [0 0] );
@@ -265,19 +266,29 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             obj.MousePressListener = mousePressListener;
             obj.MouseReleaseListener = mouseReleaseListener;
             obj.MouseMotionListener = mouseMotionListener;
-            
+
+            % Update theme listener
+            if isempty( newFigure ) || ~any( strcmp( ...
+                    {metaclass( newFigure ).EventList.Name}, 'ThemeChanged' ) )
+                themeListener = event.listener.empty( [0 0] );
+            else
+                themeListener = event.listener( newFigure, ...
+                    'ThemeChanged', @obj.onThemeChanged );
+            end
+            obj.ThemeListener = themeListener;
+
             % Call superclass method
             reparent@uix.VBox( obj, oldFigure, newFigure )
-            
+
             % Update pointer
             if ~isempty( oldFigure ) && ~strcmp( obj.Pointer, 'unset' )
                 obj.unsetPointer()
             end
-            
+
         end % reparent
-        
+
     end % template methods
-    
+
     methods( Access = protected )
 
         function updateBackgroundColor( obj )
@@ -285,13 +296,17 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
 
             backgroundColor = obj.BackgroundColor;
             set( obj.RowDividers, 'Color', backgroundColor )
-            obj.FrontDivider.Color = backgroundColor * 0.75;
+            if mean( backgroundColor ) > 0.5 % light
+                obj.FrontDivider.Color = backgroundColor / 2; % darker
+            else % dark
+                obj.FrontDivider.Color = backgroundColor / 2 + 0.5; % lighter
+            end
 
         end % updateBackgroundColor
-        
+
         function updateMousePointer ( obj, source, eventData  )
             %updateMousePointer  Update mouse pointer
-            
+
             oldPointer = obj.Pointer;
             if any( obj.RowDividers.isMouseOver( eventData ) )
                 newPointer = 'top';
@@ -306,9 +321,9 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
                 otherwise % change, set
                     obj.setPointer( source, newPointer )
             end
-            
+
         end % updateMousePointer
-        
+
     end % helpers methods
-    
+
 end % classdef
