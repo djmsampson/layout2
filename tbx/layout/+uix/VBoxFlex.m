@@ -39,7 +39,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             % Store divider
             obj.FrontDivider = frontDivider;
 
-            % Initialize divider
+            % Initialize decorations
             obj.updateBackgroundColor()
 
             % Create listeners
