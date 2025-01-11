@@ -22,7 +22,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         ActiveDivider = 0 % active divider index
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
-        BackgroundColorListener % background color listener
     end
 
     methods
@@ -45,12 +44,8 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             obj.updateBackgroundColor()
 
             % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+            addlistener( obj, 'BackgroundColor', 'PostSet', ...
                 @obj.onBackgroundColorChanged );
-
-            % Store listeners
-            obj.BackgroundColorListener = backgroundColorListener;
 
             % Set Spacing property (may be overwritten by uix.set)
             obj.Spacing = 5;
