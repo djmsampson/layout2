@@ -406,9 +406,9 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             set( obj.RowDividers, 'Color', backgroundColor )
             set( obj.ColumnDividers, 'Color', backgroundColor )
             if mean( backgroundColor ) > 0.5 % light
-                obj.FrontDivider.Color = backgroundColor * 0.5; % darker
+                obj.FrontDivider.Color = backgroundColor / 2; % darker
             else % dark
-                obj.FrontDivider.Color = backgroundColor / 0.5; % lighter
+                obj.FrontDivider.Color = backgroundColor / 2 + 0.5; % lighter
             end
 
         end % updateBackgroundColor
