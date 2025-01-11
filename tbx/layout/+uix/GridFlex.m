@@ -436,6 +436,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
 
         end % updateMousePointer
 
-    end % helpers methods
+    end % helper methods
 
 end % classdef

@@ -324,6 +324,6 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
 
         end % updateMousePointer
 
-    end % helpers methods
+    end % helper methods
 
 end % classdef

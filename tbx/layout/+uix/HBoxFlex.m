@@ -324,6 +324,6 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
 
         end % updateMousePointer
 
-    end % helpers methods
+    end % helper methods
 
 end % classdef
