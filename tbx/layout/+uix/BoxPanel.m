@@ -921,6 +921,13 @@ classdef BoxPanel < uix.Panel
 
         end % reparent
 
+        function retheme( obj )
+            %retheme  Retheme container
+
+            obj.updateForegroundColor()
+
+        end % retheme
+
     end % template methods
 
     methods( Access = protected, Static )
