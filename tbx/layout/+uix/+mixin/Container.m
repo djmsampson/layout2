@@ -219,7 +219,7 @@ classdef Container < handle
             %onThemeChanged  Event handler
 
             % Call template method
-            obj.retheme( eventData.Child )
+            obj.retheme()
 
         end % onThemeChanged
 
