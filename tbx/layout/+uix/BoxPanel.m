@@ -63,9 +63,6 @@ classdef BoxPanel < uix.Panel
 
     properties( Access = public, Dependent, Hidden )
         TitleColor_I % backing for TitleColor
-        TextColor % ForegroundColor companion
-        TextColor_I % backing for TextColor
-        TextColorMode % TextColor mode [auto|manual]
     end
 
     properties( Access = public, Hidden )
@@ -933,7 +930,6 @@ classdef BoxPanel < uix.Panel
 
             map = getThemeMap@uix.Panel();
             map.ForegroundColor = '--mw-color-primary';
-            map.TextColor = '--mw-color-primary';
             map.TitleColor = '--mw-backgroundColor-chatBubble';
 
         end % getThemeMap
