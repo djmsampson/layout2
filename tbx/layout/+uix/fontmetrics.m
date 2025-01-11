@@ -1,15 +1,29 @@
-function [a, d] = fontmetrics( ~, s, t )
+function [a, d] = fontmetrics( ~, s, u, t )
 %fontmetrics  Font metrics
 %
-%  [a,d] = uix.fontmetrics(n,s,t) returns metrics for the font with name n
-%  and size s in the figure type t ('java' or 'js').  The metrics are the
-%  distances from the top to the ascent a and the descent d in pixels.
+%  [a,d] = uix.fontmetrics(n,s,u,t) returns metrics for the font with name
+%  n, size s and units u in the figure type t ('java' or 'js').  The
+%  metrics are the distances from the top to the ascent a and the descent d
+%  in pixels.
 %
 %  Currently, metrics are based on MS Sans Serif on Windows on a 3840x2400
 %  display with 225% scaling, and do not vary by font.  In future, metrics
 %  for more fonts will be added.
 
 %  Copyright 2024-2025 The MathWorks, Inc.
+
+switch u
+    case 'pixels'
+        s = s * get( groot(), 'ScreenPixelsPerInch' ) / 72;
+    case 'inches'
+        s = s / 72;
+    case 'points'
+        % ok
+    case 'centimeters'
+        s = s / 72 * 2.54;
+    otherwise
+        error( 'uix:InvalidArgument', 'Unsupported font units ''%s''.', u )
+end
 
 switch t
     case 'java'
