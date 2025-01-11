@@ -18,7 +18,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         MousePressListener = event.listener.empty( [0 0] ) % mouse press listener
         MouseReleaseListener = event.listener.empty( [0 0] ) % mouse release listener
         MouseMotionListener = event.listener.empty( [0 0] ) % mouse motion listener
-        ThemeListener = event.listener.empty( [0 0] ) % theme listener
         ActiveDivider = 0 % active divider index
         ActiveDividerPosition = [NaN NaN NaN NaN] % active divider position
         MousePressLocation = [NaN NaN] % mouse press location
@@ -243,13 +242,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
 
         end % onBackgroundColorChanged
 
-        function onThemeChanged( obj, ~, ~ )
-            %onThemeChanged  Handler for figure Theme changes
-
-            obj.updateBackgroundColor()
-
-        end % onThemeChanged
-
     end % event handlers
 
     methods( Access = protected )
@@ -371,16 +363,6 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             obj.MouseReleaseListener = mouseReleaseListener;
             obj.MouseMotionListener = mouseMotionListener;
 
-            % Update theme listener
-            if isempty( newFigure ) || ~any( strcmp( ...
-                    {metaclass( newFigure ).EventList.Name}, 'ThemeChanged' ) )
-                themeListener = event.listener.empty( [0 0] );
-            else
-                themeListener = event.listener( newFigure, ...
-                    'ThemeChanged', @obj.onThemeChanged );
-            end
-            obj.ThemeListener = themeListener;
-
             % Call superclass method
             reparent@uix.Grid( obj, oldFigure, newFigure )
 
@@ -390,6 +372,13 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             end
 
         end % reparent
+
+        function retheme( obj )
+            %retheme  Retheme container
+
+            obj.updateBackgroundColor()
+
+        end % retheme
 
     end % template methods
 
