@@ -1151,8 +1151,14 @@ wd = [ ...
      732   737   740   744   749   752   756   761   762   767 ...
      ]/2.25;
 
+% Bound and round font size
+s = obj.FontSize;
+s = max( s, 1 );
+s = min( s, 200 );
+s = round( s );
+
+% Return ascent and descent
 f = ancestor( obj, 'figure' );
-s = min( obj.FontSize, 200 );
 if isempty( f ) || ~isprop( f, 'JavaFrame_I' ) || ~isempty( f.JavaFrame_I )
     a = ja(s);
     d = jd(s);
