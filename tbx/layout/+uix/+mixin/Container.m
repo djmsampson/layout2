@@ -4,7 +4,7 @@ classdef Container < handle
     %  uix.mixin.Container is a mixin class used by containers to provide
     %  various properties and template methods.
 
-    %  Copyright 2009-2024 The MathWorks, Inc.
+    %  Copyright 2009-2025 The MathWorks, Inc.
 
     properties( Dependent, Access = public )
         Contents % contents in layout order
@@ -32,6 +32,7 @@ classdef Container < handle
         ChildRemovedListener % listener
         SizeChangedListener % listener
         ActivePositionPropertyListeners = cell( [0 1] ) % listeners
+        ThemeListener % listener
     end
 
     properties( Access = {?uix.mixin.Container, ?matlab.unittest.TestCase} )
@@ -145,8 +146,20 @@ classdef Container < handle
         function onFigureChanged( obj, ~, eventData )
             %onFigureChanged  Event handler
 
-            % Call template method
+            % Update theme listener
+            newFigure = obj.NewFigure;
+            events = {metaclass( newFigure ).EventList.Name};
+            if isempty( newFigure ) || ~ismember( 'Theme', ...
+                    {metaclass( newFigure ).EventList.Name} )
+                obj.ThemeListener = [];
+            else
+                obj.ThemeListener = event.listener( newFigure, ...
+                    'ThemeChanged', @obj.onThemeChanged );
+            end
+
+            % Call template methods
             obj.reparent( eventData.OldFigure, eventData.NewFigure )
+            obj.retheme()
 
             % Redraw if possible and if dirty
             if obj.Dirty && obj.isDrawable()
@@ -203,6 +216,14 @@ classdef Container < handle
 
         end % onActivePositionPropertyChanged
 
+        function onThemeChanged( obj, ~, ~ )
+            %onThemeChanged  Event handler
+
+            % Call template method
+            obj.retheme( eventData.Child )
+
+        end % onThemeChanged
+
     end % event handlers
 
     methods( Abstract, Access = protected )
@@ -256,6 +277,13 @@ classdef Container < handle
 
         end % reparent
 
+        function retheme( obj ) %#ok<MANU>
+            %retheme  Retheme container
+            %
+            %  c.retheme changes the theme of the container c.
+
+        end % retheme
+
         function reorder( obj, indices )
             %reorder  Reorder contents
             %
@@ -286,7 +314,7 @@ classdef Container < handle
 
         end % isDrawable
 
-    end % helper methods    
+    end % helper methods
 
 end % classdef
 
