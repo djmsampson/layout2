@@ -14,13 +14,13 @@ function [a, d] = fontmetrics( ~, s, u, t )
 
 switch u
     case 'pixels'
-        s = s * get( groot(), 'ScreenPixelsPerInch' ) / 72;
+        s = s / get( groot(), 'ScreenPixelsPerInch' ) * 72;
     case 'inches'
-        s = s / 72;
+        s = s * 72;
     case 'points'
         % ok
     case 'centimeters'
-        s = s / 72 * 2.54;
+        s = s * 72 / 2.54;
     otherwise
         error( 'uix:InvalidArgument', 'Unsupported font units ''%s''.', u )
 end
