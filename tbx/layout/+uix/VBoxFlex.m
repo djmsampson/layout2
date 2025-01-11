@@ -38,7 +38,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             % Store divider
             obj.FrontDivider = frontDivider;
 
-            % Initialize divider
+            % Initialize decorations
             obj.updateBackgroundColor()
 
             % Create listeners
@@ -315,6 +315,6 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
 
         end % updateMousePointer
 
-    end % helpers methods
+    end % helper methods
 
 end % classdef

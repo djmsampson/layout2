@@ -38,7 +38,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             % Store divider
             obj.FrontDivider = frontDivider;
 
-            % Initialize divider
+            % Initialize decorations
             obj.updateBackgroundColor()
 
             % Create listeners
@@ -315,6 +315,6 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
 
         end % updateMousePointer
 
-    end % helpers methods
+    end % helper methods
 
 end % classdef

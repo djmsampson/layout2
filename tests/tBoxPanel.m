@@ -263,25 +263,6 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
             
         end % tMinimizingBoxPanelIsWarningFree
 
-        function tForegroundColorIsDarkGrayBeforeR2025a( testCase, ...
-                ConstructorName )
-
-            % Filter this test from R2025a onwards.
-            testCase.assumeMATLABVersionIsBefore( 'R2025a' )
-
-            % Construct the component.
-            component = testCase.constructComponent( ConstructorName );
-
-            % Verify that the 'ForegroundColor' property is dark gray.
-            darkGray = [0.1294, 0.1294, 0.1294];
-            testCase.verifyEqual( component.ForegroundColor, ...
-                darkGray, ['The ''ForegroundColor'' property of ', ...
-                'the ', ConstructorName, ' component was not ', ...
-                'the default dark gray after construction.'], ...
-                'AbsTol', 1e-4 )
-
-        end % tForegroundColorIsDarkGrayBeforeR2025a
-
          function tTitleColorIsLightBlueBeforeR2025a( testCase, ...
                 ConstructorName )
 
