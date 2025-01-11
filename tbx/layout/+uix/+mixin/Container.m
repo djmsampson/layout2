@@ -147,8 +147,7 @@ classdef Container < handle
             %onFigureChanged  Event handler
 
             % Update theme listener
-            newFigure = obj.NewFigure;
-            events = {metaclass( newFigure ).EventList.Name};
+            newFigure = eventData.NewFigure;
             if isempty( newFigure ) || ~ismember( 'Theme', ...
                     {metaclass( newFigure ).EventList.Name} )
                 obj.ThemeListener = [];
