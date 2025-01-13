@@ -93,6 +93,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             obj.HorizontalSlider = hSlider;
             obj.BlankingPlate = plate;
 
+            % Initialize decorations
+            obj.updateBackgroundColor()
+
             % Create listeners
             addlistener( obj, 'BackgroundColor', 'PostSet', ...
                 @obj.onBackgroundColorChanged );
