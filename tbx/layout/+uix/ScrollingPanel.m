@@ -9,7 +9,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
     %
     %  See also: uix.Panel, uix.BoxPanel, uix.TabPanel, uicontainer
 
-    %  Copyright 2009-2024 The MathWorks, Inc.
+    %  Copyright 2009-2025 The MathWorks, Inc.
 
     properties( Access = public, Dependent, AbortSet )
         Height % height of contents, in pixels and/or weights
@@ -630,7 +630,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 contentsPosition(1) = contentsPosition(1) - hSliderValue;
             end
 
-            % Set scrollbar properties. Setting properties interrupts 
+            % Set scrollbar properties. Setting properties interrupts
             % continuous scrolling, so only proceed if the component is not
             % being scrolled.
             if strcmp( obj.Scrolling_, 'off' )
@@ -694,13 +694,21 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function onSliderScrolling( obj, ~, ~ )
             %onSliderScrolling  Event handler
 
-            % Set flag
-            obj.Scrolling_ = 'on';
-
             if strcmp( obj.Continuous, 'on' )
 
-                % Mark as dirty
-                obj.Dirty = true;
+                try
+
+                    % Mark as dirty
+                    obj.Scrolling_ = 'on'; % set flag
+                    obj.Dirty = true;
+                    obj.Scrolling_ = 'off'; % unset flag
+
+                catch e
+
+                    obj.Scrolling_ = 'off'; % clean up
+                    rethrow( e )
+
+                end
 
                 % Raise event
                 notify( obj, 'Scrolled' )
@@ -717,9 +725,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
             % Raise event
             notify( obj, 'Scrolled' )
-
-            % Unset flag
-            obj.Scrolling_ = 'off';
 
         end % onSliderScrolled
 
