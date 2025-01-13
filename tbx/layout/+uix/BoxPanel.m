@@ -743,7 +743,7 @@ classdef BoxPanel < uix.Panel
         function onForegroundColorChanged( obj, ~, ~ )
             %onForegroundColorChanged  Event handler for ForegroundColor changes
 
-            obj.updateForegroundColor();
+            obj.updateForegroundColor()
 
         end % onForegroundColorChanged
 
