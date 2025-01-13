@@ -38,7 +38,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         ScrollingListener % slider listener
         ScrolledListener % slider listener
         Scrolling_ = 'off' % scrolling flag
-        BackgroundColorListener % property listener
     end
 
     properties( Access = public, Hidden )
@@ -95,8 +94,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             obj.BlankingPlate = plate;
 
             % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+            addlistener( obj, 'BackgroundColor', 'PostSet', ...
                 @obj.onBackgroundColorChanged );
             scrollingListener = event.listener( [vSlider; hSlider], ...
                 'ContinuousValueChange', @obj.onSliderScrolling );
@@ -104,7 +102,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Action', @obj.onSliderScrolled );
 
             % Store listeners
-            obj.BackgroundColorListener = backgroundColorListener;
             obj.ScrollingListener = scrollingListener;
             obj.ScrolledListener = scrolledListener;
 
