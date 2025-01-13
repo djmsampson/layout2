@@ -38,7 +38,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         ScrollingListener % slider listener
         ScrolledListener % slider listener
         Scrolling_ = 'off' % scrolling flag
-        BackgroundColorListener % property listener
     end
 
     properties( Access = public, Hidden )
@@ -94,9 +93,11 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
             obj.HorizontalSlider = hSlider;
             obj.BlankingPlate = plate;
 
+            % Initialize decorations
+            obj.updateBackgroundColor()
+
             % Create listeners
-            backgroundColorListener = event.proplistener( obj, ...
-                findprop( obj, 'BackgroundColor' ), 'PostSet', ...
+            addlistener( obj, 'BackgroundColor', 'PostSet', ...
                 @obj.onBackgroundColorChanged );
             scrollingListener = event.listener( [vSlider; hSlider], ...
                 'ContinuousValueChange', @obj.onSliderScrolling );
@@ -104,7 +105,6 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
                 'Action', @obj.onSliderScrolled );
 
             % Store listeners
-            obj.BackgroundColorListener = backgroundColorListener;
             obj.ScrollingListener = scrollingListener;
             obj.ScrolledListener = scrolledListener;
 
@@ -687,6 +687,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % reparent
 
+        function retheme( obj )
+            %retheme  Retheme container
+
+            obj.updateBackgroundColor()
+
+        end % retheme
+
     end % template methods
 
     methods( Access = ?matlab.unittest.TestCase )
@@ -762,13 +769,24 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
 
-            backgroundColor = obj.BackgroundColor;
-            set( obj.HorizontalSlider, 'BackgroundColor', backgroundColor )
-            set( obj.VerticalSlider, 'BackgroundColor', backgroundColor )
-            set( obj.BlankingPlate, 'BackgroundColor', backgroundColor )
+            obj.updateBackgroundColor()
 
         end % onBackgroundColorChanged
 
     end % event handlers
+
+    methods( Access = private )
+
+        function updateBackgroundColor( obj )
+            %updateBackgroundColor  Update foreground color
+
+            backgroundColor = obj.BackgroundColor;
+            obj.HorizontalSlider.BackgroundColor = backgroundColor;
+            obj.VerticalSlider.BackgroundColor = backgroundColor;
+            obj.BlankingPlate.BackgroundColor = backgroundColor;
+
+        end % updateBackgroundColor
+
+    end % helper methods
 
 end % classdef
