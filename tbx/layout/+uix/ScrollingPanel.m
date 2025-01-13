@@ -687,6 +687,13 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Container
 
         end % reparent
 
+        function retheme( obj )
+            %retheme  Retheme container
+
+            obj.updateBackgroundColor()
+
+        end % retheme
+
     end % template methods
 
     methods( Access = ?matlab.unittest.TestCase )
