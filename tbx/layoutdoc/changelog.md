@@ -21,7 +21,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 - Improved `uix.BoxPanel` titlebar appearance with JavaScript graphics
    - Renamed tooltip properties from `...TooltipString` to `...Tooltip`; previous property names are still supported
 - Removed property `Selection` from `uix.Panel`, `uix.BoxPanel`, `uix.ScrollingPanel`; these layouts now stack children; use `uix.CardPanel` to select one of several children
-- Migrated documentation to Doc_er :hatching_chick:
+- Modernized documentation, using Doc_er :hatching_chick:
 - Documented helper `uix.FigureObserver`, for detecting figure ancestor changes
 
 ## Version 2.3.9
