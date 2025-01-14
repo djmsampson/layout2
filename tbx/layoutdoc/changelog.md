@@ -2,6 +2,11 @@
 
 GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `major.minor.iter`.  You can check your current version(s) using [`ver`](https://www.mathworks.com/help/matlab/ref/ver.html), `ver('layout')`, [`matlab.addons.installedAddons`](https://www.mathworks.com/help/matlab/ref/matlab.addons.installedaddons.html), or the [Add-On Manager](https://uk.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
 
+## Version 2.4.1
+
+- Released 15 January 2025
+- Fixed *Cannot use dot indexing into function call results in `uix.mixin.Container` prior to R2019b*
+
 ## Version 2.4
 
 - Released 13 January 2025
