@@ -148,9 +148,9 @@ classdef Container < handle
 
             % Update theme listener
             newFigure = eventData.NewFigure;
-            figureInfo = ?matlab.ui.Figure;
-            if isempty( newFigure ) || ~ismember( 'ThemeChanged', ...
-                    {figureInfo.EventList.Name} )
+            c = metaclass( newFigure );
+            if isempty( newFigure ) || ...
+                    ~ismember( 'ThemeChanged', {c.EventList.Name} )
                 obj.ThemeListener = [];
             else
                 obj.ThemeListener = event.listener( newFigure, ...

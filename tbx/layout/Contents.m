@@ -1,5 +1,5 @@
 % GUI Layout Toolbox
-% Version 2.4 (R2024b) 13-Jan-2025
+% Version 2.4.1 (R2024b) 15-Jan-2025
 %
 % Panels
 %   uix.Panel          - arrange a single element inside a standard panel

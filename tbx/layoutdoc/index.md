@@ -1,6 +1,6 @@
 # GUI Layout Toolbox
 
-**Version 2.4**
+**Version 2.4.1**
 
 GUI Layout Toolbox is a layout manager for creating MATLAB&reg; graphical user interfaces that resize gracefully. The classes supplied can be used in combination to produce virtually any user interface layout.
 
