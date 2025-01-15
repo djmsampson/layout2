@@ -14,6 +14,13 @@ classdef BoxPanel < uix.Panel
 
     properties( Access = public, Dependent, AbortSet )
         TitleColor % title background color [RGB]
+    end
+
+    properties( GetAccess = public, SetAccess = private, Dependent )
+        MinimizedHeight % minimized height [pixels]
+    end
+
+    properties( Access = public, Dependent, AbortSet )
         Minimized % minimized [true|false]
         MinimizeFcn % minimize callback
         MaximizeFcn % maximize callback
@@ -254,6 +261,22 @@ classdef BoxPanel < uix.Panel
             end
 
         end % set.TitleColorMode
+
+        function value = get.MinimizedHeight( obj )
+
+            f = ancestor( obj, 'figure' );
+            if isempty( f )
+                value = 0;
+            else
+                titleBar = obj.TitleBar;
+                tPosPx = hgconvertunits( f, titleBar.Position, ...
+                    titleBar.Units, 'pixels', obj ); % absolute units
+                tPosU = hgconvertunits( f, tPosPx, ...
+                    'pixels', obj.Units, obj.Parent ); % BoxPanel units
+                value = obj.OuterPosition(4) - tPosU(2);
+            end
+
+        end % get.MinimizedHeight
 
         function value = get.Minimized( obj )
 
