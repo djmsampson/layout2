@@ -33,13 +33,13 @@ Arrange a single element in a panel with title and controls
 | `MaximizeTooltip` | Tooltip for maximize button :arrow_down_small: | `string` |
 | `Minimized` | Whether the panel is minimized; see [Working with Box Panels](WorkingWithBoxPanels.md) for details | `logical` |
 | `MinimizeFcn` | Function to call when the minimize button :arrow_up_small: or maximize button :arrow_down_small: is clicked; if empty then no button is shown | [`function_handle`](https://www.mathworks.com/help/matlab/ref/function_handle.html) |
+| `MinimizedHeight` | Minimized height (title plus border), in `Units` | nonnegative integer |
 | `MinimizeTooltip` | Tooltip for minimize button :arrow_up_small: | `string` |
 | `Padding` | Space around contents, in pixels | nonnegative integer |
 | `Parent` | Parent figure or container | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) |
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]` |
 | `Title` | Title text | `string` |
 | `TitleColor` | Title bar background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| `TitleHeight` | Title bar height, in `Units` | nonnegative integer |
 | `UndockTooltip` | Tooltip for undock button :arrow_upper_right: | `string` |
 | `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |
