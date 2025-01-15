@@ -17,7 +17,7 @@ classdef BoxPanel < uix.Panel
     end
 
     properties( GetAccess = public, SetAccess = private, Dependent )
-        TitleHeight % title height [pixels]
+        MinimizedHeight % minimized height [pixels]
     end
 
     properties( Access = public, Dependent, AbortSet )
@@ -262,7 +262,7 @@ classdef BoxPanel < uix.Panel
 
         end % set.TitleColorMode
 
-        function value = get.TitleHeight( obj )
+        function value = get.MinimizedHeight( obj )
 
             f = ancestor( obj, 'figure' );
             if isempty( f )
@@ -276,7 +276,7 @@ classdef BoxPanel < uix.Panel
                 value = obj.OuterPosition(4) - tPosU(2);
             end
 
-        end % get.TitleHeight
+        end % get.MinimizedHeight
 
         function value = get.Minimized( obj )
 
@@ -300,14 +300,8 @@ classdef BoxPanel < uix.Panel
             % Set
             obj.Minimized_ = value;
 
-            % Show or hide contents
-            uix.setVisible( obj.Contents, ~value )
-
             % Update buttons
             obj.redrawButtons()
-
-            % Mark as dirty, since uix.setVisible may have moved contents
-            obj.Dirty = true;
 
         end % set.Minimized
 
