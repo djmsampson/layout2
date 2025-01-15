@@ -174,15 +174,15 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
         function tTooltipStringPropertiesSupportStrings( ...
                 testCase, ConstructorName )
 
-            % This test is only valid for MATLAB R2016b onwards.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+            % This test is only valid for MATLAB R2017a onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName );
 
-            % Create a string (in a way that's compatible with R2016b and
-            % won't cause errors in earlier versions). Note that double
-            % quotes are not accepted in code files in R2016b and earlier.
+            % Create a string (in a way that won't cause errors in earlier
+            % versions). Note that double quotes are not accepted in code 
+            % files in R2016b and earlier.
             testString = string( 'Test' ); %#ok<STRQUOT>
 
             % For each tooltip string property, verify that it supports
@@ -204,8 +204,8 @@ classdef tBoxPanel < sharedtests.SharedContainerTests
         function tTooltipStringPropertiesErrorForNonScalarStrings( ...
                 testCase, ConstructorName )
 
-            % This test is only valid for MATLAB R2016b onwards.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+            % This test is only valid for MATLAB R2017a onwards.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName );

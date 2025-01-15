@@ -66,8 +66,8 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
         function tStringSupportForAlignmentProperties( ...
                 testCase, ConstructorName )
 
-            % Assume we are in R2016b or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+            % Assume we are in R2017a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName );
@@ -93,8 +93,8 @@ classdef ( Abstract ) SharedButtonBoxTests < sharedtests.SharedContainerTests
         function tValidationForAlignmentProperties( testCase, ...
                 ConstructorName )
 
-            % Assume we are in R2016b or later.
-            testCase.assumeMATLABVersionIsAtLeast( 'R2016b' )
+            % Assume we are in R2017a or later.
+            testCase.assumeMATLABVersionIsAtLeast( 'R2017a' )
 
             % Create a component.
             component = testCase.constructComponent( ConstructorName );
