@@ -13,6 +13,7 @@ Arrange a single element in a panel with title and controls
 | Name | Description | Type |
 | --- | --- | --- |
 | `BackgroundColor` | Background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
+| `BorderColor` | Border color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
 | `BorderType` | Border style | `'none'` \| `'etchedin'` \| `'etchedout'` \| `'beveledin'` \| `'beveledout'` \| `'line'` |
 | `BorderWidth` | Border width, in pixels | nonnegative integer |
 | `Contents` | Children, in order of addition to the layout, regardless of `HandleVisibility`; settable only to a permutation of itself | graphics vector |
