@@ -1,10 +1,9 @@
 function varargout = minimizeExample()
 %MINIMIZEEXAMPLE An example of using the panelbox minimize/maximize
 
-%  Copyright 2009-2024 The MathWorks, Inc.
+%  Copyright 2009-2025 The MathWorks, Inc.
 
 figureWidth = 400;
-minPanelHeight = 20;
 maxPanelHeight = 100;
 
 % Create the figure window and a vertical layout.
@@ -55,7 +54,7 @@ end % if
 
         % Expand or collapse the corresponding panel.
         if boxPanels(panelIdx).Minimized
-            rowHeights(panelIdx) = minPanelHeight;
+            rowHeights(panelIdx) = boxPanels(panelIdx).TitleHeight;
         else
             rowHeights(panelIdx) = maxPanelHeight;
         end % if

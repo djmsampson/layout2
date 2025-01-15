@@ -26,7 +26,6 @@ Create a new figure window and add three panels.
 function minimizeExample()
 
 figureWidth = 400;
-minPanelHeight = 20;
 maxPanelHeight = 100;
 
 % Create the figure window and a vertical layout.
@@ -77,7 +76,7 @@ boxPanels(3).MinimizeFcn = {@onMinimize, 3};
 
         % Expand or collapse the corresponding panel.
         if boxPanels(panelIdx).Minimized
-            rowHeights(panelIdx) = minPanelHeight;
+            rowHeights(panelIdx) = boxPanels(panelIdx).TitleHeight;
         else
             rowHeights(panelIdx) = maxPanelHeight;
         end % if
