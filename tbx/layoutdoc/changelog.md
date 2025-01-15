@@ -6,7 +6,6 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 
 - Released 15 January 2025
 - Added `uix.BoxPanel` property `MinimizedHeight` to return minimized height (title plus border)
-- Updated `uix.BoxPanel` demo `minimizeExample` to use `MinimizedHeight`
 - Fixed *Cannot create layouts prior to R2019b due to modern syntax used in `uix.mixin.Container`*
 
 ## Version 2.4
