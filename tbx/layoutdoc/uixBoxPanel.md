@@ -39,7 +39,7 @@ Arrange a single element in a panel with title and controls
 | `Position` | Position within parent figure or container, in `Units` | `[left, bottom, width, height]` |
 | `Title` | Title text | `string` |
 | `TitleColor` | Title bar background color | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) |
-| `TitleHeight` | Title bar height, in pixels | nonnegative integer |
+| `TitleHeight` | Title bar height, in `Units` | nonnegative integer |
 | `UndockTooltip` | Tooltip for undock button :arrow_upper_right: | `string` |
 | `Units` | Position units; default is `'normalized'` | `'normalized'`, `'pixels'`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) |
 | `Visible` | Visibility; default is `'on'` | `'on'` or `'off'` |

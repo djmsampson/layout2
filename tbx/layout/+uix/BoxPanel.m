@@ -264,8 +264,18 @@ classdef BoxPanel < uix.Panel
 
         function value = get.TitleHeight( obj )
 
-            value = obj.TitleBar.Position(4);
-            
+            f = ancestor( obj, 'figure' );
+            if isempty( f )
+                value = NaN;
+            else
+                titleBar = obj.TitleBar;
+                titlePosition = hgconvertunits( f, titleBar.Position, ...
+                    titleBar.Units, 'pixels', obj ); % pixels
+                position = hgconvertunits( f, titlePosition, ...
+                    'pixels', obj.Units, obj.Parent ); % BoxPanel units
+                value = position(4);
+            end
+
         end % get.TitleHeight
 
         function value = get.Minimized( obj )
@@ -290,8 +300,14 @@ classdef BoxPanel < uix.Panel
             % Set
             obj.Minimized_ = value;
 
+            % Show or hide contents
+            uix.setVisible( obj.Contents, ~value )
+
             % Update buttons
             obj.redrawButtons()
+
+            % Mark as dirty, since uix.setVisible may have moved contents
+            obj.Dirty = true;
 
         end % set.Minimized
 
