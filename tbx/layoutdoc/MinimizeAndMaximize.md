@@ -76,7 +76,7 @@ boxPanels(3).MinimizeFcn = {@onMinimize, 3};
 
         % Expand or collapse the corresponding panel.
         if boxPanels(panelIdx).Minimized
-            rowHeights(panelIdx) = boxPanels(panelIdx).TitleHeight;
+            rowHeights(panelIdx) = boxPanels(panelIdx).MinimizedHeight;
         else
             rowHeights(panelIdx) = maxPanelHeight;
         end % if
