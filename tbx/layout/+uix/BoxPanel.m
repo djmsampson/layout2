@@ -266,15 +266,14 @@ classdef BoxPanel < uix.Panel
 
             f = ancestor( obj, 'figure' );
             if isempty( f )
-                value = NaN;
+                value = 0;
             else
                 titleBar = obj.TitleBar;
-                titlePosition = hgconvertunits( f, titleBar.Position, ...
-                    titleBar.Units, 'pixels', obj ); % pixels
-                position = obj.OuterPosition - obj.InnerPosition + ...
-                    hgconvertunits( f, titlePosition, 'pixels', ...
-                    obj.Units, obj.Parent ); % BoxPanel units
-                value = position(4);
+                tPosPx = hgconvertunits( f, titleBar.Position, ...
+                    titleBar.Units, 'pixels', obj ); % absolute units
+                tPosU = hgconvertunits( f, tPosPx, ...
+                    'pixels', obj.Units, obj.Parent ); % BoxPanel units
+                value = obj.OuterPosition(4) - tPosU(2);
             end
 
         end % get.TitleHeight
