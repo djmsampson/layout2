@@ -24,7 +24,7 @@ variables:
     name: 677276097160.dkr.ecr.us-east-1.amazonaws.com/external-git/matlab-gitrunner-image:${MATLAB_RELEASE}-latest
     entrypoint: [""]
   script:    
-    - matlab-batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
+    - xvfb-run matlab-batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
   artifacts:
     when: always
     paths:
