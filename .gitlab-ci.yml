@@ -19,9 +19,12 @@ variables:
 .gr-tests:
   stage: test
   tags:
-   - long-jobs
+   - mathworks.matlab.cloud-linux-kubernetes
+  image: 
+    name: 677276097160.dkr.ecr.us-east-1.amazonaws.com/external-git/matlab-gitrunner-image:${MATLAB_RELEASE}-latest
+    entrypoint: [""]
   script:    
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
+    - matlab-batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
   artifacts:
     when: always
     paths:
