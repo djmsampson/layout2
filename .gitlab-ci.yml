@@ -16,8 +16,20 @@ variables:
   ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
   LOCATION: "UK"  
 
-.gr-k8s-tests:
+recent-tests:
   stage: test
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2022b", "R2023b", "R2024a", "R2024b"]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d.*/
+      when: always
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
   tags:
    - mathworks.matlab.cloud-linux-kubernetes
   image: 
@@ -32,8 +44,17 @@ variables:
     reports:
       junit: TestResults.xml
 
-.gr-on-prem-tests:
+
+historic-tests:
   stage: test
+  parallel:
+    matrix:
+      - MATLAB_RELEASE: ["R2018b", "R2019b", "R2020b", "R2021b"]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d.*/
+      when: always
   tags:
    - long-jobs
   script:    
@@ -44,40 +65,6 @@ variables:
       - TestResults.xml
     reports:
       junit: TestResults.xml
-
-latest-test:
-  extends: .gr-k8s-tests
-  parallel:
-    matrix:
-      - MATLAB_RELEASE: [R2024b]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-      when: always
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-      when: always
-
-recent-tests:
-  extends: .gr-k8s-tests
-  parallel:
-    matrix:
-      - MATLAB_RELEASE: ["R2022b", "R2023b", "R2024a", "R2024b"]
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
-      when: always
-    - if: $CI_COMMIT_TAG =~ /^v\d.*/
-      when: always
-
-historic-tests:
-  extends: .gr-on-prem-tests
-  parallel:
-    matrix:
-      - MATLAB_RELEASE: ["R2018b", "R2019b", "R2020b", "R2021b"]
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
-      when: always
-    - if: $CI_COMMIT_TAG =~ /^v\d.*/
-      when: always
-
 
 jsd-test:
   stage: test
