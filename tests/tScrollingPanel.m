@@ -618,6 +618,9 @@ classdef tScrollingPanel < sharedtests.SharedContainerTests
             % Assume that the graphics are rooted.
             testCase.assumeGraphicsAreRooted()
 
+            % Don't run in R2022b or older in linux CI due to bug
+            testCase.assumeFalse(isunix() && verLessThan('matlab','9.14'))
+
             % Create a scrolling panel.
             component = testCase.constructComponent( ConstructorName );
 
