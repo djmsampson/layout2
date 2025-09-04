@@ -66,6 +66,10 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
         function onMousePress( obj, figure, eventData )
             %onMousePress  Handler for WindowMousePress events
 
+            % Get mouse position in pixels
+            pos = hgconvertunits( figure, ...
+                [eventData.Point 0 0], figure.Units, 'pixels', figure );
+
             % Check whether mouse is over a divider
             loc = find( obj.ColumnDividers.isMouseOver( eventData ) );
             if isempty( loc ), return, end
@@ -74,7 +78,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = eventData.Point;
+            obj.MousePressLocation = pos;
 
             % Make sure the pointer is appropriate
             obj.updateMousePointer( figure, eventData );
