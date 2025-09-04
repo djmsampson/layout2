@@ -94,7 +94,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
 
         end % onMousePress
 
-        function onMouseRelease( obj, ~, eventData )
+        function onMouseRelease( obj, figure, eventData )
             %onMousePress  Handler for WindowMouseRelease events
 
             % Compute new positions
