@@ -1,5 +1,5 @@
 % GUI Layout Toolbox
-% Version 2.4.1 (R2024b) 15-Jan-2025
+% Version 2.4.2 (R2025a) 04-Sep-2025
 %
 % Panels
 %   uix.Panel          - arrange a single element inside a standard panel
@@ -24,4 +24,4 @@
 %   uix.Empty          - create an empty space
 %   uix.FigureObserver - raise an event when the figure ancestor of a graphics object changes
 
-%  Copyright 2009-2024 The MathWorks, Inc.
+%  Copyright 2009-2025 The MathWorks, Inc.

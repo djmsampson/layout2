@@ -2,6 +2,11 @@
 
 GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `major.minor.iter`.  You can check your current version(s) using [`ver`](https://www.mathworks.com/help/matlab/ref/ver.html), `ver('layout')`, [`matlab.addons.installedAddons`](https://www.mathworks.com/help/matlab/ref/matlab.addons.installedaddons.html), or the [Add-On Manager](https://uk.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
 
+## Version 2.4.2
+
+- Released 4 September 2025
+- Fixed *Cannot drag flex containers on MATLAB Online*
+
 ## Version 2.4.1
 
 - Released 15 January 2025
