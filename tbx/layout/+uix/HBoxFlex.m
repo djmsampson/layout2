@@ -66,19 +66,20 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
         function onMousePress( obj, figure, eventData )
             %onMousePress  Handler for WindowMousePress events
 
-            % Get mouse position in pixels
-            pos = hgconvertunits( figure, ...
-                [eventData.Point 0 0], figure.Units, 'pixels', figure );
-
             % Check whether mouse is over a divider
+            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
+                figure.Units, 'pixels', figure ); % pointer [pixels]
             loc = find( obj.ColumnDividers.isMouseOver( eventData ) );
-            if isempty( loc ), return, end
+            if ~isempty( loc )
+                divider = obj.ColumnDividers(loc);
+            else
+                return
+            end
 
             % Capture state at button down
-            divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = pos;
+            obj.MousePressLocation = pos(1:2);
 
             % Make sure the pointer is appropriate
             obj.updateMousePointer( figure, eventData );
@@ -97,9 +98,11 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             %onMousePress  Handler for WindowMouseRelease events
 
             % Compute new positions
+            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
+                figure.Units, 'pixels', figure ); % pointer [pixels]
             loc = obj.ActiveDivider;
             if loc > 0
-                delta = eventData.Point(1) - obj.MousePressLocation(1);
+                delta = pos(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
@@ -150,11 +153,13 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
         function onMouseMotion( obj, figure, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
 
-            loc = obj.ActiveDivider;
+            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
+                figure.Units, 'pixels', figure ); % pointer [pixels]
+            loc = obj.ActiveDivider; % divider
             if loc == 0 % hovering, update pointer
                 obj.updateMousePointer( figure, eventData );
             else % dragging column divider
-                delta = eventData.Point(1) - obj.MousePressLocation(1);
+                delta = pos(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
