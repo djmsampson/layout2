@@ -86,11 +86,6 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             frontDivider.Parent = obj;
             frontDivider.Visible = 'on';
 
-            % Update figure CurrentPoint on mouse motion
-            if isequal( figure.WindowButtonMotionFcn, [] )
-                figure.WindowButtonMotionFcn = @(~,~)[];
-            end
-
         end % onMousePress
 
         function onMouseRelease( obj, figure, ~ )
@@ -141,11 +136,6 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             obj.ActiveDivider = 0;
             obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
-
-            % Restore figure WindowButtonMotionFcn
-            if strcmp( char( figure.WindowButtonMotionFcn ), '@(~,~)[]' )
-                figure.WindowButtonMotionFcn = [];
-            end
 
             % Mark as dirty
             obj.Dirty = true;
