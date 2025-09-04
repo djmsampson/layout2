@@ -62,7 +62,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
 
     methods( Access = protected )
 
-        function onMousePress( obj, source, eventData )
+        function onMousePress( obj, figure, eventData )
             %onMousePress  Handler for WindowMousePress events
 
             % Check whether mouse is over a divider
@@ -73,11 +73,10 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            root = groot();
-            obj.MousePressLocation = root.PointerLocation;
+            obj.MousePressLocation = figure.CurrentPoint;
 
             % Make sure the pointer is appropriate
-            obj.updateMousePointer( source, eventData );
+            obj.updateMousePointer( figure, eventData );
 
             % Activate divider
             frontDivider = obj.FrontDivider;
@@ -87,16 +86,20 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             frontDivider.Parent = obj;
             frontDivider.Visible = 'on';
 
+            % Update figure CurrentPoint on mouse motion
+            if isequal( figure.WindowButtonMotionFcn, [] )
+                figure.WindowButtonMotionFcn = @(~,~)[];
+            end
+
         end % onMousePress
 
-        function onMouseRelease( obj, ~, ~ )
+        function onMouseRelease( obj, figure, ~ )
             %onMousePress  Handler for WindowMouseRelease events
 
             % Compute new positions
             loc = obj.ActiveDivider;
             if loc > 0
-                root = groot();
-                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
+                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
@@ -139,20 +142,24 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             obj.ActiveDividerPosition = [NaN NaN NaN NaN];
             obj.MousePressLocation = [NaN NaN];
 
+            % Restore figure WindowButtonMotionFcn
+            if strcmp( char( figure.WindowButtonMotionFcn ), '@(~,~)[]' )
+                figure.WindowButtonMotionFcn = [];
+            end
+
             % Mark as dirty
             obj.Dirty = true;
 
         end % onMouseRelease
 
-        function onMouseMotion( obj, source, eventData )
+        function onMouseMotion( obj, figure, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
 
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
-                obj.updateMousePointer( source, eventData );
+                obj.updateMousePointer( figure, eventData );
             else % dragging column divider
-                root = groot();
-                delta = root.PointerLocation(1) - obj.MousePressLocation(1);
+                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
