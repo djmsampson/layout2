@@ -34,7 +34,8 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             %  v1, etc.
 
             % Create front divider
-            frontDivider = uix.Divider( 'Parent', obj, 'Visible', 'off' );
+            frontDivider = uix.Divider( 'Parent', obj, ...
+                'Units', 'pixels', 'Visible', 'off' );
 
             % Store divider
             obj.FrontDivider = frontDivider;
@@ -66,6 +67,10 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         function onMousePress( obj, figure, eventData )
             %onMousePress  Handler for WindowMousePress events
 
+            % Get mouse position in pixels
+            pos = hgconvertunits( figure, ...
+                [eventData.Point 0 0], figure.Units, 'pixels', figure );
+
             % Check whether mouse is over a divider
             locr = find( obj.RowDividers.isMouseOver( eventData ) );
             locc = find( obj.ColumnDividers.isMouseOver( eventData ) );
@@ -82,7 +87,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             % Capture state at button down
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = figure.CurrentPoint;
+            obj.MousePressLocation = pos;
 
             % Make sure the pointer is appropriate
             obj.updateMousePointer( figure, eventData );
@@ -97,13 +102,17 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
 
         end % onMousePress
 
-        function onMouseRelease( obj, figure, ~ )
+        function onMouseRelease( obj, figure, eventData )
             %onMousePress  Handler for WindowMouseRelease events
+
+            % Get mouse position in pixels
+            pos = hgconvertunits( figure, ...
+                [eventData.Point 0 0], figure.Units, 'pixels', figure );
 
             % Compute new positions
             loc = obj.ActiveDivider;
             if loc > 0
-                delta = figure.CurrentPoint(2) - obj.MousePressLocation(2);
+                delta = pos(2) - obj.MousePressLocation(2);
                 ih = loc;
                 jh = loc + 1;
                 ic = loc;
@@ -134,7 +143,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                 end
                 obj.Heights_(loc:loc+1) = newHeights;
             elseif loc < 0
-                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
+                delta = pos(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
                 r = numel( obj.Heights_ );
@@ -186,11 +195,15 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
         function onMouseMotion( obj, figure, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
 
+            % Get mouse position in pixels
+            pos = hgconvertunits( figure, ...
+                [eventData.Point 0 0], figure.Units, 'pixels', figure );
+
             loc = obj.ActiveDivider;
             if loc == 0 % hovering, update pointer
                 obj.updateMousePointer( figure, eventData );
             elseif loc > 0 % dragging row divider
-                delta = figure.CurrentPoint(2) - obj.MousePressLocation(2);
+                delta = pos(2) - obj.MousePressLocation(2);
                 ih = loc;
                 jh = loc + 1;
                 ic = loc;
@@ -208,7 +221,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
                 obj.FrontDivider.Position = ...
                     obj.ActiveDividerPosition + [0 delta 0 0];
             else % loc < 0, dragging column divider
-                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
+                delta = pos(1) - obj.MousePressLocation(1);
                 iw = -loc;
                 jw = -loc + 1;
                 r = numel( obj.Heights_ );
@@ -255,7 +268,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             if b < c % create
                 for ii = b+1:c
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Color', obj.BackgroundColor );
+                        'Units', 'pixels', 'Color', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = columnDivider;
                 end
             elseif b > c % destroy
@@ -274,7 +287,7 @@ classdef GridFlex < uix.Grid & uix.mixin.Flex
             if q < r % create
                 for ii = q+1:r
                     columnDivider = uix.Divider( 'Parent', obj, ...
-                        'Color', obj.BackgroundColor );
+                        'Units', 'pixels', 'Color', obj.BackgroundColor );
                     obj.RowDividers(ii,:) = columnDivider;
                 end
                 % Bring front divider to the front
