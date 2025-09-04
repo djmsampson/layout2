@@ -33,7 +33,8 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             %  v1, etc.
 
             % Create front divider
-            frontDivider = uix.Divider( 'Parent', obj, 'Visible', 'off' );
+            frontDivider = uix.Divider( 'Parent', obj, ...
+                'Units', 'pixels', 'Visible', 'off' );
 
             % Store divider
             obj.FrontDivider = frontDivider;
@@ -73,7 +74,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             divider = obj.ColumnDividers(loc);
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = figure.CurrentPoint;
+            obj.MousePressLocation = eventData.Point;
 
             % Make sure the pointer is appropriate
             obj.updateMousePointer( figure, eventData );
@@ -88,13 +89,13 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
 
         end % onMousePress
 
-        function onMouseRelease( obj, figure, ~ )
+        function onMouseRelease( obj, ~, eventData )
             %onMousePress  Handler for WindowMouseRelease events
 
             % Compute new positions
             loc = obj.ActiveDivider;
             if loc > 0
-                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
+                delta = eventData.Point(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
@@ -149,7 +150,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             if loc == 0 % hovering, update pointer
                 obj.updateMousePointer( figure, eventData );
             else % dragging column divider
-                delta = figure.CurrentPoint(1) - obj.MousePressLocation(1);
+                delta = eventData.Point(1) - obj.MousePressLocation(1);
                 iw = loc;
                 jw = loc + 1;
                 ic = loc;
@@ -195,7 +196,7 @@ classdef HBoxFlex < uix.HBox & uix.mixin.Flex
             if b < c % create
                 for ii = b+1:c
                     divider = uix.Divider( 'Parent', obj, ...
-                        'Color', obj.BackgroundColor );
+                        'Units', 'pixels', 'Color', obj.BackgroundColor );
                     obj.ColumnDividers(ii,:) = divider;
                 end
             elseif b > c % destroy
