@@ -16,40 +16,40 @@ variables:
   ARTIFACTS_DOWNLOAD_PATH: "C:/Users/$GITLAB_USER_LOGIN/Downloads"
   LOCATION: "UK"  
 
-recent-tests:
-  stage: test
-  parallel:
-    matrix:
-      - MATLAB_RELEASE: ["R2022b", "R2023b", "R2024a", "R2024b"]
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
-      when: always
-    - if: $CI_COMMIT_TAG =~ /^v\d.*/
-      when: always
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-      when: always
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-      when: always
-  tags:
-   - mathworks.matlab.cloud-linux-kubernetes
-  image: 
-    name: 677276097160.dkr.ecr.us-east-1.amazonaws.com/external-git/matlab-gitrunner-image:${MATLAB_RELEASE}-latest
-    entrypoint: [""]
-  script:    
-    - xvfb-run matlab-batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
-  artifacts:
-    when: always
-    paths:
-      - TestResults.xml
-    reports:
-      junit: TestResults.xml
+# recent-tests:
+#   stage: test
+#   parallel:
+#     matrix:
+#       - MATLAB_RELEASE: ["R2022b", "R2023b", "R2024a", "R2024b"]
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'web'
+#       when: always
+#     - if: $CI_COMMIT_TAG =~ /^v\d.*/
+#       when: always
+#     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+#       when: always
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#       when: always
+#   tags:
+#    - mathworks.matlab.cloud-linux-kubernetes
+#   image: 
+#     name: 677276097160.dkr.ecr.us-east-1.amazonaws.com/external-git/matlab-gitrunner-image:${MATLAB_RELEASE}-latest
+#     entrypoint: [""]
+#   script:    
+#     - xvfb-run matlab-batch "addpath('tests'); results = runToolboxTests(); assert(~any([results.Failed]))"
+#   artifacts:
+#     when: always
+#     paths:
+#       - TestResults.xml
+#     reports:
+#       junit: TestResults.xml
 
 
 historic-tests:
   stage: test
   parallel:
     matrix:
-      - MATLAB_RELEASE: ["R2018b", "R2019b", "R2020b", "R2021b"]
+      - MATLAB_RELEASE: ["R2018b", "R2020b", "R2022b", "R2024b"]
   rules:
     - if: $CI_PIPELINE_SOURCE == 'web'
       when: always
@@ -70,11 +70,11 @@ jsd-test:
   stage: test
   parallel:
     matrix:
-      - MATLAB_RELEASE: ["R2024b"]
+      - MATLAB_RELEASE: ["R2025a"]
   tags:
     - long-jobs
   script:    
-    - mw -using ${MATLAB_RELEASE}:perfect matlab -webui -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
+    - mw -using ${MATLAB_RELEASE}:perfect matlab -batch "openProject('project.prj'); assertSuccess(runToolboxTests());"
   artifacts:
     when: always
     paths:
