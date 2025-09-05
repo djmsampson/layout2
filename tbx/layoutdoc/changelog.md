@@ -5,7 +5,7 @@ GUI Layout Toolbox versions follow [semantic versioning](https://semver.org/), `
 ## Version 2.4.2
 
 - Released 4 September 2025
-- Fixed *Cannot drag flex containers on MATLAB Online*
+- Fixed *Cannot drag flex containers in MATLAB Online*
 
 ## Version 2.4.1
 
