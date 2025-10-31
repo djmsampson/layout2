@@ -67,8 +67,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             %onMousePress  Handler for WindowMousePress events
 
             % Check whether mouse is over a divider
-            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
-                figure.Units, 'pixels', figure ); % pointer [pixels]
+            pos = uix.pointerlocation( eventData );
             loc = find( obj.RowDividers.isMouseOver( eventData ) );
             if ~isempty( loc )
                 divider = obj.RowDividers(loc);
@@ -79,7 +78,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
             % Capture state at button down
             obj.ActiveDivider = loc;
             obj.ActiveDividerPosition = divider.Position;
-            obj.MousePressLocation = pos(1:2);
+            obj.MousePressLocation = pos;
 
             % Make sure the pointer is appropriate
             obj.updateMousePointer( figure, eventData );
@@ -94,12 +93,11 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
 
         end % onMousePress
 
-        function onMouseRelease( obj, figure, eventData )
+        function onMouseRelease( obj, ~, eventData )
             %onMousePress  Handler for WindowMouseRelease events
 
             % Compute new positions
-            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
-                figure.Units, 'pixels', figure ); % pointer [pixels]
+            pos = uix.pointerlocation( eventData );
             loc = obj.ActiveDivider;
             if loc > 0
                 delta = pos(2) - obj.MousePressLocation(2);
@@ -153,8 +151,7 @@ classdef VBoxFlex < uix.VBox & uix.mixin.Flex
         function onMouseMotion( obj, figure, eventData )
             %onMouseMotion  Handler for WindowMouseMotion events
 
-            pos = hgconvertunits( figure, [eventData.Point 0 0], ...
-                figure.Units, 'pixels', figure ); % pointer [pixels]
+            pos = uix.pointerlocation( eventData );
             loc = obj.ActiveDivider; % divider
             if loc == 0 % hovering, update pointer
                 obj.updateMousePointer( figure, eventData );
