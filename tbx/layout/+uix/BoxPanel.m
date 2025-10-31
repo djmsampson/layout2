@@ -862,11 +862,11 @@ classdef BoxPanel < uix.Panel
             if ischar( callback ) && isequal( callback, '' )
                 % do nothing
             elseif ischar( callback )
-                feval( callback, source, eventData )
+                feval( callback, source, eventData );
             elseif isa( callback, 'function_handle' )
-                callback( source, eventData )
+                callback( source, eventData );
             elseif iscell( callback )
-                feval( callback{1}, source, eventData, callback{2:end} )
+                feval( callback{1}, source, eventData, callback{2:end} );
             end
 
         end % onButtonClicked
