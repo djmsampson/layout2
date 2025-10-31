@@ -156,15 +156,24 @@ end % if
         switch upper( fcnName )
             case 'LOGO'
                 % These examples open their own windows
-                evalin( 'base', fcnName );
-                app.ViewAxes = gca();
-                fig = gcf();
-                fig.Visible = 'off';
+                try
+                    evalin( 'base', fcnName );
+                    app.ViewAxes = gca();
+                    fig = gcf();
+                    fig.Visible = 'off';
+                catch
+                    return
+                end                
             otherwise
                 % These examples need a figure
-                fig = figure( 'Visible', 'off' );
-                evalin( 'base', fcnName );
-                app.ViewAxes = gca();
+                try
+                    fig = figure( 'Visible', 'off' );
+                    figCleanup = onCleanup( @() delete( fig ) );
+                    evalin( 'base', fcnName );
+                    app.ViewAxes = gca();
+                catch
+                    return
+                end
         end
 
         % Now copy the axes from the example into our window and restore its
