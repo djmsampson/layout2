@@ -8,15 +8,21 @@ plan = buildplan( localfunctions() );
 
 % Add standard tasks
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
-plan( "test" ) = matlab.buildtool.tasks.TestTask( ...
-    fullfile( plan.RootFolder, "tests" ), ...
-    "Strict", true, ...
-    "SourceFiles", fullfile( plan.RootFolder, "tbx", "layout" ), ..., ...
-    "CodeCoverageResults", "reports/Coverage.html", ...
-    "OutputDetail", "none" );
+rootFolder = plan.RootFolder;
+testsFolder = fullfile( rootFolder, "tests" );
+tbxFolder = fullfile( rootFolder, "tbx" );
+sourceFolder = fullfile( tbxFolder, "layout" );
+plan( "test" ) = matlab.buildtool.tasks.TestTask( testsFolder, ...
+    "Strict", true, ...    
+    "RunOnlyImpactedTests", true, ...
+    "SourceFiles", sourceFolder, ...
+    "CodeCoverageResults", "reports/Coverage.html" );
 
 % Set up task inputs and dependencies
-plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "layoutdoc" );
+plan( "test" ).Inputs = [sourceFolder, testsFolder];
+plan( "doc" ).Inputs = fullfile( tbxFolder, "layoutdoc" );
+plan( "package" ).Inputs = tbxFolder;
+plan( "test" ).Dependencies = "check";
 plan( "doc" ).Dependencies = "check";
 plan( "package" ).Dependencies = "doc";
 
@@ -54,21 +60,21 @@ end % checkTask
 function docTask( context )
 % Generate the GUI Layout Toolbox documentation.
 
-% Check that Doc_er is installed.
+% Check that DocMaker is installed.
 v = ver( "docer" );
-assert( ~isempty( v ), "buildfile:NoDocer", ...
-    "Building GUI Layout Toolbox documentation requires Doc_er." )
+assert( ~isempty( v ), "buildfile:NoDocMaker", ...
+    "Building GUI Layout Toolbox documentation requires DocMaker." )
 fprintf( "** Using " + v.Name + " version " + v.Version + " " + ...
     v.Release + ", " + v.Date + ", for this build.\n\n" )
 
 % Delete the old documentation files.
 docFolder = context.Task.Inputs.Path;
-docerdelete( docFolder )
+docdelete( docFolder )
 fprintf( "** Deleted the old documentation files.\n\n" )
 
-% Use Doc_er to convert the markdown (.md) files to HTML.
+% Convert the markdown (.md) files to HTML.
 md = fullfile( docFolder, "**", "*.md" );
-docerconvert( md, "Theme", "light" )
+docconvert( md, "Theme", "light" )
 fprintf( "** Converted markdown files to HTML.\n\n" )
 
 % Control the default figure size and window style for generating doc
@@ -82,13 +88,13 @@ rootCleanup = onCleanup( @() set( gr, ...
 set( gr, "defaultFigureWindowStyle", "normal", ...
     "defaultFigurePosition", [100, 100, 400, 300] )
 
-% Use Doc_er to evaluate and capture the code within the doc pages.
+% Evaluate and capture the code within the doc pages.
 html = fullfile( docFolder, "**", "*.html" );
-docerrun( html )
+docrun( html )
 fprintf( "** Evaluated and captured documentation example code.\n\n" )
 
-% Use Doc_er to create the documentation index files and search database.
-docerindex( docFolder )
+% Create the documentation index files and search database.
+docindex( docFolder )
 fprintf( "** Created the index and search database files.\n\n" )
 
 end % docTask
